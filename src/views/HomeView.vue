@@ -29,11 +29,12 @@
 
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { ref } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
 import menu_left from '/src/components/menu_left.vue'
 
-export default defineComponent({
+export default {
+  name:'HomeView',
   components: {
     menu_left,
     MenuUnfoldOutlined,
@@ -45,7 +46,7 @@ export default defineComponent({
       collapsed: ref(false),
     };
   },
-});
+};
 </script>
 
 
