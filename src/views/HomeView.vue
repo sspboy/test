@@ -17,8 +17,7 @@
           <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff', minHeight: '280px' }">
             <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)"/>
             <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
-            Content
-
+            <navTable />
           </a-layout-content>
 
       </a-layout>
@@ -32,6 +31,7 @@
 import { ref } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
 import menu_left from '/src/components/menu_left.vue'
+import navTable from '/src/components/navTable.vue'
 
 export default {
   name:'HomeView',
@@ -39,11 +39,29 @@ export default {
     menu_left,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
+    navTable
   },
   setup() {
+    const start=()=>{
+
+      // 打开页面
+
+      // loading...加载...
+
+      // 权限验证
+
+      // 有权限
+        // 加载菜单组件
+        // 加载内容组件
+        // 加载翻页组件
+
+      // 无权限
+
+    }
     return {
       selectedKeys: ref(['1']),
       collapsed: ref(false),
+      start,
     };
   },
 };
