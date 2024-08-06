@@ -27,11 +27,11 @@
               <a-col :span="6" :order="4">4 col-order-1</a-col>
             </a-row>
 
-            <!--表格组件-->
+            <!--表格组件：：发送初始化数据-->
             <navTable :message='message' />
 
-            <!--翻页组件-->
-            <nav_pagination />
+            <!--翻页组件：：：发送初始化数据-->
+            <nav_pagination :page_msg="page_msg"/>
 
 
           </a-layout-content>
@@ -61,7 +61,10 @@ export default {
     menu_head
   },
   setup() {
-    let message = ref({'wode':'111'})
+
+    let message = ref({'HOME':'home'})
+    let page_msg = ref({'page':'page_msg'})
+
     const start=()=>{
 
       // 打开页面
@@ -83,7 +86,8 @@ export default {
       selectedKeys: ref(['1']),
       collapsed: ref(false),
       start,
-      message
+      message,
+      page_msg
     };
   },
 };

@@ -15,10 +15,15 @@ export default defineComponent({
   // 接受父组件数据
   props:{
     // 接受总页面信息
+    page_msg:{
+      type:Object // 数据类型效验
+    }
 
   },
 
-  setup(){
+  setup(props){
+    console.log('我是翻页组件')
+    console.log(props.page_msg)
     const onChange = (page, pageSize)=>{
 
       console.log(page)         // 当前页
