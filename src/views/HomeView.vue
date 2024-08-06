@@ -15,9 +15,26 @@
       <a-layout>
 
           <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff', minHeight: '280px' }">
-            <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)"/>
-            <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
-            <navTable />
+
+            <!--条件查询组件-->
+            <a-row type="flex">
+              <a-col :span="6" :order="1">
+                      <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)"/>
+                      <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
+                saas
+              </a-col>
+              <a-col :span="6" :order="2">2 col-order-3</a-col>
+              <a-col :span="6" :order="3">3 col-order-2</a-col>
+              <a-col :span="6" :order="4">4 col-order-1</a-col>
+            </a-row>
+
+            <!--表格组件-->
+            <navTable :message='message' />
+
+            <!--翻页组件-->
+            <nav_pagination />
+
+
           </a-layout-content>
 
       </a-layout>
@@ -30,8 +47,9 @@
 <script>
 import { ref } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
-import menu_left from '/src/components/menu_left.vue'
+import menu_left from '/src/components/layout/menu_left.vue'
 import navTable from '/src/components/navTable.vue'
+import nav_pagination from "@/components/nav_pagination.vue";
 
 export default {
   name:'HomeView',
@@ -39,9 +57,11 @@ export default {
     menu_left,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
-    navTable
+    navTable,
+    nav_pagination
   },
   setup() {
+    let message = ref({'wode':'111'})
     const start=()=>{
 
       // 打开页面
@@ -58,10 +78,12 @@ export default {
       // 无权限
 
     }
+
     return {
       selectedKeys: ref(['1']),
       collapsed: ref(false),
       start,
+      message
     };
   },
 };

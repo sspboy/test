@@ -1,30 +1,29 @@
 <template>
-  <div class="logo" />
 
           <a-menu v-model:openKeys="openKeys" v-model:selectedKeys="selectedKeys" mode="inline" theme="dark" :inline-collapsed="collapsed">
 
-            <a-menu-item key="1">
+            <a-menu-item key="1" style="margin: 0px; border-radius: 0px;width: 100%;">
               <template #icon>
                 <PieChartOutlined />
               </template>
               <span>用户管理</span>
             </a-menu-item>
 
-            <a-menu-item key="2">
+            <a-menu-item key="2" style="margin: 0px; border-radius: 0px;width: 100%;">
               <template #icon>
                 <DesktopOutlined />
               </template>
               <span>菜单管理</span>
             </a-menu-item>
 
-            <a-menu-item key="3">
+            <a-menu-item key="3" style="margin: 0px; border-radius: 0px;width: 100%;">
               <template #icon>
                 <InboxOutlined />
               </template>
               <span>权限列表</span>
             </a-menu-item>
 
-            <a-menu-item key="4">
+            <a-menu-item key="4" style="margin: 0px; border-radius: 0px;width: 100%;">
               <template #icon>
                 <InboxOutlined />
               </template>
@@ -76,6 +75,9 @@ export default defineComponent({
     DesktopOutlined,
     InboxOutlined,
   },
+  props:{
+
+  },
 
   setup() {
     const state = reactive({
@@ -98,3 +100,6 @@ export default defineComponent({
   },
 });
 </script>
+<style>
+
+</style>
