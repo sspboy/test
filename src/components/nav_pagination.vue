@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {defineComponent} from 'vue'
+import {defineComponent, inject} from 'vue'
 
 export default defineComponent({
 
@@ -21,20 +21,33 @@ export default defineComponent({
 
   },
 
-  setup(props){
+  setup(props,ctx){
+
+
+    const page_new = inject('page_new');
+
+
     console.log('我是翻页组件')
     console.log(props.page_msg)
-    const onChange = (page, pageSize)=>{
 
-      console.log(page)         // 当前页
-      console.log(pageSize)     // 单页数量
+
+
+    const onChange = (page, pageSize)=>{
+      page_new.now_page = page
+      page_new.page_size = pageSize
+      ctx.emit('complete')
+
+      // console.log(page_new.now_page)
+      // console.log(page)         // 当前页
+      // console.log(pageSize)     // 单页数量
       // 改变后发送数据到表格
 
     }
 
 
     return{
-      onChange
+      onChange,
+      page_new
     }
   }
 })

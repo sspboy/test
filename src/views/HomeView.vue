@@ -30,8 +30,8 @@
             <!--表格组件：：发送初始化数据-->
             <navTable :message='message' />
 
-            <!--翻页组件：：：发送初始化数据-->
-            <nav_pagination :page_msg="page_msg"/>
+            <!--翻页组件：：：发送初始化数据：：监听回传信息-->
+            <nav_pagination :page_msg="page_msg" v-on:complete="console.log(page_new)"/>
 
 
           </a-layout-content>
@@ -40,11 +40,13 @@
 
 
   </a-layout>
+
+
 </template>
 
 
 <script>
-import { ref } from 'vue';
+import { ref, provide,reactive } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
 import menu_left from '/src/components/layout/menu_left.vue'
 import navTable from '/src/components/navTable.vue'
@@ -62,9 +64,13 @@ export default {
   },
   setup() {
 
-    let message = ref({'HOME':'home'})
-    let page_msg = ref({'page':'page_msg'})
+    let message = ref({'HOME':'home'}) // 发送给表格组件的信息
 
+    let page_msg = ref({'page':'page_msg'}) // 发送给翻页组件的信息
+    let page_new = reactive({'now_page':'0','page_size':'10'})// 组测共享信息：当前页数；页面数据条数
+
+
+    provide('page_new', page_new);
     const start=()=>{
 
       // 打开页面
@@ -87,7 +93,8 @@ export default {
       collapsed: ref(false),
       start,
       message,
-      page_msg
+      page_msg,
+      page_new
     };
   },
 };

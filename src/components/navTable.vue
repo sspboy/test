@@ -1,5 +1,6 @@
-<template>
 
+<template>
+  <div style="height: 50px;" @click="update_page">点击</div>
   <a-table :columns="columns" :data-source="data" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
     <template #bodyCell="{ column }">
       <template v-if="column.key === 'operation'">
@@ -13,7 +14,7 @@
 
 
 <script>
-import {defineComponent, ref} from 'vue'
+import {defineComponent, inject, ref} from 'vue'
 
 export default defineComponent({
 
@@ -29,15 +30,22 @@ export default defineComponent({
   },
   setup(props){
 
-      console.log('我是表格:接受父组件的信息')
-      console.log(props.message)
+      // 使用 inject 函数来注入 sharedState
+      const page_new = inject('page_new');
+      const update_page = ()=>{
+        console.log(page_new)
+      }
 
+
+      console.log('我是表格组件')
+      console.log(props.message)
+      console.log(page_new.value)
     // 表格高度
       const innerHeight = ref(window.innerHeight-300);
 
       const columns = [
           {
-            title: 'Full Name',
+            title: 'fullname',
             width: 120,
             dataIndex: 'name',
             key: 'name',
@@ -126,7 +134,8 @@ export default defineComponent({
       return{
             columns,
             data,
-            innerHeight
+            innerHeight,
+            update_page
       }
   }
 })
