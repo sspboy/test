@@ -1,18 +1,17 @@
 <template>
 
   <a-layout style="height: 100vh;width: 100vw;">
-
-
-      <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
-
-          <menu_left /> <!--局部组件-->
-
-      </a-layout-sider>
+    <menu_head />
 
 
 
 
       <a-layout>
+          <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
+
+              <menu_left /> <!--局部组件-->
+
+          </a-layout-sider>
 
           <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff', minHeight: '280px' }">
 
@@ -50,7 +49,7 @@ import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
 import menu_left from '/src/components/layout/menu_left.vue'
 import navTable from '/src/components/navTable.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
-
+import menu_head from "@/components/layout/menu_head.vue";
 export default {
   name:'HomeView',
   components: {
@@ -58,7 +57,8 @@ export default {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     navTable,
-    nav_pagination
+    nav_pagination,
+    menu_head
   },
   setup() {
     let message = ref({'wode':'111'})

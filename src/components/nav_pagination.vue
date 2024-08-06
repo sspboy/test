@@ -11,9 +11,11 @@ export default defineComponent({
 
   // 翻页组件
   name: "nav_pagination",
+
   // 接受父组件数据
   props:{
     // 接受总页面信息
+
   },
 
   setup(){
