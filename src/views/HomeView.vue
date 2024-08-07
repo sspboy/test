@@ -1,43 +1,47 @@
 <template>
 
   <a-layout style="height: 100vh;width: 100vw;">
+
+
+    <!--head 头部组件  开始-->
     <menu_head />
+    <!--head 头部组件  结束-->
 
 
 
+    <a-layout>
 
-      <a-layout>
-          <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
-
-              <menu_left /> <!--局部组件-->
-
-          </a-layout-sider>
-
-          <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff', minHeight: '280px' }">
-
-            <!--条件查询组件-->
-            <a-row type="flex">
-              <a-col :span="6" :order="1">
-                      <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)"/>
-                      <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
-                saas
-              </a-col>
-              <a-col :span="6" :order="2">2 col-order-3</a-col>
-              <a-col :span="6" :order="3">3 col-order-2</a-col>
-              <a-col :span="6" :order="4">4 col-order-1</a-col>
-            </a-row>
-
-            <!--表格组件：：发送初始化数据-->
-            <navTable :message='message' />
-
-            <!--翻页组件：：：发送初始化数据：：监听回传信息-->
-            <nav_pagination :page_msg="page_msg" v-on:complete="console.log(page_new)"/>
+      <!--左侧 菜单组件  开始-->
+      <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
+            <menu_left /> <!--局部组件-->
+      </a-layout-sider>
+      <!--左侧 菜单组件  结束-->
 
 
-          </a-layout-content>
+      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff', minHeight: '280px' }">
 
-      </a-layout>
+          <!--条件查询组件 开始 -->
+          <a-row type="flex">
+            <a-col :span="6" :order="1">
+                    <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)"/>
+                    <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
+            </a-col>
+            <a-col :span="6" :order="2">2 col-order-3</a-col>
+            <a-col :span="6" :order="3">3 col-order-2</a-col>
+            <a-col :span="6" :order="4">4 col-order-1</a-col>
+          </a-row>
+          <!--条件查询组件 结束 -->
 
+
+          <!--表格组件：：发送初始化数据  -->
+          <navTable :message='message' />
+
+          <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
+          <nav_pagination :page_msg="page_msg" v-on:complete="console.log(page_new)"/>
+
+      </a-layout-content>
+
+    </a-layout>
 
   </a-layout>
 
@@ -46,14 +50,18 @@
 
 
 <script>
+
 import { ref, provide,reactive } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
 import menu_left from '/src/components/layout/menu_left.vue'
 import navTable from '/src/components/navTable.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
+
 export default {
+
   name:'HomeView',
+
   components: {
     menu_left,
     MenuUnfoldOutlined,
@@ -64,13 +72,25 @@ export default {
   },
   setup() {
 
+    // 头部信息
+
+    // 获取菜单信息
+
+    // 功能权限
+
+    // 当前路由
+
     let message = ref({'HOME':'home'}) // 发送给表格组件的信息
 
     let page_msg = ref({'page':'page_msg'}) // 发送给翻页组件的信息
-    let page_new = reactive({'now_page':'0','page_size':'10'})// 组测共享信息：当前页数；页面数据条数
+
+    let page_new = reactive({'now_page':0,'page_size':10})// 组测共享信息：当前页数；页面数据条数
 
 
+    // 跨组件传递信息：：：注入信息
     provide('page_new', page_new);
+
+
     const start=()=>{
 
       // 打开页面
@@ -96,16 +116,17 @@ export default {
       page_msg,
       page_new
     };
+
+
   },
 };
 </script>
 
 
-<style>
+<style scoped>
+
 #components-layout-demo-custom-trigger .trigger {
-  font-size: 18px;
-  line-height: 64px;
-  padding: 0 24px;
+  font-size: 12px;line-height: 64px;padding: 0 24px;
   cursor: pointer;
   transition: color 0.3s;
 }

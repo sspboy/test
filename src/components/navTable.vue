@@ -1,11 +1,14 @@
 
 <template>
-  <div style="height: 50px;" @click="update_page">点击</div>
-  <a-table :columns="columns" :data-source="data" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
+
+  <div style="height: 50px;">{{update_page}}</div>
+
+  <a-table :columns="columns" :data-source="update_data" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
     <template #bodyCell="{ column }">
-      <template v-if="column.key === 'operation'">
-      <a>action</a>
-    </template>
+        <template v-if="column.key === 'operation'">
+          <a>编辑</a> |
+          <a>删除</a>
+        </template>
     </template>
   </a-table>
 
@@ -14,7 +17,7 @@
 
 
 <script>
-import {defineComponent, inject, ref} from 'vue'
+import {defineComponent, inject, ref, computed} from 'vue'
 
 export default defineComponent({
 
@@ -26,21 +29,26 @@ export default defineComponent({
     message:{
       type:Object // 数据类型效验
     }
-
   },
   setup(props){
 
-      // 使用 inject 函数来注入 sharedState
+      /** 使用 inject 函数来注入 sharedState **/
       const page_new = inject('page_new');
-      const update_page = ()=>{
-        console.log(page_new)
-      }
+
+
+
+      // 计算属性：：更新当前page信息
+      const update_page = computed(()=>{
+        return page_new.now_page
+      })
 
 
       console.log('我是表格组件')
       console.log(props.message)
       console.log(page_new.value)
-    // 表格高度
+
+
+      // 表格高度
       const innerHeight = ref(window.innerHeight-300);
 
       const columns = [
@@ -121,21 +129,33 @@ export default defineComponent({
             width: 100,
           },
         ];
+
+
+      // 计算属性：：更新表格信息
+      const update_data = computed(()=>{
+
         const data = [];
+
         for (let i = 0; i < 100; i++) {
           data.push({
             key: i,
             name: `Edrward ${i}`,
-            age: 32,
+            age: 32 + page_new.now_page,
             address: `London Park no. ${i}`,
           });
         }
+        console.log(data)
+
+        return data
+      })
+
 
       return{
             columns,
-            data,
             innerHeight,
-            update_page
+            update_page,
+            page_new,
+            update_data
       }
   }
 })

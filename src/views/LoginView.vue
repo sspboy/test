@@ -1,41 +1,54 @@
 <template>
-  <a-form
+
+
+
+    <a-form
     ref="formRef"
     name="custom-validation"
     :model="formState"
     :rules="rules"
-    v-bind="layout"
     @finish="handleFinish"
     @finishFailed="handleFinishFailed"
-    style="width: 400px; margin: 10% auto;"
+    style="width: 280px; margin: 14% auto;"
   >
-<SettingOutlined />
+    <div class="logo">LOGO</div>
+
+     <a-divider style="color: darkgray;font-size: 12px;">Hi~你来啦！</a-divider>
 
     <!--用户名称-->
-    <a-form-item has-feedback name="username">
-      <a-input v-model:value="formState.username" placeholder="输入用户名称" type="yyname" autocomplete="off" >
+    <a-form-item has-feedback name="username" class="font_size_12">
+      <a-input v-model:value="formState.username" placeholder="输入用户名称" type="name" autocomplete="off" class="font_size_12">
+        <template #prefix><UserOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
       </a-input>
     </a-form-item>
 
     <!--密码-->
-    <a-form-item has-feedback name="pass">
-      <a-input v-model:value="formState.pass" placeholder="输入密码" type="password" autocomplete="off" class="site-form-item-icon"/>
+    <a-form-item has-feedback name="pass" class="font_size_12">
+      <a-input v-model:value="formState.pass" placeholder="输入密码" type="password" autocomplete="off" class="site-form-item-icon font_size_12">
+        <template #prefix><LockOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+      </a-input>
+
     </a-form-item>
 
     <!--提交按钮-->
     <a-form-item has-feedback>
-      <a-button type="primary" html-type="submit" style="width: 100%;">登录</a-button>
+      <a-button type="primary" html-type="submit" style="width: 100%;" class="font_size_12">登录</a-button>
     </a-form-item>
 
   </a-form>
+
 </template>
+
+
 <script>
 import { reactive, ref } from 'vue';
-import { SettingOutlined} from '@ant-design/icons-vue';
+import { UserOutlined,LockOutlined} from '@ant-design/icons-vue';
+
 export default {
-  name:'master_login',
-   components: {
-    SettingOutlined
+
+  components: {
+    UserOutlined,
+    LockOutlined
   },
   setup() {
 
@@ -63,23 +76,28 @@ export default {
 
     // 密码验证
     const validatePass = async (_rule, value) => {
+
       if (value === '') {
+
         return Promise.reject('密码不能为空');
+
       } else {
         if (formState.checkPass !== '') {
+
           formRef.value.validateFields('checkPass');
+
         }
         return Promise.resolve();
       }
     };
 
 
-    // 绑定规则===需要与form-item标签中的name同名
+    // 绑定规则方法===需要与form-item标签中的name同名
     const rules = {
         username: [
         {
           required: true,
-          validator: checkusername,
+          validator: checkusername,// 绑定方法
           trigger: 'blur',
         },
       ],
@@ -146,3 +164,8 @@ export default {
 };
 
 </script>
+
+<style scoped>
+.logo{width: 100px;height: 100px;padding-top: 40px; background-color: aliceblue; margin: 25px auto;border-radius: 6px;text-align: center;}
+
+</style>
