@@ -23,8 +23,8 @@
     </a-form-item>
 
     <!--密码-->
-    <a-form-item has-feedback name="pass" class="font_size_12">
-      <a-input v-model:value="formState.pass" placeholder="输入密码" type="password" autocomplete="off" class="site-form-item-icon font_size_12">
+    <a-form-item has-feedback name="password" class="font_size_12">
+      <a-input v-model:value="formState.password" placeholder="输入密码" type="password" autocomplete="off" class="site-form-item-icon font_size_12">
         <template #prefix><LockOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
       </a-input>
 
@@ -33,6 +33,7 @@
     <!--提交按钮-->
     <a-form-item has-feedback>
       <a-button type="primary" html-type="submit" style="width: 100%;" class="font_size_12">登录</a-button>
+      <button @click="fetchData">Fetch Data</button>
     </a-form-item>
 
   </a-form>
@@ -41,8 +42,9 @@
 
 
 <script>
-import { reactive, ref } from 'vue';
-import { UserOutlined,LockOutlined} from '@ant-design/icons-vue';
+import axiosInstance from 'axios';
+import { reactive, ref} from 'vue';
+import { UserOutlined,LockOutlined,} from '@ant-design/icons-vue';
 
 export default {
 
@@ -54,10 +56,11 @@ export default {
 
     const formRef = ref()
 
+
     // 绑定数据：：需要与模版使用数据同名
     const formState = reactive({
       username:'',
-      pass: ''
+      password: ''
     })
 
     // 用户名称验证
@@ -65,11 +68,11 @@ export default {
       if (value === '') {
         return Promise.reject('账户不能为空！');
       } else {
-        if (formState.username !== '123') {
-          formRef.value.validateFields('name');
-          return Promise.reject('账户不存在！');
-
-        }
+        // if (formState.username !== '123') {
+        //   formRef.value.validateFields('name');
+        //   return Promise.reject('账户不存在！');
+        //
+        //   }
         return Promise.resolve();
       }
     };
@@ -101,7 +104,7 @@ export default {
           trigger: 'blur',
         },
       ],
-      pass: [
+      password: [
         {
           required: true,
           validator: validatePass,// 绑定方法
@@ -123,7 +126,15 @@ export default {
 
     // 提交成功
     const handleFinish = values => {
+
+      console.log('我点击了登录按钮，并获取了用户名称 和 密码！')
+      console.log(values)
+
       console.log(values, formState);
+
+
+
+
       // 判断省份
       // if 超级-管理员
         // 路由打开home
@@ -147,7 +158,19 @@ export default {
     // };
 
 
-
+    const fetchData = async () => {
+      try {
+        const response = await axiosInstance.post('http://127.0.0.1:5000/login',{
+        "username":"xiaohaha",
+        "password":"123456"
+      });
+        console.log(response.data);
+        // 在这里处理响应数据
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        // 在这里处理错误
+      }
+    };
 
     return{
       formRef,
@@ -157,7 +180,8 @@ export default {
       rules,
       layout,
       handleFinish,
-      handleFinishFailed
+      handleFinishFailed,
+      fetchData
     }
 
   }
