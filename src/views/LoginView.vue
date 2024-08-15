@@ -33,7 +33,6 @@
     <!--提交按钮-->
     <a-form-item has-feedback>
       <a-button type="primary" html-type="submit" style="width: 100%;" class="font_size_12">登录</a-button>
-      <button @click="fetchData">Fetch Data</button>
     </a-form-item>
 
   </a-form>
@@ -42,7 +41,7 @@
 
 
 <script>
-import axiosInstance from 'axios';
+import axios from 'axios';
 import { reactive, ref} from 'vue';
 import { UserOutlined,LockOutlined,} from '@ant-design/icons-vue';
 
@@ -128,10 +127,23 @@ export default {
     const handleFinish = values => {
 
       console.log('我点击了登录按钮，并获取了用户名称 和 密码！')
-      console.log(values)
 
-      console.log(values, formState);
+      // console.log(values, formState);
 
+      axios.post('/api/login', {
+        username: values.username,   // 参数 firstName
+        password: values.password    // 参数 lastName
+      }).then(function (response) {
+
+        console.log(response.data);
+
+        //
+
+
+
+      }).catch(function (error) {
+        console.log(error);
+      });
 
 
 
@@ -158,19 +170,7 @@ export default {
     // };
 
 
-    const fetchData = async () => {
-      try {
-        const response = await axiosInstance.post('http://127.0.0.1:5000/login',{
-        "username":"xiaohaha",
-        "password":"123456"
-      });
-        console.log(response.data);
-        // 在这里处理响应数据
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        // 在这里处理错误
-      }
-    };
+
 
     return{
       formRef,
@@ -180,8 +180,7 @@ export default {
       rules,
       layout,
       handleFinish,
-      handleFinishFailed,
-      fetchData
+      handleFinishFailed
     }
 
   }
