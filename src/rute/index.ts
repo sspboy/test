@@ -1,4 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import NotFoundComponent from '../views/NotFoundComponent.vue'
+import server_err from '../views/server_err.vue'
 
 const routes = [
 
@@ -11,11 +13,11 @@ const routes = [
         }
     },
     {
-        path: '/home',
-        name: 'Home',
-        component: () => import('../views/HomeView.vue'),   // 视图文件
+        path: '/user',
+        name: 'User',
+        component: () => import('../views/UserView.vue'),   // 视图文件
         meta:{
-            title:'主页',
+            title:'用户管理',
         }
     },
     {
@@ -26,7 +28,17 @@ const routes = [
             title:'后台管理',
         }
 
-    }
+    },
+    {   // 404 报错页面
+      path: '/:catchAll(.*)', // 使用捕获所有路由的模式
+        name:"Error404",
+      component: NotFoundComponent
+    },
+    {   // 500 报错页面
+      path: '/500',
+      name: 'Error500',
+      component: server_err // 500错误页面组件
+    },
 ]
 
 const router = createRouter({

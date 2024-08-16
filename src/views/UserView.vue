@@ -3,9 +3,9 @@
   <a-layout style="height: 100vh;width: 100vw;">
 
 
-    <!--head 头部组件  开始-->
+    <!--head 导航组件  开始-->
     <menu_head />
-    <!--head 头部组件  结束-->
+    <!--head 导航组件  结束-->
 
 
 
@@ -23,6 +23,7 @@
           <!--条件查询组件 开始 -->
           <a-row type="flex">
             <a-col :span="6" :order="1">
+              <!--导航收起按钮-->
                     <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)"/>
                     <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
             </a-col>
@@ -50,8 +51,10 @@
 
 
 <script>
-
-import { ref, provide,reactive } from 'vue';
+import axios from 'axios';
+axios.defaults.timeout = 1000; // 1秒 设置全局超时时间（以毫秒为单位）
+import { useRouter } from "vue-router"; // 导入路由
+import { ref, provide,reactive,onBeforeMount, onMounted } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
 import menu_left from '/src/components/layout/menu_left.vue'
 import navTable from '/src/components/navTable.vue'
@@ -60,7 +63,7 @@ import menu_head from "@/components/layout/menu_head.vue";
 
 export default {
 
-  name:'HomeView',
+  name:'UserView',
 
   components: {
     menu_left,
@@ -71,6 +74,43 @@ export default {
     menu_head
   },
   setup() {
+
+    // 获取登录传递的用户信息
+
+
+    // loading
+
+    // 组件挂在之前---请求鉴权===》渲染组件
+    onBeforeMount(()=>{
+
+      const request_data = {
+          "page":1,
+          "page_size":10
+      }
+
+      axios.post('api/admin/user/list', request_data).then((response)=>{
+
+        const user_data = response.data
+
+        console.log(user_data)
+
+      }).catch(function (error) {
+
+        console.log(error);
+
+      });
+
+    })
+
+    // 组件挂载之后---请求数据接口===》加载数据
+    onMounted(() => {
+          console.log('在组件挂载后执行');
+    });
+
+
+    // 【用户信息】【导航】【菜单】【渲染内容】
+
+    // 请求接口获取用户数据
 
     // 头部信息
 
