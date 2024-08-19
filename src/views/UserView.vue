@@ -127,8 +127,8 @@ export default {
     let page_new = reactive({'now_page':0,'page_size':10})// 组测共享信息：当前页数；页面数据条数
 
 
-    // 跨组件传递信息：：：注入信息
-    provide('page_new', page_new);
+    provide('page_new', page_new);    // 跨组件传递信息：：：注入信息
+
 
 
     const start=()=>{

@@ -152,18 +152,18 @@ export default {
 
         // 反馈请求结果
         const res = response.data
-
+        console.log(res)
         if(res === 'None'){        // 用户名不存在：None
 
           formState.user_state = "None"
 
           formRef.value.validateFields('username');
 
-        }else if(res === true){        // 登录成功：ture
+        }else if(res === 'true'){        // 登录成功：ture
 
           router.push('/user');
 
-        }else if(res === false){        // 登录失败：：密码错误：：false
+        }else if(res === 'false'){        // 登录失败：：密码错误：：false
 
           formState.password_state = "None"
 
