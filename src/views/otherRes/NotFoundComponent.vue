@@ -7,6 +7,7 @@
 </template>
 <script>
 export default {
+  // 找不到页面错误
   name: 'NotFoundComponent'
 }
 </script>

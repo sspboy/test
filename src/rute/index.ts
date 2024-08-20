@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import NotFoundComponent from '../views/NotFoundComponent.vue'
-import server_err from '../views/server_err.vue'
+import NotFoundComponent from '../views/otherRes/NotFoundComponent.vue'
+import server_err from '../views/otherRes/server_err.vue'
+import NotPermissions from '../views/otherRes/NotPermissions.vue'
+import NotLoginPermissions from '../views/otherRes/NotLoginPermissions.vue'
 
 const routes = [
 
@@ -30,15 +32,37 @@ const routes = [
 
     },
     {   // 404 报错页面
-      path: '/:catchAll(.*)', // 使用捕获所有路由的模式
+        path: '/:catchAll(.*)', // 使用捕获所有路由的模式
         name:"Error404",
-      component: NotFoundComponent
+        component: NotFoundComponent,
+        meta:{
+            title:'没有请求的资源',
+        }
     },
     {   // 500 报错页面
-      path: '/500',
-      name: 'Error500',
-      component: server_err // 500错误页面组件
+        path: '/500',
+        name: 'Error500',
+        component: server_err, // 500错误页面组件
+        meta:{
+            title:'服务器出错啦',
+        }
     },
+    {   // 没有权限
+        path: '/403',
+        name: 'NotPermissions',
+        component: NotPermissions, // 403错误页面组件
+        meta:{
+            title:'没有访问权限',
+        }
+    },
+    {   // 没有登录权限
+        path: '/pleaselogin',
+        name: 'NotLoginPermissions',
+        component: NotLoginPermissions, // 403错误页面组件
+        meta:{
+            title:'没有登录',
+        }
+    }
 ]
 
 const router = createRouter({

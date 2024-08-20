@@ -43,9 +43,9 @@ export default defineComponent({
       })
 
 
-      console.log('我是表格组件')
-      console.log(props.message)
-      console.log(page_new.value)
+      // console.log('我是表格组件')
+      // console.log(props.message)
+      // console.log(page_new.value)
 
 
       // 表格高度
@@ -123,7 +123,7 @@ export default defineComponent({
             ellipsis: true,
           },
           {
-            title: 'Action',
+            title: '操作',
             key: 'operation',
             fixed: 'right',
             width: 100,
@@ -144,7 +144,7 @@ export default defineComponent({
             address: `London Park no. ${i}`,
           });
         }
-        console.log(data)
+        // console.log(data)
 
         return data
       })

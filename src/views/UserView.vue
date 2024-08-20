@@ -8,11 +8,11 @@
     <!--head 导航组件  结束-->
 
 
-
+    <!--内容部分 菜单 右侧列表 开始-->
     <a-layout>
 
       <!--左侧 菜单组件  开始-->
-      <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
+      <a-layout-sider v-model:collapsed="collapsed" :trigger="null" style="background: #fff; margin-top: 6px;" collapsible>
             <menu_left /> <!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
@@ -35,36 +35,43 @@
 
 
           <!--表格组件：：发送初始化数据  -->
-          <navTable :message='message' />
+          <navTable />
 
           <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
-          <nav_pagination :page_msg="page_msg" v-on:complete="console.log(page_new)"/>
+          <nav_pagination :page_msg="page_msg" v-on:complete="console.log(page_new)" />
 
       </a-layout-content>
 
+
     </a-layout>
 
+
   </a-layout>
+  <!--内容部分 菜单 右侧列表 结束-->
 
 
 </template>
 
 
 <script>
-import axios from 'axios';
-axios.defaults.timeout = 1000; // 1秒 设置全局超时时间（以毫秒为单位）
+import axios from 'axios';      // 网络请求模块
+axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
+import { PublicModel, MenuLoad } from '/src/JS_Model/admin/public_model' // 引用自有模块&类方法
 import { useRouter } from "vue-router"; // 导入路由
-import { ref, provide,reactive,onBeforeMount, onMounted } from 'vue';
+import { ref, provide, reactive, onBeforeMount, onMounted } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
-import menu_left from '/src/components/layout/menu_left.vue'
-import navTable from '/src/components/navTable.vue'
+
+// 组件引用=====开始
+import menu_left from '@/components/layout/menu_left.vue'
+import navTable from '@/components/navTable.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
+// 组件引用=====结束
 
 export default {
 
   name:'UserView',
-
+  // 组件加载
   components: {
     menu_left,
     MenuUnfoldOutlined,
@@ -73,26 +80,43 @@ export default {
     nav_pagination,
     menu_head
   },
+
   setup() {
 
-    // 获取登录传递的用户信息
-
-
-    // loading
-
-    // 组件挂在之前---请求鉴权===》渲染组件
-    onBeforeMount(()=>{
-
+      // 获取初始化数据
       const request_data = {
           "page":1,
           "page_size":10
       }
 
+
+    // 组件挂在之前---请求鉴权===》渲染组件
+    onBeforeMount(()=>{
+
+      // console.log('我在组件挂载前执行')
+
       axios.post('api/admin/user/list', request_data).then((response)=>{
 
-        const user_data = response.data
+        const publicmodel = new PublicModel();
 
-        console.log(user_data)
+
+        const res_data = response.data
+
+        publicmodel.VerifyLogin(res_data)        // 鉴权
+
+        const user_obj = res_data.user       // 获取用户信息
+
+        // const brand_name = userdata.brand_name // 获取品牌名称
+
+        // 获取菜单
+
+
+
+
+
+        console.log(res_data)
+        console.log(user_obj)
+        // console.log(brand_name)
 
       }).catch(function (error) {
 
@@ -100,11 +124,15 @@ export default {
 
       });
 
+      // 传递数据给头部组件
+      // 传递数据给菜单组件
+      // 传递数据给内容组件
+
     })
 
     // 组件挂载之后---请求数据接口===》加载数据
     onMounted(() => {
-          console.log('在组件挂载后执行');
+          // console.log('在组件挂载后执行');
     });
 
 
@@ -120,39 +148,25 @@ export default {
 
     // 当前路由
 
-    let message = ref({'HOME':'home'}) // 发送给表格组件的信息
 
     let page_msg = ref({'page':'page_msg'}) // 发送给翻页组件的信息
 
+
+
+    // 注入数据到menu_head应用
+    let head_msg = reactive({'head':'品牌名称'}) // 发送给表格组件的信息
+    provide('head_msg', head_msg);    // 跨组件传递信息：：：注入信息
+
+
+    // 注入数据到navtable引用
     let page_new = reactive({'now_page':0,'page_size':10})// 组测共享信息：当前页数；页面数据条数
-
-
     provide('page_new', page_new);    // 跨组件传递信息：：：注入信息
 
-
-
-    const start=()=>{
-
-      // 打开页面
-
-      // loading...加载...
-
-      // 权限验证
-
-      // 有权限
-        // 加载菜单组件
-        // 加载内容组件
-        // 加载翻页组件
-
-      // 无权限
-
-    }
 
     return {
       selectedKeys: ref(['1']),
       collapsed: ref(false),
-      start,
-      message,
+      head_msg,
       page_msg,
       page_new
     };
@@ -163,7 +177,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style>
 
 #components-layout-demo-custom-trigger .trigger {
   font-size: 12px;line-height: 64px;padding: 0 24px;

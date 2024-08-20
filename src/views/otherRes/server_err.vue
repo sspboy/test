@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  // 服务错误
   name: "server_err"
 }
 </script>

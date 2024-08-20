@@ -1,6 +1,6 @@
 <template>
   <div id="components-pagination-demo-mini" class="nav_s">
-    <a-pagination size="small" @change="onChange" :total="50" :show-total="total => `Total ${total} items`" show-size-changer show-quick-jumper />
+    <a-pagination size="small" @change="onChange" :total="100" :show-total="total => `总共 ${total} 条数据`" show-size-changer show-quick-jumper />
   </div>
 </template>
 
@@ -23,15 +23,12 @@ export default defineComponent({
 
   setup(props,ctx){
 
-
-    const page_new = inject('page_new');
-
-
+    // 接收数据
     console.log('我是翻页组件')
     console.log(props.page_msg)
 
-
-
+    const page_new = inject('page_new');
+    
     const onChange = (page, pageSize)=>{
       page_new.now_page = page
       page_new.page_size = pageSize
@@ -57,5 +54,5 @@ export default defineComponent({
 #components-pagination-demo-mini .ant-pagination:not(:last-child) {
   margin-bottom: 24px;
 }
-.nav_s{margin:28px 0 0 0px; float: right;}
+.nav_s{margin:34px 0 0 0px; float: right;}
 </style>
