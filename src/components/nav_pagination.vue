@@ -1,11 +1,11 @@
 <template>
   <div id="components-pagination-demo-mini" class="nav_s">
-    <a-pagination size="small" @change="onChange" :total="100" :show-total="total => `总共 ${total} 条数据`" show-size-changer show-quick-jumper />
+    <a-pagination size="small" @change="onChange" :total="fanData" :show-total="total => `总共 ${total} 条数据`" show-size-changer show-quick-jumper />
   </div>
 </template>
 
 <script>
-import {defineComponent, inject} from 'vue'
+import {defineComponent, inject, ref, watch} from 'vue'
 
 export default defineComponent({
 
@@ -14,37 +14,44 @@ export default defineComponent({
 
   // 接受父组件数据
   props:{
-    // 接受总页面信息
-    page_msg:{
+    // 接受父组件面信息
+    fandata:{
       type:Object // 数据类型效验
     }
 
   },
 
-  setup(props,ctx){
+  setup(props, ctx){
 
-    // 接收数据
-    console.log('我是翻页组件')
-    console.log(props.page_msg)
+    const fanData = ref(0)
 
-    const page_new = inject('page_new');
-    
+    //然后watch监听
+    watch(()=>props.fandata.data,(newval,oldval)=>{
+
+      fanData.value = newval// 加载父组件传递的数据
+
+      // console.log(newval) 最新结果
+      // console.log(oldval) 旧的结果
+      //newval就是最新更新的result。
+      //oldval就是老的result。
+    })
+
+
+
+
     const onChange = (page, pageSize)=>{
-      page_new.now_page = page
-      page_new.page_size = pageSize
-      ctx.emit('complete')
+      let page_message = {}
+      page_message.now_page = page
+      page_message.page_size = pageSize
 
-      // console.log(page_new.now_page)
-      // console.log(page)         // 当前页
-      // console.log(pageSize)     // 单页数量
-      // 改变后发送数据到表格
+      ctx.emit('complete', page_message) // 【翻页数据】发送到父组件中
 
     }
 
 
     return{
       onChange,
-      page_new
+      fanData
     }
   }
 })

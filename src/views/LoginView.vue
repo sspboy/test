@@ -11,7 +11,7 @@
     @finishFailed="onFinishFailed"
     style="width: 280px; margin: 14% auto;"
 >
-    <div class="logo">LOGO</div>
+    <div class="logo"><img src="../assets/logo.png" height="106" width="100"/></div>
 
      <a-divider style="color: darkgray;font-size: 12px;">Hi~欢迎回来！</a-divider>
 
@@ -204,6 +204,6 @@ export default {
 </script>
 
 <style scoped>
-.logo{width: 100px;height: 100px;padding-top: 40px; background-color: aliceblue; margin: 25px auto;border-radius: 6px;text-align: center;}
+.logo{width: 100px;height: 100px;background-color: aliceblue; margin: 25px auto;border-radius: 6px;text-align: center;}
 
 </style>

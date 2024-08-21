@@ -4,7 +4,7 @@
 
 
     <!--head 导航组件  开始-->
-    <menu_head />
+    <menu_head :headdata="headdata" />
     <!--head 导航组件  结束-->
 
 
@@ -12,13 +12,13 @@
     <a-layout>
 
       <!--左侧 菜单组件  开始-->
-      <a-layout-sider v-model:collapsed="collapsed" :trigger="null" style="background: #fff; margin-top: 6px;" collapsible>
+      <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
             <menu_left /> <!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
 
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff', minHeight: '280px' }">
+      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff', minHeight: '280px', }">
 
           <!--条件查询组件 开始 -->
           <a-row type="flex">
@@ -35,10 +35,10 @@
 
 
           <!--表格组件：：发送初始化数据  -->
-          <navTable />
+          <navTable :pagemessage="pagemessage" />
 
           <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
-          <nav_pagination :page_msg="page_msg" v-on:complete="console.log(page_new)" />
+          <nav_pagination :fandata="fandata" v-on:complete="receive"/>
 
       </a-layout-content>
 
@@ -56,7 +56,7 @@
 <script>
 import axios from 'axios';      // 网络请求模块
 axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
-import { PublicModel, MenuLoad } from '/src/JS_Model/admin/public_model' // 引用自有模块&类方法
+import { PublicModel, MenuLoad } from '/src/JS_Model/public_model' // 引用自有模块&类方法
 import { useRouter } from "vue-router"; // 导入路由
 import { ref, provide, reactive, onBeforeMount, onMounted } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
@@ -71,6 +71,7 @@ import menu_head from "@/components/layout/menu_head.vue";
 export default {
 
   name:'UserView',
+
   // 组件加载
   components: {
     menu_left,
@@ -82,41 +83,57 @@ export default {
   },
 
   setup() {
+      // 发送到头部组件的数据
+      const headdata = reactive({"data":""})
+      // 发送到菜单组件的数据
+      const menudata = reactive({"data":""})
+      // 发送给翻页组件的数据
+      const fandata = reactive({"data":""})
 
-      // 获取初始化数据
-      const request_data = {
-          "page":1,
-          "page_size":10
-      }
+      // 发送到表格组件的数据
+      const pagemessage = reactive({"data":""})
 
 
-    // 组件挂在之前---请求鉴权===》渲染组件
+    // 组件挂在之前---请求数据
     onBeforeMount(()=>{
+
+
+
+
+    })
+
+
+    // 组件挂载之后---请求数据接口===》加载数据
+    onMounted(() => {
 
       // console.log('我在组件挂载前执行')
 
-      axios.post('api/admin/user/list', request_data).then((response)=>{
+      axios.post('api/admin/user/list', {
+          "page":1,
+          "page_size":10
+      }).then((response)=>{
 
         const publicmodel = new PublicModel();
 
+        const PageData = response.data;         // 数据加载
 
-        const res_data = response.data
+        publicmodel.VerifyLogin(PageData)       // 鉴权验证
 
-        publicmodel.VerifyLogin(res_data)        // 鉴权
+        return PageData
 
-        const user_obj = res_data.user       // 获取用户信息
+      // 菜单
+      // 传递数据给头部组件
+      // 传递数据给菜单组件
+      // 传递数据给内容组件
 
-        // const brand_name = userdata.brand_name // 获取品牌名称
+      }).then((response)=>{
 
-        // 获取菜单
+        const user_obj =  response.user         // 获取用户数据
+        const total = response.total_number     // 数据总量
+        // console.log(response)
 
-
-
-
-
-        console.log(res_data)
-        console.log(user_obj)
-        // console.log(brand_name)
+        headdata.data = user_obj  // 初始化头部数据
+        fandata.data = total    // 初始化翻页数据
 
       }).catch(function (error) {
 
@@ -124,51 +141,29 @@ export default {
 
       });
 
-      // 传递数据给头部组件
-      // 传递数据给菜单组件
-      // 传递数据给内容组件
 
-    })
-
-    // 组件挂载之后---请求数据接口===》加载数据
-    onMounted(() => {
-          // console.log('在组件挂载后执行');
     });
 
 
-    // 【用户信息】【导航】【菜单】【渲染内容】
-
-    // 请求接口获取用户数据
-
-    // 头部信息
-
-    // 获取菜单信息
-
-    // 功能权限
-
-    // 当前路由
-
-
-    let page_msg = ref({'page':'page_msg'}) // 发送给翻页组件的信息
 
 
 
-    // 注入数据到menu_head应用
-    let head_msg = reactive({'head':'品牌名称'}) // 发送给表格组件的信息
-    provide('head_msg', head_msg);    // 跨组件传递信息：：：注入信息
 
-
-    // 注入数据到navtable引用
-    let page_new = reactive({'now_page':0,'page_size':10})// 组测共享信息：当前页数；页面数据条数
-    provide('page_new', page_new);    // 跨组件传递信息：：：注入信息
+    // 接收来自子组件发送的数据=方法
+    const receive = (message)=>{
+      pagemessage.data = message
+      console.log(message)
+    }
 
 
     return {
       selectedKeys: ref(['1']),
       collapsed: ref(false),
-      head_msg,
-      page_msg,
-      page_new
+      headdata, // 头部数据
+      fandata,
+      pagemessage,
+      receive,
+
     };
 
 

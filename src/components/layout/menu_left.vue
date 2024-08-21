@@ -3,7 +3,7 @@
     <a-menu class="font_size_12"
       v-model:selectedKeys="state.selectedKeys"
       mode="inline"
-      theme="light"
+      theme="dark"
       :inline-collapsed="state.collapsed"
       :items="items"
     ></a-menu>

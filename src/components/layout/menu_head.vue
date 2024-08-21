@@ -1,53 +1,56 @@
 <template>
 
-    <a-layout-header :style="headerStyle">
-      <div class="logo" style="width: 60px; float: left; color: dimgray;">{{ brand_name }}</div>
-      <span class="font_size_12" style="{span:2;margin-left:20px;float: right; color: dimgray;}">退出</span>
-      <span class="font_size_12" style="{span:2;float: right; color: dimgray;}">用户名称</span>
+    <a-layout-header class="head">
+      <div style="width: 60px; float: left; color: #ffffff;font-size: 18px;">{{ headData.brand_name }}</div>
+      <div class="font_size_12" style="margin-left:20px;float: right; color: dimgray;">
+        <LogoutOutlined style="margin: 0 3px;" />
+        退出
+      </div>
+      <div class="font_size_12" style="float: right; color: dimgray;">{{headData.nickname}}</div>
     </a-layout-header>
 </template>
 
 <script>
-import {defineComponent, inject} from 'vue';
+import {defineComponent,watch,ref} from 'vue';
+import {LogoutOutlined} from '@ant-design/icons-vue'
 export default defineComponent({
+
   name: "menu_head",
 
+  components: {
+      LogoutOutlined,
+  },
   // 接受父组件数据
   props:{
-    // 接受总页面信息
-    message:{
+    headdata:{
       type:Object // 数据类型效验
     }
-
   },
+  setup(props){
 
-  setup(){
+    const headData = ref({})
 
-    // 接收数据
-    const head_msg = inject('head_msg');
-    console.log(head_msg)
-    const brand_name = head_msg.head;
+    //然后watch监听
+    watch(()=>props.headdata.data,(newval,oldval)=>{
 
+      headData.value = newval// 加载父组件传递的数据
 
-    const headerStyle = {
-      textAlign: 'center',
-      color: '#fff',
-      height: 64,
-      paddingInline: 50,
-      lineHeight: '64px',
-      backgroundColor: '#fff',
-      width:'100%',
-    };
+      // console.log(newval) 最新结果
+      // console.log(oldval) 旧的结果
+      //newval就是最新更新的result。
+      //oldval就是老的result。
+    })
+
 
 
     return{
-      brand_name,
-      headerStyle
+      headData
     }
   }
 })
 </script>
 
-<style>
+<style scoped>
+.head{textAlign:'center';color:#fff;height: 64px;paddingInline: 50px;lineHeight: '64px';backgroundColor: '#fff';width:100%;}
 
 </style>

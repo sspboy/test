@@ -31,11 +31,11 @@ export class PublicModel {
     }
 
     // 获取用户信息
+
     // 获取菜单信息
 
+}
 
-
-};
 
 
 // 加载菜单
@@ -48,5 +48,5 @@ export class MenuLoad {
 }
 
 
-// 加载头部
+
 

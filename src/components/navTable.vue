@@ -1,7 +1,7 @@
 
 <template>
 
-  <div style="height: 50px;">{{update_page}}</div>
+  <div style="height: 50px;">{{ update_page }}</div>
 
   <a-table :columns="columns" :data-source="update_data" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
     <template #bodyCell="{ column }">
@@ -17,7 +17,7 @@
 
 
 <script>
-import {defineComponent, inject, ref, computed} from 'vue'
+import {defineComponent, ref, computed, watch} from 'vue'
 
 export default defineComponent({
 
@@ -26,21 +26,36 @@ export default defineComponent({
 
   // 接受父组件数据
   props:{
-    message:{
+    // 接受父组件面信息
+    pagemessage:{
       type:Object // 数据类型效验
     }
+
   },
   setup(props){
 
-      /** 使用 inject 函数来注入 sharedState **/
-      const page_new = inject('page_new');
+      const Pagemessage = ref({"now_page":1,"page_size":10})
+
+      //然后watch监听
+      watch(()=>props.pagemessage.data,(newval,oldval)=>{
+
+        Pagemessage.value = newval// 加载父组件传递的数据
+        console.log(Pagemessage.value)
+
+        // console.log(newval) 最新结果
+        // console.log(oldval) 旧的结果
+        //newval就是最新更新的result。
+        //oldval就是老的result。
 
 
-
-      // 计算属性：：更新当前page信息
-      const update_page = computed(()=>{
-        return page_new.now_page
       })
+
+              // 计算属性：：更新当前page信息
+        const update_page = computed(()=>{
+            return Pagemessage.value.now_page
+        })
+
+
 
 
       // console.log('我是表格组件')
@@ -140,7 +155,7 @@ export default defineComponent({
           data.push({
             key: i,
             name: `Edrward ${i}`,
-            age: 32 + page_new.now_page,
+            age: 32,
             address: `London Park no. ${i}`,
           });
         }
@@ -153,8 +168,8 @@ export default defineComponent({
       return{
             columns,
             innerHeight,
+            Pagemessage,
             update_page,
-            page_new,
             update_data
       }
   }
