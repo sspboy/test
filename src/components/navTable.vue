@@ -2,7 +2,6 @@
 <template>
 
   <div style="height: 50px;">{{ update_page }}</div>
-
   <a-table :columns="columns" :data-source="update_data" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
     <template #bodyCell="{ column }">
         <template v-if="column.key === 'operation'">
@@ -34,7 +33,7 @@ export default defineComponent({
   },
   setup(props){
 
-      const Pagemessage = ref({"now_page":1,"page_size":10})
+      const Pagemessage =  ref({"now_page":1,"page_size":10})
 
       //然后watch监听
       watch(()=>props.pagemessage.data,(newval,oldval)=>{

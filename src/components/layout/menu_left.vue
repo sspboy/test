@@ -21,12 +21,10 @@ import {
   UserOutlined,
   MenuOutlined,
   BarsOutlined,
+  CodeOutlined,
   AccountBookOutlined,
-  PieChartOutlined,
-  MailOutlined,
-  DesktopOutlined,
-  InboxOutlined,
   AppstoreOutlined,
+    SettingOutlined,
 } from '@ant-design/icons-vue';
 
 
@@ -75,60 +73,65 @@ export default defineComponent({
       },
       {
         key: 'sub1',
-        icon: () => h(MailOutlined),
-        label: 'Navigation One',
-        title: 'Navigation One',
+        icon: () => h(CodeOutlined),
+        label: '管理后台',
+        title: '管理后台',
         children: [
           {
             key: '5',
-            label: 'Option 5',
-            title: 'Option 5',
+            label: '用户管理',
+            title: '用户管理',
           },
           {
             key: '6',
-            label: 'Option 6',
-            title: 'Option 6',
+            label: '菜单管理',
+            title: '菜单管理',
           },
           {
             key: '7',
-            label: 'Option 7',
-            title: 'Option 7',
+            label: '功能列表',
+            title: '功能列表',
           },
           {
             key: '8',
-            label: 'Option 8',
-            title: 'Option 8',
+            label: '版本管理',
+            title: '版本管理',
           },
         ],
       },
       {
         key: 'sub2',
-        icon: () => h(AppstoreOutlined),
-        label: 'Navigation Two',
-        title: 'Navigation Two',
+        icon: () => h(SettingOutlined),
+        label: '功能设置',
+        title: '功能设置',
         children: [
           {
             key: '9',
-            label: 'Option 9',
-            title: 'Option 9',
+            label: '组织架构',
+            title: '组织架构',
           },
           {
             key: '10',
-            label: 'Option 10',
-            title: 'Option 10',
+            label: '团队管理',
+            title: '团队管理',
+          },
+          {
+            key: '11',
+            label: '人员角色',
+            title: '人员角色',
           },
           {
             key: 'sub3',
-            label: 'Submenu',
+            label: '品牌资料',
             title: 'Submenu',
             children: [
               {
-                key: '11',
+                key: '12',
                 label: 'Option 11',
                 title: 'Option 11',
               },
               {
-                key: '12',
+                key: '13',
                 label: 'Option 12',
                 title: 'Option 12',
               },
@@ -138,11 +141,11 @@ export default defineComponent({
       },
 
     ]);
-    watch(
-  () => state.openKeys,
-        (_val, oldVal) => {
-    state.preOpenKeys = oldVal;
+
+    watch(() => state.openKeys,(_val, oldVal) => {
+      state.preOpenKeys = oldVal;
     },);
+
     const toggleCollapsed = () => {
       state.collapsed = !state.collapsed;
       state.openKeys = state.collapsed ? [] : state.preOpenKeys;

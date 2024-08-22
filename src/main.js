@@ -15,9 +15,7 @@ router.beforeEach((to, from, next) => {
 // 页面标题设置---结束
 
 
-
-
-// 定义特性标志==禁止控制台警告
+// 定义特性标志==禁止控制台警告 开始
 window.__VUE_PROD_DEVTOOLS__ = false;
 window.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
 // 定义特性标志==禁止控制台警告 结束
@@ -26,7 +24,8 @@ window.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
 // 初始化项项目
 const app = createApp(App);
 app.use(Antd)   // 加载ant design UI框架
-app.use(router).mount('#app');
+app.use(router)
+app.mount('#app');
 
 
 

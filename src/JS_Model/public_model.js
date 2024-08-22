@@ -1,6 +1,8 @@
 // admin后台公用请求的一些基础方法方法
-
+import axios from "axios";
+import {ref} from "vue"
 // 权限验证
+
 export class PublicModel {
 
     // 登录验证
@@ -30,10 +32,53 @@ export class PublicModel {
         }
     }
 
-    // 获取用户信息
 
-    // 获取菜单信息
+    // 封装Post请求
+    axios_post(url, data){
 
+        const postdata = ref('')
+        const Fetch_Post_Data = async ()=>{
+
+            try{
+
+                const response = await axios.post(url, data);
+
+                this.VerifyLogin(response.data) // 前端鉴权
+
+                postdata.value = response.data
+
+            }catch (error){
+
+                console.error('post request err!',error)
+
+            }
+        }
+
+       return { postdata, Fetch_Post_Data }
+
+    }
+
+    // Get请求
+    async axios_get(url){
+
+        const getdata = ref('')
+        const Fetch_Get_Data = async ()=> {
+
+            try{
+
+                const response = await axios.get(url);
+
+                getdata.value = response.data
+
+            }catch (error){
+
+                console.error('post request err!',error)
+
+            }
+
+        }
+        return { getdata, Fetch_Get_Data }
+    }
 }
 
 

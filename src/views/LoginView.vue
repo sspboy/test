@@ -139,7 +139,7 @@ export default {
     // 验证成功 提交
     const onFinish = values => {
 
-      console.log('Success:', values);
+      // console.log('Success:', values);
 
       // 请求Login接口：：：
       axios.post('/api/login', {
@@ -152,7 +152,7 @@ export default {
 
         // 反馈请求结果
         const res = response.data
-        console.log(res)
+
         if(res === 'None'){        // 用户名不存在：None
 
           formState.user_state = "None"

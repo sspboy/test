@@ -1,11 +1,12 @@
 <template>
   <div id="components-pagination-demo-mini" class="nav_s">
-    <a-pagination size="small" @change="onChange" :total="fanData" :show-total="total => `总共 ${total} 条数据`" show-size-changer show-quick-jumper />
+
+    <a-pagination size="small" @change="onChange" :total="fanData.fandata" :show-total="total => `总共 ${total} 条数据`" show-size-changer show-quick-jumper />
   </div>
 </template>
 
 <script>
-import {defineComponent, inject, ref, watch} from 'vue'
+import {computed, defineComponent, inject, ref, watch} from 'vue'
 
 export default defineComponent({
 
@@ -23,19 +24,10 @@ export default defineComponent({
 
   setup(props, ctx){
 
-    const fanData = ref(0)
-
-    //然后watch监听
-    watch(()=>props.fandata.data,(newval,oldval)=>{
-
-      fanData.value = newval// 加载父组件传递的数据
-
-      // console.log(newval) 最新结果
-      // console.log(oldval) 旧的结果
-      //newval就是最新更新的result。
-      //oldval就是老的result。
+    const fanData = computed(()=>{
+      return props
     })
-
+  console.log(props)
 
 
 
