@@ -1,24 +1,28 @@
 <template>
-
     <a-layout-header class="head">
       <div class="logo_text cursor">{{ heda.headdata?.brand_name }}</div>
       <div class="font_size_12 cursor" style="margin-left:20px;float: right; color: dimgray;">
         <LogoutOutlined style="margin: 0 3px;" />
         退出
       </div>
-      <div class="font_size_12 cursor" style="float: right; color: dimgray;">{{ heda.headdata?.id }}</div>
+      <div class="font_size_12 cursor" style="float: right; color: dimgray;">
+        <MehOutlined style="margin: 0 3px;" />
+        {{ heda.headdata?.id }}
+      </div>
     </a-layout-header>
 </template>
 
 <script>
 import {defineComponent, computed} from 'vue';
-import {LogoutOutlined} from '@ant-design/icons-vue'
+import {LogoutOutlined, MehOutlined} from '@ant-design/icons-vue'
+
 export default defineComponent({
 
   name: "menu_head",
 
   components: {
-      LogoutOutlined,
+    LogoutOutlined,
+    MehOutlined,
   },
 
   // 接受父组件数据

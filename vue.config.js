@@ -16,6 +16,12 @@ module.exports = defineConfig({
         },
       },
     },
+    //  ResizeObserver loop completed with undelivered notifications.报错
+    client: {
+
+      overlay: false
+
+ },
   },
 
 })

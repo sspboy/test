@@ -21,6 +21,10 @@ window.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
 // 定义特性标志==禁止控制台警告 结束
 
 
+
+
+
+
 // 初始化项项目
 const app = createApp(App);
 app.use(Antd)   // 加载ant design UI框架

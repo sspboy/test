@@ -46,6 +46,7 @@ export default defineComponent({
       openKeys: ['sub1'],
       preOpenKeys: ['sub1'],
     });
+
     const items = reactive([
       {
         key: '1',
@@ -112,13 +113,13 @@ export default defineComponent({
           },
           {
             key: '10',
-            label: '团队管理',
-            title: '团队管理',
+            label: '团队人员',
+            title: '团队人员',
           },
           {
             key: '11',
-            label: '人员角色',
-            title: '人员角色',
+            label: '角色管理',
+            title: '角色管理',
           },
           {
             key: 'sub3',

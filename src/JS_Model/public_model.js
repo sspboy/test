@@ -1,9 +1,46 @@
 // admin后台公用请求的一些基础方法方法
 import axios from "axios";
 import {ref} from "vue"
-// 权限验证
 
+// 接口请求地址配置
+export class A_Patch{
+
+    // 管理后台
+    AdminAPI={
+        user: {
+            "list": "'api/admin/user/list';",
+            "detaile": "",
+            "delete": "",
+            "edit": "",
+            "add": ""
+        }
+    }
+
+    // 系统设置
+    BasicsAPI={
+
+    }
+    // 应用市场
+    AppSrtoreAPI={
+
+
+
+
+    }
+
+}
+
+
+// 权限验证
 export class PublicModel {
+
+    // 登录鉴权 组合
+    Verifypermiss(response){
+        this.VerifyLogin(response)
+        this.VerifyAdmin(response)
+        this.VerifyRootaccount(response)
+        this.VerifySubaccounts(response)
+    }
 
     // 登录验证
     VerifyLogin(response){
@@ -43,7 +80,7 @@ export class PublicModel {
 
                 const response = await axios.post(url, data);
 
-                this.VerifyLogin(response.data) // 前端鉴权
+                this.Verifypermiss(response.data) // 前端登录鉴权
 
                 postdata.value = response.data
 
