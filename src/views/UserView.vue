@@ -56,8 +56,8 @@
 <script>
 import axios from 'axios';      // 网络请求模块
 axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
-import { PublicModel, MenuLoad } from '/src/JS_Model/public_model' // 引用自有模块&类方法
-import { useRouter } from "vue-router"; // 导入路由
+import { PublicModel } from '/src/JS_Model/public_model' // 引用自有模块&类方法
+// import { useRouter } from "vue-router"; // 导入路由
 import { ref, provide, reactive, onBeforeMount, onMounted } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
 
@@ -71,7 +71,6 @@ import menu_head from "@/components/layout/menu_head.vue";
 export default {
 
   name:'UserView',
-
   // 组件加载
   components: {
     menu_left,
@@ -83,10 +82,13 @@ export default {
   },
 
   setup() {
+
       // 发送到头部组件的数据
       const headdata = reactive({"data":""})
+
       // 发送到菜单组件的数据
-      const menudata = reactive({"data":""})
+      // const menudata = reactive({"data":""})
+
       // 发送给翻页组件的数据
       const fandata = reactive({"data":""})
 
@@ -94,19 +96,8 @@ export default {
       const pagemessage = reactive({"data":""})
 
 
-    // 组件挂在之前---请求数据
-    onBeforeMount(()=>{
-
-
-
-
-    })
-
 
     // 组件挂载之后---请求数据接口===》加载数据
-    onMounted(() => {
-
-      // console.log('我在组件挂载前执行')
 
       axios.post('api/admin/user/list', {
           "page":1,
@@ -142,7 +133,6 @@ export default {
       });
 
 
-    });
 
 
 
