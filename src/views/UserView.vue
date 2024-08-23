@@ -27,7 +27,7 @@
                     <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)"/>
                     <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
             </a-col>
-            <a-col :span="6" :order="2"></a-col>
+            <a-col :span="6" :order="2">123123</a-col>
             <a-col :span="6" :order="3">3 col-order-2</a-col>
             <a-col :span="6" :order="4">4 col-order-1</a-col>
           </a-row>
@@ -35,7 +35,7 @@
 
 
           <!--表格组件：：发送初始化数据  -->
-          <a-table :columns="PAGEDATA.data.colum" :data-source="PAGEDATA.data.data" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
+          <a-table :columns="PAGEDATA.data.colum" :data-source="PAGEDATA.data.data" :scroll="{ x: 1800, y: innerHeight }" :pagination="false" style="font-size: 12px;">
 
             <template #bodyCell="{ column }">
 
@@ -100,32 +100,29 @@ export default {
     const publicModel = new PublicModel()
 
 
-
     // 数据列表
-      const PAGEDATA = reactive({"data":""})
+    const PAGEDATA = reactive({"data":""})
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
 
-
     })
 
 
-    onMounted(async () => {
+    // onMounted(async () => {
       // resolvedData.value = await fetchData(); // 假设fetchData是从API获取数据的函数
 
-      let url = 'api/admin/user/list';
+    let url = 'api/admin/user/list';
 
+    let qurest_data = {"page": 1, "page_size": 10}
 
-      let qurest_data = {"page": 1, "page_size": 10}
+    const {postdata, Fetch_Post_Data} = publicModel.axios_post(url, qurest_data) // 初始化post请求
 
-      const {postdata, Fetch_Post_Data} = publicModel.axios_post(url, qurest_data) // 初始化post请求
+    Fetch_Post_Data()   // 从Api请求数据
 
-      await Fetch_Post_Data()   // 从Api请求数据
+    PAGEDATA.data = postdata
 
-      PAGEDATA.data = postdata
-
-    })
+    // })
 
 
 
