@@ -1,7 +1,7 @@
 <template>
 
 
-  <a-table :columns="columns" :data-source="pagedata" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
+  <a-table  :columns="[]" :data-source="[]" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
 
     <template #bodyCell="{ column }">
 
@@ -16,12 +16,11 @@
 
   </a-table>
 
-
 </template>
 
 
 <script>
-import {defineComponent, ref, computed, reactive,watch} from 'vue'
+import {defineComponent, ref, computed, reactive} from 'vue'
 
 export default defineComponent({
 
@@ -30,6 +29,7 @@ export default defineComponent({
 
   // 接受父组件数据
   props:{
+
     // 接受父组件面信息
     pagemessage:{
       type:Object // 数据类型对象

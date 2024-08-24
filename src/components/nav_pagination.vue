@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import {computed, defineComponent, inject, ref, watch} from 'vue'
+import {computed, defineComponent} from 'vue'
 
 export default defineComponent({
 
@@ -29,8 +29,9 @@ export default defineComponent({
 
 
     const onChange = (page, pageSize)=>{
+
       let page_message = {}
-      page_message.now_page = page
+      page_message.page = page
       page_message.page_size = pageSize
 
       ctx.emit('complete', page_message) // 【翻页数据】发送到父组件中

@@ -1,5 +1,6 @@
 // admin后台公用请求的一些基础方法方法
 import axios from "axios";
+
 import {ref} from "vue"
 
 // 接口请求地址配置
@@ -8,7 +9,7 @@ export class A_Patch{
     // 管理后台
     AdminAPI={
         user: {
-            "list": "'api/admin/user/list';",
+            "list": "api/admin/user/list",
             "detaile": "",
             "delete": "",
             "edit": "",
@@ -71,41 +72,39 @@ export class PublicModel {
 
 
     // 封装Post请求
-    axios_post(url, data){
+    axios_post(url, data , callback){
 
-        const postdata = ref('')
         const Fetch_Post_Data = async ()=>{
 
-            try{
+        try{
 
-                const response = await axios.post(url, data);
+            const response = await axios.post(url, data);
 
-                this.Verifypermiss(response.data) // 前端登录鉴权
+            this.Verifypermiss(response.data) // 前端登录鉴权
 
-                postdata.value = response.data
+            callback(response.data)
 
-            }catch (error){
+        }catch (error){
 
-                console.error('post request err!',error)
+            console.error('post request err!',error)
 
-            }
         }
+    }
 
-       return { postdata, Fetch_Post_Data }
+        return { Fetch_Post_Data }
 
     }
 
     // Get请求
-    async axios_get(url){
+    async axios_get(url, callback){
 
-        const getdata = ref('')
         const Fetch_Get_Data = async ()=> {
 
             try{
 
                 const response = await axios.get(url);
 
-                getdata.value = response.data
+                callback(response.data)
 
             }catch (error){
 
@@ -114,7 +113,7 @@ export class PublicModel {
             }
 
         }
-        return { getdata, Fetch_Get_Data }
+        return { Fetch_Get_Data }
     }
 }
 
