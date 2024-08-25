@@ -4,7 +4,7 @@
 
 
     <!--head 导航组件  开始-->
-    <menu_head :headdata="PAGEDATA.data.user" />
+    <menu_head :headdata="PAGEDATA.user" />
     <!--head 导航组件  结束-->
 
 
@@ -19,7 +19,6 @@
 
 
       <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff', minHeight: '280px', }">
-
           <!--条件查询组件 开始 -->
           <a-row type="flex">
             <a-col :span="6" :order="1">
@@ -27,7 +26,8 @@
                     <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)"/>
                     <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
             </a-col>
-            <a-col :span="6" :order="2">123123</a-col>
+
+            <a-col :span="6" :order="2">2</a-col>
             <a-col :span="6" :order="3">3 col-order-2</a-col>
             <a-col :span="6" :order="4">4 col-order-1</a-col>
           </a-row>
@@ -35,7 +35,8 @@
 
 
           <!--表格组件：：发送初始化数据  -->
-          <a-table :columns="PAGEDATA.data.colum" :data-source="PAGEDATA.data.data" :scroll="{ x: 1800, y: innerHeight }" :pagination="false" style="font-size: 12px;">
+
+          <a-table :loading="loading" :columns="PAGEDATA.colum" :data-source="PAGEDATA.datalist" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
 
             <template #bodyCell="{ column }">
 
@@ -51,7 +52,7 @@
           </a-table>
 
           <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
-          <nav_pagination :fandata="PAGEDATA.data.total_number" v-on:complete="receive"/>
+          <nav_pagination :fandata="PAGEDATA.total_number" v-on:complete="receive"/>
 
 
       </a-layout-content>
@@ -68,7 +69,8 @@
 import axios from 'axios';      // 网络请求模块
 axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
 
-import { PublicModel,A_Patch } from '/src/JS_Model/public_model' // 引用自有模块&类方法
+
+import { PublicModel,A_Patch } from '/src/assets/JS_Model/public_model' // 引用自有模块&类方法
 import { ref, reactive, onBeforeMount , onMounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
 
@@ -91,45 +93,84 @@ export default {
   },
   setup() {
 
+    const ruterPatch = new A_Patch()        // 初始化路由地址
+    const publicModel = new PublicModel()    // 初始网络请求方法
+
+    // 表格高度
     const innerHeight = ref(window.innerHeight-300);
-
-    // 初始化路由地址
-    const ruterPatch = new A_Patch()
-    console.log(ruterPatch.AdminAPI.user.list)
-    // 初始网络请求方法
-    const publicModel = new PublicModel()
+    const loading = ref(true)
 
 
-    // 数据列表
-    const PAGEDATA = reactive({"data":""})
-
-    // 组件挂在之前---请求数据
-    onBeforeMount(()=>{
-
+    // 页面获取数据
+    const PAGEDATA = reactive({
+      user: {},          // 用户信息
+      colum:[],         // 表头信息
+      datalist:[],      // 列表信息
+      total_number:0,      // 总页数
+      menuconfig:{}     // 菜单配置
     })
 
 
-    // onMounted(async () => {
+    // 组件挂在之前---请求数据
+    onBeforeMount(async ()=>{
+
       // resolvedData.value = await fetchData(); // 假设fetchData是从API获取数据的函数
 
-    let url = 'api/admin/user/list';
+      let qurest_data = {"page": 1, "page_size": 10}
 
-    let qurest_data = {"page": 1, "page_size": 10}
+      const { Fetch_Post_Data } = publicModel.axios_post(ruterPatch.AdminAPI.user.list, qurest_data, look) // 初始化post请求
 
-    const {postdata, Fetch_Post_Data} = publicModel.axios_post(url, qurest_data) // 初始化post请求
+      await Fetch_Post_Data()   // 从Api请求数据
 
-    Fetch_Post_Data()   // 从Api请求数据
+      loading.value = false
 
-    PAGEDATA.data = postdata
+    })
 
-    // })
+    // 组件挂之后---请求数据
+    onMounted(() => {})
 
 
 
+    function look(res){
+
+      PAGEDATA.loading = true
+      PAGEDATA.user = res.user
+      PAGEDATA.colum = res.colum
+      PAGEDATA.datalist = res.data
+      PAGEDATA.total_number = res.total_number
+
+      // for(let i of res.data){
+      //   console.log(i)
+      // }
+
+      return res
+
+    }
+
+
+    // var List = {
+    //   // 表头数据转义
+    //   getfanda:()=>{
+    //
+    //   },
+    //   // 表格内容转义
+    //
+    //   // 点击翻页加载数据
+    //
+    //
+    // }
 
     // 接收来自子组件发送的数据=方法
     const receive = (message)=>{
-      console.log(message)
+
+      loading.value = true
+
+      const { Fetch_Post_Data } = publicModel.axios_post(ruterPatch.AdminAPI.user.list, message, look) // 初始化post请求
+
+      Fetch_Post_Data()
+
+      loading.value = false
+
     }
 
 
@@ -137,6 +178,7 @@ export default {
 
 
     return {
+      loading,
       innerHeight,
       PAGEDATA,
       selectedKeys: ref(['1']),
@@ -148,6 +190,7 @@ export default {
 
   },
 };
+
 </script>
 
 
