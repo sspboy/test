@@ -2,7 +2,7 @@
   <router-view />
 </template>
 <style>
-html{margin: 0px; padding: 0px;font-size: 12px;}
+html{margin: 0px; padding: 0px;font-size: 12px;height: 100%;}
 .font_size_12{font-size: 12px;}
 .cursor{cursor: pointer}
 

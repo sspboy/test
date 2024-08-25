@@ -10,7 +10,6 @@
 
     <!--内容部分 菜单 右侧列表 开始-->
     <a-layout>
-
       <!--左侧 菜单组件  开始-->
       <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
             <menu_left /> <!--局部组件-->
@@ -20,6 +19,8 @@
 
       <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff', minHeight: '280px', }">
           <!--条件查询组件 开始 -->
+          <div style="height: 80px;">
+
           <a-row type="flex">
             <a-col :span="6" :order="1">
             <!--导航收起按钮-->
@@ -31,12 +32,19 @@
             <a-col :span="6" :order="3">3 col-order-2</a-col>
             <a-col :span="6" :order="4">4 col-order-1</a-col>
           </a-row>
+          </div>
+
           <!--条件查询组件 结束 -->
 
 
           <!--表格组件：：发送初始化数据  -->
-
-          <a-table :loading="loading" :columns="PAGEDATA.colum" :data-source="PAGEDATA.datalist" :scroll="{ x: 1500, y: innerHeight }" :pagination="false" style="font-size: 12px;">
+          <a-table
+              :loading="loading"
+              :columns="PAGEDATA.colum"
+              :data-source="PAGEDATA.datalist"
+              :scroll="{ x: 1500, y:innerHeight }"
+              :pagination="false"
+              >
 
             <template #bodyCell="{ column }">
 
@@ -50,7 +58,6 @@
             </template>
 
           </a-table>
-
           <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
           <nav_pagination :fandata="PAGEDATA.total_number" v-on:complete="receive"/>
 
@@ -113,7 +120,6 @@ export default {
 
     // 组件挂在之前---请求数据
     onBeforeMount(async ()=>{
-
       // resolvedData.value = await fetchData(); // 假设fetchData是从API获取数据的函数
 
       let qurest_data = {"page": 1, "page_size": 10}
@@ -195,7 +201,10 @@ export default {
 
 
 <style>
-
+.ant-empty-normal {
+  height:calc(100vh - 280px);
+  margin: calc(100vh - 280px) 0 0 0 !important;
+}
 #components-layout-demo-custom-trigger .trigger {
   font-size: 12px;line-height: 64px;padding: 0 24px;
   cursor: pointer;
