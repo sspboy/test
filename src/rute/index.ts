@@ -17,7 +17,7 @@ const routes = [
     {
         path: '/user',
         name: 'User',
-        component: () => import('../views/UserView.vue'),   // 视图文件
+        component: () => import('../views/admin/UserView.vue'),   // 视图文件
         meta:{
             title:'用户管理',
         }
