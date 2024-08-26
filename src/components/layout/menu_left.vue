@@ -6,6 +6,7 @@
       theme="dark"
       :inline-collapsed="state.collapsed"
       :items="items"
+      @click="handleClick"
     ></a-menu>
   </div>
 </template>
@@ -17,6 +18,8 @@
 
 //
 import {defineComponent, reactive, watch, h } from 'vue';
+import { useRouter } from "vue-router"; // 导入路由
+
 import {
   UserOutlined,
   MenuOutlined,
@@ -38,6 +41,7 @@ export default defineComponent({
   },
 
   setup() {
+    const router = useRouter(); // 初始化路由方法
 
 
     const state = reactive({
@@ -51,24 +55,28 @@ export default defineComponent({
       {
         key: '1',
         icon: () => h(UserOutlined),
+        id:"user",
         label: '用户管理',
         title: '用户管理',
       },
       {
         key: '2',
         icon: () => h(MenuOutlined),
+        id:"menu",
         label: '菜单管理',
-        title: '菜单管理',
+        title: '菜单管理'
       },
       {
         key: '3',
         icon: () => h(BarsOutlined),
+        id:"fun",
         label: '功能列表',
         title: '功能列表',
       },
       {
         key: '4',
         icon: () => h(AccountBookOutlined),
+        id:"version",
         label: '版本管理',
         title: '版本管理',
       },
@@ -152,7 +160,16 @@ export default defineComponent({
       state.openKeys = state.collapsed ? [] : state.preOpenKeys;
     };
 
+    // 菜单点击事件===>路由
+    const handleClick = e => {
+      let name = e.item.id
+      if(name != undefined){
+        router.push('/' +  e.item.id);
+      }
+
+    };
     return {
+      handleClick,
       watch,
       state,
       items,

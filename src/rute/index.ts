@@ -17,10 +17,37 @@ const routes = [
     {
         path: '/user',
         name: 'User',
-        component: () => import('../views/UserView.vue'),   // 视图文件
+        component: () => import('../views/admin/UserView.vue'),   // 视图文件
         meta:{
             title:'用户管理',
         }
+    },
+    {
+        path: '/menu',
+        name: 'menu',
+        component: () => import('../views/admin/MenuView.vue'),    // 视图文件
+        meta:{
+            title:'菜单管理',
+        }
+
+    },
+    {
+        path: '/fun',
+        name: 'fun',
+        component: () => import('../views/admin/FunView.vue'),    // 视图文件
+        meta:{
+            title:'功能列表',
+        }
+
+    },
+    {
+        path: '/version',
+        name: 'version',
+        component: () => import('../views/admin/VersionView.vue'),    // 视图文件
+        meta:{
+            title:'版本管理',
+        }
+
     },
     {
         path: '/admin',
