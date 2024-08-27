@@ -2,7 +2,9 @@ import { createApp } from 'vue';
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
 import App from './app.vue'
-import router from '/src/rute/index.ts'
+import router from '/src/rute/index.ts' // 全局路由
+import store from '/src/staore'         // 全局数据状态共享
+
 
 // 页面标题设置---开始
 router.beforeEach((to, from, next) => {
@@ -27,6 +29,7 @@ window.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
 
 // 初始化项项目
 const app = createApp(App);
+app.use(store)  // 初始化Vuex 数据状态共享
 app.use(Antd)   // 加载ant design UI框架
 app.use(router)
 app.mount('#app');

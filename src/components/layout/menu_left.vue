@@ -1,11 +1,12 @@
 <template>
   <div>
     <a-menu class="font_size_12"
-      v-model:selectedKeys="state.selectedKeys"
+      v-model:selectedKeys="store.state.left.key"
       mode="inline"
       theme="dark"
       :inline-collapsed="state.collapsed"
       :items="items"
+      :openKeys="store.state.left.openKeys"
       @click="handleClick"
     ></a-menu>
   </div>
@@ -17,8 +18,9 @@
 // 请求结果获取菜单信息
 
 //
-import {defineComponent, reactive, watch, h } from 'vue';
+import {defineComponent, reactive, h,} from 'vue';
 import { useRouter } from "vue-router"; // 导入路由
+import { useStore } from 'vuex'
 
 import {
   UserOutlined,
@@ -26,8 +28,7 @@ import {
   BarsOutlined,
   CodeOutlined,
   AccountBookOutlined,
-  AppstoreOutlined,
-    SettingOutlined,
+  SettingOutlined,
 } from '@ant-design/icons-vue';
 
 
@@ -39,18 +40,22 @@ export default defineComponent({
   props:{
 
   },
-
   setup() {
+    const store = useStore();// 共享数据
+
+
+
     const router = useRouter(); // 初始化路由方法
+    // console.log(props.menudata)
 
-
+    // 菜单状态
     const state = reactive({
       collapsed: false,
-      selectedKeys: ['1'],
-      openKeys: ['sub1'],
       preOpenKeys: ['sub1'],
     });
 
+
+    // 菜单列表
     const items = reactive([
       {
         key: '1',
@@ -88,21 +93,25 @@ export default defineComponent({
         children: [
           {
             key: '5',
+            id:"user",
             label: '用户管理',
             title: '用户管理',
           },
           {
             key: '6',
+            id:"menu",
             label: '菜单管理',
             title: '菜单管理',
           },
           {
             key: '7',
+            id:"fun",
             label: '功能列表',
             title: '功能列表',
           },
           {
             key: '8',
+            id:"version",
             label: '版本管理',
             title: '版本管理',
           },
@@ -151,29 +160,33 @@ export default defineComponent({
 
     ]);
 
-    watch(() => state.openKeys,(_val, oldVal) => {
-      state.preOpenKeys = oldVal;
-    },);
-
-    const toggleCollapsed = () => {
-      state.collapsed = !state.collapsed;
-      state.openKeys = state.collapsed ? [] : state.preOpenKeys;
-    };
 
     // 菜单点击事件===>路由
     const handleClick = e => {
+      console.log(e.keyPath)
+      // 切换选中菜单====开始
+      let payload = {}
+      payload.key = [e.keyPath[1]];
+      payload.openKeys = [e.keyPath[0]]
+
+      store.commit('switch_menu', payload)
+
+      // 切换选中菜单====结束
+
       let name = e.item.id
       if(name != undefined){
         router.push('/' +  e.item.id);
       }
 
+
     };
+
+
     return {
+      store,
       handleClick,
-      watch,
       state,
       items,
-      toggleCollapsed,
     };
 
 

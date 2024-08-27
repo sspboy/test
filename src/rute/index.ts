@@ -28,6 +28,7 @@ const routes = [
         component: () => import('../views/admin/MenuView.vue'),    // 视图文件
         meta:{
             title:'菜单管理',
+
         }
 
     },

@@ -11,9 +11,10 @@
     <!--内容部分 菜单 右侧列表 开始-->
     <a-layout>
 
+
       <!--左侧 菜单组件  开始-->
-      <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
-        <menu_left /> <!--局部组件-->
+      <a-layout-sider v-model:collapsed="store.state.left.coll" :trigger="null" collapsible>
+        <menu_left/> <!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
@@ -25,8 +26,8 @@
             <a-row type="flex">
               <a-col :span="6" :order="1">
               <!--导航收起按钮-->
-                      <menu-unfold-outlined v-if="collapsed" class="trigger" @click="() => (collapsed = !collapsed)"/>
-                      <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
+                      <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" @click="() => {store.commit('change')}"/>
+                      <menu-fold-outlined v-else class="trigger" @click="() => {store.commit('change')}" />
               </a-col>
               <a-col :span="6" :order="2">2</a-col>
               <a-col :span="6" :order="3">3 col-order-2</a-col>
@@ -81,6 +82,7 @@ axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为�
 import { PublicModel,A_Patch } from '/src/assets/JS_Model/public_model' // 引用自有模块&类方法
 import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
+import { useStore } from 'vuex'
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
@@ -101,14 +103,18 @@ export default {
     menu_head
   },
   setup() {
-    const ruterPatch = new A_Patch()        // 初始化路由地址
-    const publicModel = new PublicModel()    // 初始网络请求方法
-    const innerHeight = ref(window.innerHeight-245);    // 初始化表格高度
-    const loading = ref(true)    // 初始化loading状态
+    const store = useStore();// 共享数据
+    const ruterPatch = new A_Patch();// 初始化路由地址
+    const publicModel = new PublicModel();// 初始网络请求方法
+    const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
+    const loading = ref(true)// 初始化loading状态
 
+
+    // console.log(store.state.left)
 
     // 页面获取数据
     const PAGEDATA = reactive({
+      menudata:{'key':'5','openKeys':'sub1'},            // 菜单选中配置
       user: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -116,10 +122,9 @@ export default {
       menuconfig:{}       // 菜单配置
     })
 
+
     // 组件挂在之前---请求数据
     onBeforeMount(async ()=>{
-
-      // resolvedData.value = await fetchData(); // 假设fetchData是从API获取数据的函数
 
       let qurest_data = {"page":1, "page_size":10}
 
@@ -235,7 +240,7 @@ export default {
           "align":"center",
           "width":100
         }
-        colums.push(op)
+        colums.push(op) // 添加操作按钮
       },
       // 表格内容转义
       getvlue:(vlues)=>{
@@ -294,10 +299,10 @@ export default {
 
 
     return {
+      store,
       loading,
       innerHeight,
       PAGEDATA,
-      selectedKeys: ref(['1']),
       collapsed: ref(false),
       receive,
 
