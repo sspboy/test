@@ -2,6 +2,7 @@
 
   <a-layout style="height: 100vh;width: 100vw;">
 
+    <useradd />
 
     <!--head 导航组件  开始-->
     <menu_head :headdata="PAGEDATA.user" />
@@ -14,7 +15,7 @@
 
       <!--左侧 菜单组件  开始-->
       <a-layout-sider v-model:collapsed="store.state.left.coll" :trigger="null" collapsible>
-        <menu_left/> <!--局部组件-->
+        <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
@@ -26,15 +27,25 @@
             <a-row type="flex">
               <a-col :span="6" :order="1">
               <!--导航收起按钮-->
-                      <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" @click="() => {store.commit('change')}"/>
-                      <menu-fold-outlined v-else class="trigger" @click="() => {store.commit('change')}" />
+                      <a-button type="primary" size="small" style="margin:0 16px 0 0" @click="">
+                        <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" @click="() => {store.commit('change')}"/>
+                        <menu-fold-outlined v-else class="trigger" @click="() => {store.commit('change')}" />
+                      </a-button>
+                      <!-- {{ PAGEDATA.title }} -->
+                      <a-button type="primary" size="small" style="font-size: 12px;">
+                        <template #icon><PlusOutlined /></template>
+                        新建用户
+                      </a-button>
+
+
               </a-col>
-              <a-col :span="6" :order="2">2</a-col>
-              <a-col :span="6" :order="3">3 col-order-2</a-col>
-              <a-col :span="6" :order="4">4 col-order-1</a-col>
+              <a-col :span="12" :order="2">2</a-col>
+              <a-col :span="6" :order="3">3</a-col>
             </a-row>
             <!--条件查询组件 结束 -->
           </div>
+
+
           <div :style="innerHeight">
           <!--表格组件：：发送初始化数据  开始-->
           <a-table
@@ -72,6 +83,8 @@
   </a-layout>
   <!--内容部分 菜单 右侧列表 结束-->
 
+
+
 </template>
 
 
@@ -81,13 +94,15 @@ axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为�
 
 import { PublicModel,A_Patch } from '/src/assets/JS_Model/public_model' // 引用自有模块&类方法
 import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
-import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
+import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
+import useradd from "@/components/useradd.vue";
+
 // 组件引用=====结束
 
 export default {
@@ -97,12 +112,15 @@ export default {
   // 组件加载
   components: {
     menu_left,
+    PlusOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     nav_pagination,
-    menu_head
+    menu_head,
+    useradd
   },
   setup() {
+
     const store = useStore();// 共享数据
     const ruterPatch = new A_Patch();// 初始化路由地址
     const publicModel = new PublicModel();// 初始网络请求方法
@@ -114,6 +132,7 @@ export default {
 
     // 页面获取数据
     const PAGEDATA = reactive({
+      title:'用户管理',
       menudata:{'key':'5','openKeys':'sub1'},            // 菜单选中配置
       user: {},           // 用户信息
       colum:[],           // 表头信息
@@ -303,7 +322,6 @@ export default {
       loading,
       innerHeight,
       PAGEDATA,
-      collapsed: ref(false),
       receive,
 
     };

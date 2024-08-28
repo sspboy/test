@@ -1,12 +1,12 @@
 <template>
   <div>
     <a-menu class="font_size_12"
-      v-model:selectedKeys="store.state.left.key"
+      v-model:selectedKeys="state.key"
       mode="inline"
       theme="dark"
       :inline-collapsed="state.collapsed"
       :items="items"
-      :openKeys="store.state.left.openKeys"
+      :openKeys="state.openKeys"
       @click="handleClick"
     ></a-menu>
   </div>
@@ -38,21 +38,33 @@ export default defineComponent({
 
   },
   props:{
-
+    menudata:{
+      type:Object
+    }
   },
-  setup() {
+  setup(props) {
+
     const store = useStore();// 共享数据
 
+    // 菜单数据状态
+    const state = reactive({
+      key:[],
+      openKeys:[],
+    });
+
+
+    // 如果为true 收起状态
+    if(store.state.left.coll){
+      state.key=[props.menudata.key]
+      state.openKeys = []
+    }else {    // 如果为false 展开状态
+      state.key=[props.menudata.key]
+      state.openKeys = [props.menudata.openKeys]
+    }
 
 
     const router = useRouter(); // 初始化路由方法
     // console.log(props.menudata)
-
-    // 菜单状态
-    const state = reactive({
-      collapsed: false,
-      preOpenKeys: ['sub1'],
-    });
 
 
     // 菜单列表
@@ -120,8 +132,8 @@ export default defineComponent({
       {
         key: 'sub2',
         icon: () => h(SettingOutlined),
-        label: '功能设置',
-        title: '功能设置',
+        label: '系统设置',
+        title: '系统设置',
         children: [
           {
             key: '9',
@@ -163,15 +175,8 @@ export default defineComponent({
 
     // 菜单点击事件===>路由
     const handleClick = e => {
-      console.log(e.keyPath)
-      // 切换选中菜单====开始
-      let payload = {}
-      payload.key = [e.keyPath[1]];
-      payload.openKeys = [e.keyPath[0]]
 
-      store.commit('switch_menu', payload)
-
-      // 切换选中菜单====结束
+      // console.log(e.keyPath)
 
       let name = e.item.id
       if(name != undefined){

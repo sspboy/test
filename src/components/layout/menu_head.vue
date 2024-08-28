@@ -34,6 +34,7 @@ export default defineComponent({
 
   setup(props){
 
+
     // 计算属性
     const heda = computed(()=>{
       return props

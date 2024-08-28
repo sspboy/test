@@ -61,6 +61,7 @@ axios.defaults.timeout = 1000; // 1秒 设置全局超时时间（以毫秒为�
 import { useRouter } from "vue-router"; // 导入路由
 import { reactive,ref } from 'vue';
 import { UserOutlined,LockOutlined,} from '@ant-design/icons-vue';
+import {useStore} from "vuex";
 
 export default {
   // 组件
@@ -69,10 +70,19 @@ export default {
     LockOutlined
   },
   setup() {
-
+    
+    
+    const store = useStore();// 共享数据
     const router = useRouter(); // 初始化路由方法
     const formRef = ref();     // 初始化表单
 
+    // 在组件中====刷新数据状态
+    // const loadData = async(user_id) => {
+      // await store.dispatch('get_user', user_id);
+      // console.log('Data fetched:', store.state.head.user_message);
+    // }
+    
+    
     // 绑定数据：：需要与模版使用数据同名
     const formState = reactive({
       username: '',

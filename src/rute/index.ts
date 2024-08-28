@@ -50,15 +50,6 @@ const routes = [
         }
 
     },
-    {
-        path: '/admin',
-        name: 'admin',
-        component: () => import('../views/admin/admin.vue'),    // 视图文件
-        meta:{
-            title:'后台管理',
-        }
-
-    },
     {   // 404 报错页面
         path: '/:catchAll(.*)', // 使用捕获所有路由的模式
         name:"Error404",

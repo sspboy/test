@@ -1,6 +1,5 @@
 // admin后台公用请求的一些基础方法方法
 import axios from "axios";
-
 import {ref} from "vue"
 
 // 接口请求地址配置
@@ -8,18 +7,63 @@ export class A_Patch{
 
     // 管理后台
     AdminAPI={
+        // 用户管理
         user: {
-            "list": "api/admin/user/list",
-            "detaile": "",
-            "delete": "",
-            "edit": "",
-            "add": ""
+            "list": "api/admin/user/list",  // [post]列表
+                                            // [put]data 批量删除
+            "detaile": "api/admin/user/",   // [get]+id详情
+            "delete": "api/admin/user/",    // [delete]+id删除
+            "edit": "api/admin/user/",      // [put]setting_data+id 传数据更新
+            "add": "api/admin/user/add"     // [post]
+        },
+        // 菜单管理
+        menu:{
+            "list": "api/admin/menu/list",  // [post]列表
+                                            // [put]data 批量删除
+            "detaile": "api/admin/menu/",   // [get]+id详情
+            "delete": "api/admin/menu/",    // [delete]+id删除
+            "edit": "api/admin/menu/",      // [put]setting_data + id 传数据更新
+            "add": "api/admin/menu/add"     // [post]
+        },
+        // 功能列表
+        fun:{
+            "list": "api/admin/function/list",  // [post]列表
+                                                // [put]data 批量删除
+            "detaile": "api/admin/function/",   // [get]+id详情
+            "delete": "api/admin/function/",    // [delete]+id删除
+            "edit": "api/admin/function/",      // [put]setting_data + id 传数据更新
+            "add": "api/admin/function/add"     // [post]
+        },
+        // 版本管理
+        version:{
+            "list": "api/admin/version/list",  //[post]列表
+                                                // [put]data 批量删除
+            "detaile": "api/admin/version/",   // [get]+id详情
+            "delete": "api/admin/version/",    // [delete]+id删除
+            "edit": "api/admin/version/",      // [put]setting_data + id 传数据更新
+            "add": "api/admin/version/add"     // [post]
         }
+
     }
 
     // 系统设置
     BasicsAPI={
+        // 团队管理
+        team:{
 
+        },
+        // 组织架构
+        department:{
+
+        },
+        // 角色管理
+        role:{
+
+        },
+        // 品牌信息
+        brandinfo:{
+            
+        },
     }
     // 应用市场
     AppSrtoreAPI={
