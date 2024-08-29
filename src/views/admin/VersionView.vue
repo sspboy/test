@@ -18,18 +18,21 @@
         <div style="height: 42px;">
             <!--条件查询组件 开始 -->
             <a-row type="flex">
-              <a-col :span="6" :order="1">
-              <!--导航收起按钮-->
-                      <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" @click="() => {store.commit('change')}"/>
-                      <menu-fold-outlined v-else class="trigger" @click="() => {store.commit('change')}" />
-                      {{ PAGEDATA.title }}
-                      <a-button type="primary" size="small">新建</a-button>
-
-
+              <a-col :span="1" :order="1">
+                  <!--导航收起按钮-->
+                  <a-button type="primary" size="small" style="font-size: 12px;" @click="() => {store.commit('change')}">
+                    <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" />
+                    <menu-fold-outlined v-else class="trigger" />
+                  </a-button>
+                  <!-- {{ PAGEDATA.title }} -->
               </a-col>
-              <a-col :span="6" :order="2">2</a-col>
+              <a-col :span="12" :order="2">
+                <a-button type="primary" size="small" style="font-size:12px;">
+                  <template #icon><PlusOutlined /></template>
+                  新建用户
+                </a-button>
+              </a-col>
               <a-col :span="6" :order="3">3 col-order-2</a-col>
-              <a-col :span="6" :order="4">4 col-order-1</a-col>
             </a-row>
             <!--条件查询组件 结束 -->
         </div>

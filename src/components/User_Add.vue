@@ -1,91 +1,117 @@
 <template>
-    <a-button type="primary" @click="showDrawer">
-    <template #icon><PlusOutlined /></template>
-    New account
-  </a-button>
-    <a-drawer
-      title="Create a new account"
+  <a-drawer
+      title="新建"
       :width="720"
-      :open="open"
+      :open="props.adddata.open"
       :body-style="{ paddingBottom: '80px' }"
       :footer-style="{ textAlign: 'right' }"
       @close="onClose"
-    >
+  >
       <a-form :model="form" :rules="rules" layout="vertical">
+
         <a-row :gutter="16">
+
+
           <a-col :span="12">
-            <a-form-item label="Name" name="name">
+            <a-form-item label="账号名称" name="name">
               <a-input v-model:value="form.name" placeholder="Please enter user name" />
             </a-form-item>
           </a-col>
+
+
           <a-col :span="12">
-            <a-form-item label="Url" name="url">
-              <a-input
-                v-model:value="form.url"
-                style="width: 100%"
-                addon-before="http://"
-                addon-after=".com"
-                placeholder="please enter url"
-              />
+            <a-form-item label="账号类型" name="account_type">
+              <a-select v-model:value="form.account_type" placeholder="Please choose the type">
+                <a-select-option value="1">品牌会员</a-select-option>
+                <a-select-option value="2">后台管理员</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
+
+
         </a-row>
+
         <a-row :gutter="16">
+
           <a-col :span="12">
-            <a-form-item label="Owner" name="owner">
+            <a-form-item label="版本号" name="owner">
               <a-select v-model:value="form.owner" placeholder="Please a-s an owner">
-                <a-select-option value="xiao">Xiaoxiao Fu</a-select-option>
-                <a-select-option value="mao">Maomao Zhou</a-select-option>
+                <a-select-option value="xiao">个人版本</a-select-option>
+                <a-select-option value="mao">企业版</a-select-option>
+                <a-select-option value="hou">管理后台</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
+
           <a-col :span="12">
-            <a-form-item label="Type" name="type">
-              <a-select v-model:value="form.type" placeholder="Please choose the type">
-                <a-select-option value="private">Private</a-select-option>
-                <a-select-option value="public">Public</a-select-option>
-              </a-select>
+            <a-form-item label="昵称" name="name">
+              <a-input v-model:value="form.name" placeholder="Please enter user name" />
             </a-form-item>
           </a-col>
+
         </a-row>
         <a-row :gutter="16">
+
           <a-col :span="12">
-            <a-form-item label="Approver" name="approver">
-              <a-select v-model:value="form.approver" placeholder="Please choose the approver">
-                <a-select-option value="jack">Jack Ma</a-select-option>
-                <a-select-option value="tom">Tom Liu</a-select-option>
-              </a-select>
+            <a-form-item label="密码" name="name">
+              <a-input v-model:value="form.name" placeholder="Please enter user name" />
             </a-form-item>
           </a-col>
+
+
           <a-col :span="12">
-            <a-form-item label="DateTime" name="dateTime">
-              <a-date-picker
-                v-model:value="form.dateTime"
-                style="width: 100%"
-                :get-popup-container="trigger => trigger.parentElement"
-              />
+            <a-form-item label="品牌名称" name="name">
+              <a-input v-model:value="form.name" placeholder="Please enter user name" />
             </a-form-item>
           </a-col>
         </a-row>
+
         <a-row :gutter="16">
-          <a-col :span="24">
-            <a-form-item label="Description" name="description">
-              <a-textarea
-                v-model:value="form.description"
-                :rows="4"
-                placeholder="please enter url description"
-              />
+
+          <a-col :span="12">
+            <a-form-item label="手机号" name="name">
+              <a-input v-model:value="form.name" placeholder="Please enter user name" />
+            </a-form-item>
+          </a-col>
+
+
+          <a-col :span="12">
+            <a-form-item label="角色" name="name">
+              <a-input v-model:value="form.name" placeholder="Please enter user name" />
             </a-form-item>
           </a-col>
         </a-row>
+
+        <a-row :gutter="16">
+
+          <a-col :span="12">
+            <a-form-item label="部门id" name="name">
+              <a-input v-model:value="form.name" placeholder="Please enter user name" />
+            </a-form-item>
+          </a-col>
+
+
+          <a-col :span="12">
+            <a-form-item label="部门名称" name="name">
+              <a-input v-model:value="form.name" placeholder="Please enter user name" />
+            </a-form-item>
+          </a-col>
+        </a-row>
+
       </a-form>
+
+
       <template #extra>
         <a-space>
-          <a-button @click="onClose">Cancel</a-button>
-          <a-button type="primary" @click="onClose">Submit</a-button>
+          <a-button @click="onClose" style="font-size: 12px;" size="small">取消</a-button>
+          <a-button type="primary" @click="onClose" class="font_size_12" size="small">保存</a-button>
         </a-space>
       </template>
-    </a-drawer>
+
+
+  </a-drawer>
+
+
     
 </template>
 
@@ -96,17 +122,33 @@ import { PlusOutlined} from '@ant-design/icons-vue';
 
 
 export default defineComponent({
-    name: "useradd",
-    // 接受父组件数据
+
+  name: "User_Add",   // 添加用户
+
   components:{
       PlusOutlined
   },
-    props:{
+  // 接受父组件数据
+  props:{
+    adddata:{
+      type: Object
+    }
+  },
+  setup(props){
 
-    },
-    setup(props){
-
+        // 表单数据
         const form = reactive({
+          // 用户id
+          // 会员类型
+          // 版本id
+          // 昵称
+          // 密码
+          // 品牌名称
+          // 手机号码
+          // 角色
+          // 部门id
+          // 部门名称
+          // 会员状态
             name: '',
             url: '',
             owner: '',
@@ -116,6 +158,7 @@ export default defineComponent({
             description: '',
         });
 
+        // 表单验证规则
         const rules = {
             name: [
                 {
@@ -161,23 +204,20 @@ export default defineComponent({
                 },
             ],
         };
-            
-        const open = ref(false);
 
-        const showDrawer = () => {
-            open.value = true;
-        };
-        
+        // 抽屉展开收起
+        // const open = props.adddata.open
+
         const onClose = () => {
-            open.value = false;
+            props.adddata.open = false;
         };
 
 
         return{
+          props,
             form,
             rules,
             open,
-            showDrawer,
             onClose
         }
     }

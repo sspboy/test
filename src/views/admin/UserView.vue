@@ -2,7 +2,9 @@
 
   <a-layout style="height: 100vh;width: 100vw;">
 
-    <useradd />
+    <!--新建用户数据====>开始-->
+    <User_Add :adddata="ADDDATA"/>
+    <!--新建用户数据====>结束-->
 
     <!--head 导航组件  开始-->
     <menu_head :headdata="PAGEDATA.user" />
@@ -21,25 +23,24 @@
 
 
       <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
-
           <div style="height: 42px;">
             <!--条件查询组件 开始 -->
             <a-row type="flex">
-              <a-col :span="6" :order="1">
-              <!--导航收起按钮-->
-                      <a-button type="primary" size="small" style="margin:0 16px 0 0" @click="">
-                        <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" @click="() => {store.commit('change')}"/>
-                        <menu-fold-outlined v-else class="trigger" @click="() => {store.commit('change')}" />
-                      </a-button>
-                      <!-- {{ PAGEDATA.title }} -->
-                      <a-button type="primary" size="small" style="font-size: 12px;">
-                        <template #icon><PlusOutlined /></template>
-                        新建用户
-                      </a-button>
-
+              <a-col :span="5" :order="1">
+                  <!--导航收起按钮-->
+                  <a-button type="primary" size="small" style="font-size: 12px; margin-right: 16px;" @click="() => {store.commit('change')}">
+                    <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" />
+                    <menu-fold-outlined v-else class="trigger" />
+                  </a-button>
+                  <!-- {{ PAGEDATA.title }} -->
+                  <a-button type="primary" size="small" style="font-size:12px;" @click="Add_Fun">
+                  <template #icon><PlusOutlined /></template>
+                  新建用户
+                </a-button>
+              </a-col>
+              <a-col :span="12" :order="2">
 
               </a-col>
-              <a-col :span="12" :order="2">2</a-col>
               <a-col :span="6" :order="3">3</a-col>
             </a-row>
             <!--条件查询组件 结束 -->
@@ -101,7 +102,7 @@ import { useStore } from 'vuex'
 import menu_left from '@/components/layout/menu_left.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
-import useradd from "@/components/useradd.vue";
+import User_Add from "@/components/User_Add.vue";
 
 // 组件引用=====结束
 
@@ -117,8 +118,9 @@ export default {
     MenuFoldOutlined,
     nav_pagination,
     menu_head,
-    useradd
+    User_Add
   },
+
   setup() {
 
     const store = useStore();// 共享数据
@@ -127,8 +129,6 @@ export default {
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)// 初始化loading状态
 
-
-    // console.log(store.state.left)
 
     // 页面获取数据
     const PAGEDATA = reactive({
@@ -140,6 +140,15 @@ export default {
       total_number:0,     // 总页数
       menuconfig:{}       // 菜单配置
     })
+
+    // 编辑发送数据
+    const ADDDATA= reactive({
+      open:false,
+      user_id:''
+
+    })
+
+    // 删除发送数据
 
 
     // 组件挂在之前---请求数据
@@ -160,11 +169,13 @@ export default {
     const handleResize = () => {
       innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
     };
+
     // 在组件挂载时添加事件监听器
     onMounted(() => {
         window.addEventListener('resize', handleResize);
 
     });
+
     // 在组件卸载时移除事件监听器
     onUnmounted(() => {
       window.removeEventListener('resize', handleResize);
@@ -289,11 +300,6 @@ export default {
       PAGEDATA.datalist = res.data
       PAGEDATA.total_number = res.total_number
 
-      // 添加编辑方法
-      // 添加删除方法
-      // 添加新增数据方法
-
-
       // for(let i of res.data){
       //   console.log(i)
       // }
@@ -305,7 +311,7 @@ export default {
 
 
 
-    // 接收来自子组件发送的数据=回调方法
+    // 接收来自[翻页]子组件发送的数据=回调方法
     const receive = (message)=>{
 
       loading.value = true  // 开启loading状态
@@ -316,12 +322,32 @@ export default {
 
     }
 
+    // 【新建】调用组件方法===》弹出抽屉+传值
+    const Add_Fun = (e)=>{
+      console.log(e)
+      let user_id = '';
+      ADDDATA.open = true;
+
+
+
+
+
+    }
+
+    // 【编辑】调用组件方法===》弹出抽屉+传值
+    const Edit_Fun = ()=>{}
+
+    // 【删除】调用组件方法===》弹出抽屉+传值
+    const Del_Fun = ()=>{}
+
 
     return {
       store,
       loading,
       innerHeight,
       PAGEDATA,
+      ADDDATA,
+      Add_Fun,
       receive,
 
     };
