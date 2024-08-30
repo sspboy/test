@@ -20,18 +20,16 @@
         <div style="height: 42px;">
             <!--条件查询组件 开始 -->
             <a-row type="flex">
-              <a-col :span="1" :order="1">
+              <a-col :span="5" :order="1">
                   <!--导航收起按钮-->
-                  <a-button type="primary" size="small" style="font-size: 12px;" @click="() => {store.commit('change')}">
+                  <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('change')}">
                     <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
                   <!-- {{ PAGEDATA.title }} -->
-              </a-col>
-              <a-col :span="12" :order="2">
                 <a-button type="primary" size="small" style="font-size:12px;">
                   <template #icon><PlusOutlined /></template>
-                  新建用户
+                  添加功能
                 </a-button>
               </a-col>
               <a-col :span="6" :order="3">3 col-order-2</a-col>
@@ -83,7 +81,7 @@ axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为�
 
 import { PublicModel,A_Patch } from '/src/assets/JS_Model/public_model' // 引用自有模块&类方法
 import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
-import { MenuFoldOutlined, MenuUnfoldOutlined} from '@ant-design/icons-vue';
+import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
 
 // 组件引用=====开始
@@ -100,7 +98,8 @@ export default {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     nav_pagination,
-    menu_head
+    menu_head,
+    PlusOutlined
 
   },
   setup(){

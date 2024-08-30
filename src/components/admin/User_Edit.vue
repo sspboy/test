@@ -1,8 +1,8 @@
 <template>
   <a-drawer
-      title="新建"
+      title="编辑"
       :width="720"
-      :open="props.adddata.open"
+      :open="open.editdata.open"
       :body-style="{ paddingBottom: '80px' }"
       :footer-style="{ textAlign: 'right' }"
       @close="onClose"
@@ -27,7 +27,6 @@
               </a-select>
             </a-form-item>
           </a-col>
-
 
         </a-row>
 
@@ -112,29 +111,31 @@
   </a-drawer>
 
 
-    
+
 </template>
 
 
 <script>
-import { reactive, ref, defineComponent, computed } from 'vue';
+import { reactive, ref, defineComponent } from 'vue';
 import { PlusOutlined} from '@ant-design/icons-vue';
 
 
 export default defineComponent({
 
-  name: "User_Add",   // 添加用户
+  name: "User_Edit",   // 添加用户
 
   components:{
       PlusOutlined
   },
   // 接受父组件数据
   props:{
-    adddata:{
+    editdata:{
       type: Object
     }
   },
   setup(props){
+
+      const open = props
 
         // 表单数据
         const form = reactive({
@@ -209,15 +210,14 @@ export default defineComponent({
         // const open = props.adddata.open
 
         const onClose = () => {
-            props.adddata.open = false;
+            open.editdata.open = false;
         };
 
 
         return{
-          props,
+            open,
             form,
             rules,
-            open,
             onClose
         }
     }

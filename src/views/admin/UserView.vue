@@ -1,10 +1,16 @@
 <template>
 
-  <a-layout style="height: 100vh;width: 100vw;">
+  <!--新建、编辑、删除用户数据====>开始-->
+  <User_Add :adddata="ADDDATA"/>
 
-    <!--新建用户数据====>开始-->
-    <User_Add :adddata="ADDDATA"/>
-    <!--新建用户数据====>结束-->
+  <User_Edit :editdata="EDITDATA"/>
+
+  <User_Del :deldata="DELDATA"/>
+  <!--新建、编辑、删除用户数据====>结束-->
+
+
+  <!--内容部分 菜单 右侧列表 开始-->
+  <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
     <menu_head :headdata="PAGEDATA.user" />
@@ -23,6 +29,7 @@
 
 
       <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+
           <div style="height: 42px;">
             <!--条件查询组件 开始 -->
             <a-row type="flex">
@@ -39,9 +46,8 @@
                 </a-button>
               </a-col>
               <a-col :span="12" :order="2">
-
               </a-col>
-              <a-col :span="6" :order="3">3</a-col>
+              <a-col :span="6" :order="3"></a-col>
             </a-row>
             <!--条件查询组件 结束 -->
           </div>
@@ -62,8 +68,8 @@
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
-                  <a>编辑</a> |
-                  <a>删除</a>
+                  <a @click="Edit_Fun">编辑</a> |
+                  <a @click="Del_Fun">删除</a>
               </template>
               <!--定义操作按钮 结束-->
 
@@ -78,6 +84,7 @@
 
 
       </a-layout-content>
+
 
     </a-layout>
 
@@ -94,7 +101,7 @@ import axios from 'axios';      // 网络请求模块
 axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
 
 import { PublicModel,A_Patch } from '/src/assets/JS_Model/public_model' // 引用自有模块&类方法
-import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
+import {ref, reactive, onBeforeMount, onMounted, onUnmounted, h} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
 
@@ -102,9 +109,11 @@ import { useStore } from 'vuex'
 import menu_left from '@/components/layout/menu_left.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
-import User_Add from "@/components/User_Add.vue";
-
+import User_Add from "@/components/admin/User_Add.vue";
+import User_Del from "@/components/admin/User_Del.vue";
+import User_Edit from "@/components/admin/User_Edit.vue";
 // 组件引用=====结束
+
 
 export default {
 
@@ -118,7 +127,9 @@ export default {
     MenuFoldOutlined,
     nav_pagination,
     menu_head,
-    User_Add
+    User_Add,
+    User_Del,
+    User_Edit
   },
 
   setup() {
@@ -145,11 +156,18 @@ export default {
     const ADDDATA= reactive({
       open:false,
       user_id:''
+    })
 
+    const EDITDATA= reactive({
+      open:false,
+      user_id:''
     })
 
     // 删除发送数据
-
+    const DELDATA = reactive({
+      open:false,
+      user_id:''
+    })
 
     // 组件挂在之前---请求数据
     onBeforeMount(async ()=>{
@@ -163,8 +181,8 @@ export default {
 
     })
 
-    // 组件挂之后---请求数据
 
+    // 组件挂之后---请求数据
     // 定义一个函数来处理窗口大小变化 ==
     const handleResize = () => {
       innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
@@ -322,23 +340,30 @@ export default {
 
     }
 
+
     // 【新建】调用组件方法===》弹出抽屉+传值
     const Add_Fun = (e)=>{
       console.log(e)
-      let user_id = '';
+      // let user_id = '';
       ADDDATA.open = true;
-
-
-
-
-
     }
 
     // 【编辑】调用组件方法===》弹出抽屉+传值
-    const Edit_Fun = ()=>{}
+    const Edit_Fun = (e)=>{
+      console.log(e)
+      // let user_id = '';
+      EDITDATA.open = true;
+    }
 
     // 【删除】调用组件方法===》弹出抽屉+传值
-    const Del_Fun = ()=>{}
+    const Del_Fun = (e)=>{
+      console.log(e)
+      // let user_id = '';
+      DELDATA.open = true;
+    }
+
+
+
 
 
     return {
@@ -348,8 +373,11 @@ export default {
       PAGEDATA,
       ADDDATA,
       Add_Fun,
+      DELDATA,
+      Del_Fun,
+      EDITDATA,
+      Edit_Fun,
       receive,
-
     };
 
 
