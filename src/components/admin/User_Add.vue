@@ -151,31 +151,27 @@ export default defineComponent({
       // 表单数据初始化
       const form = reactive({
         id:'',
-        account_type:'',
+        account_type:0,
         version:'个人版',
         nickname: '',
         password: '123456',
         brand_name: '',
-        mobile: '',
-        role: '',               // 角色
-        department_id: '',      // 部门id
+        mobile: '',             // 手机号码
+        role: 'admin',         // 角色
+        department_id: '',     // 部门id
         department: '',        // 部门名称
       });
 
       // 表单验证规则
       const rules = {
-          id: [
-              {
-              required: true,
-              message: '不能为空',
-              },
-          ],
-          account_type: [
-              {
-              required: true,
-              message: '不能为空',
-              },
-          ],
+        id: [{
+            required: true,
+            message: '不能为空',
+            }],
+        account_type: [{
+            required: true,
+            message: '不能为空',
+            }],
         version:[{
               required: true,
               message: '版本号不能为空',
