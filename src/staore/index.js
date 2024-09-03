@@ -10,9 +10,8 @@ const debug = process.env.NODE_ENV !== 'production'
 
 export default createStore({
   modules: {
-    left:menu_state,       // 左侧菜单收起、展开状态共享
-    user:user_state,       // 头部会员信息共享
-    menu:menu_state        // 菜单信息共享
+    menu:menu_state,       // 左侧菜单收起、展开状态共享
+    user:user_state       // 头部会员信息共享
   },
     namespaced: true,
   strict: debug,

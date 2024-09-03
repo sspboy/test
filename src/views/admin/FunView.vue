@@ -9,7 +9,7 @@
     <a-layout>
 
       <!--左侧 菜单组件  开始-->
-      <a-layout-sider v-model:collapsed="store.state.left.coll" :trigger="null" collapsible>
+      <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
         <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
@@ -23,7 +23,7 @@
               <a-col :span="5" :order="1">
                   <!--导航收起按钮-->
                   <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('change')}">
-                    <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" />
+                    <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
                   <!-- {{ PAGEDATA.title }} -->

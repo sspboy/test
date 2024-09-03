@@ -17,6 +17,13 @@ const routes = [
     {
         path: '/user',
         name: 'User',
+        // 路由守卫,用做前端鉴权访问路由
+        beforeEnter: (to, from) => {
+            // console.log(from)
+            // console.log(to)
+            // reject the navigation
+            return true
+        },
         component: () => import('../views/admin/UserView.vue'),   // 视图文件
         meta:{
             title:'用户管理',

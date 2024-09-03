@@ -9,7 +9,7 @@
     <a-layout>
 
       <!--左侧 菜单组件  开始-->
-      <a-layout-sider v-model:collapsed="store.state.left.coll" :trigger="null" collapsible>
+      <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
         <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
@@ -23,7 +23,7 @@
               <a-col :span="5" :order="1">
                   <!--导航收起按钮-->
                   <a-button type="primary" size="small" style="font-size: 12px; margin-right: 16px;" @click="() => { store.commit('change') }">
-                    <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" />
+                    <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
                   <!-- {{ PAGEDATA.title }} -->
@@ -266,6 +266,54 @@ export default {
       Fetch_Post_Data() // 执行请求方法
 
     }
+
+    // 菜单详情查询===ok
+    store.dispatch('menu/get_menu',{m_id:'31'}).then(()=>{
+      console.log(store.state.menu)  // 页面赋值
+    })
+
+    // 菜单列表查询==ok
+    const page_data = {
+      "page":1,
+      "page_size":10
+    }
+    store.dispatch('menu/list', page_data).then(()=>{
+      console.log(store.state.menu.message)
+    })
+
+
+    // 菜单新增===ok
+    // const add_data = {
+		// 	"parent_id": 0,
+		// 	"ico_name": null,
+		// 	"name": "新增测试",
+		// 	"field": "ADD",
+		// 	"function_info": "{}",
+		// }
+    // store.dispatch('menu/add_menu', add_data).then(()=>{
+    //   console.log(store.state.menu.message)
+    // })
+
+
+    // 菜单删除===ok
+    store.dispatch('menu/del_menu',{m_id:54}).then(()=>{
+      console.log(store.state.menu.message)
+    })
+
+
+    // 菜单更新
+
+
+    
+    // 菜单批量删除
+
+
+
+
+
+
+
+
 
     return {
       store,

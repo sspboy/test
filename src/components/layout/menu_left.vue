@@ -54,7 +54,7 @@ export default defineComponent({
 
 
     // 如果为true 收起状态
-    if(store.state.left.coll){
+    if(store.state.menu.coll){
       state.key=[props.menudata.key]
       state.openKeys = []
     }else {    // 如果为false 展开状态

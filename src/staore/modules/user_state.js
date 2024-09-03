@@ -9,7 +9,7 @@ const API = {
         "detaile": "api/admin/user/",   // [get]+id详情
         "delete": "api/admin/user/",    // [delete]+id删除
         "edit": "api/admin/user/",      // [put]setting_data+id 传数据更新
-        "add": "api/admin/user/add"     // [post]
+        "add": "api/admin/user/add",     // [post]
     }
 
 }
@@ -23,7 +23,7 @@ const state = ()=>({
         del_state:'',
         update_state:'',
         add_state:'',
-        bacth_del:{}
+        bacth_del:''
     }
 
 })
@@ -72,16 +72,14 @@ const actions ={
     // 列表查询
     list:({ commit },data)=>{
 
-        // let page = ''
-        // let page_size = ''
-        // let tiaojian = ''
-
-        let url = ''
-
         try{
-            axios.post(url, data).then((response)=> {
+
+            axios.post(API.user.list, data).then((response)=> {
+
                 commit('data_list', response.data)
+
             })
+
         }catch (error){
 
             console.error('user list post request err!',error)
@@ -132,9 +130,7 @@ const actions ={
 
         try{
 
-            let url = API.user.add
-
-            axios.post(url, data).then((response)=>{
+            axios.post(API.user.add, data).then((response)=>{
 
                 commit('add_state', response.data)
 
@@ -152,13 +148,11 @@ const actions ={
 
         let user_id = user_data.user_id
 
-        let data = user_data.data
-
         try{
 
             let url = API.user.edit + user_id
 
-            axios.put(url, data).then((response)=>{
+            axios.put(url, user_data).then((response)=>{
 
                 commit('update_state', response.data)
 
@@ -172,11 +166,11 @@ const actions ={
 
     },
     // 批量删除
-    bacth_del:({ commit },user_data)=>{
+    bacth_del:({ commit },data)=>{
 
         try{
 
-            axios.put(API.user.list, user_data).then((response)=>{
+            axios.put(API.user.list, data).then((response)=>{
 
                 commit('bacth_del', response.data)
 
@@ -196,5 +190,7 @@ export default {
     state,
     getters,
     mutations,
-    actions
+    actions,
+    namespaced: true,
+    // namespaced: true  命名空间这一行一定要写，这是vuex寻找子组件的依据；
 }
