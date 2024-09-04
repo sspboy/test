@@ -22,7 +22,7 @@
             <a-row type="flex">
               <a-col :span="5" :order="1">
                   <!--导航收起按钮-->
-                  <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('change')}">
+                  <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('menu/change')}">
                     <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
@@ -32,7 +32,7 @@
                   添加功能
                 </a-button>
               </a-col>
-              <a-col :span="6" :order="3">3 col-order-2</a-col>
+              <a-col :span="6" :order="3"></a-col>
             </a-row>
             <!--条件查询组件 结束 -->
         </div>
@@ -43,8 +43,8 @@
           <!--表格组件：：发送初始化数据  开始-->
           <a-table
               :loading="loading"
-              :columns="PAGEDATA.colum"
-              :data-source="PAGEDATA.datalist"
+              :columns="PAGEDATA?.colum"
+              :data-source="PAGEDATA?.datalist"
               :scroll="{ x: 1200, y: innerHeight}"
               :pagination="false"
               style="font-size:12px;"
@@ -79,7 +79,6 @@
 import axios from 'axios';      // 网络请求模块
 axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
 
-import { PublicModel,A_Patch } from '/src/assets/JS_Model/public_model' // 引用自有模块&类方法
 import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
@@ -105,8 +104,6 @@ export default {
   setup(){
 
     const store = useStore();// 共享数据
-    const ruterPatch = new A_Patch();// 初始化路由地址
-    const publicModel = new PublicModel();// 初始网络请求方法
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)// 初始化loading状态
 
@@ -123,13 +120,18 @@ export default {
 
 
     // 组件挂在之前---请求数据
-    onBeforeMount(async ()=>{
+    onBeforeMount(()=>{
 
       let qurest_data = {"page":1, "page_size":10}
 
-      const { Fetch_Post_Data } = publicModel.axios_post(ruterPatch.AdminAPI.fun.list, qurest_data, look) // 初始化post请求
-
-      await Fetch_Post_Data()   // 从Api请求数据
+      // 数据共享方法
+      store.dispatch('fun/list', qurest_data).then(()=>{
+        PAGEDATA.colum = store.state.fun.message.data_list.colum
+        PAGEDATA.user = store.state.fun.message.user
+        PAGEDATA.datalist = store.state.fun.message.data_list.data
+        PAGEDATA.total_number = store.state.fun.message.data_list.total_number
+        loading.value = false        // loading 状态关闭
+      })
 
 
     })
@@ -149,109 +151,6 @@ export default {
     });
 
 
-    // 表头、表框设置
-    var List = {
-
-      // 表头数据转义
-      getcolum:(colums)=>{
-        // id
-        if(colums.field_name === "id"){
-          colums['align'] = 'center'
-          colums['width'] = 74
-        }
-        // 关联菜单id
-        if(colums.field_name === "m_id"){
-          colums['align'] = 'center'
-          colums['width'] = 90
-        }
-        // 菜单名称
-        if(colums.field_name === "m_name"){
-          colums['align'] = 'left'
-          colums['width'] = 120
-        }
-        // 功能名称
-        if(colums.field_name === "name"){
-          colums['align'] = 'center'
-          colums['width'] = 140
-        }
-        // 函数名称
-        if(colums.field_name === "def_name"){
-          colums['align'] = 'center'
-          colums['width'] = 174
-        }
-        // 描述
-        if(colums.field_name === "miaoshu"){
-          colums['align'] = 'center'
-          colums['width'] = 100
-        }
-        // 创建时间
-        if(colums.field_name === "create_time"){
-          colums['align'] = 'center'
-          colums['width'] = 200
-        }
-        // 更新时间
-        if(colums.field_name === "update_time"){
-          colums['align'] = 'center'
-          colums['width'] = 200
-        }
-      },
-      // 添加操作
-      addop:(colums)=>{
-        var op = {
-          "dataIndex": "state",
-          "field_name": "state",
-          "field_type": "int",
-          "key": "operation",
-          "title": "操作",
-          "fixed": 'right',
-          "align":"center",
-          "width":100
-        }
-        colums.push(op) // 添加操作按钮
-      },
-      // 表格内容转义
-      getvlue:(vlues)=>{
-        console.log(vlues)
-      }
-      // 点击翻页加载数据
-    }
-
-
-
-
-    // 网络请求接口====> 回调方法
-    function look(res){
-
-      // loading 状态关闭
-      loading.value = false
-
-      // 设置表头列的宽度
-      for(let i of res.colum){
-        List.getcolum(i)
-      }
-
-      // 表格添加操作按钮列
-      List.addop(res.colum)
-
-      PAGEDATA.user = res.user
-      PAGEDATA.colum = res.colum
-      PAGEDATA.datalist = res.data
-      PAGEDATA.total_number = res.total_number
-
-      // 添加编辑方法
-      // 添加删除方法
-      // 添加新增数据方法
-
-
-      // for(let i of res.data){
-      //   console.log(i)
-      // }
-
-      return res
-
-    }
-
-
 
 
     // 接收来自子组件发送的数据=回调方法
@@ -259,13 +158,70 @@ export default {
 
       loading.value = true  // 开启loading状态
 
-      const { Fetch_Post_Data } = publicModel.axios_post(ruterPatch.AdminAPI.fun.list, message, look) // 初始化post请求
+      // 数据共享方法
+      store.dispatch('fun/list', message).then(()=>{
+        PAGEDATA.colum = store.state.fun.message.data_list.colum
+        PAGEDATA.user = store.state.fun.message.user
+        PAGEDATA.datalist = store.state.fun.message.data_list.data
+        PAGEDATA.total_number = store.state.fun.message.data_list.total_number
+        loading.value = false // loading 状态关闭
 
-      Fetch_Post_Data() // 执行请求方法
+      })
 
     }
 
 
+    // 功能详情查询===ok
+    // store.dispatch('fun/get',{id:'1'}).then(()=>{
+    //   console.log(store.state.fun)  // 页面赋值
+    // })
+
+    // 功能列表查询==ok
+    // const page_data = {
+    //   "page":1,
+    //   "page_size":10
+    // }
+    // store.dispatch('fun/list', page_data).then(()=>{
+    //   console.log(store.state.fun.message)
+    // })
+
+
+    // 功能新增===ok
+    // const add_data = {
+    //     "m_id":2,
+    //     "m_name":"上一级菜单",
+    //     "name":"创意功能",
+    //     "def_name":"fun.del",
+    //     "miaoshu":"创意的好功能"
+    // }
+    // store.dispatch('fun/add', add_data).then(()=>{
+    //   console.log(store.state.fun.message)
+    // })
+
+
+    // 功能删除===ok
+    // store.dispatch('fun/del',{id:18}).then(()=>{
+    //   console.log(store.state.fun.message)
+    // })
+
+
+    // 功能更新==ok
+    // const update_data = {
+    //   "id":17,
+    //   "setting_data":{"name":"系统设置1"}
+    // }
+    // store.dispatch('fun/update', update_data).then(()=>{
+    //   console.log(store.state.fun.message)
+    // })
+
+
+    // 功能批量删除===ok
+    // const batch_del_data = {
+    //   "id":[15,16,17]
+    // }
+    // store.dispatch('fun/batch_del', batch_del_data).then(()=>{
+    //     console.log(store.state.fun.message)
+    // })
 
 
     return{

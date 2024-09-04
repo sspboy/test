@@ -1,18 +1,8 @@
 // 会员信息请求共享
 import axios from "axios";
-
-const API = {
-
-    // 用户管理
-    user: {
-        "list": "api/admin/user/list",  // [post]列表 [put]data 批量删除
-        "detaile": "api/admin/user/",   // [get]+id详情
-        "delete": "api/admin/user/",    // [delete]+id删除
-        "edit": "api/admin/user/",      // [put]setting_data+id 传数据更新
-        "add": "api/admin/user/add",     // [post]
-    }
-
-}
+// 引用外部方法===接口地址
+import * as utils from '@/assets/JS_Model/public_model';
+const API = new utils.A_Patch()
 
 /* State 数据暂存*/
 const state = ()=>({
@@ -40,7 +30,95 @@ const mutations = {
     },
 
     // 更新列表
-    data_list:(state,resdata)=>{
+    data_list:(state, resdata)=>{
+
+        for(let colums of resdata.colum){
+            // 品牌id
+            if(colums.field_name === "b_id"){
+              colums['align'] = 'center'
+              colums['width'] = 74
+            }
+            // 账号类型
+            if(colums.field_name === "account_type"){
+              colums['align'] = 'center'
+              colums['width'] = 90
+            }
+            // 账号名称
+            if(colums.field_name === "id"){
+              colums['align'] = 'left'
+              colums['width'] = 180
+            }
+            // 版本id
+            if(colums.field_name === "v_id"){
+              colums['align'] = 'center'
+              colums['width'] = 74
+            }
+            // 昵称
+            if(colums.field_name === "nickname"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+            // 密码
+            if(colums.field_name === "pass_word"){
+              colums['align'] = 'center'
+              colums['width'] = 140
+            }
+            // 品牌名称
+            if(colums.field_name === "brand_name"){
+              colums['align'] = 'center'
+              colums['width'] = 140
+            }
+            // 手机号码
+            if(colums.field_name == "mobile"){
+              colums['align'] = 'center'
+              colums['width'] = 130
+            }
+            // 角色
+            if(colums.field_name === "role"){
+              colums['align'] = 'center'
+              colums['width'] = 140
+            }
+            // 部门id
+            if(colums.field_name == "department_id"){
+              colums['align'] = 'center'
+              colums['width'] = 80
+            }
+            // 部门名称
+            if(colums.field_name == "department_name"){
+              colums['align'] = 'center'
+              colums['width'] = 220
+            }
+            // 账号状态
+            if(colums.field_name == "state"){
+              colums['align'] = 'center'
+              colums['width'] = 80
+            }
+            // 创建时间
+            if(colums.field_name === "create_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+            // 更新时间
+            if(colums.field_name === "update_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+        }
+
+        var op = {
+
+              "dataIndex": "state",
+              "field_name": "state",
+              "field_type": "int",
+              "key": "operation",
+              "title": "操作",
+              "fixed": 'right',
+              "align":"center",
+              "width":100
+        }
+
+        resdata.colum.push(op) // 添加操作按钮
+
         state.message.data_list = resdata;
     },
 
@@ -70,11 +148,11 @@ const mutations = {
 const actions ={
 
     // 列表查询
-    list:({ commit },data)=>{
+    list:async ({ commit },data)=>{
 
         try{
 
-            axios.post(API.user.list, data).then((response)=> {
+            await axios.post(API.AdminAPI.user.list, data).then((response)=> {
 
                 commit('data_list', response.data)
 
@@ -88,11 +166,11 @@ const actions ={
 
     },
     // 单条查询
-    get_user: ({ commit },user_id)=>{
+    get: ({ commit },user_id)=>{
 
         try{
 
-            let url = API.user.detaile + user_id.user_id
+            let url = API.AdminAPI.user.detaile + user_id.user_id
 
             axios.get(url).then((response)=>{
 
@@ -107,9 +185,9 @@ const actions ={
         }
     },
     // 删除
-    del_user:({ commit }, user_id)=>{
+    del:({ commit }, user_id)=>{
 
-        let url = API.user.delete + user_id.user_id
+        let url = API.AdminAPI.user.delete + user_id.user_id
 
         try{
 
@@ -126,11 +204,11 @@ const actions ={
 
     },
     // 添加
-    add_user:({ commit }, data)=>{
+    add:({ commit }, data)=>{
 
         try{
 
-            axios.post(API.user.add, data).then((response)=>{
+            axios.post(API.AdminAPI.user.add, data).then((response)=>{
 
                 commit('add_state', response.data)
 
@@ -144,13 +222,13 @@ const actions ={
 
     },
     // 更新
-    update_user:({ commit },user_data)=>{
+    update:({ commit },user_data)=>{
 
         let user_id = user_data.user_id
 
         try{
 
-            let url = API.user.edit + user_id
+            let url = API.AdminAPI.user.edit + user_id
 
             axios.put(url, user_data).then((response)=>{
 
@@ -170,7 +248,7 @@ const actions ={
 
         try{
 
-            axios.put(API.user.list, data).then((response)=>{
+            axios.put(API.AdminAPI.user.list, data).then((response)=>{
 
                 commit('bacth_del', response.data)
 

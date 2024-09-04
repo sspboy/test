@@ -1,18 +1,9 @@
 // 左侧菜单数据共享
 import axios from "axios";
+// 引用外部方法
+import * as utils from '@/assets/JS_Model/public_model';
+const API = new utils.A_Patch()
 
-const API = {
-
-    // 菜单管理
-    menu:{
-        "list": "api/admin/menu/list",  // [post]列表 [put]data 批量删除
-        "detaile": "api/admin/menu/",   // [get]+id详情
-        "delete": "api/admin/menu/",    // [delete]+id删除
-        "edit": "api/admin/menu/",      // [put]setting_data + id 传数据更新
-        "add": "api/admin/menu/add"     // [post]
-    }
-
-}
 
 /* State 数据暂存*/
 const state = ()=>({
@@ -45,6 +36,62 @@ const mutations = {
 
     // 更新>列表
     data_list:(state,resdata)=>{
+        for(let colums of resdata.colum){
+            // 菜单id
+            if(colums.field_name === "id"){
+              colums['align'] = 'center'
+              colums['width'] = 74
+            }
+            // 菜单父id
+            if(colums.field_name === "parent_id"){
+              colums['align'] = 'center'
+              colums['width'] = 90
+            }
+            // 图片名称
+            if(colums.field_name === "ico_name"){
+              colums['align'] = 'left'
+              colums['width'] = 180
+            }
+            // 菜单名称
+            if(colums.field_name === "name"){
+              colums['align'] = 'center'
+              colums['width'] = 174
+            }
+            // 功能字符
+            if(colums.field_name === "field"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+            // 权限配置
+            if(colums.field_name === "function_info"){
+              colums['align'] = 'center'
+              colums['width'] = 140
+            }
+            // 创建时间
+            if(colums.field_name === "create_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+            // 更新时间
+            if(colums.field_name === "update_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+        }
+
+        var op = {
+
+              "dataIndex": "state",
+              "field_name": "state",
+              "field_type": "int",
+              "key": "operation",
+              "title": "操作",
+              "fixed": 'right',
+              "align":"center",
+              "width":100
+        }
+
+        resdata.colum.push(op) // 添加操作按钮
         state.message.data_list = resdata;
     },
 
@@ -73,10 +120,11 @@ const mutations = {
 const actions = {
 
     // 查询列表
-    list:({ commit },data)=>{
+    list:async ({ commit },data)=>{
+
         try{
 
-            axios.post(API.menu.list, data).then((response)=> {
+            await axios.post(API.AdminAPI.menu.list, data).then((response)=> {
 
                 commit('data_list', response.data)
 
@@ -89,10 +137,10 @@ const actions = {
         }
     },
     // 查询菜单详情
-    get_menu:({ commit }, data)=>{
+    get:({ commit }, data)=>{
         try{
 
-            let url = API.menu.detaile + data.m_id
+            let url = API.AdminAPI.menu.detaile + data.m_id
 
             axios.get(url).then((response)=>{
 
@@ -107,11 +155,11 @@ const actions = {
         }
     },
     // 添加菜单
-    add_menu:({ commit },data)=>{
+    add:({ commit },data)=>{
 
         try{
 
-            axios.post(API.menu.add, data).then((response)=>{
+            axios.post(API.AdminAPI.menu.add, data).then((response)=>{
 
                 commit('add_state', response.data)
 
@@ -124,13 +172,13 @@ const actions = {
         }
     },
     // 更新
-    update_menu:({ commit }, data)=>{
+    update:({ commit }, data)=>{
 
         let m_id = data.id
 
         try{
 
-            let url = API.menu.edit + m_id
+            let url = API.AdminAPI.menu.edit + m_id
 
             axios.put(url, data).then((response)=>{
 
@@ -145,9 +193,9 @@ const actions = {
         }
     },
     // 删除菜单
-    del_menu:({ commit },data)=>{
+    del:({ commit },data)=>{
 
-        let url = API.menu.delete + data.m_id
+        let url = API.AdminAPI.menu.delete + data.m_id
 
         try{
 
@@ -163,11 +211,11 @@ const actions = {
         }
     },
     // 批量删除菜单
-    bacth_del:({ commit },data)=>{
+    batch_del:({ commit },data)=>{
 
         try{
 
-            axios.put(API.menu.list, data).then((response)=>{
+            axios.put(API.AdminAPI.menu.list, data).then((response)=>{
 
                 commit('bacth_del', response.data)
 

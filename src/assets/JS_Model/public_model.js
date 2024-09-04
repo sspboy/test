@@ -1,6 +1,5 @@
 // admin后台公用请求的一些基础方法方法
 import axios from "axios";
-import {ref} from "vue"
 
 // 接口请求地址配置
 export class A_Patch{
@@ -9,8 +8,7 @@ export class A_Patch{
     AdminAPI={
         // 用户管理
         user: {
-            "list": "api/admin/user/list",  // [post]列表
-                                            // [put]data 批量删除
+            "list": "api/admin/user/list",  // [post]列表// [put]data 批量删除
             "detaile": "api/admin/user/",   // [get]+id详情
             "delete": "api/admin/user/",    // [delete]+id删除
             "edit": "api/admin/user/",      // [put]setting_data+id 传数据更新
@@ -26,12 +24,11 @@ export class A_Patch{
             "add": "api/admin/menu/add"     // [post]
         },
         // 功能列表
-        fun:{
-            "list": "api/admin/function/list",  // [post]列表
-                                                // [put]data 批量删除
+        function: {
+            "list": "api/admin/function/list",  // [post]列表 [put]data 批量删除
             "detaile": "api/admin/function/",   // [get]+id详情
             "delete": "api/admin/function/",    // [delete]+id删除
-            "edit": "api/admin/function/",      // [put]setting_data + id 传数据更新
+            "edit": "api/admin/function/",      // [put]setting_data+id 传数据更新
             "add": "api/admin/function/add"     // [post]
         },
         // 版本管理
@@ -53,8 +50,12 @@ export class A_Patch{
 
         },
         // 组织架构
-        department:{
-
+        department: {
+            "list": "api/admin/department/list",  // [post]列表 [put]data 批量删除
+            "detaile": "api/admin/department/",   // [get]+id详情
+            "delete": "api/admin/department/",    // [delete]+id删除
+            "edit": "api/admin/department/",      // [put]setting_data+id 传数据更新
+            "add": "api/admin/department/add"     // [post]
         },
         // 角色管理
         role:{
