@@ -8,6 +8,9 @@ const API = new utils.A_Patch()
 const state = ()=>({
 
     message: {
+        condition:'None',
+        page:1,
+        page_size:10,
         data_list:{},
         detaile:{},
         del_state:'',
@@ -118,8 +121,9 @@ const mutations = {
         }
 
         resdata.colum.push(op) // 添加操作按钮
-
-        state.message.data_list = resdata;
+        state.message.page = resdata.now_page;
+        state.message.page_size = resdata.page_size;
+        state.message.data_list = resdata; // 接口返回数据
     },
 
     // 更新删除

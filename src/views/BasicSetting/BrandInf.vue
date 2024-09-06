@@ -6,7 +6,7 @@
 import {defineComponent, reactive} from 'vue';
 
 export default defineComponent({
-  // 模版名称
+  // 模版名称【品牌资料】
   name: "BrandInf",
   // 引用组件
   components: {},

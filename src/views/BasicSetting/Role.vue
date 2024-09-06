@@ -6,7 +6,7 @@
 import {defineComponent, reactive} from 'vue';
 
 export default defineComponent({
-  // 模版名称
+  // 模版名称【角色管理】
   name: "Role",
   // 引用组件
   components: {},

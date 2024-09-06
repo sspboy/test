@@ -1,11 +1,11 @@
 <template>
 
   <!--新建、编辑、删除用户数据====>开始-->
-  <User_Add :adddata="ADDDATA"/>
+  <User_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
 
-  <User_Edit :editdata="EDITDATA"/>
+  <User_Edit :editdata="EDITDATA" v-on:edit_coallback="pagecallback"/>
 
-  <User_Del :deldata="DELDATA"/>
+  <User_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
 
@@ -64,12 +64,12 @@
               style="font-size:12px;"
           >
 
-            <template #bodyCell="{ column }">
+            <template #bodyCell="{ text, record, index, column }">
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
-                  <a @click="Edit_Fun">编辑</a> |
-                  <a @click="Del_Fun">删除</a>
+                  <a @click="Edit_Fun(record)">编辑</a> |
+                  <a @click="Del_Fun(record)">删除</a>
               </template>
               <!--定义操作按钮 结束-->
 
@@ -80,7 +80,7 @@
           </div>
 
           <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
-          <nav_pagination :fandata="PAGEDATA?.total_number" v-on:complete="receive"/>
+          <nav_pagination :fandata="PAGEDATA" v-on:complete="receive"/>
 
 
       </a-layout-content>
@@ -97,9 +97,6 @@
 
 
 <script>
-import axios from 'axios';      // 网络请求模块
-axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
-
 import {ref, reactive, onBeforeMount, onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
@@ -148,58 +145,46 @@ export default {
       menuconfig:{}       // 菜单配置
     })
 
-    // 新建
-    const ADDDATA= reactive({
-      open:false,
-      user_id:''
-    })
-
-    // 编辑
-    const EDITDATA= reactive({
-      open:false,
-      user_id:''
-    })
-
-    // 删除
-    const DELDATA = reactive({
-      open:false,
-      user_id:''
-    })
-
-
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
-
-      let qurest_data = {"page":1, "page_size":10}
-
-      // 数据共享方法
-      store.dispatch('user/list', qurest_data).then(()=>{
-        PAGEDATA.colum = store.state.user.message.data_list.colum
-        PAGEDATA.user = store.state.user.message.user
-        PAGEDATA.datalist = store.state.user.message.data_list.data
-        PAGEDATA.total_number = store.state.user.message.data_list.total_number
-        loading.value = false        // loading 状态关闭
-      })
-
+      let message = {"page":1, "page_size":10}
+      Refresh_table(message) // 【页面初始化】&&刷新表格
     })
 
-    // 接收来自[翻页]子组件发送的数据=回调方法
+    // [翻页]&&刷新表格
     const receive = (message)=>{
+      loading.value = true    // 开启loading状态
+      Refresh_table(message) // 刷新表格
+    }
 
-      loading.value = true  // 开启loading状态
+    //【当前页面】&&刷新表格
+    const pagecallback =()=>{
+      let message = {}
+      message.page = store.state.user.message.page;
+      message.page_size = store.state.user.message.page_size;
+      receive(message)
 
-      // 数据共享方法
-      store.dispatch('user/list', message).then(()=>{
+    }
+
+
+    // 刷新表格数据方法
+    const Refresh_table = (message)=>{
+        store.dispatch('user/list', message).then(()=>{
         PAGEDATA.colum = store.state.user.message.data_list.colum
         PAGEDATA.user = store.state.user.message.user
         PAGEDATA.datalist = store.state.user.message.data_list.data
         PAGEDATA.total_number = store.state.user.message.data_list.total_number
         loading.value = false // loading 状态关闭
-
       })
-
     }
+
+
+    // 【添加】数据初始化
+    const ADDDATA= reactive({
+      open:false,
+      user_id:''
+    })
 
     // 【新建】调用组件方法===》弹出抽屉+传值
     const Add_Fun = (e)=>{
@@ -208,6 +193,13 @@ export default {
       ADDDATA.open = true;
     }
 
+
+    // 【编辑】数据初始化
+    const EDITDATA= reactive({
+      open:false,
+      data:''
+    })
+
     // 【编辑】调用组件方法===》弹出抽屉+传值
     const Edit_Fun = (e)=>{
       console.log(e)
@@ -215,13 +207,17 @@ export default {
       EDITDATA.open = true;
     }
 
+    // 【删除】数据初始化
+    const DELDATA = reactive({
+      open:false,
+      user_id:''
+    })
+
     // 【删除】调用组件方法===》弹出抽屉+传值
-    const Del_Fun = (e)=>{
-      console.log(e)
-      // let user_id = '';
+    const Del_Fun = (u_data)=>{
+      DELDATA.user_id = u_data.id;
       DELDATA.open = true;
     }
-
 
 
     // 组件挂之后---请求数据
@@ -304,6 +300,7 @@ export default {
 
     return {
       store,
+      pagecallback,
       loading,
       innerHeight,
       PAGEDATA,

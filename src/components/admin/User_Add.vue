@@ -25,8 +25,8 @@
           </a-col>
 
           <a-col :span="12">
-            <a-form-item label="密码" name="password">
-              <a-input-password v-model:value="form.password" class="font_size_12" placeholder="输入密码" type="password" />
+            <a-form-item label="密码" name="pass_word">
+              <a-input-password v-model:value="form.pass_word" class="font_size_12" placeholder="输入密码" type="password" />
             </a-form-item>
           </a-col>
 
@@ -36,11 +36,11 @@
         <a-row :gutter="16">
 
           <a-col :span="12">
-            <a-form-item label="版本" name="version">
+            <a-form-item label="版本" name="v_id">
               <a-select
-                v-model:value="form.version"
+                v-model:value="form.v_id"
                 show-search
-                :placeholder="form.version"
+                :placeholder="form.v_id"
                 :options="options"
                 :filter-option="filterOption"
                 @focus="handleFocus"
@@ -92,21 +92,7 @@
           </a-col>
         </a-row>
 
-        <a-row :gutter="16">
 
-          <a-col :span="12">
-            <a-form-item label="部门id" name="department_id">
-              <a-input v-model:value="form.department_id" placeholder="Please enter user name" type="number"/>
-            </a-form-item>
-          </a-col>
-
-
-          <a-col :span="12">
-            <a-form-item label="部门名称" name="department">
-              <a-input v-model:value="form.department" placeholder="Please enter user name" type="string"/>
-            </a-form-item>
-          </a-col>
-        </a-row>
 
       </a-form>
 
@@ -128,6 +114,7 @@
 
 <script>
 import { reactive, ref, defineComponent,toRaw } from 'vue';
+import { useStore } from 'vuex'
 
 
 export default defineComponent({
@@ -144,135 +131,145 @@ export default defineComponent({
   },
   setup(props){
 
+    const store = useStore();// 共享数据
 
-      const open = props;
-      const formRef = ref()
+    const open = props;
+    const formRef = ref()
 
-      // 表单数据初始化
-      const form = reactive({
-        id:'',
-        account_type:0,
-        version:'个人版',
-        nickname: '',
-        password: '123456',
-        brand_name: '',
-        mobile: '',             // 手机号码
-        role: 'admin',         // 角色
-        department_id: '',     // 部门id
-        department: '',        // 部门名称
+    // 表单数据初始化
+    const form = reactive({
+      id:'',
+      account_type:0,
+      v_id:'',
+      nickname: '',
+      pass_word: '123456',
+      brand_name: '',
+      mobile: '',             // 手机号码
+      role: 'admin',         // 角色
+
+    });
+
+    // 表单验证规则
+    const rules = {
+      id: [{
+          required: true,
+          message: '不能为空',
+          }],
+      account_type: [{
+          required: true,
+          message: '不能为空',
+          }],
+      v_id:[{
+            required: true,
+            message: '版本号不能为空',
+      }],
+        nickname: [
+            {
+            required: true,
+            message: '昵称不能为空',
+            },
+        ],
+        pass_word: [
+            {
+            required: true,
+            message: '密码不能为空',
+            },
+        ],
+        brand_name: [
+            {
+            required: true,
+            message: '品牌名称不能为空',
+            },
+        ],
+        mobile: [
+            {
+            required: true,
+            message: '手机号不能为空',
+            },
+        ],
+        role: [
+            {
+            required: true,
+            message: '角色不能为空',
+            },
+        ],
+        department_id: [
+            {
+            required: false,
+            message: '',
+            },
+        ],
+        department: [
+            {
+            required: false,
+            message: '',
+            },
+        ],
+    };
+
+    // 关闭抽屉方法
+    const onClose = () => {
+        open.adddata.open = false;
+    };
+
+    // 【保存方法】获取表单信息
+    const from_get=()=>{
+
+      // 验证表单的全部值
+      formRef.value.validate().then(() => {
+
+          console.log('values', form, toRaw(form));
+
+          store.dispatch('user/add', toRaw(form)).then(()=>{
+            console.log(store.state.user.message)
+          })
+
+        // 通过验证
+
+          // 提交到数据库
+
+          // 刷新表格
+
+      }).catch(error => {
+
+        console.log('error', error);
+
       });
-
-      // 表单验证规则
-      const rules = {
-        id: [{
-            required: true,
-            message: '不能为空',
-            }],
-        account_type: [{
-            required: true,
-            message: '不能为空',
-            }],
-        version:[{
-              required: true,
-              message: '版本号不能为空',
-        }],
-          nickname: [
-              {
-              required: true,
-              message: '昵称不能为空',
-              },
-          ],
-          password: [
-              {
-              required: true,
-              message: '密码不能为空',
-              },
-          ],
-          brand_name: [
-              {
-              required: true,
-              message: '品牌名称不能为空',
-              },
-          ],
-          mobile: [
-              {
-              required: true,
-              message: '手机号不能为空',
-              },
-          ],
-          role: [
-              {
-              required: true,
-              message: '角色不能为空',
-              },
-          ],
-          department_id: [
-              {
-              required: false,
-              message: '',
-              },
-          ],
-          department: [
-              {
-              required: false,
-              message: '',
-              },
-          ],
-      };
-
-      // 关闭抽屉方法
-      const onClose = () => {
-          open.adddata.open = false;
-      };
-
-      // 【保存方法】获取表单信息
-      const from_get=()=>{
+    }
 
 
-        console.log(form)
-        // 验证表单的全部值
-        formRef.value.validate().then(() => {
-
-            console.log('values', form, toRaw(form));
-
-        }).catch(error => {
-
-          console.log('error', error);
-
-        });
-      }
 
 
-      // 选择版本方法 ===>开始
-      const options = ref([
-        {
-          value: 'jack',
-          label: '个人版',
-        },
-        {
-          value: 'lucy',
-          label: '企业版',
-        },
-        {
-          value: 'tom',
-          label: '管理后台',
-        },
-      ]);
+    // 选择版本方法 ===>开始
+    const options = ref([
+      {
+        value: 0,
+        label: '个人版',
+      },
+      {
+        value: 1,
+        label: '企业版',
+      },
+      {
+        value: 2,
+        label: '管理后台',
+      },
+    ]);
 
-      const handleChange = value => {
-        console.log(`selected ${value}`);
-      };
-      const handleBlur = () => {
-        console.log('blur');
-      };
-      const handleFocus = () => {
-        console.log('focus');
-      };
-      const filterOption = (input, option) => {
-        return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-      };
-      const value = ref(undefined);
-      // 选择版本方法 ===>结束
+    const handleChange = value => {
+      console.log(`selected ${value}`);
+    };
+    const handleBlur = () => {
+      console.log('blur');
+    };
+    const handleFocus = () => {
+      console.log('focus');
+    };
+    const filterOption = (input, option) => {
+      return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+    const value = ref(undefined);
+    // 选择版本方法 ===>结束
 
 
 

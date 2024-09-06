@@ -8,6 +8,7 @@
 
 <script>
 import {defineComponent, reactive, ref} from 'vue';
+import {useStore} from "vuex";
 
 export default defineComponent({
   // 模版名称
@@ -24,21 +25,30 @@ export default defineComponent({
 
   },
   // 组合API返回到模版
-  setup(props) {
+  setup(props,ctx) {
+    const store = useStore();// 共享数据
 
     const open = props
+
+
     const modalText = ref('数据删除将无法恢复！');
     const confirmLoading = ref(false);
 
 
     // 确认方法
     const handleOk = () => {
+
       modalText.value = '正在删除数据中,请稍等...';
       confirmLoading.value = true;
-      setTimeout(() => {
+
+      // 用户删除==ok
+      store.dispatch('user/del',{user_id:open.deldata.user_id}).then(()=>{
+        ctx.emit('del_coallback') // 删除成功后刷新表格
         open.deldata.open = false;
         confirmLoading.value = false;
-      }, 2000);
+      })
+
+
     };
 
     return {
