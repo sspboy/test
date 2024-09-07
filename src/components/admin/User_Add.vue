@@ -129,7 +129,7 @@ export default defineComponent({
       type: Object
     }
   },
-  setup(props){
+  setup(props,ctx){
 
     const store = useStore();// 共享数据
 
@@ -218,17 +218,18 @@ export default defineComponent({
       // 验证表单的全部值
       formRef.value.validate().then(() => {
 
-          console.log('values', form, toRaw(form));
+        // console.log('values', form, toRaw(form));
 
-          store.dispatch('user/add', toRaw(form)).then(()=>{
-            console.log(store.state.user.message)
-          })
+        store.dispatch('user/add', toRaw(form)).then(()=>{
 
-        // 通过验证
+          setTimeout(()=>{
 
-          // 提交到数据库
+              open.adddata.open = false;
+              ctx.emit('add_coallback')
 
-          // 刷新表格
+          },1000)
+
+        })
 
       }).catch(error => {
 

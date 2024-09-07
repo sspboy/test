@@ -1,4 +1,11 @@
 <template>
+
+
+    <!--新建、编辑、删除用户数据====>开始-->
+  <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
+  <!--新建、编辑、删除用户数据====>结束-->
+
+
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
@@ -46,12 +53,12 @@
               style="font-size:12px;"
             >
 
-            <template #bodyCell="{ column }">
+            <template #bodyCell="{ text, record, index, column }">
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
-                  <a>编辑</a> |
-                  <a>删除</a>
+                  <a @click="Edit_Fun(record)">编辑</a> |
+                  <a @click="Del_Fun(record)">删除</a>
               </template>
               <!--定义操作按钮 结束-->
 
@@ -62,7 +69,7 @@
         </div>
 
         <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
-        <nav_pagination :fandata="PAGEDATA.total_number" v-on:complete="receive"/>
+        <nav_pagination :fandata="PAGEDATA" v-on:complete="receive"/>
 
       </a-layout-content>
 
@@ -82,6 +89,8 @@ import { useStore } from 'vuex'
 import menu_left from "@/components/layout/menu_left.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
+import Model_Del from "@/components/admin/Model_Del.vue";
+
 // 组件引用=====结束
 
 export default {
@@ -93,7 +102,8 @@ export default {
     MenuFoldOutlined,
     nav_pagination,
     menu_head,
-    PlusOutlined
+    PlusOutlined,
+    Model_Del
 
   },
   setup(){
@@ -113,20 +123,24 @@ export default {
       menuconfig:{}       // 菜单配置
     })
 
+    // 【删除】数据初始化
+    const DELDATA = reactive({
+      open:false,
+      actian_name:'ver/del',// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
+
+
+    // 【删除】调用组件方法===》弹出抽屉+传值
+    const Del_Fun = (detaile_data)=>{
+      DELDATA.detaile_obj.id = detaile_data.id;
+      DELDATA.open = true;
+    }
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
-
-      let qurest_data = {"page":1, "page_size":10}
-
-      // 数据共享方法
-      store.dispatch('ver/list', qurest_data).then(()=>{
-        PAGEDATA.colum = store.state.ver.message.data_list.colum
-        PAGEDATA.user = store.state.ver.message.user
-        PAGEDATA.datalist = store.state.ver.message.data_list.data
-        PAGEDATA.total_number = store.state.ver.message.data_list.total_number
-        loading.value = false        // loading 状态关闭
-      })
+      let message = {"page":1, "page_size":10}
+      Refresh_table(message) // 【页面初始化】&&刷新表格
 
     })
 
@@ -150,20 +164,31 @@ export default {
 
     // 接收来自子组件发送的数据=回调方法
     const receive = (message)=>{
+      loading.value = true    // 开启loading状态
+      Refresh_table(message) // 刷新表格
+    }
 
-      loading.value = true  // 开启loading状态
+    //【当前页面】&&刷新表格
+    const pagecallback =()=>{
+      let message = {}
+      message.page = store.state.ver.message.page;
+      message.page_size = store.state.ver.message.page_size;
+      receive(message)
+    }
 
-      // 数据共享方法
+    // 刷新表格
+    const Refresh_table = (message)=>{
+
       store.dispatch('ver/list', message).then(()=>{
         PAGEDATA.colum = store.state.ver.message.data_list.colum
         PAGEDATA.user = store.state.ver.message.user
         PAGEDATA.datalist = store.state.ver.message.data_list.data
         PAGEDATA.total_number = store.state.ver.message.data_list.total_number
         loading.value = false // loading 状态关闭
-
       })
 
     }
+
 
     // 版本详情==ok
     // store.dispatch('ver/get',{id:'1'}).then(()=>{
@@ -220,14 +245,15 @@ export default {
     // })
 
 
-
-
     return{
       store,
       loading,
+      pagecallback,
       innerHeight,
       PAGEDATA,
-      receive
+      receive,
+      Del_Fun,
+      DELDATA,
     }
   }
 }

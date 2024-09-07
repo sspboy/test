@@ -5,7 +5,7 @@
 
   <User_Edit :editdata="EDITDATA" v-on:edit_coallback="pagecallback"/>
 
-  <User_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
+  <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
 
@@ -106,7 +106,7 @@ import menu_left from '@/components/layout/menu_left.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
 import User_Add from "@/components/admin/User_Add.vue";
-import User_Del from "@/components/admin/User_Del.vue";
+import Model_Del from "@/components/admin/Model_Del.vue";
 import User_Edit from "@/components/admin/User_Edit.vue";
 // 组件引用=====结束
 
@@ -124,7 +124,7 @@ export default {
     nav_pagination,
     menu_head,
     User_Add,
-    User_Del,
+    Model_Del,
     User_Edit
   },
 
@@ -145,10 +145,9 @@ export default {
       menuconfig:{}       // 菜单配置
     })
 
-
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
-      let message = {"page":1, "page_size":10}
+      let message = {"page":1, "page_size":10, }
       Refresh_table(message) // 【页面初始化】&&刷新表格
     })
 
@@ -164,19 +163,23 @@ export default {
       message.page = store.state.user.message.page;
       message.page_size = store.state.user.message.page_size;
       receive(message)
-
     }
 
 
     // 刷新表格数据方法
     const Refresh_table = (message)=>{
-        store.dispatch('user/list', message).then(()=>{
+
+      store.dispatch('user/list', message).then(()=>{
+
         PAGEDATA.colum = store.state.user.message.data_list.colum
         PAGEDATA.user = store.state.user.message.user
         PAGEDATA.datalist = store.state.user.message.data_list.data
         PAGEDATA.total_number = store.state.user.message.data_list.total_number
+        console.log(store.state.user.message.data_list.total_number)
         loading.value = false // loading 状态关闭
+
       })
+
     }
 
 
@@ -187,8 +190,7 @@ export default {
     })
 
     // 【新建】调用组件方法===》弹出抽屉+传值
-    const Add_Fun = (e)=>{
-      console.log(e)
+    const Add_Fun = (detaile_data)=>{
       // let user_id = '';
       ADDDATA.open = true;
     }
@@ -201,8 +203,7 @@ export default {
     })
 
     // 【编辑】调用组件方法===》弹出抽屉+传值
-    const Edit_Fun = (e)=>{
-      console.log(e)
+    const Edit_Fun = (detaile_data)=>{
       // let user_id = '';
       EDITDATA.open = true;
     }
@@ -210,12 +211,14 @@ export default {
     // 【删除】数据初始化
     const DELDATA = reactive({
       open:false,
-      user_id:''
+      actian_name:'user/del',// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
     })
 
+
     // 【删除】调用组件方法===》弹出抽屉+传值
-    const Del_Fun = (u_data)=>{
-      DELDATA.user_id = u_data.id;
+    const Del_Fun = (detaile_data)=>{
+      DELDATA.detaile_obj.user_id = detaile_data.id;
       DELDATA.open = true;
     }
 

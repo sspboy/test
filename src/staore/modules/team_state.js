@@ -8,6 +8,9 @@ const API = new utils.A_Patch()
 /* State 数据暂存*/
 const state = ()=>({
     message: {
+        condition:'None',
+        page:1,
+        page_size:10,
         data_list:{},
         detaile:{},
         del_state:'',

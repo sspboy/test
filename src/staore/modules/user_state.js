@@ -170,11 +170,11 @@ const actions ={
 
     },
     // 单条查询
-    get: ({ commit },user_id)=>{
+    get: ({ commit },data)=>{
 
         try{
 
-            let url = API.AdminAPI.user.detaile + user_id.user_id
+            let url = API.AdminAPI.user.detaile + data.user_id
 
             axios.get(url).then((response)=>{
 
