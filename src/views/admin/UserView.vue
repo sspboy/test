@@ -64,7 +64,7 @@
               style="font-size:12px;"
           >
 
-            <template #bodyCell="{ text, record, index, column }">
+            <template #bodyCell="{  record,  column }">
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
@@ -141,19 +141,32 @@ export default {
       user: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
-      total_number:0,     // 总页数
+      total_number:0,     // 内容总数
       menuconfig:{}       // 菜单配置
     })
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
-      let message = {"page":1, "page_size":10, }
+      // 默认查询条件
+      let message = {
+        "page":1,
+        "page_size":10,
+        condition:[{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]}
       Refresh_table(message) // 【页面初始化】&&刷新表格
     })
 
     // [翻页]&&刷新表格
     const receive = (message)=>{
       loading.value = true    // 开启loading状态
+      // 刷新页面查询条件
+      message.condition = [{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]
+
       Refresh_table(message) // 刷新表格
     }
 
@@ -190,7 +203,7 @@ export default {
     })
 
     // 【新建】调用组件方法===》弹出抽屉+传值
-    const Add_Fun = (detaile_data)=>{
+    const Add_Fun = ()=>{
       // let user_id = '';
       ADDDATA.open = true;
     }
@@ -204,7 +217,7 @@ export default {
 
     // 【编辑】调用组件方法===》弹出抽屉+传值
     const Edit_Fun = (detaile_data)=>{
-      // let user_id = '';
+      EDITDATA.data = detaile_data;
       EDITDATA.open = true;
     }
 
@@ -323,13 +336,16 @@ export default {
 //.ant-table .ant-empty-normal {
 //    max-height: 880px;min-height: 880px;
 //}
-
+// .ant-table-tbody{
+//   height: calc(100vh - 265px);
+//   min-height: 0px;
+// }
 </script>
 
 <style>
-.ant-table-tbody{
-  height: calc(100vh - 265px);
-  min-height: 0px;
+.ant-table-body{
+   height: calc(100vh - 245px);
+   min-height: 0px;
 }
 
 #components-layout-demo-custom-trigger .trigger {

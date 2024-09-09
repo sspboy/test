@@ -152,7 +152,7 @@ const mutations = {
 const actions ={
 
     // 列表查询
-    list:async ({ commit },data)=>{
+    list:async ({ commit }, data)=>{
 
         try{
 

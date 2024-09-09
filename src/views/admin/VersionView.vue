@@ -260,8 +260,8 @@ export default {
 </script>
 
 <style>
-.ant-table-tbody{
-  height: calc(100vh - 265px);
+.ant-table-body{
+  height: calc(100vh - 245px);
   min-height: 0px;
 }
 </style>

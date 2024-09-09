@@ -97,10 +97,10 @@
       </a-form>
 
 
-      <template #extra>
+      <template #footer>
         <a-space>
-          <a-button @click="onClose" style="font-size: 12px;" size="small">取消</a-button>
-          <a-button type="primary" @click="from_get" style="font-size: 12px;" size="small" html-type="submit">保存</a-button>
+          <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
+          <a-button type="primary" @click="from_get" style="font-size: 12px;" html-type="submit">保存</a-button>
         </a-space>
       </template>
 
@@ -132,8 +132,7 @@ export default defineComponent({
   setup(props,ctx){
 
     const store = useStore();// 共享数据
-
-    const open = props;
+    const open = props;// 获取父组件传递的
     const formRef = ref()
 
     // 表单数据初始化
@@ -148,69 +147,81 @@ export default defineComponent({
       role: 'admin',         // 角色
 
     });
+    // 验证用户名方法
+    const validateUser = async (_rule, value) => {
+      console.log('hello!')
+      if (value === '') {
+
+        return Promise.reject('账号id不能为空');
+
+      } else {
+
+        if (form.id !== '123') {
+          return Promise.reject('id必须为123');
+
+
+        }
+        return Promise.resolve();
+      }
+
+    }
+
 
     // 表单验证规则
     const rules = {
+      // 用户id
       id: [{
-          required: true,
-          message: '不能为空',
-          }],
-      account_type: [{
-          required: true,
-          message: '不能为空',
-          }],
-      v_id:[{
-            required: true,
-            message: '版本号不能为空',
+        type:'string',
+        validator: validateUser, // 绑定方法
+        trigger: 'change',
+        required: true,
+          // 不能重复 // 不能为汉字 // 不能包含符号 // 判断长度
       }],
-        nickname: [
+      // 会员类型
+      account_type: [{
+        required: true,
+        message: '不能为空',
+      }],
+      v_id:[{
+        required: true,
+        message: '不能为空',
+      }],
+      nickname: [{
+          required: true,
+            message: '不能为空',
+            },
+      ],
+      pass_word: [
             {
             required: true,
-            message: '昵称不能为空',
+            message: '不能为空',
             },
-        ],
-        pass_word: [
+      ],
+      brand_name: [
             {
             required: true,
-            message: '密码不能为空',
+            message: '不能为空',
             },
-        ],
-        brand_name: [
+      ],
+      mobile: [
             {
             required: true,
-            message: '品牌名称不能为空',
+            message: '不能为空',
             },
-        ],
-        mobile: [
-            {
+      ],
+      role: [{
             required: true,
-            message: '手机号不能为空',
-            },
-        ],
-        role: [
-            {
-            required: true,
-            message: '角色不能为空',
-            },
-        ],
-        department_id: [
-            {
-            required: false,
-            message: '',
-            },
-        ],
-        department: [
-            {
-            required: false,
-            message: '',
-            },
-        ],
+            message: '不能为空',
+        },
+      ]
     };
 
     // 关闭抽屉方法
     const onClose = () => {
         open.adddata.open = false;
     };
+
+
 
     // 【保存方法】获取表单信息
     const from_get=()=>{
@@ -269,6 +280,7 @@ export default defineComponent({
     const filterOption = (input, option) => {
       return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
+
     const value = ref(undefined);
     // 选择版本方法 ===>结束
 
