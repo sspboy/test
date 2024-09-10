@@ -35,6 +35,16 @@ const mutations = {
     // 更新列表
     data_list:(state, resdata)=>{
 
+        for(let i of resdata.data){
+            if(i.account_type === 0){
+                i.account_type = '品牌账号'
+            }else if(i.account_type === 1){
+                i.account_type = '子账号'
+            }else if(i.account_type === 2){
+                i.account_type = '管理员'
+            }
+        }
+
         for(let colums of resdata.colum){
             // 品牌id
             if(colums.field_name === "b_id"){

@@ -3,8 +3,6 @@
   <!--新建、编辑、删除用户数据====>开始-->
   <User_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
 
-  <User_Edit :editdata="EDITDATA" v-on:edit_coallback="pagecallback"/>
-
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
@@ -124,8 +122,7 @@ export default {
     nav_pagination,
     menu_head,
     User_Add,
-    Model_Del,
-    User_Edit
+    Model_Del
   },
 
   setup() {
@@ -160,6 +157,7 @@ export default {
 
     // [翻页]&&刷新表格
     const receive = (message)=>{
+
       loading.value = true    // 开启loading状态
       // 刷新页面查询条件
       message.condition = [{
@@ -188,37 +186,43 @@ export default {
         PAGEDATA.user = store.state.user.message.user
         PAGEDATA.datalist = store.state.user.message.data_list.data
         PAGEDATA.total_number = store.state.user.message.data_list.total_number
-        console.log(store.state.user.message.data_list.total_number)
         loading.value = false // loading 状态关闭
 
       })
-
     }
 
-
-    // 【添加】数据初始化
-    const ADDDATA= reactive({
-      open:false,
-      user_id:''
-    })
 
     // 【新建】调用组件方法===》弹出抽屉+传值
+    const ADDDATA= reactive({
+      actian:'',// 数据删除模块名称
+      title:"",
+      data: {
+        id:'',
+        account_type:0,
+        v_id:[],
+        nickname: '',
+        pass_word: '123456',
+        brand_name: '',
+        mobile: '',// 手机号码
+        role: 'superadmin',// 超管
+      },
+      open:false,
+    })
+
     const Add_Fun = ()=>{
-      // let user_id = '';
+      ADDDATA.title="新建"
+      ADDDATA.actian='user/add'
       ADDDATA.open = true;
     }
-
-
-    // 【编辑】数据初始化
-    const EDITDATA= reactive({
-      open:false,
-      data:''
-    })
+    // 【新建】调用组件方法===》弹出抽屉+传值
 
     // 【编辑】调用组件方法===》弹出抽屉+传值
     const Edit_Fun = (detaile_data)=>{
-      EDITDATA.data = detaile_data;
-      EDITDATA.open = true;
+      console.log(detaile_data)
+      ADDDATA.title="编辑"
+      ADDDATA.actian='user/update'
+      ADDDATA.data = detaile_data;
+      ADDDATA.open = true;
     }
 
     // 【删除】数据初始化
@@ -322,10 +326,9 @@ export default {
       PAGEDATA,
       ADDDATA,
       Add_Fun,
+      Edit_Fun,
       DELDATA,
       Del_Fun,
-      EDITDATA,
-      Edit_Fun,
       receive,
     };
 
