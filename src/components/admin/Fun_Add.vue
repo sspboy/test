@@ -6,14 +6,14 @@
 import {defineComponent, reactive} from 'vue';
 
 export default defineComponent({
-  // 模版名称
+  // 功能添加
   name: "Fun_Add",
   // 引用组件
   components: {},
   // 父组件数据
   props: {},
   // 组合API返回到模版
-  setup(props) {
+  setup(props, ctx) {
 
     const PAGEDATA = reactive({})
 

@@ -6,7 +6,7 @@
 import {defineComponent, reactive} from 'vue';
 
 export default defineComponent({
-  // 模版名称
+  // 菜单添加
   name: "Menu_Add",
   // 引用组件
   components: {},

@@ -1,7 +1,9 @@
 <template>
 
-    <!--新建、编辑、删除用户数据====>开始-->
+  <!--新建、编辑、删除用户数据====>开始-->
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
+  <Fun_Add :deldata="ADDDATA" v-on:add_coallback="pagecallback"/>
+  <Fun_Edit :deldata="EDITDATA" v-on:edit_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
 
@@ -94,12 +96,15 @@ import menu_left from '@/components/layout/menu_left.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
 import Model_Del from "@/components/admin/Model_Del.vue";
-
+import Fun_Add from "@/components/admin/Fun_Add.vue";
+import Fun_Edit from "@/components/admin/Fun_Edit.vue";
 // 组件引用=====结束
 export default {
   name: "FunView",
   // 组件加载
   components: {
+    Fun_Edit,
+    Fun_Add,
     menu_left,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
@@ -133,6 +138,22 @@ export default {
       detaile_obj:{}         // 数据删除键值
     })
 
+    // 【添加】数据初始化
+    const ADDDATA = reactive({
+
+    })
+    // 【编辑】数据初始化
+    const EDITDATA=reactive({
+
+    })
+
+    const Add_fun = ()=>{
+
+    }
+
+    const Edit_fun=()=>{
+
+    }
 
     // 【删除】调用组件方法===》弹出抽屉+传值
     const Del_Fun = (detaile_data)=>{
@@ -254,6 +275,8 @@ export default {
       receive,
       Del_Fun,
       DELDATA,
+      ADDDATA,
+      EDITDATA,
 
     }
   }

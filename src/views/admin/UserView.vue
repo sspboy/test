@@ -3,6 +3,8 @@
   <!--新建、编辑、删除用户数据====>开始-->
   <User_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
 
+  <User_Edit :editdata="EDITDATA" v-on:edit_coallback="pagecallback"/>
+
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
@@ -115,6 +117,7 @@ export default {
 
   // 组件加载
   components: {
+    User_Edit,
     menu_left,
     PlusOutlined,
     MenuUnfoldOutlined,
@@ -155,18 +158,6 @@ export default {
       Refresh_table(message) // 【页面初始化】&&刷新表格
     })
 
-    // [翻页]&&刷新表格
-    const receive = (message)=>{
-
-      loading.value = true    // 开启loading状态
-      // 刷新页面查询条件
-      message.condition = [{
-          type: "orderby",
-          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
-        }]
-
-      Refresh_table(message) // 刷新表格
-    }
 
     //【当前页面】&&刷新表格
     const pagecallback =()=>{
@@ -175,7 +166,6 @@ export default {
       message.page_size = store.state.user.message.page_size;
       receive(message)
     }
-
 
     // 刷新表格数据方法
     const Refresh_table = (message)=>{
@@ -191,53 +181,71 @@ export default {
       })
     }
 
+    // [翻页]&&刷新表格
+    const receive = (message)=>{
+
+      loading.value = true    // 开启loading状态
+      // 刷新页面查询条件
+      message.condition = [{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]
+
+      Refresh_table(message) // 刷新表格
+    }
+
+
+
+
+
+
+
 
     // 【新建】调用组件方法===》弹出抽屉+传值
     const ADDDATA= reactive({
       actian:'',// 数据删除模块名称
       title:"",
-      data: {
-        id:'',
-        account_type:0,
-        v_id:[],
-        nickname: '',
-        pass_word: '123456',
-        brand_name: '',
-        mobile: '',// 手机号码
-        role: 'superadmin',// 超管
-      },
       open:false,
     })
 
     const Add_Fun = ()=>{
       ADDDATA.title="新建"
-      ADDDATA.actian='user/add'
       ADDDATA.open = true;
     }
     // 【新建】调用组件方法===》弹出抽屉+传值
 
     // 【编辑】调用组件方法===》弹出抽屉+传值
-    const Edit_Fun = (detaile_data)=>{
-      console.log(detaile_data)
-      ADDDATA.title="编辑"
-      ADDDATA.actian='user/update'
-      ADDDATA.data = detaile_data;
-      ADDDATA.open = true;
-    }
+    const EDITDATA= reactive({
+      title:"",
+      data:'',
+      open:false,
+    })
 
-    // 【删除】数据初始化
+    const Edit_Fun = (detaile_data)=>{
+      EDITDATA.title="编辑"
+      EDITDATA.actian='user/update'
+      EDITDATA.data = detaile_data;
+      EDITDATA.open = true;
+    }
+    // 【编辑】调用组件方法===》弹出抽屉+传值
+
+
+
+
+    // 【删除】调用组件方法===》弹出抽屉+传值
     const DELDATA = reactive({
       open:false,
       actian_name:'user/del',// 数据删除模块名称
       detaile_obj:{}         // 数据删除键值
     })
 
-
     // 【删除】调用组件方法===》弹出抽屉+传值
     const Del_Fun = (detaile_data)=>{
       DELDATA.detaile_obj.user_id = detaile_data.id;
       DELDATA.open = true;
     }
+    // 【删除】调用组件方法===》弹出抽屉+传值
+
 
 
     // 组件挂之后---请求数据
@@ -255,11 +263,6 @@ export default {
     onUnmounted(() => {
       window.removeEventListener('resize', handleResize);
     });
-
-
-
-
-
 
     // 列表===查询ok
     // const page_data = {
@@ -326,6 +329,7 @@ export default {
       PAGEDATA,
       ADDDATA,
       Add_Fun,
+      EDITDATA,
       Edit_Fun,
       DELDATA,
       Del_Fun,
