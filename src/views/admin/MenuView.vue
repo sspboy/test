@@ -3,6 +3,7 @@
 
   <!--新建、编辑、删除用户数据====>开始-->
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
+  <Menu_Add :adddata="ADDDATA" v-on:del_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
 
@@ -35,9 +36,9 @@
                   </a-button>
                   <!-- {{ PAGEDATA.title }} -->
 
-                <a-button type="primary" size="small" style="font-size:12px;">
+                <a-button type="primary" size="small" style="font-size:12px;" @click="Add_fun">
                   <template #icon><PlusOutlined /></template>
-                  新建菜单
+                  添加菜单
                 </a-button>
               </a-col>
               <a-col :span="6" :order="3"></a-col>
@@ -57,12 +58,12 @@
               style="font-size:12px;"
           >
 
-            <template #bodyCell="{ text, record, index, column }">
+            <template #bodyCell="{  record, column }">
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
-                  <a @click="Edit_Fun(record)">编辑</a> |
-                  <a @click="Del_Fun(record)">删除</a>
+                  <a @click="Edit_fun(record)">编辑</a> |
+                  <a @click="Del_fun(record)">删除</a>
               </template>
               <!--定义操作按钮 结束-->
 
@@ -95,7 +96,7 @@ import menu_left from '@/components/layout/menu_left.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
 import Model_Del from "@/components/admin/Model_Del.vue";
-
+import Menu_Add from "@/components/admin/Menu_Add.vue";
 // 组件引用=====结束
 
 
@@ -103,6 +104,7 @@ export default {
   name: "MenuView",
     // 组件加载
   components: {
+    Menu_Add,
     menu_left,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
@@ -129,6 +131,34 @@ export default {
     })
 
 
+    // 【添加】数据初始化
+    const ADDDATA = reactive({
+      action:'',
+      title:'',
+      data:'',
+      open:false,
+
+    })
+
+    const Add_fun = ()=>{
+      ADDDATA.title = '添加菜单';
+      ADDDATA.action = 'menu/add';
+      ADDDATA.data = {
+        name:'',
+        def_name:'',
+        miaoshu:''
+      };
+      ADDDATA.open = true;
+    }
+
+    const Edit_fun = (data)=>{
+      ADDDATA.title = '编辑菜单';
+      ADDDATA.action = 'menu/update';
+      ADDDATA.data = data
+      ADDDATA.open = true;
+    }
+
+
     // 【删除】数据初始化
     const DELDATA = reactive({
       open:false,
@@ -138,7 +168,7 @@ export default {
 
 
     // 【删除】调用组件方法===》弹出抽屉+传值
-    const Del_Fun = (detaile_data)=>{
+    const Del_fun = (detaile_data)=>{
       DELDATA.detaile_obj.m_id = detaile_data.id;
       DELDATA.open = true;
     }
@@ -192,7 +222,6 @@ export default {
         PAGEDATA.total_number = store.state.menu.message.data_list.total_number
         loading.value = false // loading 状态关闭
       })
-
     }
 
     // 菜单详情查询===ok
@@ -261,7 +290,10 @@ export default {
       receive,
       pagecallback,
       DELDATA,
-      Del_Fun
+      ADDDATA,
+      Add_fun,
+      Edit_fun,
+      Del_fun
     }
   }
 }

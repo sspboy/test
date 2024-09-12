@@ -23,16 +23,12 @@
             </a-form-item>
           </a-col>
 
-
           <a-col :span="12">
-            <a-form-item label="账号类型" name="account_type">
-              <a-select v-model:value="formdata.account_type" disabled>
-                <a-select-option value="0">主会员</a-select-option>
-                <a-select-option value="1">子账号</a-select-option>
-                <a-select-option value="2">后台管理员</a-select-option>
-              </a-select>
+            <a-form-item label="昵称" name="nickname">
+              <a-input v-model:value="formdata.nickname" placeholder="输入昵称" class="font_size_12"/>
             </a-form-item>
           </a-col>
+
 
         </a-row>
 
@@ -48,11 +44,17 @@
             </a-form-item>
           </a-col>
 
+
           <a-col :span="12">
-            <a-form-item label="昵称" name="nickname">
-              <a-input v-model:value="formdata.nickname" placeholder="输入昵称" class="font_size_12"/>
+            <a-form-item label="账号类型" name="account_type">
+              <a-select v-model:value="formdata.account_type" disabled>
+                <a-select-option value="0">品牌账号</a-select-option>
+                <a-select-option value="1">子账号</a-select-option>
+                <a-select-option value="2">后台管理员</a-select-option>
+              </a-select>
             </a-form-item>
           </a-col>
+
 
         </a-row>
         <a-row :gutter="16">
@@ -90,10 +92,10 @@
       </a-form>
 
 
-      <template #extra>
-        <a-space>
-          <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
+      <template #footer>
+        <a-space style="float: left;">
           <a-button type="primary" @click="form_submit" html-type="submit" class="font_size_12" :loading="loading">保存</a-button>
+          <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
         </a-space>
       </template>
 
@@ -127,7 +129,6 @@ export default defineComponent({
 
     // 表单数据绑定
     const formdata = computed(()=> {
-
       return reactive({
         id:open.editdata.data.id,
         account_type:open.editdata.data.account_type,
@@ -218,18 +219,22 @@ export default defineComponent({
         return Promise.resolve();
 
       }
-
     }
-
 
     // 表单验证规则
     const rules = {
       // 用户id
       id: [{
+        required: true,
         type:'string',
         validator: validateUser, // 绑定方法
         trigger: ['change', 'blur'],
           // 不能重复 // 不能为汉字 // 不能包含符号 // 判断长度
+      }],
+      // 用户id
+      v_id: [{
+        required: true,
+        trigger: 'change'
       }],
       // 会员类型
       account_type: [{
@@ -269,23 +274,25 @@ export default defineComponent({
     // 监听版本变更账号类型
     const handleChange=(value)=>{
 
-      if(value == 2){  // 后台管理员
+      if(value == "2"){  // 后台管理员
 
-        formdata.value.account_type = 2
+        formdata.value.account_type = "2"
         formdata.value.role = 'administrator'
 
       }else {
 
-        formdata.value.account_type = 0
+        formdata.value.account_type = "0"
         formdata.value.role = 'superadmin'
       }
     }
+
+    // 关闭抽屉
     const onClose = () => {
       open.editdata.open = false;
-      open.editdata.data = ''
+      open.editdata.data = ''// 清除组件数据缓存
     };
 
-
+    // 提交数据
     const form_submit = ()=>{
 
       formRef.value.validate().then(() => {
@@ -299,7 +306,7 @@ export default defineComponent({
           setting_data:formdata.value
 
         }
-        console.log(up_date)
+
         // 新建提交
         store.dispatch('user/update', up_date).then(()=>{
 

@@ -1,9 +1,15 @@
 <template>
+  <!-- 选择菜单 -->
+  <a-drawer v-model:open="childrenDrawer" title="选择菜单" width="320" :closable="false">
+    <a-button type="primary" @click="showChildrenDrawer">确认</a-button>
+  </a-drawer>
+  <!-- 选择菜单 -->
+
 
 </template>
 
 <script>
-import {defineComponent, reactive} from 'vue';
+import {defineComponent, reactive, ref} from 'vue';
 
 export default defineComponent({
   // 模版名称
@@ -16,10 +22,17 @@ export default defineComponent({
   setup(props) {
 
     const PAGEDATA = reactive({})
+    const childrenDrawer = ref(false);
+    // 弹出--选择菜单抽屉弹出
+    const showChildrenDrawer = () => {
+      childrenDrawer.value = true;
+    };
 
 
     return {
       PAGEDATA,
+      childrenDrawer,
+      showChildrenDrawer,
     }
   }
 

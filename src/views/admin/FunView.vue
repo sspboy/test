@@ -2,8 +2,7 @@
 
   <!--新建、编辑、删除用户数据====>开始-->
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
-  <Fun_Add :deldata="ADDDATA" v-on:add_coallback="pagecallback"/>
-  <Fun_Edit :deldata="EDITDATA" v-on:edit_coallback="pagecallback"/>
+  <Fun_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
 
@@ -35,7 +34,7 @@
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
                   <!-- {{ PAGEDATA.title }} -->
-                <a-button type="primary" size="small" style="font-size:12px;">
+                <a-button type="primary" size="small" style="font-size:12px;" @click="Add_fun">
                   <template #icon><PlusOutlined /></template>
                   添加功能
                 </a-button>
@@ -58,11 +57,11 @@
               style="font-size:12px;"
             >
 
-            <template #bodyCell="{ text, record, index, column }">
+            <template #bodyCell="{ record, column }">
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
-                  <a @click="Edit_Fun(record)">编辑</a> |
+                  <a @click="Edit_fun(record)">编辑</a> |
                   <a @click="Del_Fun(record)">删除</a>
               </template>
               <!--定义操作按钮 结束-->
@@ -97,13 +96,11 @@ import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
 import Model_Del from "@/components/admin/Model_Del.vue";
 import Fun_Add from "@/components/admin/Fun_Add.vue";
-import Fun_Edit from "@/components/admin/Fun_Edit.vue";
 // 组件引用=====结束
 export default {
   name: "FunView",
   // 组件加载
   components: {
-    Fun_Edit,
     Fun_Add,
     menu_left,
     MenuUnfoldOutlined,
@@ -140,19 +137,35 @@ export default {
 
     // 【添加】数据初始化
     const ADDDATA = reactive({
+      action:'',
+      title:'',
+      data:'',
+      open:false,
 
     })
-    // 【编辑】数据初始化
-    const EDITDATA=reactive({
 
-    })
 
     const Add_fun = ()=>{
-
+      ADDDATA.title = '添加功能';
+      ADDDATA.action = 'fun/add';
+      ADDDATA.data = {
+        name:'',
+        def_name:'',
+        miaoshu:''
+      };
+      ADDDATA.open = true;
     }
 
-    const Edit_fun=()=>{
-
+    const Edit_fun=(data)=>{
+      ADDDATA.title = '编辑功能';
+      ADDDATA.action = 'fun/update';
+      ADDDATA.data = {
+        id:data.id,
+        name:data.name,
+        def_name:data.def_name,
+        miaoshu:data.miaoshu
+      };
+      ADDDATA.open = true;
     }
 
     // 【删除】调用组件方法===》弹出抽屉+传值
@@ -276,7 +289,8 @@ export default {
       Del_Fun,
       DELDATA,
       ADDDATA,
-      EDITDATA,
+      Add_fun,
+      Edit_fun,
 
     }
   }
