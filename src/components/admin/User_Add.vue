@@ -236,9 +236,12 @@ export default defineComponent({
     const rules = {
       // 用户id
       id: [{
+        required: true,
         type:'string',
         validator: validateUser, // 绑定方法
         trigger: 'change',
+        message: '不能为空',
+
           // 不能重复 // 不能为汉字 // 不能包含符号 // 判断长度
       }],
       // 会员类型

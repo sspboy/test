@@ -164,11 +164,44 @@ export class PublicModel {
 
 
 
-// 加载菜单
+// 加载菜单父子关系
 export class MenuLoad {
 
-    hello(){
-        console.log('hello!')
+    parent_children(data){
+
+        var one_menu_list = this.get_one_menu(data) // 一级菜单列表
+
+        for (let i of one_menu_list){
+            var id = i.id
+            var children_list = this.get_two_menu(id,data)
+            if(children_list.length > 0){
+                i.children = children_list
+            }
+        }
+        return one_menu_list
+    }
+    // 获取一级菜单列表
+    get_one_menu(data){
+        var one_menu_list = []
+        for(let i of data){
+            // var id = i.id
+            var parent_id = i.parent_id
+            if(parent_id == 0){
+                one_menu_list.push(i)
+            }
+        }
+        return one_menu_list
+    }
+
+    get_two_menu(id, data){
+        var children_menu_list = []
+        for(let i of data){
+            i.key = i.id // 添加key
+            if(i.parent_id == id){
+                children_menu_list.push(i)
+            }
+        }
+        return children_menu_list
     }
 
 }

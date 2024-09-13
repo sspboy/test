@@ -3,6 +3,7 @@ import axios from "axios";
 // 引用外部方法
 import * as utils from '@/assets/JS_Model/public_model';
 const API = new utils.A_Patch()
+const menuLoad = new utils.MenuLoad()
 
 /* State 数据暂存*/
 const state = ()=>({
@@ -38,6 +39,13 @@ const mutations = {
 
     // 更新>列表
     data_list:(state,resdata)=>{
+
+        console.log(resdata.data)
+
+        const neirong_list = menuLoad.parent_children(resdata.data)
+        resdata.data = neirong_list
+        console.log(neirong_list)
+
         for(let colums of resdata.colum){
             // 菜单id
             if(colums.field_name === "id"){
@@ -51,8 +59,8 @@ const mutations = {
             }
             // 图片名称
             if(colums.field_name === "ico_name"){
-              colums['align'] = 'left'
-              colums['width'] = 180
+              colums['align'] = 'center'
+              colums['width'] = 80
             }
             // 菜单名称
             if(colums.field_name === "name"){
@@ -66,8 +74,8 @@ const mutations = {
             }
             // 权限配置
             if(colums.field_name === "function_info"){
-              colums['align'] = 'center'
-              colums['width'] = 140
+              colums['align'] = 'left'
+              colums['width'] = 240
             }
             // 创建时间
             if(colums.field_name === "create_time"){
@@ -183,7 +191,7 @@ const actions = {
         try{
 
             let url = API.AdminAPI.menu.edit + m_id
-
+            console.log(url)
             axios.put(url, data).then((response)=>{
 
                 commit('update_state', response.data)

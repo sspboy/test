@@ -3,7 +3,7 @@
 
   <!--新建、编辑、删除用户数据====>开始-->
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
-  <Menu_Add :adddata="ADDDATA" v-on:del_coallback="pagecallback"/>
+  <Menu_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
 
@@ -56,9 +56,10 @@
               :scroll="{ x: 1200, y: innerHeight}"
               :pagination="false"
               style="font-size:12px;"
+              :row-selection="rowSelection"
           >
 
-            <template #bodyCell="{  record, column }">
+            <template #bodyCell="{ record, column }">
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
@@ -130,7 +131,6 @@ export default {
       menuconfig:{}       // 菜单配置
     })
 
-
     // 【添加】数据初始化
     const ADDDATA = reactive({
       action:'',
@@ -144,9 +144,11 @@ export default {
       ADDDATA.title = '添加菜单';
       ADDDATA.action = 'menu/add';
       ADDDATA.data = {
+        parent_id:undefined,
+        ico_name:'',
         name:'',
-        def_name:'',
-        miaoshu:''
+        field:'',
+        function_info:undefined
       };
       ADDDATA.open = true;
     }
@@ -154,7 +156,14 @@ export default {
     const Edit_fun = (data)=>{
       ADDDATA.title = '编辑菜单';
       ADDDATA.action = 'menu/update';
-      ADDDATA.data = data
+      ADDDATA.data = {
+        id:data.id,
+        parent_id:data.parent_id,
+        ico_name:data.ico_name,
+        name:data.name,
+        field:data.field,
+        function_info:data.function_info
+      }
       ADDDATA.open = true;
     }
 
@@ -223,6 +232,20 @@ export default {
         loading.value = false // loading 状态关闭
       })
     }
+
+
+    const rowSelection = ref({
+      checkStrictly: true,
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      },
+      onSelect: (record, selected, selectedRows) => {
+        console.log(record, selected, selectedRows);
+      },
+      onSelectAll: (selected, selectedRows, changeRows) => {
+        console.log(selected, selectedRows, changeRows);
+      },
+    });
 
     // 菜单详情查询===ok
     // store.dispatch('menu/get',{m_id:'31'}).then(()=>{
@@ -293,7 +316,8 @@ export default {
       ADDDATA,
       Add_fun,
       Edit_fun,
-      Del_fun
+      Del_fun,
+      rowSelection
     }
   }
 }
