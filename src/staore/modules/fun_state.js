@@ -64,7 +64,7 @@ const mutations = {
             }
             // 描述
             if(colums.field_name === "miaoshu"){
-              colums['align'] = 'center'
+              colums['align'] = 'left'
               colums['width'] = 100
             }
             // 创建时间

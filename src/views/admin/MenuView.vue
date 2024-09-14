@@ -3,7 +3,7 @@
 
   <!--新建、编辑、删除用户数据====>开始-->
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
-  <Menu_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
+  <Menu_Add :adddata="ADDDATA" v-on:menu_add_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
 
@@ -75,7 +75,7 @@
           </div>
 
           <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
-          <nav_pagination :fandata="PAGEDATA" v-on:complete="receive"/>
+<!--          <nav_pagination :fandata="PAGEDATA" v-on:complete="receive"/>-->
 
       </a-layout-content>
 
@@ -185,7 +185,7 @@ export default {
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
-      let message = {"page":1, "page_size":10}
+      let message = {"page":1, "page_size":100}
       Refresh_table(message) // 【页面初始化】&&刷新表格
     })
 

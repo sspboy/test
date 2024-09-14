@@ -80,9 +80,9 @@
       </a-form>
 
     <template #footer>
-      <a-space>
-        <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
+      <a-space style="float: left;">
         <a-button type="primary" @click="from_submit" style="font-size: 12px;" html-type="submit" :loading="loading">保存</a-button>
+        <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
       </a-space>
     </template>
 
@@ -128,7 +128,7 @@ export default defineComponent({
 
         }else {
 
-          list.value = undefined
+          list.value = []
 
         }
 
@@ -232,12 +232,10 @@ export default defineComponent({
       // 新建提交
       if(open.adddata.title === '添加菜单'){
 
-        console.log('新建')
         fun_add_()
 
       }else if(open.adddata.title === '编辑菜单'){// 编辑提交
 
-        console.log('编辑')
         fun_update()
 
       }
@@ -250,16 +248,12 @@ export default defineComponent({
 
         loading.value = true;
 
-
-
         // 验证图标
         if(formdata.value.ico_name == null){
           formdata.value.ico_name = ''
         }
 
         formdata.value.function_info = formdata.value.function_info.join('|')
-
-        console.log(formdata.value)
 
         store.dispatch(open.adddata.action, formdata.value).then(()=>{
 
@@ -269,7 +263,7 @@ export default defineComponent({
 
             open.adddata.open = false;  // 收起抽屉
 
-            ctx.emit('add_coallback')   // 回调刷新表格
+            ctx.emit('menu_add_coallback')   // 回调刷新表格
 
             formRef.value.resetFields(); // 重置表单
 
@@ -292,9 +286,6 @@ export default defineComponent({
 
         loading.value = true;
 
-        console.log(open.adddata.action)
-
-        console.log(formdata.value)
         // 验证图标
         if(formdata.value.ico_name == null){
           formdata.value.ico_name = ''
@@ -318,7 +309,7 @@ export default defineComponent({
 
             open.adddata.open = false;  // 收起抽屉
 
-            ctx.emit('add_coallback')   // 回调刷新表格
+            ctx.emit('menu_add_coallback')   // 回调刷新表格
 
             formRef.value.resetFields(); // 重置表单
 

@@ -18,7 +18,6 @@
           class="font_size_12"
           autocomplete="off">
 
-
         <a-row :gutter="16">
 
           <a-col :span="12">
@@ -37,7 +36,6 @@
 
         <a-row :gutter="16">
 
-
           <a-col :span="24">
             <a-form-item label="描述" name="miaoshu">
               <a-input v-model:value="formdata.miaoshu" class="font_size_12" placeholder="输入功能描述" type="text" />
@@ -50,9 +48,9 @@
 
 
     <template #footer>
-      <a-space>
-        <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
+      <a-space style="float: left;">
         <a-button type="primary" @click="from_submit" style="font-size: 12px;" html-type="submit" :loading="loading">保存</a-button>
+        <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
       </a-space>
     </template>
 
@@ -60,7 +58,7 @@
 </template>
 
 <script>
-import {defineComponent, reactive, ref, computed, toRaw} from 'vue';
+import {defineComponent, reactive, ref, computed } from 'vue';
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -68,10 +66,12 @@ export default defineComponent({
   components: {  // 引用组件
 
   },
+
   // 父组件数据
   props: {
     adddata:{typr:Object}
   },
+
   // 组合API返回到模版
   setup(props, ctx) {
 
@@ -120,12 +120,11 @@ export default defineComponent({
       // 新建提交
       if(open.adddata.title === '添加功能'){
 
-        console.log('新建')
         fun_add_()
 
-      }else if(open.adddata.title === '编辑功能'){// 编辑提交
+      // 编辑提交
+      }else if(open.adddata.title === '编辑功能'){
 
-        console.log('编辑')
         fun_update()
 
       }

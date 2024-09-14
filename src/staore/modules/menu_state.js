@@ -40,11 +40,10 @@ const mutations = {
     // 更新>列表
     data_list:(state,resdata)=>{
 
-        console.log(resdata.data)
-
         const neirong_list = menuLoad.parent_children(resdata.data)
         resdata.data = neirong_list
-        console.log(neirong_list)
+
+        // console.log(neirong_list)
 
         for(let colums of resdata.colum){
             // 菜单id

@@ -1,8 +1,8 @@
 <template>
 
-
-    <!--新建、编辑、删除用户数据====>开始-->
+  <!--新建、编辑、删除用户数据====>开始-->
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
+  <Ver_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
 
@@ -12,7 +12,7 @@
     <menu_head :headdata="PAGEDATA.user" />
     <!--head 导航组件  结束-->
 
-        <!--内容部分 菜单 右侧列表 开始-->
+    <!--内容部分 菜单 右侧列表 开始-->
     <a-layout>
 
       <!--左侧 菜单组件  开始-->
@@ -32,7 +32,7 @@
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
                   <!-- {{ PAGEDATA.title }} -->
-                <a-button type="primary" size="small" style="font-size:12px;">
+                <a-button type="primary" size="small" style="font-size:12px;" @click="Add_fun">
                   <template #icon><PlusOutlined /></template>
                   添加版本
                 </a-button>
@@ -57,7 +57,7 @@
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
-                  <a @click="Edit_Fun(record)">编辑</a> |
+                  <a @click="Edit_fun(record)">编辑</a> |
                   <a @click="Del_Fun(record)">删除</a>
               </template>
               <!--定义操作按钮 结束-->
@@ -90,6 +90,7 @@ import menu_left from "@/components/layout/menu_left.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
 import Model_Del from "@/components/admin/Model_Del.vue";
+import Ver_Add from "@/components/admin/Ver_Add.vue";
 
 // 组件引用=====结束
 
@@ -97,6 +98,7 @@ export default {
   name: "VersionView",
   // 组件加载
   components: {
+    Ver_Add,
     menu_left,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
@@ -122,6 +124,33 @@ export default {
       total_number:0,     // 总页数
       menuconfig:{}       // 菜单配置
     })
+
+        // 【添加】数据初始化
+    const ADDDATA = reactive({
+      action:'',
+      title:'',
+      data:'',
+      open:false,
+
+    })
+
+    const Add_fun = ()=>{
+      ADDDATA.title = '添加版本';
+      ADDDATA.action = 'ver/add';
+      ADDDATA.data = {
+
+      };
+      ADDDATA.open = true;
+    }
+
+    const Edit_fun = (data)=>{
+      ADDDATA.title = '编辑版本';
+      ADDDATA.action = 'ver/update';
+      ADDDATA.data = {
+
+      }
+      ADDDATA.open = true;
+    }
 
     // 【删除】数据初始化
     const DELDATA = reactive({
@@ -164,7 +193,7 @@ export default {
 
     // 接收来自子组件发送的数据=回调方法
     const receive = (message)=>{
-      loading.value = true    // 开启loading状态
+      loading.value = true   // 开启loading状态
       Refresh_table(message) // 刷新表格
     }
 
@@ -254,6 +283,9 @@ export default {
       receive,
       Del_Fun,
       DELDATA,
+      ADDDATA,
+      Add_fun,
+      Edit_fun
     }
   }
 }

@@ -17,7 +17,6 @@ export class A_Patch{
         // 菜单管理
         menu:{
             "list": "api/admin/menu/list",  // [post]列表
-                                            // [put]data 批量删除
             "detaile": "api/admin/menu/",   // [get]+id详情
             "delete": "api/admin/menu/",    // [delete]+id删除
             "edit": "api/admin/menu/",      // [put]setting_data + id 传数据更新
@@ -197,6 +196,9 @@ export class MenuLoad {
         var children_menu_list = []
         for(let i of data){
             i.key = i.id // 添加key
+            i.value = i.id.toString() // 添加value
+            i.label = i.name // 添加name
+
             if(i.parent_id == id){
                 children_menu_list.push(i)
             }
