@@ -140,7 +140,7 @@ export default {
       ADDDATA.data = {
         version_number:'',
         version_name:'',
-        menu_setting:[],
+        menu_setting:undefined,
         price:'',
         sub_account_number:'',
         duration:''
@@ -152,9 +152,10 @@ export default {
       ADDDATA.title = '编辑版本';
       ADDDATA.action = 'ver/update';
       ADDDATA.data = {
+        id:data.id,
         version_number:data.version_number,
         version_name:data.version_name,
-        menu_setting:data.menu_setting,
+        menu_setting:JSON.parse(data.menu_setting),
         price:data.price,
         sub_account_number:data.sub_account_number,
         duration:data.duration

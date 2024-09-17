@@ -116,7 +116,6 @@ export default defineComponent({
 
     // 表单数据绑定
     const formdata = computed(()=>{
-
       return reactive({
 
         version_number:open.adddata.data.version_number,
@@ -277,7 +276,9 @@ export default defineComponent({
           setting_data:formdata.value
 
         }
-
+        console.log(
+            up_date
+        )
         store.dispatch(open.adddata.action, up_date).then(()=>{
 
           setTimeout(()=>{
@@ -286,7 +287,7 @@ export default defineComponent({
 
             open.adddata.open = false;  // 收起抽屉
 
-            ctx.emit('menu_add_coallback')   // 回调刷新表格
+            ctx.emit('add_coallback')   // 回调刷新表格
 
             formRef.value.resetFields(); // 重置表单
 
