@@ -1,6 +1,5 @@
 // admin后台公用请求的一些基础方法方法
 import axios from "axios";
-import {ref} from "vue"
 
 // 接口请求地址配置
 export class A_Patch{
@@ -9,8 +8,7 @@ export class A_Patch{
     AdminAPI={
         // 用户管理
         user: {
-            "list": "api/admin/user/list",  // [post]列表
-                                            // [put]data 批量删除
+            "list": "api/admin/user/list",  // [post]列表// [put]data 批量删除
             "detaile": "api/admin/user/",   // [get]+id详情
             "delete": "api/admin/user/",    // [delete]+id删除
             "edit": "api/admin/user/",      // [put]setting_data+id 传数据更新
@@ -19,19 +17,17 @@ export class A_Patch{
         // 菜单管理
         menu:{
             "list": "api/admin/menu/list",  // [post]列表
-                                            // [put]data 批量删除
             "detaile": "api/admin/menu/",   // [get]+id详情
             "delete": "api/admin/menu/",    // [delete]+id删除
             "edit": "api/admin/menu/",      // [put]setting_data + id 传数据更新
             "add": "api/admin/menu/add"     // [post]
         },
         // 功能列表
-        fun:{
-            "list": "api/admin/function/list",  // [post]列表
-                                                // [put]data 批量删除
+        function: {
+            "list": "api/admin/function/list",  // [post]列表 [put]data 批量删除
             "detaile": "api/admin/function/",   // [get]+id详情
             "delete": "api/admin/function/",    // [delete]+id删除
-            "edit": "api/admin/function/",      // [put]setting_data + id 传数据更新
+            "edit": "api/admin/function/",      // [put]setting_data+id 传数据更新
             "add": "api/admin/function/add"     // [post]
         },
         // 版本管理
@@ -53,8 +49,12 @@ export class A_Patch{
 
         },
         // 组织架构
-        department:{
-
+        department: {
+            "list": "api/admin/department/list",  // [post]列表 [put]data 批量删除
+            "detaile": "api/admin/department/",   // [get]+id详情
+            "delete": "api/admin/department/",    // [delete]+id删除
+            "edit": "api/admin/department/",      // [put]setting_data+id 传数据更新
+            "add": "api/admin/department/add"     // [post]
         },
         // 角色管理
         role:{
@@ -163,11 +163,47 @@ export class PublicModel {
 
 
 
-// 加载菜单
+// 加载菜单父子关系
 export class MenuLoad {
 
-    hello(){
-        console.log('hello!')
+    parent_children(data){
+
+        var one_menu_list = this.get_one_menu(data) // 一级菜单列表
+
+        for (let i of one_menu_list){
+            var id = i.id
+            var children_list = this.get_two_menu(id,data)
+            if(children_list.length > 0){
+                i.children = children_list
+            }
+        }
+        return one_menu_list
+    }
+    // 获取一级菜单列表
+    get_one_menu(data){
+        var one_menu_list = []
+        for(let i of data){
+            // var id = i.id
+            var parent_id = i.parent_id
+            if(parent_id == 0){
+                one_menu_list.push(i)
+            }
+        }
+        return one_menu_list
+    }
+
+    get_two_menu(id, data){
+        var children_menu_list = []
+        for(let i of data){
+            i.key = i.id // 添加key
+            i.value = i.id.toString() // 添加value
+            i.label = i.name // 添加name
+
+            if(i.parent_id == id){
+                children_menu_list.push(i)
+            }
+        }
+        return children_menu_list
     }
 
 }

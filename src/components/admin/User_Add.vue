@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-      title="新建"
+      :title="open.adddata.title"
       :width="720"
       :open="open.adddata.open"
       :body-style="{ paddingBottom: '80px',}"
@@ -8,9 +8,9 @@
       @close="onClose"
   >
       <a-form
-          ref="formRef"
           name="Add_user_msg"
-          :model="form"
+          ref="formRef"
+          :model="formdata"
           :rules="rules"
           layout="vertical"
           class="font_size_12"
@@ -20,13 +20,13 @@
 
           <a-col :span="12">
             <a-form-item label="账号名称" name="id">
-              <a-input v-model:value="form.id" class="font_size_12" placeholder="输入名称" type="string" />
+              <a-input v-model:value="formdata.id" class="font_size_12" placeholder="输入名称" type="string" />
             </a-form-item>
           </a-col>
 
           <a-col :span="12">
-            <a-form-item label="密码" name="password">
-              <a-input-password v-model:value="form.password" class="font_size_12" placeholder="输入密码" type="password" />
+            <a-form-item label="密码" name="pass_word">
+              <a-input-password v-model:value="formdata.pass_word" class="font_size_12" placeholder="输入密码" type="password" />
             </a-form-item>
           </a-col>
 
@@ -36,15 +36,12 @@
         <a-row :gutter="16">
 
           <a-col :span="12">
-            <a-form-item label="版本" name="version">
+            <a-form-item label="版本" name="v_id">
               <a-select
-                v-model:value="form.version"
-                show-search
-                :placeholder="form.version"
+                v-model:value="formdata.v_id"
+                placeholder="选择版本"
                 :options="options"
                 :filter-option="filterOption"
-                @focus="handleFocus"
-                @blur="handleBlur"
                 @change="handleChange"
               ></a-select>
             </a-form-item>
@@ -52,7 +49,11 @@
 
           <a-col :span="12">
             <a-form-item label="账号类型" name="account_type">
-               <a-input v-model:value="form.account_type" class="font_size_12" placeholder="账号类型" disabled/>
+                <a-select v-model:value="formdata.account_type" placeholder="账号类型" class="font_size_12" disabled>
+                  <a-select-option value="0">主会员</a-select-option>
+                  <a-select-option value="1">子账号</a-select-option>
+                  <a-select-option value="2">后台管理员</a-select-option>
+                </a-select>
             </a-form-item>
           </a-col>
 
@@ -65,13 +66,13 @@
 
           <a-col :span="12">
             <a-form-item label="昵称" name="nickname">
-              <a-input v-model:value="form.nickname" class="font_size_12" placeholder="输入昵称" />
+              <a-input v-model:value="formdata.nickname" class="font_size_12" placeholder="输入昵称" />
             </a-form-item>
           </a-col>
 
           <a-col :span="12">
             <a-form-item label="品牌名称" name="brand_name">
-              <a-input v-model:value="form.brand_name" class="font_size_12" placeholder="输入品牌名称" type="string"/>
+              <a-input v-model:value="formdata.brand_name" class="font_size_12" placeholder="输入品牌名称" type="string"/>
             </a-form-item>
           </a-col>
         </a-row>
@@ -80,41 +81,27 @@
 
           <a-col :span="12">
             <a-form-item label="手机号" name="mobile">
-              <a-input v-model:value="form.mobile" class="font_size_12" placeholder="手机号"/>
+              <a-input type="number" v-model:value="formdata.mobile" class="font_size_12" placeholder="手机号"/>
             </a-form-item>
           </a-col>
 
 
           <a-col :span="12">
             <a-form-item label="角色" name="role">
-              <a-input v-model:value="form.role" class="font_size_12" type="string" placeholder="账号角色" disabled/>
+              <a-input v-model:value="formdata.role" class="font_size_12" type="string" placeholder="账号角色" disabled/>
             </a-form-item>
           </a-col>
         </a-row>
 
-        <a-row :gutter="16">
 
-          <a-col :span="12">
-            <a-form-item label="部门id" name="department_id">
-              <a-input v-model:value="form.department_id" placeholder="Please enter user name" type="number"/>
-            </a-form-item>
-          </a-col>
-
-
-          <a-col :span="12">
-            <a-form-item label="部门名称" name="department">
-              <a-input v-model:value="form.department" placeholder="Please enter user name" type="string"/>
-            </a-form-item>
-          </a-col>
-        </a-row>
 
       </a-form>
 
 
-      <template #extra>
+      <template #footer>
         <a-space>
-          <a-button @click="onClose" style="font-size: 12px;" size="small">取消</a-button>
-          <a-button type="primary" @click="from_get" style="font-size: 12px;" size="small" html-type="submit">保存</a-button>
+          <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
+          <a-button type="primary" @click="from_submit" style="font-size: 12px;" html-type="submit" :loading="loading">保存</a-button>
         </a-space>
       </template>
 
@@ -128,6 +115,7 @@
 
 <script>
 import { reactive, ref, defineComponent,toRaw } from 'vue';
+import { useStore } from 'vuex'
 
 
 export default defineComponent({
@@ -135,6 +123,7 @@ export default defineComponent({
   name: "User_Add",   // 添加用户
 
   components:{
+
   },
   // 接受父组件数据
   props:{
@@ -142,158 +131,236 @@ export default defineComponent({
       type: Object
     }
   },
-  setup(props){
+  setup(props,ctx){
 
+    const store = useStore();// 共享数据
+    const open = props;// 获取父组件传递的
+    const formRef = ref() // 表单验证数据绑定ref
 
-      const open = props;
-      const formRef = ref()
-
-      // 表单数据初始化
-      const form = reactive({
+    const formdata = reactive({ // 表单数据绑定
         id:'',
-        account_type:'',
-        version:'个人版',
+        account_type:undefined,
+        v_id:undefined,
         nickname: '',
-        password: '123456',
+        pass_word: '123456',
         brand_name: '',
-        mobile: '',
-        role: '',               // 角色
-        department_id: '',      // 部门id
-        department: '',        // 部门名称
-      });
+        mobile: '',// 手机号码
+        role: '',// 超管
+      }
+    )
 
-      // 表单验证规则
-      const rules = {
-          id: [
-              {
-              required: true,
-              message: '不能为空',
-              },
-          ],
-          account_type: [
-              {
-              required: true,
-              message: '不能为空',
-              },
-          ],
-        version:[{
-              required: true,
-              message: '版本号不能为空',
-        }],
-          nickname: [
-              {
-              required: true,
-              message: '昵称不能为空',
-              },
-          ],
-          password: [
-              {
-              required: true,
-              message: '密码不能为空',
-              },
-          ],
-          brand_name: [
-              {
-              required: true,
-              message: '品牌名称不能为空',
-              },
-          ],
-          mobile: [
-              {
-              required: true,
-              message: '手机号不能为空',
-              },
-          ],
-          role: [
-              {
-              required: true,
-              message: '角色不能为空',
-              },
-          ],
-          department_id: [
-              {
-              required: false,
-              message: '',
-              },
-          ],
-          department: [
-              {
-              required: false,
-              message: '',
-              },
-          ],
-      };
+    const loading = ref(false)// 确认按钮loading
 
-      // 关闭抽屉方法
-      const onClose = () => {
-          open.adddata.open = false;
-      };
+    // 验证用户名方法
+    const validateUser = async (_rule, value) => {
 
-      // 【保存方法】获取表单信息
-      const from_get=()=>{
+      if (value === '') {
 
+        return Promise.reject('账号id不能为空');
 
-        console.log(form)
-        // 验证表单的全部值
-        formRef.value.validate().then(() => {
+      } else {
 
-            console.log('values', form, toRaw(form));
+        if (value.length>12) {
 
-        }).catch(error => {
+          return Promise.reject('id过长不能超过12个字符');
 
-          console.log('error', error);
-
-        });
+        }
+        return Promise.resolve();
       }
 
+    }
 
-      // 选择版本方法 ===>开始
-      const options = ref([
-        {
-          value: 'jack',
-          label: '个人版',
-        },
-        {
-          value: 'lucy',
-          label: '企业版',
-        },
-        {
-          value: 'tom',
-          label: '管理后台',
-        },
-      ]);
+    // 验证品牌名方法
+    const validateBrandname = async (_rule, value) => {
 
-      const handleChange = value => {
-        console.log(`selected ${value}`);
-      };
-      const handleBlur = () => {
-        console.log('blur');
-      };
-      const handleFocus = () => {
-        console.log('focus');
-      };
-      const filterOption = (input, option) => {
-        return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-      };
-      const value = ref(undefined);
-      // 选择版本方法 ===>结束
+      if (value === '') {
 
+        return Promise.reject('不能为空');
+
+      } else {
+
+        if (value.length>12) {
+
+          return Promise.reject('品牌名过长不能超过12个字符');
+
+        }
+
+        return Promise.resolve();
+
+      }
+
+    }
+
+    // 验证手机号方法
+    const validateMobile = async (_rule, value) => {
+
+      if (value === '') {
+
+        return Promise.reject('不能为空');
+
+      } else {
+
+        if (value.length !== 11) {
+
+          return Promise.reject('手机号码11位数字');
+        }
+
+        return Promise.resolve();
+
+      }
+
+    }
+
+    // 验证昵称方法
+    const validatenickname = async (_rule, value) => {
+
+      if (value === '') {
+
+        return Promise.reject('不能为空');
+
+      } else {
+
+        if (value.length > 6) {
+
+          return Promise.reject('昵称不能超过6个字符或汉字');
+        }
+
+        return Promise.resolve();
+
+      }
+
+    }
+
+
+    // 表单验证规则
+    const rules = {
+      // 用户id
+      id: [{
+        required: true,
+        type:'string',
+        validator: validateUser, // 绑定方法
+        trigger: 'change',
+        message: '不能为空',
+
+          // 不能重复 // 不能为汉字 // 不能包含符号 // 判断长度
+      }],
+      // 会员类型
+      account_type: [{
+        required: true,
+        message: '不能为空',
+      }],
+      nickname: [{
+        required: true,
+        validator:validatenickname,
+        trigger: 'change'
+        },
+      ],
+      pass_word: [{
+        required: true,
+        message: '不能为空',
+      },
+      ],
+      brand_name: [{
+        required: true,
+        validator: validateBrandname, // 绑定方法
+        trigger: 'change',
+        },
+      ],
+      mobile: [{
+        required: true,
+        validator:validateMobile,
+        trigger: 'change',
+      },
+      ],
+      role: [{
+            required: true,
+            message: '不能为空',
+        },
+      ]
+    };
+
+
+    // 【保存方法】获取表单信息
+    const from_submit=()=>{
+
+      // 验证表单的全部值
+      formRef.value.validate().then(() => {
+
+        loading.value = true;
+
+        console.log(toRaw(formdata))
+        console.log(toRaw(formRef.value))
+
+        // 新建提交
+        store.dispatch('user/add', toRaw(formdata)).then(()=>{
+
+          setTimeout(()=>{
+
+            loading.value = false;  // 关闭loading效果
+
+            open.adddata.open = false;  // 收起抽屉
+
+            ctx.emit('add_coallback')   // 回调刷新表格
+
+            formRef.value.resetFields(); // 重置表单
+
+          },1000)
+
+        })
+
+      }).catch(error => {
+
+        console.log('error', error);
+
+      });
+    }
+
+    // 选择版本方法 ===>开始
+    const value = ref(undefined);
+    const filterOption = (input, option) => {
+      return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
+    const options = ref([
+      {value: "0", label: '个人版'},
+      {value: "1", label: '企业版'},
+      {value: "2", label: '管理后台'},
+    ]);
+
+    const handleChange = value => {
+
+      if(value === "2"){  // 后台管理员
+        formdata.account_type = "2"
+        formdata.role = 'administrator'
+      }else {
+        formdata.account_type = "0"
+        formdata.role = 'superadmin'
+      }
+
+    };
+    // 选择版本方法 ===>结束
+
+
+    // 关闭抽屉方法
+    const onClose = () => {
+        open.adddata.open = false;
+        formRef.value.resetFields(); // 重置表单
+    };
 
 
 
       return{
         formRef,
-        form,
+        formdata,
         rules,
         open,
         onClose,
         handleChange,
-        handleBlur,
-        handleFocus,
-        filterOption,
-        value,
         options,
-        from_get,
+        from_submit,
+        loading,
+        value,
+        filterOption
       }
     }
 
@@ -302,7 +369,9 @@ export default defineComponent({
 </script>
 
 <style>
-
+.ant-form-item-explain-error{
+    font-size: 12px;
+}
 .ant-select-selection-item{
   font-size: 12px;
 }

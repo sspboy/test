@@ -1,4 +1,11 @@
 <template>
+
+  <!--新建、编辑、删除用户数据====>开始-->
+  <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
+  <Fun_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
+  <!--新建、编辑、删除用户数据====>结束-->
+
+
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
@@ -9,7 +16,7 @@
     <a-layout>
 
       <!--左侧 菜单组件  开始-->
-      <a-layout-sider v-model:collapsed="store.state.left.coll" :trigger="null" collapsible>
+      <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
         <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
@@ -22,17 +29,17 @@
             <a-row type="flex">
               <a-col :span="5" :order="1">
                   <!--导航收起按钮-->
-                  <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('change')}">
-                    <menu-unfold-outlined v-if="store.state.left.coll" class="trigger" />
+                  <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('menu/change')}">
+                    <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
                   <!-- {{ PAGEDATA.title }} -->
-                <a-button type="primary" size="small" style="font-size:12px;">
+                <a-button type="primary" size="small" style="font-size:12px;" @click="Add_fun">
                   <template #icon><PlusOutlined /></template>
                   添加功能
                 </a-button>
               </a-col>
-              <a-col :span="6" :order="3">3 col-order-2</a-col>
+              <a-col :span="6" :order="3"></a-col>
             </a-row>
             <!--条件查询组件 结束 -->
         </div>
@@ -43,19 +50,19 @@
           <!--表格组件：：发送初始化数据  开始-->
           <a-table
               :loading="loading"
-              :columns="PAGEDATA.colum"
-              :data-source="PAGEDATA.datalist"
+              :columns="PAGEDATA?.colum"
+              :data-source="PAGEDATA?.datalist"
               :scroll="{ x: 1200, y: innerHeight}"
               :pagination="false"
               style="font-size:12px;"
             >
 
-            <template #bodyCell="{ column }">
+            <template #bodyCell="{ record, column }">
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
-                  <a>编辑</a> |
-                  <a>删除</a>
+                  <a @click="Edit_fun(record)">编辑</a> |
+                  <a @click="Del_Fun(record)">删除</a>
               </template>
               <!--定义操作按钮 结束-->
 
@@ -66,7 +73,7 @@
         </div>
 
         <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
-        <nav_pagination :fandata="PAGEDATA.total_number" v-on:complete="receive"/>
+        <nav_pagination :fandata="PAGEDATA" v-on:complete="receive"/>
 
 
       </a-layout-content>
@@ -79,7 +86,6 @@
 import axios from 'axios';      // 网络请求模块
 axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
 
-import { PublicModel,A_Patch } from '/src/assets/JS_Model/public_model' // 引用自有模块&类方法
 import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
@@ -88,25 +94,26 @@ import { useStore } from 'vuex'
 import menu_left from '@/components/layout/menu_left.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
-
+import Model_Del from "@/components/admin/Model_Del.vue";
+import Fun_Add from "@/components/admin/Fun_Add.vue";
 // 组件引用=====结束
 export default {
   name: "FunView",
   // 组件加载
   components: {
+    Fun_Add,
     menu_left,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     nav_pagination,
     menu_head,
-    PlusOutlined
+    PlusOutlined,
+    Model_Del,
 
   },
   setup(){
 
     const store = useStore();// 共享数据
-    const ruterPatch = new A_Patch();// 初始化路由地址
-    const publicModel = new PublicModel();// 初始网络请求方法
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)// 初始化loading状态
 
@@ -121,17 +128,56 @@ export default {
       menuconfig:{}       // 菜单配置
     })
 
+    // 【删除】数据初始化
+    const DELDATA = reactive({
+      open:false,
+      actian_name:'fun/del',// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
+
+    // 【添加】数据初始化
+    const ADDDATA = reactive({
+      action:'',
+      title:'',
+      data:'',
+      open:false,
+
+    })
+
+
+    const Add_fun = ()=>{
+      ADDDATA.title = '添加功能';
+      ADDDATA.action = 'fun/add';
+      ADDDATA.data = {
+        name:'',
+        def_name:'',
+        miaoshu:''
+      };
+      ADDDATA.open = true;
+    }
+
+    const Edit_fun=(data)=>{
+      ADDDATA.title = '编辑功能';
+      ADDDATA.action = 'fun/update';
+      ADDDATA.data = {
+        id:data.id,
+        name:data.name,
+        def_name:data.def_name,
+        miaoshu:data.miaoshu
+      };
+      ADDDATA.open = true;
+    }
+
+    // 【删除】调用组件方法===》弹出抽屉+传值
+    const Del_Fun = (detaile_data)=>{
+      DELDATA.detaile_obj.id = detaile_data.id;
+      DELDATA.open = true;
+    }
 
     // 组件挂在之前---请求数据
-    onBeforeMount(async ()=>{
-
-      let qurest_data = {"page":1, "page_size":10}
-
-      const { Fetch_Post_Data } = publicModel.axios_post(ruterPatch.AdminAPI.fun.list, qurest_data, look) // 初始化post请求
-
-      await Fetch_Post_Data()   // 从Api请求数据
-
-
+    onBeforeMount(()=>{
+      let message = {"page":1, "page_size":10}
+      Refresh_table(message) // 【页面初始化】&&刷新表格
     })
 
     // 组件挂之后---请求数据
@@ -149,131 +195,102 @@ export default {
     });
 
 
-    // 表头、表框设置
-    var List = {
-
-      // 表头数据转义
-      getcolum:(colums)=>{
-        // id
-        if(colums.field_name === "id"){
-          colums['align'] = 'center'
-          colums['width'] = 74
-        }
-        // 关联菜单id
-        if(colums.field_name === "m_id"){
-          colums['align'] = 'center'
-          colums['width'] = 90
-        }
-        // 菜单名称
-        if(colums.field_name === "m_name"){
-          colums['align'] = 'left'
-          colums['width'] = 120
-        }
-        // 功能名称
-        if(colums.field_name === "name"){
-          colums['align'] = 'center'
-          colums['width'] = 140
-        }
-        // 函数名称
-        if(colums.field_name === "def_name"){
-          colums['align'] = 'center'
-          colums['width'] = 174
-        }
-        // 描述
-        if(colums.field_name === "miaoshu"){
-          colums['align'] = 'center'
-          colums['width'] = 100
-        }
-        // 创建时间
-        if(colums.field_name === "create_time"){
-          colums['align'] = 'center'
-          colums['width'] = 200
-        }
-        // 更新时间
-        if(colums.field_name === "update_time"){
-          colums['align'] = 'center'
-          colums['width'] = 200
-        }
-      },
-      // 添加操作
-      addop:(colums)=>{
-        var op = {
-          "dataIndex": "state",
-          "field_name": "state",
-          "field_type": "int",
-          "key": "operation",
-          "title": "操作",
-          "fixed": 'right',
-          "align":"center",
-          "width":100
-        }
-        colums.push(op) // 添加操作按钮
-      },
-      // 表格内容转义
-      getvlue:(vlues)=>{
-        console.log(vlues)
-      }
-      // 点击翻页加载数据
-    }
-
-
-
-
-    // 网络请求接口====> 回调方法
-    function look(res){
-
-      // loading 状态关闭
-      loading.value = false
-
-      // 设置表头列的宽度
-      for(let i of res.colum){
-        List.getcolum(i)
-      }
-
-      // 表格添加操作按钮列
-      List.addop(res.colum)
-
-      PAGEDATA.user = res.user
-      PAGEDATA.colum = res.colum
-      PAGEDATA.datalist = res.data
-      PAGEDATA.total_number = res.total_number
-
-      // 添加编辑方法
-      // 添加删除方法
-      // 添加新增数据方法
-
-
-      // for(let i of res.data){
-      //   console.log(i)
-      // }
-
-      return res
-
-    }
-
-
 
 
     // 接收来自子组件发送的数据=回调方法
     const receive = (message)=>{
+      loading.value = true    // 开启loading状态
+      Refresh_table(message) // 刷新表格
+    }
 
-      loading.value = true  // 开启loading状态
+    //【当前页面】&&刷新表格
+    const pagecallback =()=>{
+      let message = {}
+      message.page = store.state.fun.message.page;
+      message.page_size = store.state.fun.message.page_size;
+      receive(message)
+    }
 
-      const { Fetch_Post_Data } = publicModel.axios_post(ruterPatch.AdminAPI.fun.list, message, look) // 初始化post请求
+    // 刷新表格
+    const Refresh_table = (message)=>{
 
-      Fetch_Post_Data() // 执行请求方法
+      store.dispatch('fun/list', message).then(()=>{
+
+        PAGEDATA.colum = store.state.fun.message.data_list.colum
+        PAGEDATA.user = store.state.fun.message.user
+        PAGEDATA.datalist = store.state.fun.message.data_list.data
+        PAGEDATA.total_number = store.state.fun.message.data_list.total_number
+        loading.value = false // loading 状态关闭
+      })
 
     }
 
 
+    // 功能详情查询===ok
+    // store.dispatch('fun/get',{id:'1'}).then(()=>{
+    //   console.log(store.state.fun)  // 页面赋值
+    // })
+
+    // 功能列表查询==ok
+    // const page_data = {
+    //   "page":1,
+    //   "page_size":10
+    // }
+    // store.dispatch('fun/list', page_data).then(()=>{
+    //   console.log(store.state.fun.message)
+    // })
+
+
+    // 功能新增===ok
+    // const add_data = {
+    //     "m_id":2,
+    //     "m_name":"上一级菜单",
+    //     "name":"创意功能",
+    //     "def_name":"fun.del",
+    //     "miaoshu":"创意的好功能"
+    // }
+    // store.dispatch('fun/add', add_data).then(()=>{
+    //   console.log(store.state.fun.message)
+    // })
+
+
+    // 功能删除===ok
+    // store.dispatch('fun/del',{id:18}).then(()=>{
+    //   console.log(store.state.fun.message)
+    // })
+
+
+    // 功能更新==ok
+    // const update_data = {
+    //   "id":17,
+    //   "setting_data":{"name":"系统设置1"}
+    // }
+    // store.dispatch('fun/update', update_data).then(()=>{
+    //   console.log(store.state.fun.message)
+    // })
+
+
+    // 功能批量删除===ok
+    // const batch_del_data = {
+    //   "id":[15,16,17]
+    // }
+    // store.dispatch('fun/batch_del', batch_del_data).then(()=>{
+    //     console.log(store.state.fun.message)
+    // })
 
 
     return{
       store,
+      pagecallback,
       loading,
       innerHeight,
       PAGEDATA,
       receive,
+      Del_Fun,
+      DELDATA,
+      ADDDATA,
+      Add_fun,
+      Edit_fun,
 
     }
   }
@@ -281,8 +298,8 @@ export default {
 </script>
 
 <style>
-.ant-table-tbody{
-  height: calc(100vh - 265px);
+.ant-table-body{
+  height: calc(100vh - 245px);
   min-height: 0px;
 }
 </style>

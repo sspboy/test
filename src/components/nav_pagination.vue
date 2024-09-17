@@ -1,11 +1,11 @@
 <template>
   <div id="components-pagination-demo-mini" class="nav_s">
-    <a-pagination size="small" @change="onChange" :total="fanData.fandata" :show-total="total => `总共 ${total} 条数据`" show-size-changer show-quick-jumper />
+    <a-pagination size="small" @change="onChange" :total="props.fandata.total_number" :show-total="total => `总共 ${ total } 条数据`" show-size-changer show-quick-jumper />
   </div>
 </template>
 
 <script>
-import {computed, defineComponent} from 'vue'
+import {defineComponent} from 'vue'
 
 export default defineComponent({
 
@@ -16,31 +16,24 @@ export default defineComponent({
   props:{
     // 接受父组件面信息【翻页信息】
     fandata:{
-      type:Number // 数据类型为数字
+      type:Object // 数据类型为数字
     }
 
   },
 
   setup(props, ctx){
 
-    const fanData = computed(()=>{
-      return props
-    })
-
-
     const onChange = (page, pageSize)=>{
-
       let page_message = {}
       page_message.page = page
       page_message.page_size = pageSize
-
       ctx.emit('complete', page_message) // 【翻页数据】发送到父组件中
 
     }
 
     return{
       onChange,
-      fanData
+      props
     }
   }
 })

@@ -54,7 +54,7 @@ export default defineComponent({
 
 
     // 如果为true 收起状态
-    if(store.state.left.coll){
+    if(store.state.menu.coll){
       state.key=[props.menudata.key]
       state.openKeys = []
     }else {    // 如果为false 展开状态
@@ -73,29 +73,29 @@ export default defineComponent({
         key: '1',
         icon: () => h(UserOutlined),
         id:"user",
-        label: '用户管理',
-        title: '用户管理',
+        label: '账号绑定',
+        title: '账号绑定',
       },
       {
         key: '2',
         icon: () => h(MenuOutlined),
         id:"menu",
-        label: '菜单管理',
-        title: '菜单管理'
+        label: '内容发布',
+        title: '内容发布'
       },
       {
         key: '3',
         icon: () => h(BarsOutlined),
         id:"fun",
-        label: '功能列表',
-        title: '功能列表',
+        label: '互动营销',
+        title: '互动营销',
       },
       {
         key: '4',
         icon: () => h(AccountBookOutlined),
         id:"version",
-        label: '版本管理',
-        title: '版本管理',
+        label: '线索管理',
+        title: '线索管理',
       },
       {
         key: 'sub1',
