@@ -36,6 +36,30 @@
         <a-row :gutter="16">
 
           <a-col :span="12">
+            <a-form-item label="价格" name="price">
+              <a-input v-model:value="formdata.price" class="font_size_12" placeholder="输入价格" type="number" />
+            </a-form-item>
+          </a-col>
+
+          <a-col :span="12">
+            <a-form-item label="使用人数" name="sub_account_number">
+              <a-input v-model:value="formdata.sub_account_number" class="font_size_12" placeholder="输入版本人数" type="number" />
+            </a-form-item>
+          </a-col>
+
+        </a-row>
+
+        <a-row :gutter="16">
+
+          <a-col :span="12">
+            <a-form-item label="使用时长" name="duration">
+              <a-input v-model:value="formdata.duration" class="font_size_12" placeholder="输入使用多少个月" type="number" />
+            </a-form-item>
+          </a-col>
+
+
+        </a-row>
+          <a-col :span="24">
             <a-form-item label="关联菜单" name="menu_setting">
                 <a-tree-select
                   v-model:value="formdata.menu_setting"
@@ -49,34 +73,10 @@
                 />
             </a-form-item>
           </a-col>
-
-          <a-col :span="12">
-            <a-form-item label="价格" name="price">
-              <a-input v-model:value="formdata.price" class="font_size_12" placeholder="输入价格" type="number" />
-            </a-form-item>
-          </a-col>
-
-
-        </a-row>
-
         <a-row :gutter="16">
 
-          <a-col :span="12">
-            <a-form-item label="使用人数" name="sub_account_number">
-              <a-input v-model:value="formdata.sub_account_number" class="font_size_12" placeholder="输入版本人数" type="number" />
-            </a-form-item>
-          </a-col>
-
-          <a-col :span="12">
-            <a-form-item label="使用时长" name="duration">
-              <a-input v-model:value="formdata.duration" class="font_size_12" placeholder="输入使用多少个月" type="number" />
-            </a-form-item>
-          </a-col>
-
 
         </a-row>
-
-
       </a-form>
 
     <template #footer>
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import {defineComponent, reactive, ref, watch, computed} from 'vue';
+import {defineComponent, reactive, ref, computed} from 'vue';
 import {useStore} from "vuex";
 import { TreeSelect } from 'ant-design-vue';
 
@@ -129,13 +129,14 @@ export default defineComponent({
 
     })
 
-    const treeData = computed(()=>{
-      return reactive(store.state.menu.message.data_list.data)
-    })
 
+
+    // 按钮等待效果
     const loading = ref(false)
 
+    // 表单验证规则
     const rules={
+
         version_number:[{
           required: true,
           trigger: 'change',
@@ -175,9 +176,12 @@ export default defineComponent({
         open.adddata.data = ''// 清除数据
     };
 
-
+    // 树状菜单方法
     const SHOW_PARENT = TreeSelect.SHOW_PARENT;
-
+    // 关联菜单树状数据
+    const treeData = computed(()=>{
+      return reactive(store.state.menu.message.data_list.data)
+    })
     // 关联菜单数据初始化
     let message = {"page":1, "page_size":100}
     store.dispatch('menu/list', message)
@@ -236,7 +240,7 @@ export default defineComponent({
 
         loading.value = true;
 
-        console.log(formdata.value)
+        // console.log(formdata.value)
 
         store.dispatch(open.adddata.action, formdata.value).then(()=>{
 

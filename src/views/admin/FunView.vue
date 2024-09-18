@@ -1,9 +1,9 @@
 <template>
 
-  <!--新建、编辑、删除用户数据====>开始-->
-  <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
-  <Fun_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
-  <!--新建、编辑、删除用户数据====>结束-->
+<!--新建、编辑、删除用户数据====>开始-->
+<Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
+<Fun_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
+<!--新建、编辑、删除用户数据====>结束-->
 
 
 <a-layout style="height: 100vh;width: 100vw;">
@@ -80,11 +80,12 @@
 
     </a-layout>
   </a-layout>
+
+
 </template>
 
 <script>
-import axios from 'axios';      // 网络请求模块
-axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
+
 
 import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
@@ -92,8 +93,9 @@ import { useStore } from 'vuex'
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
-import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
+
+import nav_pagination from "@/components/nav_pagination.vue";
 import Model_Del from "@/components/admin/Model_Del.vue";
 import Fun_Add from "@/components/admin/Fun_Add.vue";
 // 组件引用=====结束

@@ -1,22 +1,22 @@
 <template>
 
   <a-drawer
-      :title="open.adddata.title"
-      :width="720"
-      :open="open.adddata.open"
-      :body-style="{ paddingBottom: '80px',}"
-      :footer-style="{ textAlign: 'right' }"
-      @close="onClose"
+  :title="open.adddata.title"
+  :width="720"
+  :open="open.adddata.open"
+  :body-style="{ paddingBottom: '80px',}"
+  :footer-style="{ textAlign: 'right' }"
+  @close="onClose"
   >
 
       <a-form
-          name="Add_fun"
-          ref="formRef"
-          :model="formdata"
-          :rules="rules"
-          layout="vertical"
-          class="font_size_12"
-          autocomplete="off">
+      name="Add_fun"
+      ref="formRef"
+      :model="formdata"
+      :rules="rules"
+      layout="vertical"
+      class="font_size_12"
+      autocomplete="off">
 
         <a-row :gutter="16">
 

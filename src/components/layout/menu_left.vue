@@ -8,6 +8,7 @@
       :items="items"
       :openKeys="state.openKeys"
       @click="handleClick"
+      @openChange="onOpenChange"
     ></a-menu>
   </div>
 </template>
@@ -18,7 +19,7 @@
 // 请求结果获取菜单信息
 
 //
-import {defineComponent, reactive, h,} from 'vue';
+import {defineComponent, reactive, h, computed} from 'vue';
 import { useRouter } from "vue-router"; // 导入路由
 import { useStore } from 'vuex'
 
@@ -49,7 +50,9 @@ export default defineComponent({
     // 菜单数据状态
     const state = reactive({
       key:[],
-      openKeys:[],
+      rootSubmenuKeys: ['sub1', 'sub2'],  // 一级菜单
+      openKeys:['sub1'],// 选中的一级菜单
+      selectedKeys: [],
     });
 
 
@@ -57,6 +60,7 @@ export default defineComponent({
     if(store.state.menu.coll){
       state.key=[props.menudata.key]
       state.openKeys = []
+
     }else {    // 如果为false 展开状态
       state.key=[props.menudata.key]
       state.openKeys = [props.menudata.openKeys]
@@ -137,35 +141,39 @@ export default defineComponent({
         children: [
           {
             key: '9',
+            id:'department',
             label: '组织架构',
             title: '组织架构',
           },
           {
             key: '10',
+            id:'team',
             label: '团队人员',
             title: '团队人员',
           },
           {
             key: '11',
+            id:'role',
             label: '角色管理',
             title: '角色管理',
           },
           {
-            key: 'sub3',
+            key: '12',
+            id:'brandinf',
             label: '品牌资料',
-            title: 'Submenu',
-            children: [
-              {
-                key: '12',
-                label: 'Option 11',
-                title: 'Option 11',
-              },
-              {
-                key: '13',
-                label: 'Option 12',
-                title: 'Option 12',
-              },
-            ],
+            title: '品牌资料',
+            // children: [
+            //   {
+            //     key: '12',
+            //     label: 'Option 11',
+            //     title: 'Option 11',
+            //   },
+            //   {
+            //     key: '13',
+            //     label: 'Option 12',
+            //     title: 'Option 12',
+            //   },
+            // ],
           },
         ],
       },
@@ -177,19 +185,26 @@ export default defineComponent({
     const handleClick = e => {
 
       // console.log(e.keyPath)
-
       let name = e.item.id
       if(name != undefined){
         router.push('/' +  e.item.id);
       }
+    };
 
-
+    const onOpenChange = openKeys => {
+      const latestOpenKey = openKeys.find(key => state.openKeys.indexOf(key) === -1);
+      if (state.rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
+        state.openKeys = openKeys;
+      } else {
+        state.openKeys = latestOpenKey ? [latestOpenKey] : [];
+      }
     };
 
 
     return {
       store,
       handleClick,
+      onOpenChange,
       state,
       items,
     };

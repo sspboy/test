@@ -57,6 +57,39 @@ const routes = [
         }
 
     },
+    {
+        path: '/department',
+        name: 'department',
+        component: () => import('../views/BasicSetting/Department.vue'),    // 视图文件
+        meta:{
+            title:'组织架构',
+        }
+
+    },
+    {
+        path: '/team',
+        name: 'team',
+        component: () => import('../views/BasicSetting/Team.vue'),    // 视图文件
+        meta:{
+            title:'团队管理',
+        }
+    },
+    {
+        path: '/role',
+        name: 'role',
+        component: () => import('../views/BasicSetting/Role.vue'),    // 视图文件
+        meta:{
+            title:'角色管理',
+        }
+    },
+    {
+        path: '/brandinf',
+        name: 'brandinf',
+        component: () => import('../views/BasicSetting/BrandInf.vue'),    // 视图文件
+        meta:{
+            title:'品牌资料',
+        }
+    },
     {   // 404 报错页面
         path: '/:catchAll(.*)', // 使用捕获所有路由的模式
         name:"Error404",
