@@ -17,15 +17,15 @@
 
 
       <!-- 组织架构 开始 -->
-      <a-layout-sider :style="siderStyle" style="background-color: #f5f5f5;height: 100%;padding: 6px 0 6px 6px;">
+      <a-layout-sider style="background-color: #f5f5f5;height: 100%;padding: 6px 0 6px 6px;">
 
-        <div style="background-color: white;height: 100%;">
+        <div style="background-color: white;height: 100%;overflow-x:scroll;width: 100%;white-space:nowrap;" >
 
           <p style="padding: 14px 14px 4px 10px;text-align: right;">
 
             <span style="float: left; margin-top: 4px;"><ApartmentOutlined /> 组织架构</span>
 
-            <a-button primary size="small" style="font-size:12px;">
+            <a-button primary size="small" style="font-size:12px;" @click="Department_Add_fun">
                <template #icon><PlusOutlined /></template>
             </a-button>
 
@@ -36,7 +36,19 @@
             v-model:selectedKeys="selectedKeys"
             :load-data="onLoadData"
             :tree-data="treeData"
-          />
+          >
+            <template #title="{ title, key }">
+
+              <div>
+                <span :id="key" @click="cli_fun">{{ title }}</span>
+                <span class="depart_btn_d" ><EditOutlined @click="Department_Edit_fun" :id="key"/></span>
+                <span class="depart_btn_m" ><DeleteOutlined :id="key" @click="Department_Del_fun" /></span>
+              </div>
+
+            </template>
+
+
+          </a-tree>
 
         </div>
 
@@ -68,9 +80,8 @@
         </div>
 
 
-
         <!-- 组织架构 结束  -->
-        <a-layout-content :style="contentStyle"> liebiao  </a-layout-content>
+        <a-layout-content> liebiao  </a-layout-content>
 
 
       </a-layout-content>
@@ -90,7 +101,7 @@
 <script>
 import {defineComponent, reactive,ref} from 'vue';
 import { useStore } from 'vuex'
-import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined,ApartmentOutlined} from '@ant-design/icons-vue';
+import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined,ApartmentOutlined, EditOutlined,DeleteOutlined} from '@ant-design/icons-vue';
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
@@ -104,6 +115,8 @@ export default defineComponent({
     MenuUnfoldOutlined,
     PlusOutlined,
     ApartmentOutlined,
+    EditOutlined,
+    DeleteOutlined,
     menu_left,
     menu_head
   },
@@ -131,32 +144,32 @@ export default defineComponent({
       console.log('删除成员')
     }
 
-    // 添加部门
-    // 编辑部门
-    // 删除部门
-
-    // 点击部门查询员工
 
 
 
 
+    // 树状结构====开始
     const expandedKeys = ref([]);
     const selectedKeys = ref([]);
+
+    // 初始化数据
     const treeData = ref([
       {
-        title: 'Expand to load',
+        title: '销售一部',
         key: '0',
       },
       {
-        title: 'Expand to load',
+        title: '销售二部',
         key: '1',
       },
       {
-        title: 'Tree Node',
+        title: '综合管理部',
         key: '2',
         isLeaf: true,
       },
     ]);
+
+
     const onLoadData = treeNode => {
 
       console.log(treeNode.dataRef)
@@ -169,7 +182,7 @@ export default defineComponent({
         }
 
         setTimeout(() => {
-
+          // 被点击的节点添加子菜单
           treeNode.dataRef.children = [
 
             {
@@ -183,7 +196,7 @@ export default defineComponent({
             },
 
           ];
-
+          // 重新赋值
           treeData.value = [...treeData.value];
 
           console.log(treeData.value)
@@ -194,6 +207,28 @@ export default defineComponent({
       });
     };
 
+    // 添加部门
+    const Department_Add_fun=()=>{
+      console.log('添加部门')
+    }
+    // 编辑部门
+    const Department_Edit_fun=(e)=>{
+      console.log('编辑部门')
+      console.log(e.target.parentElement.id)
+    }
+    // 删除部门
+    const Department_Del_fun=(e)=>{
+      console.log('删除部门')
+      console.log(e.target.parentElement.id)
+
+    }
+
+    // 点击部门查询员工
+    const cli_fun = node =>{
+      console.log(node.target.textContent)
+      console.log(node.target.id)
+    }
+    // 树状结构====结束
 
 
     return {
@@ -203,7 +238,12 @@ export default defineComponent({
       selectedKeys,
       onLoadData,
       treeData,
-      Add_fun
+      Add_fun,
+      Del_fun,
+      Department_Add_fun,
+      Department_Edit_fun,
+      Department_Del_fun,
+      cli_fun
     }
   }
 
@@ -212,5 +252,7 @@ export default defineComponent({
 </script>
 
 <style>
+.depart_btn_m{margin: 0 8px;}
+.depart_btn_d{margin: 0 0 0 18px;}
 
 </style>

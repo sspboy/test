@@ -46,23 +46,32 @@ export class A_Patch{
     BasicsAPI={
         // 团队管理
         team:{
-
+            "list": "api/setting/team/list",  // [post]列表 [put]data 批量删除
+            "detaile": "api/setting/team/",   // [get]+id详情
+            "delete": "api/setting/team/",    // [delete]+id删除
+            "edit": "api/setting/team/",      // [put]setting_data+id 传数据更新
+            "add": "api/setting/team/add"     // [post]
         },
         // 组织架构
         department: {
-            "list": "api/admin/department/list",  // [post]列表 [put]data 批量删除
-            "detaile": "api/admin/department/",   // [get]+id详情
-            "delete": "api/admin/department/",    // [delete]+id删除
-            "edit": "api/admin/department/",      // [put]setting_data+id 传数据更新
-            "add": "api/admin/department/add"     // [post]
+            "list": "api/setting/department/list",  // [post]列表 [put]data 批量删除
+            "detaile": "api/setting/department/",   // [get]+id详情
+            "delete": "api/setting/department/",    // [delete]+id删除
+            "edit": "api/setting/department/",      // [put]setting_data+id 传数据更新
+            "add": "api/setting/department/add"     // [post]
         },
         // 角色管理
         role:{
-
+            "list": "api/setting/role/list",  // [post]列表 [put]data 批量删除
+            "detaile": "api/setting/role/",   // [get]+id详情
+            "delete": "api/setting/role/",    // [delete]+id删除
+            "edit": "api/setting/role/",      // [put]setting_data+id 传数据更新
+            "add": "api/setting/role/add"     // [post]
         },
         // 品牌信息
         brandinfo:{
-            
+            "detaile": "api/setting/brand/",   // [get]+id详情
+
         },
     }
     // 应用市场

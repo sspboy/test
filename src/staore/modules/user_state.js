@@ -34,6 +34,7 @@ const mutations = {
 
     // 更新列表
     data_list:(state, resdata)=>{
+
         for(let colums of resdata.colum){
             // 品牌id
             if(colums.field_name === "b_id"){
