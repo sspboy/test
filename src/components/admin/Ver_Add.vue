@@ -176,8 +176,8 @@ export default defineComponent({
         open.adddata.data = ''// 清除数据
     };
 
-    // 树状菜单方法
-    const SHOW_PARENT = TreeSelect.SHOW_PARENT;
+    // 树状菜单回填方法SHOW_ALL=全部节点回填（含父节点）；SHOW_PARENT=只回填父节点
+    const SHOW_PARENT = TreeSelect.SHOW_ALL;
     // 关联菜单树状数据
     const treeData = computed(()=>{
       return reactive(store.state.menu.message.data_list.data)

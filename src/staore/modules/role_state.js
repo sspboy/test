@@ -38,7 +38,7 @@ const mutations = {
             // 账号名称
             if(colums.field_name === "id"){
               colums['align'] = 'left'
-              colums['width'] = 180
+              colums['width'] = 40
             }
             // 品牌id
             if(colums.field_name === "b_id"){

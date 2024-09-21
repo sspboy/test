@@ -30,6 +30,16 @@ const routes = [
         }
     },
     {
+        path: '/video',
+        name: 'video',
+        component: () => import('../views/video/FFMEPEG.vue'),    // 视图文件
+        meta:{
+            title:'视频处理',
+
+        }
+
+    },
+    {
         path: '/menu',
         name: 'menu',
         component: () => import('../views/admin/MenuView.vue'),    // 视图文件

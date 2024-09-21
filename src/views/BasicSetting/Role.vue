@@ -1,4 +1,12 @@
 <template>
+
+<!--新建、编辑、删除用户数据====>开始-->
+<Role_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
+<Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
+<!--新建、编辑、删除用户数据====>结束-->
+
+
+
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
@@ -78,15 +86,15 @@
 
 <script>
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
-
 import {defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref} from 'vue';
 import { useStore } from 'vuex'
 
 // 组件引用=====开始
-
 import menu_left from "@/components/layout/menu_left.vue";
 import menu_head from "@/components/layout/menu_head.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
+import Model_Del from "@/components/admin/Model_Del.vue";
+import Role_Add from "@/components/BasicSetting/Role_Add.vue";
 
 export default defineComponent({
   // 模版名称【角色管理】
@@ -98,7 +106,9 @@ export default defineComponent({
     PlusOutlined,
     menu_left,
     menu_head,
-    nav_pagination
+    nav_pagination,
+    Model_Del,
+    Role_Add
   },
   // 父组件数据
   props: {},
@@ -119,7 +129,22 @@ export default defineComponent({
       menuconfig:{}       // 菜单配置
     })
 
-        // 【新建】调用组件方法===》弹出抽屉+传值
+
+    // 【删除】数据初始化
+    const DELDATA = reactive({
+      open:false,
+      actian_name:'role/del',// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
+
+    // 【删除】调用组件方法===》弹出抽屉+传值
+    const Del_Fun = (detaile_data)=>{
+      DELDATA.detaile_obj.id = detaile_data.id;
+      DELDATA.open = true;
+    }
+
+
+    // 【新建】调用组件方法===》弹出抽屉+传值
     const ADDDATA= reactive({
       actian:'',// 数据删除模块名称
       title:"",
@@ -127,24 +152,35 @@ export default defineComponent({
     })
 
     const Add_Fun = ()=>{
-      ADDDATA.title="新建"
-      ADDDATA.actian='role/add'
+      ADDDATA.title="添加角色"
+      ADDDATA.action='role/add'
+      ADDDATA.data = {
+        role_name:'',
+        role_state:undefined,
+        role_info:'',
+        data_permissions:undefined,
+        view_permissions:undefined,
+        fun_permissions:undefined
+      };
       ADDDATA.open = true;
     }
     // 【新建】调用组件方法===》弹出抽屉+传值
 
-    // 【编辑】调用组件方法===》弹出抽屉+传值
-    const EDITDATA= reactive({
-      title:"",
-      data:'',
-      open:false,
-    })
 
-    const Edit_Fun = (detaile_data)=>{
-      EDITDATA.title="编辑"
-      EDITDATA.actian='role/update'
-      EDITDATA.data = detaile_data;
-      EDITDATA.open = true;
+
+    const Edit_Fun = (data)=>{
+      ADDDATA.title="编辑角色"
+      ADDDATA.action='role/update'
+      ADDDATA.data = {
+        id:data.id,
+        role_name:data.role_name,
+        role_state:data.role_state,
+        role_info:data.role_info,
+        data_permissions:data.data_permissions,
+        view_permissions:data.view_permissions,
+        fun_permissions:data.fun_permissions
+      };
+      ADDDATA.open = true;
     }
     // 【编辑】调用组件方法===》弹出抽屉+传值
 
@@ -181,11 +217,7 @@ export default defineComponent({
         PAGEDATA.datalist = store.state.role.message.data_list.data
         PAGEDATA.total_number = store.state.role.message.data_list.total_number
         loading.value = false // loading 状态关闭
-      }).then(()=>{
-        console.log(PAGEDATA)
-
       })
-
     }
 
     // [翻页]&&刷新表格
@@ -224,9 +256,12 @@ export default defineComponent({
       loading,
       innerHeight,
       PAGEDATA,
+      ADDDATA,
       pagecallback,
       receive,
       Add_Fun,
+      DELDATA,
+      Del_Fun,
       Edit_Fun
     }
   }

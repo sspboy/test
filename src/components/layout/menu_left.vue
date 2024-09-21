@@ -76,9 +76,9 @@ export default defineComponent({
       {
         key: '1',
         icon: () => h(UserOutlined),
-        id:"user",
-        label: '账号绑定',
-        title: '账号绑定',
+        id:"video",
+        label: '视频处理',
+        title: '视频处理',
       },
       {
         key: '2',
