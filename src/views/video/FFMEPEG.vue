@@ -88,22 +88,20 @@
 
       </a-form>
 
-
-
-
     </div>
 
 </template>
 
 <script>
-import {ref, onUnmounted, defineComponent,computed,reactive} from 'vue'
+// 通过js引用FFMpeg
+import {ref, defineComponent, reactive} from 'vue'
+
 
 export default defineComponent({
 
   name:'Video',
 
   setup(props, ctx) {
-
 
     const { fetchFile } = FFmpegUtil;
 
@@ -115,14 +113,14 @@ export default defineComponent({
 
 
     const formState = reactive({
+
       video_url:'http://218.108.199.110:81/netdisk-boot/profile/upload/9p8o6g/%E8%88%92%E5%85%8B/%E4%BA%A7%E5%93%81%E5%8D%96%E7%82%B9/gongneng1.mp4'
+
     })
 
 
     // 截图本地文件
     const trim = async ({ target: { files } }) => {
-
-      console.log(files)
 
       const message = document.getElementById('message');
 
@@ -185,6 +183,21 @@ export default defineComponent({
       downloadLink.click();
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // 列表数据
     const data = reactive({data:[
       {
@@ -231,26 +244,41 @@ export default defineComponent({
       }
 
       console.log('Success:', values.video_url);
+
       var video_url = values.video_url
+
       await ffmpeg.writeFile('name', await fetchFile(video_url));
-      var miaolist = ['1','3','5','8']
+
+      var miaolist = [
+        {'time':'00:00:1.000', 'top':'1'},
+        {'time':'00:00:2.000', 'top':'1'},
+        {'time':'00:00:3.000', 'top':'1'},
+        {'time':'00:00:4.000', 'top':'1'}]
+
       var data_list = []
 
-
       for(let i of miaolist){
-        console.log(i)
 
         var data_obj = {}
+
         var name = 'mimi_' + i + '.png'
-        await ffmpeg.exec(['-i', 'name', '-vframes', i, name]);
+
+        await ffmpeg.exec(['-i', 'name', '-ss', i.time, '-frames:v', i.top, name]);
+
         const data = await ffmpeg.readFile(name);
+
         var img_url = URL.createObjectURL(new Blob([data.buffer], { type: 'image/png' }));
+
         console.log(img_url)
+
         data_obj.title = 'tt'
         data_obj.img_url = img_url
         data_list.push(data_obj)
+
       }
+
       data.data= data_list
+
     };
     const onFinishFailed = errorInfo => {
       console.log('Failed:', errorInfo);
