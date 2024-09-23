@@ -60,22 +60,45 @@
         <a-row :gutter="16">
 
           <a-col :span="24">
-            <a-form-item label="视图权限" name="view_permissions">
-              <a-input v-model:value="formdata.view_permissions" class="font_size_12" placeholder="输入函数字符名称" type="text" />
+            <a-list item-layout="horizontal" :data-source="checked_data_list">
+              <template #renderItem="{ item }">
+                <a-list-item>
+
+
+                  <a-list-item-meta>
+                  <template #title>
+
+                    <a-divider orientation="left">{{ item.menu_name.name }}</a-divider>
+                    <a-checkbox-group v-model:value="state.checkedList" :options="item.fun" />
+
+                  </template>
+
+                    <a-checkbox v-model:checked="state.checkAll" :indeterminate="state.indeterminate" @change="onCheckAllChange">
+                      【视频截图】
+                    </a-checkbox>
+
+                    <a-divider />
+
+
+
+                  </a-list-item-meta>
+                </a-list-item>
+              </template>
+            </a-list>
+            <a-form-item label="功能权限" name="">
+
+
+
+
+
+
             </a-form-item>
+
+
           </a-col>
 
         </a-row>
 
-        <a-row :gutter="16">
-
-          <a-col :span="24">
-            <a-form-item label="功能权限" name="fun_permissions">
-              <a-input v-model:value="formdata.fun_permissions" class="font_size_12" placeholder="输入函数字符名称" type="text" />
-            </a-form-item>
-          </a-col>
-
-        </a-row>
 
       </a-form>
 
@@ -85,6 +108,7 @@
       <a-space style="float: left;">
         <a-button type="primary" @click="from_submit" style="font-size: 12px;" html-type="submit" :loading="loading">保存</a-button>
         <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
+        <a-button @click="get_checked_res" style="font-size: 12px;">获取选择表单</a-button>
       </a-space>
     </template>
 
@@ -92,7 +116,7 @@
 </template>
 
 <script>
-import {defineComponent, reactive, ref, computed } from 'vue';
+import {defineComponent, reactive, ref, computed,watch} from 'vue';
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -127,7 +151,7 @@ export default defineComponent({
     const loading = ref(false)
 
 
-    // 验证规则
+    // 表单---验证规则
     const rules={
       // 菜单名称
       role_name: [{
@@ -148,8 +172,61 @@ export default defineComponent({
       }]
     }
 
-    // 视图权限&功能权限设置
+    // 视图权限&功能权限设置====开始
+
+    // 更具用户版本号，获取功能菜单
+
+    const checked_data_list = [
+
+        {
+          'menu_name':{'id':'65','name':'客户管理'},// 菜单名称
+          'fun':['list', 'detaile','add','edit','del','batch_del']
+        },
+        {
+          'menu_name':{'id':'65','name':'视频管理'},// 菜单名称
+          'fun':['list', 'detaile','add','edit','del','batch_del']
+        },
+
+        ]
+
+
+
+
+    // 功能权限所有子选项
+    const plainOptions = ['list', 'detaile','add','edit','del','batch_del'];
+
+    // 绑定数据
+    const state = reactive({
+      indeterminate: true,
+      checkAll: false,
+      checkedList: ['list', 'detaile','add','edit','del','batch_del'], // 选中的功能
+    });
+
+    const onCheckAllChange = e => {
+      Object.assign(state, {
+        checkedList: e.target.checked ? plainOptions : [],
+        indeterminate: false,
+      });
+    };
+
+    // 监听子功能权限，
+    watch(
+      () => state.checkedList,
+      val => {
+        state.indeterminate = !!val.length && val.length < plainOptions.length;
+        state.checkAll = val.length === plainOptions.length;
+      },
+    );
     // 用户信息中获取菜单：
+
+
+    const get_checked_res = () =>{
+      console.log(state.checkedList)
+    }
+    // 视图权限&功能权限设置====结束
+
+
+
 
 
 
@@ -255,6 +332,11 @@ export default defineComponent({
       from_submit,
       onClose,
       loading,
+      plainOptions,
+      onCheckAllChange,
+      state,
+      get_checked_res,
+      checked_data_list
     }
   }
 

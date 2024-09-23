@@ -180,6 +180,7 @@ export default defineComponent({
         view_permissions:data.view_permissions,
         fun_permissions:data.fun_permissions
       };
+
       ADDDATA.open = true;
     }
     // 【编辑】调用组件方法===》弹出抽屉+传值
