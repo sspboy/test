@@ -57,43 +57,58 @@
 
         </a-row>
 
-        <a-row :gutter="16">
+        <a-row :gutter="24">
 
           <a-col :span="24">
-            <a-list item-layout="horizontal" :data-source="checked_data_list">
+
+            <a-list item-layout="horizontal" :data-source="checked_data_list" >
+
               <template #renderItem="{ item }">
-                <a-list-item>
+                <a-list-item style="padding: 0px;border: none;">
+                  <a-list-item-meta >
 
 
-                  <a-list-item-meta>
                   <template #title>
 
-                    <a-divider orientation="left">{{ item.menu_name.name }}</a-divider>
-                    <a-checkbox-group v-model:value="state.checkedList" :options="item.fun" />
+                    <a-divider orientation="left" style="font-size: 14px;">【{{ item.menu.name }}】</a-divider>
+
+
+
+                    <!--checkbox 迭代 开始-->
+                    <a-list item-layout="horizontal" :data-source="item.child">
+                      <template #renderItem="{ item }">
+                      <a-list-item>
+
+                        <a-checkbox v-model:checked="item.checkAll" style="font-size: 12px;" :name="item.name" @change="onCheckAllChange">
+                          {{ item.menu_name }}
+                        </a-checkbox>
+
+                          <a-list item-layout="horizontal" :data-source="item.fun">
+
+                            <template #renderItem="{ item }">
+                                <span>
+                                    <a-checkbox type="checkbox" :name="item.name" v-model:checked="item.checked" v-model:value="item.value" :disabled="item.disabled" style="font-size: 12px;">{{item.label}}</a-checkbox>
+                                </span>
+                            </template>
+
+                          </a-list>
+
+                      </a-list-item>
+                      </template>
+                    </a-list>
+                    <!--checkbox 迭代 结束-->
+
+
 
                   </template>
-
-                    <a-checkbox v-model:checked="state.checkAll" :indeterminate="state.indeterminate" @change="onCheckAllChange">
-                      【视频截图】
-                    </a-checkbox>
-
-                    <a-divider />
-
-
-
                   </a-list-item-meta>
+
+
                 </a-list-item>
               </template>
+
+
             </a-list>
-            <a-form-item label="功能权限" name="">
-
-
-
-
-
-
-            </a-form-item>
-
 
           </a-col>
 
@@ -101,7 +116,6 @@
 
 
       </a-form>
-
 
 
     <template #footer>
@@ -130,7 +144,6 @@ export default defineComponent({
 },
   // 组合API返回到模版
   setup(props,ctx) {
-
     const open = props;
 
     const store = useStore();// 共享数据
@@ -173,55 +186,170 @@ export default defineComponent({
     }
 
     // 视图权限&功能权限设置====开始
+    // 用户信息+版本信息+菜单信息
 
+    // 获取数据
+    // 编译数据
+    //
     // 更具用户版本号，获取功能菜单
-
-    const checked_data_list = [
-
+    const checked_data_list = reactive([
         {
-          'menu_name':{'id':'65','name':'客户管理'},// 菜单名称
-          'fun':['list', 'detaile','add','edit','del','batch_del']
+          'menu':{'id':'65','name':'客户管理','field':'menu'},// 菜单名称
+          'child':[
+            {'name':'menuA','menu_name':'二级菜单A','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            {'name':'menuB','menu_name':'二级菜单B','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            {'name':'menuC','menu_name':'二级菜单B','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            ],
+
         },
         {
-          'menu_name':{'id':'65','name':'视频管理'},// 菜单名称
-          'fun':['list', 'detaile','add','edit','del','batch_del']
+          'menu':{'id':'65','name':'视频管理','field':'video'},// 菜单名称
+          'child':[
+            {'name':'menuD','menu_name':'二级菜单A','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            {'name':'menuE','menu_name':'二级菜单B','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            {'name':'menuF','menu_name':'二级菜单C','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            ],
+
+        },
+        {
+          'menu':{'id':'65','name':'视频管理','field':'mini'},// 菜单名称
+          'child':[
+            {'name':'menuD','menu_name':'二级菜单A','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            {'name':'menuE','menu_name':'二级菜单B','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            {'name':'menuF','menu_name':'二级菜单C','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            ],
+
+        },
+        {
+          'menu':{'id':'65','name':'视频管理','field':'video'},// 菜单名称
+          'child':[
+            {'name':'menuD','menu_name':'二级菜单A','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            {'name':'menuE','menu_name':'二级菜单B','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            {'name':'menuF','menu_name':'二级菜单C','fun':[
+                {'label':'列表','value':'list','checked':false,'disabled':true},
+                {'label':'详情','value':'detaile','checked':false,'disabled':true},
+                {'label':'添加','value':'add','checked':false,'disabled':true},
+                {'label':'编辑','value':'edit','checked':false,'disabled':true},
+                {'label':'删除','value':'del','checked':false,'disabled':true},
+                {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
+            },
+            ],
+
         },
 
-        ]
+        ])
 
 
 
 
-    // 功能权限所有子选项
-    const plainOptions = ['list', 'detaile','add','edit','del','batch_del'];
 
-    // 绑定数据
-    const state = reactive({
-      indeterminate: true,
-      checkAll: false,
-      checkedList: ['list', 'detaile','add','edit','del','batch_del'], // 选中的功能
-    });
-
+    // 勾选主菜单，全选功能
     const onCheckAllChange = e => {
-      Object.assign(state, {
-        checkedList: e.target.checked ? plainOptions : [],
-        indeterminate: false,
-      });
+
+      var name = e.target.name
+      var checked = e.target.checked
+      for(let i of checked_data_list){
+        for(let y of i.child){
+          var menu_name = y.name
+          if(menu_name === name){
+            for(let x of y.fun){
+              if(checked){
+                x.checked = checked
+                x.disabled = false
+              }else {
+                x.checked = false
+                x.disabled = true
+              }
+            }
+          }
+        }
+      }
     };
 
-    // 监听子功能权限，
-    watch(
-      () => state.checkedList,
-      val => {
-        state.indeterminate = !!val.length && val.length < plainOptions.length;
-        state.checkAll = val.length === plainOptions.length;
-      },
-    );
     // 用户信息中获取菜单：
 
-
+    // 获取页面表单值
     const get_checked_res = () =>{
-      console.log(state.checkedList)
+
+      console.log(checked_data_list)
+
     }
     // 视图权限&功能权限设置====结束
 
@@ -332,11 +460,10 @@ export default defineComponent({
       from_submit,
       onClose,
       loading,
-      plainOptions,
       onCheckAllChange,
-      state,
       get_checked_res,
-      checked_data_list
+      checked_data_list,
+
     }
   }
 
@@ -345,5 +472,8 @@ export default defineComponent({
 </script>
 
 <style>
-
+.ant-list-item{
+  margin: 0px;
+  padding: 0px;
+}
 </style>

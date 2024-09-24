@@ -146,8 +146,8 @@ export default defineComponent({
 
     // 【新建】调用组件方法===》弹出抽屉+传值
     const ADDDATA= reactive({
-      actian:'',// 数据删除模块名称
       title:"",
+      actian:'',// 数据删除模块名称
       open:false,
     })
 
