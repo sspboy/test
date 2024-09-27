@@ -221,7 +221,6 @@ export default defineComponent({
                 {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
             },
             ],
-
         },
         {
           'menu':{'id':'65','name':'视频管理','field':'video'},// 菜单名称

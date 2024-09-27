@@ -83,9 +83,9 @@ export default defineComponent({
       {
         key: '2',
         icon: () => h(MenuOutlined),
-        id:"menu",
-        label: '内容发布',
-        title: '内容发布'
+        id:"Human",
+        label: '数字人',
+        title: '数字人'
       },
       {
         key: '3',

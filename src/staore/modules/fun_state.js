@@ -17,6 +17,7 @@ const state = ()=>({
         update_state:'',
         add_state:'',
         bacth_del:'',
+        user_data:{}
     }
 })
 /* Getter 操作数据方法==计算属性*/
@@ -94,6 +95,8 @@ const mutations = {
         resdata.colum.push(op) // 添加操作按钮
         state.message.page = resdata.now_page;
         state.message.page_size = resdata.page_size;
+        state.message.user_data = resdata.user; // 接口返回数据
+        delete resdata.user
         state.message.data_list = resdata;
     },
 

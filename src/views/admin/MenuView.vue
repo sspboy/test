@@ -10,7 +10,7 @@
   <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
-    <menu_head :headdata="PAGEDATA.user" />
+    <menu_head :headdata="PAGEDATA.user_data" />
     <!--head 导航组件  结束-->
 
     <!--内容部分 菜单 右侧列表 开始-->
@@ -124,7 +124,7 @@ export default {
     const PAGEDATA = reactive({
       title:'菜单管理',
       menudata:{'key':'6','openKeys':'sub1'},            // 菜单选中配置
-      user: {},           // 用户信息
+      user_data: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
@@ -226,7 +226,7 @@ export default {
     const Refresh_table = (message)=>{
       store.dispatch('menu/list', message).then(()=>{
         PAGEDATA.colum = store.state.menu.message.data_list.colum
-        PAGEDATA.user = store.state.menu.message.user
+        PAGEDATA.user_data = store.state.menu.message.user_data
         PAGEDATA.datalist = store.state.menu.message.data_list.data
         PAGEDATA.total_number = store.state.menu.message.data_list.total_number
         loading.value = false // loading 状态关闭

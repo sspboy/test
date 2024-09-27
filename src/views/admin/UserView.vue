@@ -13,7 +13,7 @@
   <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
-    <menu_head :headdata="PAGEDATA.user" />
+    <menu_head :headdata="PAGEDATA.user_data" />
     <!--head 导航组件  结束-->
 
 
@@ -138,7 +138,7 @@ export default {
     const PAGEDATA = reactive({
       title:'用户管理',
       menudata:{'key':'5','openKeys':'sub1'},            // 菜单选中配置
-      user: {},           // 用户信息
+      user_data: {},      // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 内容总数
@@ -173,7 +173,7 @@ export default {
       store.dispatch('user/list', message).then(()=>{
 
         PAGEDATA.colum = store.state.user.message.data_list.colum
-        PAGEDATA.user = store.state.user.message.user
+        PAGEDATA.user_data = store.state.user.message.user_data
         PAGEDATA.datalist = store.state.user.message.data_list.data
         PAGEDATA.total_number = store.state.user.message.data_list.total_number
         loading.value = false // loading 状态关闭
