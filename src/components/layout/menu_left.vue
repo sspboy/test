@@ -18,10 +18,10 @@
 
 // 请求结果获取菜单信息
 
-//
-import {defineComponent, reactive, h, computed} from 'vue';
+import {defineComponent, reactive, computed, onBeforeMount} from 'vue';
 import { useRouter } from "vue-router"; // 导入路由
 import { useStore } from 'vuex'
+import {Menu} from '/src/assets/JS_Model/Menu.js';
 
 import {
   UserOutlined,
@@ -36,7 +36,7 @@ import {
 export default defineComponent({
   name:"menu_left",
   components: {
-
+onBeforeMount
   },
   props:{
     menudata:{
@@ -46,12 +46,13 @@ export default defineComponent({
   setup(props) {
 
     const store = useStore();// 共享数据
-
-    // 菜单数据状态
+    const router = useRouter(); // 初始化路由方法
+    const menu = new Menu()
+    // 菜单状态设置
     const state = reactive({
       key:[],
-      rootSubmenuKeys: ['sub1', 'sub2'],  // 一级菜单
-      openKeys:['sub1'],// 选中的一级菜单
+      rootSubmenuKeys: ['sub0', 'sub1'],  // 一级菜单
+      openKeys:['sub1'],                  // 选中的一级菜单
       selectedKeys: [],
     });
 
@@ -60,130 +61,30 @@ export default defineComponent({
     if(store.state.menu.coll){
       state.key=[props.menudata.key]
       state.openKeys = []
-
     }else {    // 如果为false 展开状态
       state.key=[props.menudata.key]
       state.openKeys = [props.menudata.openKeys]
     }
 
 
-    const router = useRouter(); // 初始化路由方法
-    // console.log(props.menudata)
+    const items = computed(()=>{
+
+      const Menu_list = menu.LoadMenu.fristlive(props.menudata.menu)
+
+      return reactive(Menu_list)
+    })
+
+    // 组件挂在之前---请求数据
 
 
-    // 菜单列表
-    const items = reactive([
-      {
-        key: '1',
-        icon: () => h(UserOutlined),
-        id:"video",
-        label: '视频处理',
-        title: '视频处理',
-      },
-      {
-        key: '2',
-        icon: () => h(MenuOutlined),
-        id:"Human",
-        label: '数字人',
-        title: '数字人'
-      },
-      {
-        key: '3',
-        icon: () => h(BarsOutlined),
-        id:"fun",
-        label: '互动营销',
-        title: '互动营销',
-      },
-      {
-        key: '4',
-        icon: () => h(AccountBookOutlined),
-        id:"version",
-        label: '线索管理',
-        title: '线索管理',
-      },
-      {
-        key: 'sub1',
-        icon: () => h(CodeOutlined),
-        label: '管理后台',
-        title: '管理后台',
-        children: [
-          {
-            key: '5',
-            id:"user",
-            label: '用户管理',
-            title: '用户管理',
-          },
-          {
-            key: '6',
-            id:"menu",
-            label: '菜单管理',
-            title: '菜单管理',
-          },
-          {
-            key: '7',
-            id:"fun",
-            label: '功能列表',
-            title: '功能列表',
-          },
-          {
-            key: '8',
-            id:"version",
-            label: '版本管理',
-            title: '版本管理',
-          },
-        ],
-      },
-      {
-        key: 'sub2',
-        icon: () => h(SettingOutlined),
-        label: '系统设置',
-        title: '系统设置',
-        children: [
-          {
-            key: '9',
-            id:'department',
-            label: '组织架构',
-            title: '组织架构',
-          },
-          {
-            key: '10',
-            id:'team',
-            label: '团队人员',
-            title: '团队人员',
-          },
-          {
-            key: '11',
-            id:'role',
-            label: '角色管理',
-            title: '角色管理',
-          },
-          {
-            key: '12',
-            id:'brandinf',
-            label: '品牌资料',
-            title: '品牌资料',
-            // children: [
-            //   {
-            //     key: '12',
-            //     label: 'Option 11',
-            //     title: 'Option 11',
-            //   },
-            //   {
-            //     key: '13',
-            //     label: 'Option 12',
-            //     title: 'Option 12',
-            //   },
-            // ],
-          },
-        ],
-      },
 
-    ]);
+    // 加载一级菜单
+
+    // 加载二级菜单
 
 
     // 菜单点击事件===>路由
     const handleClick = e => {
-
       // console.log(e.keyPath)
       let name = e.item.id
       if(name != undefined){

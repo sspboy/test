@@ -3,8 +3,6 @@
   <!--新建、编辑、删除用户数据====>开始-->
   <User_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
 
-  <User_Edit :editdata="EDITDATA" v-on:edit_coallback="pagecallback"/>
-
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
@@ -19,7 +17,6 @@
 
     <!--内容部分 菜单 右侧列表 开始-->
     <a-layout>
-
 
       <!--左侧 菜单组件  开始-->
       <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
@@ -107,7 +104,6 @@ import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
 import User_Add from "@/components/admin/User_Add.vue";
 import Model_Del from "@/components/admin/Model_Del.vue";
-import User_Edit from "@/components/admin/User_Edit.vue";
 // 组件引用=====结束
 
 
@@ -117,7 +113,6 @@ export default {
 
   // 组件加载
   components: {
-    User_Edit,
     menu_left,
     PlusOutlined,
     MenuUnfoldOutlined,
@@ -137,7 +132,11 @@ export default {
     // 页面获取数据
     const PAGEDATA = reactive({
       title:'用户管理',
-      menudata:{'key':'5','openKeys':'sub1'},            // 菜单选中配置
+      // 菜单选中配置
+      menudata:{'key':'48',
+        'openKeys':'sub1',
+        'menu':[]
+      },
       user_data: {},      // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -147,6 +146,9 @@ export default {
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
+
+      // 菜单数据
+
       // 默认查询条件
       let message = {
         "page":1,
@@ -155,7 +157,22 @@ export default {
           type: "orderby",
           condition: [{'column_name': 'create_time', 'value': 'DESC', }]
         }]}
-      Refresh_table(message) // 【页面初始化】&&刷新表格
+
+
+
+      store.dispatch('user/list', message).then(()=>{
+
+        PAGEDATA.colum = store.state.user.message.data_list.colum
+        PAGEDATA.user_data = store.state.user.message.user_data
+        PAGEDATA.datalist = store.state.user.message.data_list.data
+        PAGEDATA.total_number = store.state.user.message.data_list.total_number
+        PAGEDATA.menudata.menu = store.state.user.message.user_data.menu  // 菜单配置
+
+
+        loading.value = false // loading 状态关闭
+
+      })
+
     })
 
 
@@ -167,19 +184,7 @@ export default {
       receive(message)
     }
 
-    // 刷新表格数据方法
-    const Refresh_table = (message)=>{
 
-      store.dispatch('user/list', message).then(()=>{
-
-        PAGEDATA.colum = store.state.user.message.data_list.colum
-        PAGEDATA.user_data = store.state.user.message.user_data
-        PAGEDATA.datalist = store.state.user.message.data_list.data
-        PAGEDATA.total_number = store.state.user.message.data_list.total_number
-        loading.value = false // loading 状态关闭
-
-      })
-    }
 
     // [翻页]&&刷新表格
     const receive = (message)=>{
@@ -191,7 +196,19 @@ export default {
           condition: [{'column_name': 'create_time', 'value': 'DESC', }]
         }]
 
-      Refresh_table(message) // 刷新表格
+      store.dispatch('user/list', message).then(()=>{
+
+        PAGEDATA.colum = store.state.user.message.data_list.colum
+        PAGEDATA.user_data = store.state.user.message.user_data
+        PAGEDATA.datalist = store.state.user.message.data_list.data
+        PAGEDATA.total_number = store.state.user.message.data_list.total_number
+        PAGEDATA.menudata.menu = store.state.user.message.user_data.menu  // 菜单配置
+
+
+        loading.value = false // loading 状态关闭
+
+      })
+
     }
 
 
@@ -205,27 +222,42 @@ export default {
     const ADDDATA= reactive({
       actian:'',// 数据删除模块名称
       title:"",
+      data:'',
       open:false,
     })
 
     const Add_Fun = ()=>{
-      ADDDATA.title="新建"
+      ADDDATA.title="新建用户"
+      ADDDATA.action='user/add'
+      ADDDATA.data = {
+        id:'',
+        account_type:undefined,
+        v_id:undefined,
+        nickname: '',
+        pass_word: '123456',
+        brand_name: '',
+        mobile: '',// 手机号码
+        role: '',// 超管
+      }
       ADDDATA.open = true;
     }
     // 【新建】调用组件方法===》弹出抽屉+传值
 
     // 【编辑】调用组件方法===》弹出抽屉+传值
-    const EDITDATA= reactive({
-      title:"",
-      data:'',
-      open:false,
-    })
-
-    const Edit_Fun = (detaile_data)=>{
-      EDITDATA.title="编辑"
-      EDITDATA.actian='user/update'
-      EDITDATA.data = detaile_data;
-      EDITDATA.open = true;
+    const Edit_Fun = (data)=>{
+      ADDDATA.title="编辑用户"
+      ADDDATA.action='user/update'
+      ADDDATA.data = {
+        id: data.id,
+        account_type:data.account_type,
+        v_id:data.v_id,
+        nickname: data.nickname,
+        pass_word: data.pass_word,
+        brand_name: data.brand_name,
+        mobile: data.mobile,// 手机号码
+        role: data.role,// 超管
+      }
+      ADDDATA.open = true;
     }
     // 【编辑】调用组件方法===》弹出抽屉+传值
 
@@ -329,7 +361,6 @@ export default {
       PAGEDATA,
       ADDDATA,
       Add_Fun,
-      EDITDATA,
       Edit_Fun,
       DELDATA,
       Del_Fun,

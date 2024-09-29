@@ -117,7 +117,11 @@ export default {
     // 页面获取数据
     const PAGEDATA = reactive({
       title:'版本管理',
-      menudata:{'key':'8','openKeys':'sub1'},            // 菜单选中配置
+      menudata:{
+        'key':'8',
+        'openKeys':'sub1',
+        'menu':[],
+      },            // 菜单选中配置
       user_data: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -224,6 +228,8 @@ export default {
         PAGEDATA.user_data = store.state.ver.message.user_data
         PAGEDATA.datalist = store.state.ver.message.data_list.data
         PAGEDATA.total_number = store.state.ver.message.data_list.total_number
+        PAGEDATA.menudata.menu = store.state.user.message.user_data.menu  // 菜单配置
+
         loading.value = false // loading 状态关闭
       })
 

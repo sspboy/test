@@ -93,8 +93,6 @@
           </a-col>
         </a-row>
 
-
-
       </a-form>
 
 
@@ -108,13 +106,11 @@
 
   </a-drawer>
 
-
-    
 </template>
 
 
 <script>
-import { reactive, ref, defineComponent,toRaw } from 'vue';
+import {reactive, ref, defineComponent, computed} from 'vue';
 import { useStore } from 'vuex'
 
 
@@ -137,17 +133,19 @@ export default defineComponent({
     const open = props;// 获取父组件传递的
     const formRef = ref() // 表单验证数据绑定ref
 
-    const formdata = reactive({ // 表单数据绑定
-        id:'',
-        account_type:undefined,
-        v_id:undefined,
-        nickname: '',
+    const formdata = computed(()=>{
+      return reactive({ // 表单数据绑定
+        id:open.adddata.data.id,
+        account_type:open.adddata.data.account_type,
+        v_id:open.adddata.data.v_id,
+        nickname: open.adddata.data.nickname,
         pass_word: '123456',
-        brand_name: '',
-        mobile: '',// 手机号码
-        role: '',// 超管
-      }
-    )
+        brand_name: open.adddata.data.brand_name,
+        mobile: open.adddata.data.mobile, // 手机号码
+        role: open.adddata.data.role,     // 角色
+        }
+      )
+    })
 
     const loading = ref(false)// 确认按钮loading
 
@@ -280,19 +278,67 @@ export default defineComponent({
     };
 
 
-    // 【保存方法】获取表单信息
-    const from_submit=()=>{
+
+    // 选择版本方法 ===>开始
+    const value = ref(undefined);
+    const filterOption = (input, option) => {
+      return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+    };
+
+    const options = ref([
+      {value: "0", label: '个人版'},
+      {value: "1", label: '企业版'},
+      {value: "2", label: '管理后台'},
+    ]);
+
+    const handleChange = value => {
+      console.log(value)
+      console.log(formdata)
+      if(value === "2"){  // 后台管理员
+        formdata.value.account_type = "2"
+        formdata.value.role = 'administrator'
+      }else {
+        formdata.value.account_type = "0"
+        formdata.value.role = 'superadmin'
+      }
+
+    };
+    // 选择版本方法 ===>结束
+
+
+    // 关闭抽屉方法
+    const onClose = () => {
+        open.adddata.open = false;
+        formRef.value.resetFields(); // 重置表单
+    };
+
+        // 提交数据
+    const from_submit = ()=>{
+      // 新建提交
+      if(open.adddata.title === '新建用户'){
+
+        fun_add()
+
+      }else if(open.adddata.title === '编辑用户'){// 编辑提交
+
+        fun_update()
+
+      }
+    }
+
+        // 【保存方法】获取表单信息
+    const fun_add=()=>{
 
       // 验证表单的全部值
       formRef.value.validate().then(() => {
 
         loading.value = true;
 
-        console.log(toRaw(formdata))
-        console.log(toRaw(formRef.value))
+        console.log(formRef.value)
+        console.log(open.adddata.action)
 
         // 新建提交
-        store.dispatch('user/add', toRaw(formdata)).then(()=>{
+        store.dispatch(open.adddata.action, formdata.value).then(()=>{
 
           setTimeout(()=>{
 
@@ -315,38 +361,44 @@ export default defineComponent({
       });
     }
 
-    // 选择版本方法 ===>开始
-    const value = ref(undefined);
-    const filterOption = (input, option) => {
-      return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-    };
+    // 提交数据
+    const fun_update = ()=>{
 
-    const options = ref([
-      {value: "0", label: '个人版'},
-      {value: "1", label: '企业版'},
-      {value: "2", label: '管理后台'},
-    ]);
+      formRef.value.validate().then(() => {
 
-    const handleChange = value => {
+        loading.value = true;
 
-      if(value === "2"){  // 后台管理员
-        formdata.account_type = "2"
-        formdata.role = 'administrator'
-      }else {
-        formdata.account_type = "0"
-        formdata.role = 'superadmin'
-      }
+        const up_date = {
 
-    };
-    // 选择版本方法 ===>结束
+          user_id:open.adddata.data.id,
 
+          setting_data:formdata.value
 
-    // 关闭抽屉方法
-    const onClose = () => {
-        open.adddata.open = false;
-        formRef.value.resetFields(); // 重置表单
-    };
+        }
 
+        // 新建提交
+        store.dispatch(open.adddata.action, up_date).then(()=>{
+
+          setTimeout(()=>{
+
+            loading.value = false;  // 关闭loading效果
+
+            open.adddata.open = false;  // 收起抽屉
+
+            ctx.emit('add_coallback')   // 回调刷新表格
+
+            formRef.value.resetFields(); // 重置表单
+
+          },2000)
+
+        })
+
+      }).catch(error => {
+
+        console.log('error', error);
+
+      });
+    }
 
 
       return{

@@ -232,7 +232,7 @@ export default defineComponent({
       // 新建提交
       if(open.adddata.title === '添加菜单'){
 
-        fun_add_()
+        fun_add()
 
       }else if(open.adddata.title === '编辑菜单'){// 编辑提交
 
@@ -242,7 +242,7 @@ export default defineComponent({
     }
 
     // 添加数据方法
-    const fun_add_ = () => {
+    const fun_add = () => {
 
       formRef.value.validate().then(() => {
 
