@@ -9,7 +9,7 @@
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
-    <menu_head :headdata="PAGEDATA.user_data" />
+    <menu_head />
     <!--head 导航组件  结束-->
 
     <!--内容部分 菜单 右侧列表 开始-->
@@ -118,9 +118,8 @@ export default {
     const PAGEDATA = reactive({
       title:'版本管理',
       menudata:{
-        'key':'8',
+        'key':'39',
         'openKeys':'sub1',
-        'menu':[],
       },            // 菜单选中配置
       user_data: {},           // 用户信息
       colum:[],           // 表头信息
@@ -228,10 +227,10 @@ export default {
         PAGEDATA.user_data = store.state.ver.message.user_data
         PAGEDATA.datalist = store.state.ver.message.data_list.data
         PAGEDATA.total_number = store.state.ver.message.data_list.total_number
-        PAGEDATA.menudata.menu = store.state.user.message.user_data.menu  // 菜单配置
 
         loading.value = false // loading 状态关闭
       })
+      store.dispatch('member/get')
 
     }
 

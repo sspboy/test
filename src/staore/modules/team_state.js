@@ -17,6 +17,7 @@ const state = ()=>({
         update_state:'',
         add_state:'',
         bacth_del:'',
+        menu:''
     }
 })
 

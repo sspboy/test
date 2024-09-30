@@ -16,7 +16,8 @@ const state = ()=>({
         update_state:'',
         add_state:'',
         bacth_del:'',
-        user_data:{}
+        user_data:{},
+        menu:''
     }
 })
 /* Getter 操作数据方法==计算属性*/

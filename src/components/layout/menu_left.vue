@@ -5,7 +5,7 @@
       mode="inline"
       theme="dark"
       :inline-collapsed="state.collapsed"
-      :items="items"
+      :items="items?.value"
       :openKeys="state.openKeys"
       @click="handleClick"
       @openChange="onOpenChange"
@@ -35,9 +35,7 @@ import {
 
 export default defineComponent({
   name:"menu_left",
-  components: {
-onBeforeMount
-  },
+  components: {},
   props:{
     menudata:{
       type:Object
@@ -56,7 +54,6 @@ onBeforeMount
       selectedKeys: [],
     });
 
-
     // 如果为true 收起状态
     if(store.state.menu.coll){
       state.key=[props.menudata.key]
@@ -66,29 +63,32 @@ onBeforeMount
       state.openKeys = [props.menudata.openKeys]
     }
 
-
-    const items = computed(()=>{
-
-      const Menu_list = menu.LoadMenu.fristlive(props.menudata.menu)
-
-      return reactive(Menu_list)
-    })
+    const items = reactive([])
 
     // 组件挂在之前---请求数据
+    onBeforeMount(()=>{
 
 
+        items.value = computed(()=>{
 
-    // 加载一级菜单
+          return menu.LoadMenu.fristlive(store.state.member.message.menu)
 
-    // 加载二级菜单
+        })
+
+
+    })
+
 
 
     // 菜单点击事件===>路由
     const handleClick = e => {
       // console.log(e.keyPath)
+      let se_obj = e.keyPath
       let name = e.item.id
       if(name != undefined){
-        router.push('/' +  e.item.id);
+        router.push('/' +  name);
+        state.openKeys = [se_obj[0]]
+        state.key = [se_obj[1]]
       }
     };
 

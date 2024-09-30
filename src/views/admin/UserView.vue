@@ -2,18 +2,15 @@
 
   <!--新建、编辑、删除用户数据====>开始-->
   <User_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
-
   <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
   <!--新建、编辑、删除用户数据====>结束-->
 
 
   <!--内容部分 菜单 右侧列表 开始-->
   <a-layout style="height: 100vh;width: 100vw;">
-
     <!--head 导航组件  开始-->
-    <menu_head :headdata="PAGEDATA.user_data" />
+    <menu_head />
     <!--head 导航组件  结束-->
-
 
     <!--内容部分 菜单 右侧列表 开始-->
     <a-layout>
@@ -23,6 +20,7 @@
         <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
+
 
 
       <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
@@ -133,9 +131,9 @@ export default {
     const PAGEDATA = reactive({
       title:'用户管理',
       // 菜单选中配置
-      menudata:{'key':'48',
-        'openKeys':'sub1',
-        'menu':[]
+      menudata:{
+        'key':'48',
+        'openKeys':'sub1'
       },
       user_data: {},      // 用户信息
       colum:[],           // 表头信息
@@ -166,12 +164,13 @@ export default {
         PAGEDATA.user_data = store.state.user.message.user_data
         PAGEDATA.datalist = store.state.user.message.data_list.data
         PAGEDATA.total_number = store.state.user.message.data_list.total_number
-        PAGEDATA.menudata.menu = store.state.user.message.user_data.menu  // 菜单配置
-
 
         loading.value = false // loading 状态关闭
 
       })
+
+      store.dispatch('member/get')
+
 
     })
 

@@ -1,19 +1,21 @@
 <template>
     <a-layout-header class="head">
-      <div class="logo_text cursor">{{props.headdata.brand_name }}</div>
+      <div class="logo_text cursor">{{ user_data.brand_name }}</div>
       <div class="font_size_12 cursor" style="margin-left:20px;float: right; color: dimgray;">
         <LogoutOutlined style="margin: 0 3px;" />
         退出
       </div>
       <div class="font_size_12 cursor" style="float: right; color: dimgray;">
         <MehOutlined style="margin: 0 3px;" />
-        {{ props.headdata.id }}
+        {{ user_data.id }}
       </div>
     </a-layout-header>
 </template>
 
 <script>
-import {defineComponent, } from 'vue';
+import {defineComponent,computed } from 'vue';
+import { useStore } from 'vuex'
+
 import {LogoutOutlined, MehOutlined} from '@ant-design/icons-vue'
 
 export default defineComponent({
@@ -34,8 +36,14 @@ export default defineComponent({
 
   setup(props){
 
+    const store = useStore();// 共享数据
+    const user_data = computed(()=>{
+      return store.state.member.message.user_data
+    })
+
 
     return{
+      user_data,
       props,
     }
   }

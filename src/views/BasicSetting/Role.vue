@@ -121,7 +121,7 @@ export default defineComponent({
 
     const PAGEDATA = reactive({
       title:'角色管理',
-      menudata:{'key':'11','openKeys':'sub2'},            // 菜单选中配置
+      menudata:{'key':'32','openKeys':'sub0'},            // 菜单选中配置
       user_data: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -219,6 +219,9 @@ export default defineComponent({
         PAGEDATA.total_number = store.state.role.message.data_list.total_number
         loading.value = false // loading 状态关闭
       })
+
+      store.dispatch('member/get')
+
     }
 
     // [翻页]&&刷新表格

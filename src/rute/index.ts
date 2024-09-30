@@ -93,8 +93,8 @@ const routes = [
         }
     },
     {
-        path: '/brandinf',
-        name: 'brandinf',
+        path: '/brandinfo',
+        name: 'brandinfo',
         component: () => import('../views/BasicSetting/BrandInf.vue'),    // 视图文件
         meta:{
             title:'品牌资料',

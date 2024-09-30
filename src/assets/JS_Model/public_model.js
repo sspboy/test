@@ -11,6 +11,7 @@ export class A_Patch{
             "list": "api/admin/user/list",  // [post]列表// [put]data 批量删除
             "detaile": "api/admin/user/",   // [get]+id详情
             "delete": "api/admin/user/",    // [delete]+id删除
+            "message": "api/admin/user/message",    // [用户信息+菜单+权限]
             "edit": "api/admin/user/",      // [put]setting_data+id 传数据更新
             "add": "api/admin/user/add"     // [post]
         },

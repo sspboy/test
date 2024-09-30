@@ -3,7 +3,7 @@
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
-    <menu_head :headdata="PAGEDATA.user"/>
+    <menu_head />
     <!--head 导航组件  结束-->
 
           <!--内容部分 菜单 右侧列表 开始-->
@@ -56,7 +56,7 @@ import menu_head from "@/components/layout/menu_head.vue";
 
 export default defineComponent({
   // 模版名称【品牌资料】
-  name: "BrandInf",
+  name: "brandinf",
   // 引用组件
   components: {
     MenuFoldOutlined,
@@ -71,10 +71,11 @@ export default defineComponent({
   setup(props) {
 
     const store = useStore();// 共享数据
+    store.dispatch('member/get')
 
     const PAGEDATA = reactive({
       title:'品牌资料',
-      menudata:{'key':'12','openKeys':'sub2'},            // 菜单选中配置
+      menudata:{'key':'64','openKeys':'sub0'},            // 菜单选中配置
       user: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -82,9 +83,13 @@ export default defineComponent({
       menuconfig:{}       // 菜单配置
     })
 
+    const Add_fun = () => {
+
+    }
 
     return {
       store,
+      Add_fun,
       PAGEDATA,
     }
   }

@@ -39,10 +39,11 @@ export default defineComponent({
   // 组合API返回到模版
   setup(props) {
     const store = useStore();// 共享数据
+    store.dispatch('member/get')
 
     const PAGEDATA = reactive({
       title:'团队管理',
-      menudata:{'key':'10','openKeys':'sub2'},            // 菜单选中配置
+      menudata:{'key':'63','openKeys':'sub0'},            // 菜单选中配置
       user: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息

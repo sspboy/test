@@ -4,6 +4,7 @@ import menu_state from '@/staore/modules/menu_state'
 import user_state from '@/staore/modules/user_state'
 import fun_state from '@/staore/modules/fun_state'
 import ver_state from '@/staore/modules/ver_state'
+import usermessage_state from '@/staore/modules/usermessage_state'
 
 import createPersistedState from 'vuex-persistedstate';
 
@@ -22,7 +23,8 @@ export default createStore({
     ver:ver_state,// 版本
     fun:fun_state,// 功能
     menu:menu_state,// 菜单+左侧菜单收起、展开状态共享
-    user:user_state // 头部会员信息共享
+    user:user_state, // 头部会员信息共享
+    member:usermessage_state
   },
   namespaced: true,
   strict: debug,
