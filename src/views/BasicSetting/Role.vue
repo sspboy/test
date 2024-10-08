@@ -116,7 +116,9 @@ export default defineComponent({
   setup() {
 
     const store = useStore();// 共享数据
+
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
+
     const loading = ref(true)// 初始化loading状态
 
     const PAGEDATA = reactive({
@@ -198,6 +200,7 @@ export default defineComponent({
           condition: [{'column_name': 'create_time', 'value': 'DESC', }]
         }]}
       Refresh_table(message) // 【页面初始化】&&刷新表格
+
     })
 
 

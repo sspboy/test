@@ -124,7 +124,7 @@ export default defineComponent({
 
         if(open.adddata.data.function_info !== undefined){
 
-          list.value = open.adddata.data.function_info.split('|')
+          list.value = for_value_list(JSON.parse(open.adddata.data.function_info))
 
         }else {
 
@@ -139,6 +139,16 @@ export default defineComponent({
         field:open.adddata.data.field,
         function_info:list,
       })
+
+      function for_value_list(data) {
+        var text_list = []
+        for(let i of data){
+          text_list.push(i.value)
+        }
+        return text_list
+      }
+
+
     })
 
     const rules={
@@ -253,7 +263,7 @@ export default defineComponent({
           formdata.value.ico_name = ''
         }
 
-        formdata.value.function_info = formdata.value.function_info.join('|')
+        formdata.value.function_info = for_dict(formdata.value.function_info)
 
         store.dispatch(open.adddata.action, formdata.value).then(()=>{
 
@@ -279,7 +289,7 @@ export default defineComponent({
 
     }
 
-    // 更新数据方法
+    // 更新数据-提交方法
     const fun_update=()=>{
 
       formRef.value.validate().then(() => {
@@ -291,7 +301,7 @@ export default defineComponent({
           formdata.value.ico_name = ''
         }
 
-        formdata.value.function_info = formdata.value.function_info.join('|')
+        formdata.value.function_info = for_dict(formdata.value.function_info)
 
         const up_date = {
 
@@ -322,9 +332,28 @@ export default defineComponent({
         });
 
       })
-
     }
 
+    // 菜单功能列表转字典
+    const for_dict = (array) =>{
+
+      var fun_list = []
+
+      var data_list = store.state.fun.message.data_list.data;
+
+      for(let i of array){
+
+        for(let y of data_list){
+          var obj = {}
+          if(i == y.def_name){
+            obj.value = i
+            obj.label = y.name
+            fun_list.push(obj)
+          }
+        }
+      }
+      return fun_list
+    }
 
     return {
       open,
