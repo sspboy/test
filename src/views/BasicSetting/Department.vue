@@ -81,7 +81,35 @@
 
 
         <!-- 组织架构 结束  -->
-        <a-layout-content> liebiao  </a-layout-content>
+          <div :style="innerHeight">
+              <!--表格组件：：发送初始化数据  开始-->
+              <a-table
+                  :loading="loading"
+                  :columns="PAGEDATA.colum"
+                  :data-source="PAGEDATA.datalist"
+                  :scroll="{ x: 1800, y: innerHeight}"
+                  :pagination="false"
+                  style="font-size:12px;"
+              >
+
+                <template #bodyCell="{  record,  column }">
+
+                  <!--定义操作按钮 开始-->
+                  <template v-if="column.key === 'operation'">
+                      <a @click="Edit_Fun(record)">编辑</a> |
+                      <a @click="Del_Fun(record)">删除</a>
+                  </template>
+                  <!--定义操作按钮 结束-->
+
+                </template>
+
+              </a-table>
+          <!--表格组件：：发送初始化数据  结束-->
+          </div>
+
+          <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
+          <nav_pagination :fandata="PAGEDATA" v-on:complete="receive"/>
+
 
 
       </a-layout-content>
@@ -99,13 +127,15 @@
 </template>
 
 <script>
-import {defineComponent, reactive,ref} from 'vue';
+import {defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref} from 'vue';
 import { useStore } from 'vuex'
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined,ApartmentOutlined, EditOutlined,DeleteOutlined} from '@ant-design/icons-vue';
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
+import nav_pagination from "@/components/nav_pagination.vue";
+
 export default defineComponent({
   // 模版名称【组织架构】
   name: "department",
@@ -118,38 +148,120 @@ export default defineComponent({
     EditOutlined,
     DeleteOutlined,
     menu_left,
-    menu_head
+    menu_head,
+    nav_pagination
   },
   // 父组件数据
   props: {},
   // 组合API返回到模版
   setup(props, ctx) {
+
     const store = useStore();// 共享数据
-    store.dispatch('member/get')
+
+    const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
+
+    const loading = ref(true)// 初始化loading状态
+
+    // 页面初始化信息 === 组件挂在之前---请求数据
+    onBeforeMount(()=>{
+      // 默认查询条件
+      let message = {
+        "page":1,
+        "page_size":10,
+        condition:[{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]}
+
+      Refresh_table(message) // 【页面初始化】&&刷新表格
+
+      store.dispatch('member/get')// 用户权限
+
+    })
+
+    //【当前页面】&&刷新表格
+    const pagecallback =()=>{
+      let message = {}
+      message.page = store.state.team.message.page;
+      message.page_size = store.state.team.message.page_size;
+      receive(message)
+    }
+
+    // 刷新表格数据方法
+    const Refresh_table = (message)=>{
+
+      store.dispatch('team/list', message).then(()=>{
+        PAGEDATA.colum = store.state.team.message.data_list.colum
+        PAGEDATA.datalist = store.state.team.message.data_list.data
+        PAGEDATA.total_number = store.state.team.message.data_list.total_number
+        loading.value = false // loading 状态关闭
+      })
+    }
+
+        // [翻页]&&刷新表格
+    const receive = (message)=>{
+
+      loading.value = true    // 开启loading状态
+      // 刷新页面查询条件
+      message.condition = [{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]
+
+      Refresh_table(message) // 刷新表格
+    }
+
+
+    // 组件挂之后---请求数据
+    // 定义一个函数来处理窗口大小变化 ==
+    const handleResize = () => {
+      innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
+    };
+
+    // 在组件挂载时添加事件监听器
+    onMounted(() => {
+        window.addEventListener('resize', handleResize);
+    });
+
+    // 在组件卸载时移除事件监听器
+    onUnmounted(() => {
+      window.removeEventListener('resize', handleResize);
+    });
+
+
+
+    // 子账号管理======>开始
 
     const PAGEDATA = reactive({
       title:'组织架构',
       menudata:{'key':'33','openKeys':'sub0'},            // 菜单选中配置
-      user: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
-      menuconfig:{}       // 菜单配置
     })
 
+    // 添加子账号
     const Add_fun=()=>{
       console.log('添加成员')
     }
 
+    // 删除子账号
     const Del_fun=()=>{
       console.log('删除成员')
     }
 
+    // 编辑子账号
+    const Edit_fun=()=>{
+      console.log('删除成员')
+    }
 
+    // 子账号管理======>结束
 
 
 
     // 树状结构====开始
+
+
     const expandedKeys = ref([]);
     const selectedKeys = ref([]);
 
@@ -229,12 +341,17 @@ export default defineComponent({
       console.log(node.target.textContent)
       console.log(node.target.id)
     }
+
+
     // 树状结构====结束
 
 
     return {
       store,
       PAGEDATA,
+      loading,
+      receive,
+      innerHeight,
       expandedKeys,
       selectedKeys,
       onLoadData,
@@ -244,7 +361,8 @@ export default defineComponent({
       Department_Add_fun,
       Department_Edit_fun,
       Department_Del_fun,
-      cli_fun
+      cli_fun,
+      pagecallback
     }
   }
 
@@ -255,5 +373,9 @@ export default defineComponent({
 <style>
 .depart_btn_m{margin: 0 8px;}
 .depart_btn_d{margin: 0 0 0 18px;}
+.ant-table-body{
+   height: calc(100vh - 245px);
+   min-height: 0px;
+}
 
 </style>

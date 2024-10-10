@@ -17,8 +17,6 @@ const state = ()=>({
         update_state:'',
         add_state:'',
         bacth_del:'',
-        user_data:{},
-        menu:[]
     }
 })
 
@@ -65,7 +63,7 @@ const mutations = {
             }
             // 视图权限
             if(colums.field_name === "view_permissions"){
-              colums['align'] = 'center'
+              colums['align'] = 'left'
               colums['width'] = 140
             }
             // 数据权限
@@ -75,7 +73,7 @@ const mutations = {
             }
             // 功能权限
             if(colums.field_name === "fun_permissions"){
-              colums['align'] = 'center'
+              colums['align'] = 'left'
               colums['width'] = 140
             }
             // 创建时间

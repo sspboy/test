@@ -23,8 +23,8 @@ export default createStore({
     ver:ver_state,// 版本
     fun:fun_state,// 功能
     menu:menu_state,// 菜单+左侧菜单收起、展开状态共享
-    user:user_state, // 头部会员信息共享
-    member:usermessage_state
+    user:user_state, // 用户
+    member:usermessage_state// 会员信息
   },
   namespaced: true,
   strict: debug,

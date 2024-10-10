@@ -124,11 +124,9 @@ export default defineComponent({
     const PAGEDATA = reactive({
       title:'角色管理',
       menudata:{'key':'32','openKeys':'sub0'},            // 菜单选中配置
-      user_data: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
-      menuconfig:{}       // 菜单配置
     })
 
 
@@ -158,13 +156,14 @@ export default defineComponent({
       ADDDATA.action='role/add'
       ADDDATA.data = {
         role_name:'',
-        role_state:undefined,
+        role_state:'0',
         role_info:'',
-        data_permissions:undefined,
+        data_permissions:'0',
         view_permissions:undefined,
         fun_permissions:undefined
       };
       ADDDATA.open = true;
+
     }
     // 【新建】调用组件方法===》弹出抽屉+传值
 
@@ -182,8 +181,8 @@ export default defineComponent({
         view_permissions:data.view_permissions,
         fun_permissions:data.fun_permissions
       };
-
       ADDDATA.open = true;
+
     }
     // 【编辑】调用组件方法===》弹出抽屉+传值
 
@@ -199,7 +198,10 @@ export default defineComponent({
           type: "orderby",
           condition: [{'column_name': 'create_time', 'value': 'DESC', }]
         }]}
+
       Refresh_table(message) // 【页面初始化】&&刷新表格
+
+      store.dispatch('member/get')
 
     })
 
@@ -223,7 +225,6 @@ export default defineComponent({
         loading.value = false // loading 状态关闭
       })
 
-      store.dispatch('member/get')
 
     }
 

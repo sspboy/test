@@ -17,8 +17,7 @@ const state = ()=>({
         update_state:'',
         add_state:'',
         bacth_del:'',
-        user_data:{},
-        menu:[]
+
     }
 
 })

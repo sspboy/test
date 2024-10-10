@@ -1,4 +1,4 @@
-// 团队信息请求共享
+// 【团队信息】--===请求共享
 import axios from "axios";
 // 引用外部方法
 import * as utils from '@/assets/JS_Model/public_model';
@@ -17,7 +17,6 @@ const state = ()=>({
         update_state:'',
         add_state:'',
         bacth_del:'',
-        menu:''
     }
 })
 
@@ -35,7 +34,87 @@ const mutations = {
 
     // 更新>列表
     data_list:(state,resdata)=>{
-        state.message.data_list = resdata;
+        for(let colums of resdata.colum){
+            // 账号名称
+            if(colums.field_name === "id"){
+              colums['align'] = 'left'
+              colums['width'] = 40
+            }
+            // 品牌id
+            if(colums.field_name === "name"){
+              colums['align'] = 'center'
+              colums['width'] = 74
+            }
+
+            // 部门名称
+            if(colums.field_name === "b_id"){
+              colums['align'] = 'center'
+              colums['width'] = 90
+            }
+
+            // 父部门
+            if(colums.field_name === "nickname"){
+              colums['align'] = 'center'
+              colums['width'] = 74
+            }
+            // 昵称
+            if(colums.field_name === "mobile"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+                        // 昵称
+            if(colums.field_name === "password"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+                        // 昵称
+            if(colums.field_name === "state"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+                                    // 昵称
+            if(colums.field_name === "role"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+                                    // 昵称
+            if(colums.field_name === "department_id"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+                                                // 昵称
+            if(colums.field_name === "department_name"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+            // 创建时间
+            if(colums.field_name === "create_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+            // 更新时间
+            if(colums.field_name === "update_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+        }
+
+        var op = {
+
+              "dataIndex": "state",
+              "field_name": "state",
+              "field_type": "int",
+              "key": "operation",
+              "title": "操作",
+              "fixed": 'right',
+              "align":"center",
+              "width":100
+        }
+
+        resdata.colum.push(op) // 添加操作按钮
+        state.message.page = resdata.now_page;
+        state.message.page_size = resdata.page_size;
+        state.message.data_list = resdata; // 接口返回数据
     },
 
     // 更新>删除
@@ -64,10 +143,11 @@ const mutations = {
 /* Action */
 const actions = {
 // 查询列表
-    list:({ commit },data)=>{
+    list:async ({ commit },data)=>{
+
         try{
 
-            axios.post(API.BasicsAPI.team.list, data).then((response)=> {
+            await axios.post(API.BasicsAPI.team.list, data).then((response)=> {
 
                 commit('data_list', response.data)
 

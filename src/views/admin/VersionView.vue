@@ -121,11 +121,9 @@ export default {
         'key':'39',
         'openKeys':'sub1',
       },            // 菜单选中配置
-      user_data: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
-      menuconfig:{}       // 菜单配置
     })
 
         // 【添加】数据初始化

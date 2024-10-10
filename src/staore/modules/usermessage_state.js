@@ -33,13 +33,13 @@ const mutations = {
 /* Action */
 const actions = {
     // 查询登录用户的信息
-    get:({ commit })=>{
+    get:async ({ commit })=>{
 
         try{
 
             let url = API.AdminAPI.user.message
 
-            axios.get(url).then((response)=>{
+            await axios.get(url).then((response)=>{
 
                 commit('detaile', response.data)
 

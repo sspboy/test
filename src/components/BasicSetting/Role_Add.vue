@@ -25,6 +25,28 @@
               <a-input v-model:value="formdata.role_name" class="font_size_12" placeholder="输入名称" type="string" />
             </a-form-item>
           </a-col>
+          <a-col :span="12">
+            <a-form-item label="描述" name="role_info">
+              <a-input v-model:value="formdata.role_info" class="font_size_12" placeholder="输入函数字符名称" type="text" />
+            </a-form-item>
+          </a-col>
+
+
+        </a-row>
+
+        <a-row :gutter="16">
+
+          <a-col :span="12">
+            <a-form-item label="数据权限" name="data_permissions">
+              <a-select v-model:value="formdata.data_permissions" placeholder="选择数据权限">
+                <a-select-option value="0">个人</a-select-option>
+                <a-select-option value="1">部门</a-select-option>
+                <a-select-option value="2">所有</a-select-option>
+              </a-select>
+            </a-form-item>
+          </a-col>
+
+
 
           <a-col :span="12">
             <a-form-item label="状态" name="role_state">
@@ -37,31 +59,11 @@
 
         </a-row>
 
-        <a-row :gutter="16">
-
-          <a-col :span="12">
-            <a-form-item label="描述" name="role_info">
-              <a-input v-model:value="formdata.role_info" class="font_size_12" placeholder="输入函数字符名称" type="text" />
-            </a-form-item>
-          </a-col>
-
-          <a-col :span="12">
-            <a-form-item label="数据权限" name="data_permissions">
-              <a-select v-model:value="formdata.data_permissions" placeholder="选择数据权限">
-                <a-select-option value="0">个人</a-select-option>
-                <a-select-option value="1">部门</a-select-option>
-                <a-select-option value="2">所有</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-
-        </a-row>
-
         <a-row :gutter="24">
 
           <a-col :span="24">
 
-            <a-list item-layout="horizontal" :data-source="checked_data_list?.menu" >
+            <a-list item-layout="horizontal" :data-source="checked_data_list" >
 
               <template #renderItem="{ item }">
                 <a-list-item style="padding: 0px;border: none;">
@@ -79,7 +81,7 @@
                       <template #renderItem="{ item }">
                       <a-list-item>
 
-                        <a-checkbox style="font-size: 12px;" :name="item.id+''" v-model:checked="true" @change="onCheckAllChange">
+                        <a-checkbox style="font-size: 12px;" :name="item.id+''" v-model:checked="item.checked" @change="onCheckAllChange">
                           {{ item.name }}
                         </a-checkbox>
 
@@ -87,7 +89,7 @@
 
                             <template #renderItem="{ item }">
                                 <span>
-                                    <a-checkbox type="checkbox" :name="item.id+''" :checked="item.checked" v-model:disabled="item.disabled" v-model:value="item.value"  style="font-size: 12px;">{{ item.label }}</a-checkbox>
+                                    <a-checkbox type="checkbox" :name="item.id+''" v-model:checked="item.checked" v-model:disabled="item.disabled" v-model:value="item.value"  style="font-size: 12px;">{{ item.label }}</a-checkbox>
                                 </span>
                             </template>
 
@@ -122,7 +124,6 @@
       <a-space style="float: left;">
         <a-button type="primary" @click="from_submit" style="font-size: 12px;" html-type="submit" :loading="loading">保存</a-button>
         <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
-        <a-button @click="get_checked_res" style="font-size: 12px;">获取选择表单</a-button>
       </a-space>
     </template>
 
@@ -130,7 +131,7 @@
 </template>
 
 <script>
-import {defineComponent, reactive, ref, computed,watch} from 'vue';
+import {defineComponent, reactive, ref, computed} from 'vue';
 import { useStore } from 'vuex'
 
 export default defineComponent({
@@ -157,13 +158,10 @@ export default defineComponent({
         role_state:open.adddata.data.role_state,
         role_info:open.adddata.data.role_info,
         data_permissions:open.adddata.data.data_permissions,
-        view_permissions:open.adddata.data.view_permissions,
-        fun_permissions:open.adddata.data.fun_permissions,
       })
     })
 
     const loading = ref(false)
-
 
     // 表单---验证规则
     const rules={
@@ -180,6 +178,10 @@ export default defineComponent({
         required: true,
         message: '不能为空',
       }],
+      role_info: [{
+        required: true,
+        message: '不能为空',
+      }],
       view_permissions: [{
         required: true,
         message: '不能为空',
@@ -187,173 +189,80 @@ export default defineComponent({
     }
 
     // 视图权限&功能权限设置====开始
-    // 用户信息+版本信息+菜单信息
-    // 更具用户版本号，获取功能菜单
-    // const checked_data_list = reactive([
-    //     {
-    //       'menu':{'id':'65','name':'客户管理','field':'menu'},// 菜单名称
-    //       'child':[
-    //         {'name':'menuA','menu_name':'二级菜单A','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         {'name':'menuB','menu_name':'二级菜单B','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         {'name':'menuC','menu_name':'二级菜单B','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         ],
-    //     },
-    //     {
-    //       'menu':{'id':'65','name':'视频管理','field':'video'},// 菜单名称
-    //       'child':[
-    //         {'name':'menuD','menu_name':'二级菜单A','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         {'name':'menuE','menu_name':'二级菜单B','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         {'name':'menuF','menu_name':'二级菜单C','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         ],
-    //
-    //     },
-    //     {
-    //       'menu':{'id':'65','name':'视频管理','field':'mini'},// 菜单名称
-    //       'child':[
-    //         {'name':'menuD','menu_name':'二级菜单A','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         {'name':'menuE','menu_name':'二级菜单B','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         {'name':'menuF','menu_name':'二级菜单C','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         ],
-    //
-    //     },
-    //     {
-    //       'menu':{'id':'65','name':'视频管理','field':'video'},// 菜单名称
-    //       'child':[
-    //         {'name':'menuD','menu_name':'二级菜单A','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         {'name':'menuE','menu_name':'二级菜单B','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         {'name':'menuF','menu_name':'二级菜单C','fun':[
-    //             {'label':'列表','value':'list','checked':false,'disabled':true},
-    //             {'label':'详情','value':'detaile','checked':false,'disabled':true},
-    //             {'label':'添加','value':'add','checked':false,'disabled':true},
-    //             {'label':'编辑','value':'edit','checked':false,'disabled':true},
-    //             {'label':'删除','value':'del','checked':false,'disabled':true},
-    //             {'label':'批量删除','value':'batch_del','checked':false,'disabled':true}]
-    //         },
-    //         ],
-    //
-    //     },
-    //
-    //     ])
+
+    // 初始化-菜单权限-表单
 
     const checked_data_list = computed(()=>{
 
-      var data = JSON.parse(JSON.stringify(store.state.member.message));
+      var data = JSON.parse(JSON.stringify(store.state.member.message?.menu));
 
-      for(let i of data.menu){
-        for(let y of i.child){
-          y.function_info = JSON.parse(y.function_info)
-          for(let z of y.function_info){
-            z.checked = false
-            z.disabled = true
+
+      // 新建权限 load
+      if(open.adddata.data.view_permissions == undefined){
+        for(let i of data){
+          for(let y of i.child){
+            y.checked = false
+            y.function_info = JSON.parse(y.function_info)
+            for(let z of y.function_info){
+              z.checked = false
+              z.disabled = true
+            }
+          }
+        }
+
+
+      }else {
+      // 编辑权限 load
+
+        var view_permissions = JSON.parse(open.adddata.data.view_permissions) // 视图权限
+        var fun_permissions = JSON.parse(open.adddata.data.fun_permissions)  // 功能权限
+
+        for(let i of data){
+
+          for(let y of i.child){
+
+            if(view_permissions.includes(y.field)){
+              y.checked = true
+            }else {
+              y.checked = false
+            }
+
+            y.function_info = JSON.parse(y.function_info)
+
+            for(let z of y.function_info){
+              if(fun_permissions[y.field] !== undefined && fun_permissions[y.field].includes(z.value)){
+                z.checked = true
+                z.disabled = false
+              }else {
+                z.checked = false
+                z.disabled = true
+              }
+
+            }
           }
         }
       }
-      return data
+
+      return reactive(data)
 
     })
-
-
 
     // 勾选主菜单，全选功能
     const onCheckAllChange = e => {
 
-      //
       var name = e.target.name
-      //
-      var checked = e.target.checked
-      //
-      console.log(name)
-      console.log(checked)
 
-      for(let i of checked_data_list.value.menu){
-        console.log(i)
+      var checked = e.target.checked
+
+      for(let i of checked_data_list.value){
 
         for(let y of i.child){
 
-          var child_menu_id = y.id
+          if(name == y.id){
 
-          if(child_menu_id === name){
-
-            for(let x of y.fun){
+            for(let x of y.function_info){
               if(checked){
-                x.checked = checked
+                x.checked = true
                 x.disabled = false
               }else {
                 x.checked = false
@@ -363,7 +272,6 @@ export default defineComponent({
           }
         }
       }
-
     };
 
     // 用户信息中获取菜单：
@@ -371,7 +279,33 @@ export default defineComponent({
     // 获取页面表单值
     const get_checked_res = () =>{
 
-      console.log(checked_data_list)
+      var result_from = checked_data_list.value
+
+      var obj = {}
+      var view_permissions = []
+      var fun_permissions = {}
+
+      for(let i of result_from){
+
+        for(let y of i.child){
+
+          if(y.checked == true){
+            view_permissions.push(y.field)
+            var fun = []
+            for(let z of y.function_info){
+              if(z.checked == true){
+                fun.push(z.value)
+              }
+            }
+            fun_permissions[y.field] = fun
+          }
+        }
+      }
+
+      obj.view_permissions = view_permissions
+      obj.fun_permissions = fun_permissions
+
+      return obj
 
     }
     // 视图权限&功能权限设置====结束
@@ -402,8 +336,12 @@ export default defineComponent({
       formRef.value.validate().then(() => {
 
         loading.value = true;
-        // console.log(open.adddata.action)
-        // console.log(formdata.value)
+
+        // 获取权限表单
+        var pre = get_checked_res()
+        formdata.value.view_permissions = JSON.stringify(pre.view_permissions)
+        formdata.value.fun_permissions = JSON.stringify(pre.fun_permissions)
+
 
         store.dispatch(open.adddata.action, formdata.value).then(()=>{
 
@@ -416,6 +354,8 @@ export default defineComponent({
             ctx.emit('add_coallback')   // 回调刷新表格
 
             formRef.value.resetFields(); // 重置表单
+
+            resh_checked() // 重置权限表单
 
           },1000)
 
@@ -435,6 +375,11 @@ export default defineComponent({
       formRef.value.validate().then(() => {
 
         loading.value = true;
+
+        // 获取权限表单
+        var pre = get_checked_res()
+        formdata.value.view_permissions = JSON.stringify(pre.view_permissions)
+        formdata.value.fun_permissions = JSON.stringify(pre.fun_permissions)
 
         const up_date = {
 
@@ -456,6 +401,8 @@ export default defineComponent({
 
             formRef.value.resetFields(); // 重置表单
 
+            resh_checked()// 重置权限表单
+
           },1000)
 
         }).catch(error => {
@@ -472,8 +419,27 @@ export default defineComponent({
     const onClose = () => {
         open.adddata.open = false;
         formRef.value.resetFields(); // 重置表单
-        open.adddata.data = ''// 清除数据
+        open.adddata.data = ''        // 清除数据
+        resh_checked() // 初始化权限表单
+
     };
+
+    // 重置权限表单
+    const resh_checked = ()=>{
+
+      var result_from = checked_data_list.value
+
+      // 初始化权限表单
+        for(let i of result_from){
+          for(let y of i.child){
+            y.checked = false
+            for(let z of y.function_info){
+              z.checked = false
+              z.disabled = true
+            }
+          }
+        }
+    }
 
     return {
       open,
@@ -484,7 +450,6 @@ export default defineComponent({
       onClose,
       loading,
       onCheckAllChange,
-      get_checked_res,
       checked_data_list,
 
     }

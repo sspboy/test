@@ -135,11 +135,9 @@ export default {
         'key':'48',
         'openKeys':'sub1'
       },
-      user_data: {},      // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 内容总数
-      menuconfig:{}       // 菜单配置
     })
 
     // 组件挂在之前---请求数据

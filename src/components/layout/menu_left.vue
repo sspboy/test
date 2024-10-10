@@ -46,6 +46,7 @@ export default defineComponent({
     const store = useStore();// 共享数据
     const router = useRouter(); // 初始化路由方法
     const menu = new Menu()
+
     // 菜单状态设置
     const state = reactive({
       key:[],
@@ -67,7 +68,6 @@ export default defineComponent({
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
-
 
         items.value = computed(()=>{
 

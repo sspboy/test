@@ -7,7 +7,7 @@ const menuLoad = new utils.MenuLoad()
 
 /* State 数据暂存*/
 const state = ()=>({
-    'coll':false,
+    'coll':false, // 左侧菜单是否收起
     message: {
         condition:'None',
         page:1,
@@ -18,8 +18,7 @@ const state = ()=>({
         update_state:'',
         add_state:'',
         bacth_del:'',
-        user_data:{},
-        menu:[]
+
     }
 })
 

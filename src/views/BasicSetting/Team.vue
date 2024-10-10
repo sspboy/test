@@ -44,11 +44,9 @@ export default defineComponent({
     const PAGEDATA = reactive({
       title:'团队管理',
       menudata:{'key':'63','openKeys':'sub0'},            // 菜单选中配置
-      user: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
-      menuconfig:{}       // 菜单配置
     })
 
 

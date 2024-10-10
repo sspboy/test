@@ -76,11 +76,9 @@ export default defineComponent({
     const PAGEDATA = reactive({
       title:'品牌资料',
       menudata:{'key':'64','openKeys':'sub0'},            // 菜单选中配置
-      user: {},           // 用户信息
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
-      menuconfig:{}       // 菜单配置
     })
 
     const Add_fun = () => {
