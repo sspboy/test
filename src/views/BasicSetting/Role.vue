@@ -10,7 +10,7 @@
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
-    <menu_head :headdata="PAGEDATA.user_data"/>
+    <menu_head />
     <!--head 导航组件  结束-->
 
     <!--内容部分 菜单 右侧列表 开始-->

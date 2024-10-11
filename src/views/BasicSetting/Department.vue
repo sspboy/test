@@ -1,9 +1,14 @@
 <template>
+<!--新建、编辑、删除用户数据====>开始-->
+<!--<Department_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>-->
+<Team_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
+<Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
+<!--新建、编辑、删除用户数据====>结束-->
 
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
-    <menu_head :headdata="PAGEDATA.user"/>
+  <menu_head></menu_head>
     <!--head 导航组件  结束-->
 
     <!--内容部分 菜单 右侧列表 开始-->
@@ -41,8 +46,8 @@
 
               <div>
                 <span :id="key" @click="cli_fun">{{ title }}</span>
-                <span class="depart_btn_d" ><EditOutlined @click="Department_Edit_fun" :id="key"/></span>
-                <span class="depart_btn_m" ><DeleteOutlined :id="key" @click="Department_Del_fun" /></span>
+                <span class="depart_btn_d" ><EditOutlined @click="Department_edit_fun" :id="key"/></span>
+                <span class="depart_btn_m" ><DeleteOutlined :id="key" @click="Department_del_fun" /></span>
               </div>
 
             </template>
@@ -135,12 +140,18 @@ import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined,ApartmentOutlined, E
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
+import Department_Add from "@/components/BasicSetting/Department_Add.vue";
+import Model_Del from "@/components/admin/Model_Del.vue";
+import Team_Add from "@/components/BasicSetting/Team_Add.vue";
 
 export default defineComponent({
   // 模版名称【组织架构】
   name: "department",
   // 引用组件
   components: {
+    Team_Add,
+    Department_Add,
+    Model_Del,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     PlusOutlined,
@@ -154,7 +165,7 @@ export default defineComponent({
   // 父组件数据
   props: {},
   // 组合API返回到模版
-  setup(props, ctx) {
+  setup() {
 
     const store = useStore();// 共享数据
 
@@ -196,6 +207,7 @@ export default defineComponent({
         PAGEDATA.total_number = store.state.team.message.data_list.total_number
         loading.value = false // loading 状态关闭
       })
+
     }
 
         // [翻页]&&刷新表格
@@ -240,27 +252,69 @@ export default defineComponent({
       total_number:0,     // 总页数
     })
 
+    // 【删除】数据初始化
+    const DELDATA = reactive({
+      open:false,
+      actian_name:'department/del',// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
+
+    // 新增、编辑数据 初始化
+    const ADDDATA= reactive({
+      title:"",
+      actian:'',// 数据删除模块名称
+      open:false,
+    })
+
+
+    // 编辑子账号
+    const Edit_Fun=(data)=>{
+      console.log(data)
+      ADDDATA.title="编辑成员"
+      ADDDATA.action='department/update'
+      ADDDATA.data = {
+        name:data.name,
+        nickname:data.nickname,
+        mobile:data.mobile,
+        password:data.password,
+        state:data.state,
+        role:JSON.parse(data.role),
+        department_id:data.department_id,
+        department_name:data.department_name,
+      };
+      ADDDATA.open = true;
+    }
+
     // 添加子账号
     const Add_fun=()=>{
-      console.log('添加成员')
+      ADDDATA.title="添加成员"
+      ADDDATA.action='department/add'
+      ADDDATA.data = {
+        name:'',
+        nickname:'',
+        mobile:'',
+        password:'123456',
+        state:['0'],
+        role:[],
+        department_id:'',
+        department:'',
+      };
+      ADDDATA.open = true;
     }
 
     // 删除子账号
-    const Del_fun=()=>{
+    const Del_Fun=()=>{
       console.log('删除成员')
     }
 
-    // 编辑子账号
-    const Edit_fun=()=>{
-      console.log('删除成员')
-    }
 
     // 子账号管理======>结束
 
 
 
-    // 树状结构====开始
 
+
+    // 树状结构====开始
 
     const expandedKeys = ref([]);
     const selectedKeys = ref([]);
@@ -325,12 +379,12 @@ export default defineComponent({
       console.log('添加部门')
     }
     // 编辑部门
-    const Department_Edit_fun=(e)=>{
+    const Department_edit_fun=(e)=>{
       console.log('编辑部门')
       console.log(e.target.parentElement.id)
     }
     // 删除部门
-    const Department_Del_fun=(e)=>{
+    const Department_del_fun=(e)=>{
       console.log('删除部门')
       console.log(e.target.parentElement.id)
 
@@ -349,6 +403,8 @@ export default defineComponent({
     return {
       store,
       PAGEDATA,
+      ADDDATA,
+      DELDATA,
       loading,
       receive,
       innerHeight,
@@ -357,12 +413,13 @@ export default defineComponent({
       onLoadData,
       treeData,
       Add_fun,
-      Del_fun,
       Department_Add_fun,
-      Department_Edit_fun,
-      Department_Del_fun,
+      Department_edit_fun,
+      Department_del_fun,
       cli_fun,
-      pagecallback
+      pagecallback,
+      Del_Fun,
+      Edit_Fun,
     }
   }
 

@@ -17,6 +17,8 @@ const state = ()=>({
         update_state:'',
         add_state:'',
         bacth_del:'',
+        all_brand_role:[],// 下拉选择品牌下的所有角色
+        all_brand_department:[]// 下拉选择品牌下所有的部门
     }
 })
 
@@ -43,7 +45,7 @@ const mutations = {
             // 品牌id
             if(colums.field_name === "name"){
               colums['align'] = 'center'
-              colums['width'] = 74
+              colums['width'] = 174
             }
 
             // 部门名称
@@ -137,6 +139,9 @@ const mutations = {
         state.message.bacth_del = resdata;
     }
 
+    // 品牌下所有角色
+
+    // 品牌所有部门
 
 }
 
@@ -247,8 +252,45 @@ const actions = {
             console.error('bacth del team request err!',error)
 
         }
-    }
+    },
+    // 获取当前品牌下所有角色
+    get_all_role:async ({ commit }, brand_id)=>{
+        var data = {}
+        data.page = 1
+        data.page_size = 1000
+        data.condition = [
+            {
+                type: "orderby",
+                condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+            },
+            {
+                type: "where",
+                condition: [{'column_name':'b_id','value':brand_id,'operator':'='}]
+            }
+        ]
 
+        try{
+
+            await axios.post(API.BasicsAPI.role.list, data).then((response)=> {
+
+                commit('data_list', response.data)
+
+            })
+
+        }catch (error){
+
+            console.error('team list post request err!',error)
+
+        }
+
+
+
+    },
+
+    // 获取当前品牌下所有的部门
+    get_all_department:({ commit },brand_id)=>{
+
+    }
 
 }
 

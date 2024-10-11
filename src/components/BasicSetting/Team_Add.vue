@@ -21,14 +21,14 @@
         <a-row :gutter="16">
 
           <a-col :span="12">
-            <a-form-item label="功能名称" name="name">
-              <a-input v-model:value="formdata.name" class="font_size_12" placeholder="输入名称" type="string" />
+            <a-form-item label="子账号" name="name">
+              <a-input v-model:value="formdata.name" :addon-before="store.state.member.message.user_data.brand_name + ':'" class="font_size_12" placeholder="子账号名称" type="text"/>
             </a-form-item>
           </a-col>
 
           <a-col :span="12">
-            <a-form-item label="功能字符" name="def_name">
-              <a-input v-model:value="formdata.def_name" class="font_size_12" placeholder="输入函数字符名称" type="text" />
+            <a-form-item label="昵称" name="nickname">
+              <a-input v-model:value="formdata.nickname" class="font_size_12" placeholder="输入昵称" type="text" />
             </a-form-item>
           </a-col>
 
@@ -36,11 +36,45 @@
 
         <a-row :gutter="16">
 
-          <a-col :span="24">
-            <a-form-item label="描述" name="miaoshu">
-              <a-input v-model:value="formdata.miaoshu" class="font_size_12" placeholder="输入功能描述" type="text" />
+          <a-col :span="12">
+            <a-form-item label="电话号码" name="mobile">
+              <a-input v-model:value="formdata.mobile" class="font_size_12" placeholder="输入电话号码" type="text" />
             </a-form-item>
           </a-col>
+
+          <a-col :span="12">
+            <a-form-item label="密码" name="password">
+              <a-input-password v-model:value="formdata.password" class="font_size_12" placeholder="输入密码" type="text" />
+            </a-form-item>
+          </a-col>
+
+        </a-row>
+
+        <a-row :gutter="16">
+
+          <a-col :span="12">
+            <a-form-item label="状态" name="state">
+              <a-select v-model:value="formdata.state" size="middle" placeholder="选择状态" class="font_size_12" :options="state_op"></a-select>
+            </a-form-item>
+          </a-col>
+
+          <a-col :span="12">
+            <a-form-item label="角色" name="role">
+              <a-select v-model:value="formdata.role" mode="tags" size="middle" placeholder="选择角色" class="font_size_12" :options="role_op"></a-select>
+
+            </a-form-item>
+          </a-col>
+
+        </a-row>
+
+        <a-row :gutter="16">
+
+          <a-col :span="12">
+            <a-form-item label="所属部门" name="department_name">
+              <a-input v-model:value="formdata.department_name" class="font_size_12" placeholder="选择部门" type="text" />
+            </a-form-item>
+          </a-col>
+
         </a-row>
 
       </a-form>
@@ -67,8 +101,9 @@ export default defineComponent({
   // 引用组件
   components: {},
   // 父组件数据
-  props: {    adddata:{typr:Object}
-},
+  props: {
+    adddata:{typr:Object}
+  },
   // 组合API返回到模版
   setup(props,ctx) {
 
@@ -80,12 +115,35 @@ export default defineComponent({
     const formRef = ref()
 
     const formdata = computed(()=>{
+      console.log(store.state.member.message.user_data.b_id)
       return reactive({
         name:open.adddata.data.name,
-        def_name:open.adddata.data.def_name,
-        miaoshu:open.adddata.data.miaoshu
+        nickname:open.adddata.data.nickname,
+        mobile:open.adddata.data.mobile,
+        password:open.adddata.data.password,
+        state:open.adddata.data.state,
+        role:open.adddata.data.role,
+        department_id:open.adddata.data.department_id,
+        department_name:open.adddata.data.department_name,
       })
     })
+
+    // 状态下拉选择
+    const state_op = [
+      {label:'启用', value:'0'},
+      {label:'停用', value:'1'}
+    ]
+
+    // 角色下拉选择==当前品牌所有角色id、名称
+    const role_op=reactive([
+      {label:'角色A', value:'0'},
+      {label:'角色B', value:'1'},
+      {label:'角色c', value:'2'},
+      {label:'管理员', value:'admin'},
+      {label:'员工', value:'yuangong'},
+
+    ])
+
 
     const PAGEDATA = reactive({})
     const loading = ref(false)
@@ -93,24 +151,43 @@ export default defineComponent({
 
     // 验证规则
     const rules={
-      // 菜单名称
+      // 子账号名称::验证是否重名
       name: [{
         required: true,
         message: '不能为空',
       }],
-      m_name: [{
+      // 昵称：：验证是否重名
+      nickname: [{
         required: true,
         message: '不能为空',
       }],
-      def_name: [{
+      state: [{
         required: true,
         message: '不能为空',
       }],
-      miaoshu: [{
+      role: [{
+        required: true,
+        message: '不能为空',
+      }],
+      department_name: [{
+        required: true,
+        message: '不能为空',
+      }],
+      password: [{
         required: true,
         message: '不能为空',
       }]
     }
+
+
+
+
+
+
+
+
+
+
     // 提交数据
     const from_submit = ()=>{
       // 新建提交
@@ -207,6 +284,9 @@ export default defineComponent({
 
     return {
       open,
+      store,
+      state_op,
+      role_op,
       PAGEDATA,
       formdata,
       formRef,
@@ -222,5 +302,10 @@ export default defineComponent({
 </script>
 
 <style>
-
+.ant-select-selection-item{
+  font-size: 12px;
+}
+.ant-select-selection-placeholder{
+    font-size: 12px;
+}
 </style>
