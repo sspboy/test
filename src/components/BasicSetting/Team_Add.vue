@@ -71,7 +71,15 @@
 
           <a-col :span="12">
             <a-form-item label="所属部门" name="department_name">
-              <a-input v-model:value="formdata.department_name" class="font_size_12" placeholder="选择部门" type="text" />
+                <a-tree-select
+                  v-model:value="formdata.department_name"
+                  style="width: 100%"
+                  :tree-data="department_op"
+                  allow-clear
+                  :show-checked-strategy="SHOW_PARENT"
+                  placeholder="选择所属部门"
+                  tree-node-filter-prop="label"
+                />
             </a-form-item>
           </a-col>
 
@@ -94,7 +102,8 @@
 <script>
 import {defineComponent, reactive, ref, computed } from 'vue';
 import { useStore } from 'vuex'
-
+import {TreeSelect} from "ant-design-vue";
+import {Role} from '/src/assets/JS_Model/department.js'
 export default defineComponent({
   // 模版名称
   name: "Team_Add",
@@ -107,7 +116,6 @@ export default defineComponent({
   // 组合API返回到模版
   setup(props,ctx) {
 
-
     const store = useStore();// 共享数据
 
     const open = props;
@@ -115,7 +123,9 @@ export default defineComponent({
     const formRef = ref()
 
     const formdata = computed(()=>{
+
       console.log(store.state.member.message.user_data.b_id)
+
       return reactive({
         name:open.adddata.data.name,
         nickname:open.adddata.data.nickname,
@@ -124,8 +134,10 @@ export default defineComponent({
         state:open.adddata.data.state,
         role:open.adddata.data.role,
         department_id:open.adddata.data.department_id,
-        department_name:open.adddata.data.department_name,
+        department_name:open.adddata.data.department_name
+
       })
+
     })
 
     // 状态下拉选择
@@ -135,15 +147,34 @@ export default defineComponent({
     ]
 
     // 角色下拉选择==当前品牌所有角色id、名称
-    const role_op=reactive([
-      {label:'角色A', value:'0'},
-      {label:'角色B', value:'1'},
-      {label:'角色c', value:'2'},
-      {label:'管理员', value:'admin'},
-      {label:'员工', value:'yuangong'},
+    const role_op=reactive([])
+    // 获取所有角色
+    var R = new Role()
+
+    R.all_.get_all_role('12',(res)=>{
+      
+      for(let i of res.data){
+        let r_obj = {}
+        r_obj.label = i.role_name
+        r_obj.value = i.id
+        role_op.push(r_obj)
+      }
+
+    })
+
+
+
+    // 所属部门下拉选择==当前品牌所有部门id、名
+    // 树状菜单回填方法SHOW_ALL=全部节点回填（含父节点）；SHOW_PARENT=只回填父节点
+    const SHOW_PARENT = TreeSelect.SHOW_ALL;
+    const department_op = reactive([
+      {label:'销售一部', value:'0',children: [{label: '小组A', value: '34'}]},
+      {label:'销售二部', value:'1'},
+      {label:'编导一组', value:'2'},
+      {label:'编导二组', value:'admin'},
+      {label:'', value:'yuangong'},
 
     ])
-
 
     const PAGEDATA = reactive({})
     const loading = ref(false)
@@ -287,6 +318,8 @@ export default defineComponent({
       store,
       state_op,
       role_op,
+      department_op,
+      SHOW_PARENT,
       PAGEDATA,
       formdata,
       formRef,

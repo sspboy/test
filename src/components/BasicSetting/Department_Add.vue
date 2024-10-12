@@ -22,7 +22,7 @@
 
           <a-col :span="12">
             <a-form-item label="功能名称" name="name">
-              <a-input v-model:value="" class="font_size_12" placeholder="输入名称" type="string" />
+              <a-input v-model:value="formdata.de_name" class="font_size_12" placeholder="输入名称" type="string" />
             </a-form-item>
           </a-col>
 
@@ -82,7 +82,7 @@ export default defineComponent({
 
     const formdata = computed(()=>{
       return reactive({
-        name:'',
+        de_name:'',
         def_name:'',
         miaoshu:''
       })

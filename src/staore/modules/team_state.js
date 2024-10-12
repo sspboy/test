@@ -137,11 +137,8 @@ const mutations = {
     // 批量>删除
     bacth_del:(state,resdata)=>{
         state.message.bacth_del = resdata;
-    }
+    },
 
-    // 品牌下所有角色
-
-    // 品牌所有部门
 
 }
 
