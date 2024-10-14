@@ -10,7 +10,7 @@ const state = ()=>({
         condition:'None',
         page:1,
         page_size:10,
-        data_list:{},
+        data_list:undefined,
         detaile:{},
         del_state:'',
         update_state:'',
@@ -115,6 +115,7 @@ const mutations = {
 
 /* Action */
 const actions = {
+
     // 查询列表
     list:async ({ commit },data)=>{
 
@@ -122,7 +123,10 @@ const actions = {
 
             await axios.post(API.BasicsAPI.department.list, data).then((response)=> {
 
-                commit('data_list', response.data)
+                if(response.data.data !== 'None'){
+                    commit('data_list', response.data)
+                }
+
 
             })
 

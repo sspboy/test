@@ -11,7 +11,7 @@ const state = ()=>({
         condition:'None',
         page:1,
         page_size:10,
-        data_list:{},
+        data_list:undefined,
         detaile:{},
         del_state:'',
         update_state:'',
@@ -35,7 +35,8 @@ const mutations = {
     },
 
     // 更新>列表
-    data_list:(state,resdata)=>{
+    data_list:(state, resdata)=>{
+
         for(let colums of resdata.colum){
             // 账号名称
             if(colums.field_name === "id"){
@@ -151,7 +152,10 @@ const actions = {
 
             await axios.post(API.BasicsAPI.team.list, data).then((response)=> {
 
-                commit('data_list', response.data)
+                if(response.data.data !== 'None'){
+                    commit('data_list', response.data)
+                }
+
 
             })
 

@@ -44,7 +44,7 @@
 
           <a-col :span="12">
             <a-form-item label="密码" name="password">
-              <a-input-password v-model:value="formdata.password" class="font_size_12" placeholder="输入密码" type="text" />
+              <a-input-password v-model:value="formdata.pass_word" class="font_size_12" placeholder="输入密码" type="text" />
             </a-form-item>
           </a-col>
 
@@ -103,7 +103,7 @@
 import {defineComponent, reactive, ref, computed } from 'vue';
 import { useStore } from 'vuex'
 import {TreeSelect} from "ant-design-vue";
-import {Role} from '/src/assets/JS_Model/department.js'
+import {Role, Depart} from '/src/assets/JS_Model/department.js'
 export default defineComponent({
   // 模版名称
   name: "Team_Add",
@@ -118,19 +118,17 @@ export default defineComponent({
 
     const store = useStore();// 共享数据
 
-    const open = props;
+    const open = props; // 组件传递数据
 
-    const formRef = ref()
+    const formRef = ref() // 表单获取数据初始化
 
+    // 表单填充数据初始化
     const formdata = computed(()=>{
-
-      console.log(store.state.member.message.user_data.b_id)
-
       return reactive({
         name:open.adddata.data.name,
         nickname:open.adddata.data.nickname,
         mobile:open.adddata.data.mobile,
-        password:open.adddata.data.password,
+        pass_word:open.adddata.data.password,
         state:open.adddata.data.state,
         role:open.adddata.data.role,
         department_id:open.adddata.data.department_id,
@@ -146,35 +144,61 @@ export default defineComponent({
       {label:'停用', value:'1'}
     ]
 
-    // 角色下拉选择==当前品牌所有角色id、名称
-    const role_op=reactive([])
-    // 获取所有角色
-    var R = new Role()
+    // 角色下拉选择赋值==当前品牌所有角色id、名称
+    const role_op=computed(()=>{
 
-    R.all_.get_all_role('12',(res)=>{
-      
-      for(let i of res.data){
-        let r_obj = {}
-        r_obj.label = i.role_name
-        r_obj.value = i.id
-        role_op.push(r_obj)
-      }
+      const r_list = reactive([])
+
+      // 获取所有角色
+      var R = new Role()
+
+      R.all_.get_all_role((res)=>{
+
+        for(let i of res.data){
+          let r_obj = {}
+          r_obj.label = i.role_name
+          r_obj.value = i.id
+          r_list.push(r_obj)
+
+        }
+      })
+
+      return r_list
 
     })
 
 
-
-    // 所属部门下拉选择==当前品牌所有部门id、名
     // 树状菜单回填方法SHOW_ALL=全部节点回填（含父节点）；SHOW_PARENT=只回填父节点
     const SHOW_PARENT = TreeSelect.SHOW_ALL;
-    const department_op = reactive([
-      {label:'销售一部', value:'0',children: [{label: '小组A', value: '34'}]},
-      {label:'销售二部', value:'1'},
-      {label:'编导一组', value:'2'},
-      {label:'编导二组', value:'admin'},
-      {label:'', value:'yuangong'},
+    const department_op = computed(()=>{
 
-    ])
+      const d_list = reactive([])
+
+      // 部门选择下拉赋值==当前品牌所有部门id、名称
+      var D = new Depart()
+
+      D.all_.get_all_department('12',(res)=>{
+        for(let i of res.data){
+          let r_obj = {}
+          r_obj.label = i.name
+          r_obj.value = i.id
+          d_list.push(r_obj)
+        }
+      })
+
+      return d_list
+
+    })
+
+    // reactive([
+      // {label:'销售一部', value:'0',children: [{label: '小组A', value: '34'}]},
+      // {label:'销售二部', value:'1'},
+      // {label:'编导一组', value:'2'},
+      // {label:'编导二组', value:'admin'},
+      // {label:'', value:'yuangong'},
+    // ])
+
+
 
     const PAGEDATA = reactive({})
     const loading = ref(false)
@@ -192,6 +216,10 @@ export default defineComponent({
         required: true,
         message: '不能为空',
       }],
+      mobile: [{
+        required: false,
+        message: '',
+      }],
       state: [{
         required: true,
         message: '不能为空',
@@ -204,7 +232,7 @@ export default defineComponent({
         required: true,
         message: '不能为空',
       }],
-      password: [{
+      pass_word: [{
         required: true,
         message: '不能为空',
       }]
@@ -222,12 +250,12 @@ export default defineComponent({
     // 提交数据
     const from_submit = ()=>{
       // 新建提交
-      if(open.adddata.title === '添加功能'){
+      if(open.adddata.title === '添加成员'){
 
         fun_add_()
 
       // 编辑提交
-      }else if(open.adddata.title === '编辑功能'){
+      }else if(open.adddata.title === '编辑成员'){
 
         fun_update()
 
@@ -240,22 +268,27 @@ export default defineComponent({
       formRef.value.validate().then(() => {
 
         loading.value = true;
-        console.log(open.adddata.action)
-        console.log(formdata.value)
+
+        var brand_name = store.state.member.message.user_data.brand_name
+
+        // 子账号名称
+        formdata.value.name = brand_name + ':' +  formdata.value.name
 
         store.dispatch(open.adddata.action, formdata.value).then(()=>{
 
+          console.log(formdata.value)
+
           setTimeout(()=>{
 
-            loading.value = false;  // 关闭loading效果
+              loading.value = false;  // 关闭loading效果
 
-            open.adddata.open = false;  // 收起抽屉
+              open.adddata.open = false;  // 收起抽屉
 
-            ctx.emit('add_coallback')   // 回调刷新表格
+              ctx.emit('add_coallback')   // 回调刷新表格
 
-            formRef.value.resetFields(); // 重置表单
+              formRef.value.resetFields(); // 重置表单
 
-          },1000)
+            },1000)
 
         }).catch(error => {
 
@@ -272,7 +305,13 @@ export default defineComponent({
 
       formRef.value.validate().then(() => {
 
+
         loading.value = true;
+
+        var brand_name = store.state.member.message.user_data.brand_name
+
+        // 子账号名称
+        formdata.value.name = brand_name + ':' +  formdata.value.name
 
         const up_date = {
 
@@ -282,25 +321,28 @@ export default defineComponent({
 
         }
 
-        store.dispatch(open.adddata.action, up_date).then(()=>{
+        console.log(up_date)
+        console.log(open.adddata.action)
 
-          setTimeout(()=>{
-
-            loading.value = false;  // 关闭loading效果
-
-            open.adddata.open = false;  // 收起抽屉
-
-            ctx.emit('add_coallback')   // 回调刷新表格
-
-            formRef.value.resetFields(); // 重置表单
-
-          },1000)
-
-        }).catch(error => {
-
-          console.log('error', error);
-
-        });
+        // store.dispatch(open.adddata.action, up_date).then(()=>{
+        //
+        //   setTimeout(()=>{
+        //
+        //     loading.value = false;  // 关闭loading效果
+        //
+        //     open.adddata.open = false;  // 收起抽屉
+        //
+        //     ctx.emit('add_coallback')   // 回调刷新表格
+        //
+        //     formRef.value.resetFields(); // 重置表单
+        //
+        //   },1000)
+        //
+        // }).catch(error => {
+        //
+        //   console.log('error', error);
+        //
+        // });
 
       })
 

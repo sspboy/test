@@ -175,6 +175,8 @@ export default defineComponent({
 
     // 页面初始化信息 === 组件挂在之前---请求数据
     onBeforeMount(()=>{
+
+      store.dispatch('member/get')// 用户权限
       // 默认查询条件
       let message = {
         "page":1,
@@ -186,7 +188,6 @@ export default defineComponent({
 
       Refresh_table(message) // 【页面初始化】&&刷新表格
 
-      store.dispatch('member/get')// 用户权限
 
     })
 
@@ -202,10 +203,16 @@ export default defineComponent({
     const Refresh_table = (message)=>{
 
       store.dispatch('team/list', message).then(()=>{
-        PAGEDATA.colum = store.state.team.message.data_list.colum
-        PAGEDATA.datalist = store.state.team.message.data_list.data
-        PAGEDATA.total_number = store.state.team.message.data_list.total_number
+
+        // 列表结果不为空
+        if(store.state.team.message.data_list !== undefined){
+          PAGEDATA.colum = store.state.team.message.data_list.colum
+          PAGEDATA.datalist = store.state.team.message.data_list.data
+          PAGEDATA.total_number = store.state.team.message.data_list.total_number
+        }
+
         loading.value = false // loading 状态关闭
+
       })
 
     }
@@ -244,6 +251,7 @@ export default defineComponent({
 
     // 子账号管理======>开始
 
+
     const PAGEDATA = reactive({
       title:'组织架构',
       menudata:{'key':'33','openKeys':'sub0'},            // 菜单选中配置
@@ -252,10 +260,10 @@ export default defineComponent({
       total_number:0,     // 总页数
     })
 
-    // 【删除】数据初始化
+    // 【删除】子账号数据初始化
     const DELDATA = reactive({
       open:false,
-      actian_name:'department/del',// 数据删除模块名称
+      actian_name:'team/del',// 数据删除模块名称
       detaile_obj:{}         // 数据删除键值
     })
 
@@ -269,15 +277,15 @@ export default defineComponent({
 
     // 编辑子账号
     const Edit_Fun=(data)=>{
-      console.log(data)
       ADDDATA.title="编辑成员"
-      ADDDATA.action='department/update'
+      ADDDATA.action='team/update'
       ADDDATA.data = {
-        name:data.name,
+        id:data.id,
+        name:data.name.split(':')[1],
         nickname:data.nickname,
         mobile:data.mobile,
         password:data.password,
-        state:data.state,
+        state:data.state + '',
         role:JSON.parse(data.role),
         department_id:data.department_id,
         department_name:data.department_name,
@@ -287,8 +295,9 @@ export default defineComponent({
 
     // 添加子账号
     const Add_fun=()=>{
+
       ADDDATA.title="添加成员"
-      ADDDATA.action='department/add'
+      ADDDATA.action='team/add'
       ADDDATA.data = {
         name:'',
         nickname:'',
@@ -303,10 +312,10 @@ export default defineComponent({
     }
 
     // 删除子账号
-    const Del_Fun=()=>{
-      console.log('删除成员')
+    const Del_Fun = (detaile_data)=>{
+      DELDATA.detaile_obj.id = detaile_data.id;
+      DELDATA.open = true;
     }
-
 
     // 子账号管理======>结束
 
@@ -428,6 +437,7 @@ export default defineComponent({
 </script>
 
 <style>
+.ant-tree-treenode{width: 100%;}
 .depart_btn_m{margin: 0 8px;}
 .depart_btn_d{margin: 0 0 0 18px;}
 .ant-table-body{

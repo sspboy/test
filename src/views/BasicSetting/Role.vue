@@ -218,10 +218,14 @@ export default defineComponent({
     const Refresh_table = (message)=>{
 
       store.dispatch('role/list', message).then(()=>{
-        PAGEDATA.colum = store.state.role.message.data_list.colum
-        PAGEDATA.user_data = store.state.role.message.user_data
-        PAGEDATA.datalist = store.state.role.message.data_list.data
-        PAGEDATA.total_number = store.state.role.message.data_list.total_number
+
+        // 列表结果不为空
+        if(store.state.role.message.data_list !== undefined){
+          PAGEDATA.colum = store.state.role.message.data_list.colum
+          PAGEDATA.user_data = store.state.role.message.user_data
+          PAGEDATA.datalist = store.state.role.message.data_list.data
+          PAGEDATA.total_number = store.state.role.message.data_list.total_number
+        }
         loading.value = false // loading 状态关闭
       })
 

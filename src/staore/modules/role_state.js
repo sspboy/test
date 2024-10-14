@@ -11,7 +11,7 @@ const state = ()=>({
         condition:'None',
         page:1,
         page_size:10,
-        data_list:{},
+        data_list:undefined,
         detaile:{},
         del_state:'',
         update_state:'',
@@ -104,6 +104,7 @@ const mutations = {
         state.message.page = resdata.now_page;
         state.message.page_size = resdata.page_size;
         state.message.data_list = resdata; // 接口返回数据
+
     },
 
     // 更新>删除
@@ -138,7 +139,9 @@ const actions = {
 
             await axios.post(API.BasicsAPI.role.list, data).then((response)=> {
 
-                commit('data_list', response.data)
+                if(response.data.data !== 'None'){
+                    commit('data_list', response.data)
+                }
 
             })
 
