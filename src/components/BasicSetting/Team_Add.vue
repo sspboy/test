@@ -73,12 +73,11 @@
             <a-form-item label="所属部门" name="department_name">
                 <a-tree-select
                   v-model:value="formdata.department_name"
+                  tree-data-simple-mode
                   style="width: 100%"
-                  :tree-data="department_op"
-                  allow-clear
-                  :show-checked-strategy="SHOW_PARENT"
+                  :tree-data="treeData"
+                  :load-data="onLoadData"
                   placeholder="选择所属部门"
-                  tree-node-filter-prop="label"
                 />
             </a-form-item>
           </a-col>
@@ -170,18 +169,22 @@ export default defineComponent({
 
     // 树状菜单回填方法SHOW_ALL=全部节点回填（含父节点）；SHOW_PARENT=只回填父节点
     const SHOW_PARENT = TreeSelect.SHOW_ALL;
-    const department_op = computed(()=>{
+
+    const treeData = computed(()=>{
 
       const d_list = reactive([])
 
       // 部门选择下拉赋值==当前品牌所有部门id、名称
       var D = new Depart()
 
-      D.all_.get_all_department('12',(res)=>{
+      D.all_.get_all_department((res)=>{
         for(let i of res.data){
           let r_obj = {}
-          r_obj.label = i.name
+          r_obj.title = i.name
           r_obj.value = i.id
+          r_obj.id = i.id
+          r_obj.p_id = i.parent_id
+          r_obj.isLeaf= false
           d_list.push(r_obj)
         }
       })
@@ -189,6 +192,36 @@ export default defineComponent({
       return d_list
 
     })
+
+    const genTreeNode = (parentId, isLeaf = false) => {
+
+      const random = Math.random().toString(36).substring(2, 6);
+
+      return {
+        id: random,
+        pId: parentId,
+        value: random,
+        title: isLeaf ? 'Tree Node' : 'Expand to load',
+        isLeaf,
+      };
+
+    };
+
+    const onLoadData = treeNode => {
+      return new Promise(resolve => {
+        const { id } = treeNode.dataRef;
+        setTimeout(() => {
+          treeData.value = treeData.value.concat([
+            genTreeNode(id, false),
+            genTreeNode(id, true),
+            genTreeNode(id, true),
+          ]);
+          console.log(treeData.value);
+
+          resolve(true);
+        }, 300);
+      });
+    };
 
     // reactive([
       // {label:'销售一部', value:'0',children: [{label: '小组A', value: '34'}]},
@@ -198,11 +231,7 @@ export default defineComponent({
       // {label:'', value:'yuangong'},
     // ])
 
-
-
-    const PAGEDATA = reactive({})
     const loading = ref(false)
-
 
     // 验证规则
     const rules={
@@ -321,28 +350,25 @@ export default defineComponent({
 
         }
 
-        console.log(up_date)
-        console.log(open.adddata.action)
+        store.dispatch(open.adddata.action, up_date).then(()=>{
 
-        // store.dispatch(open.adddata.action, up_date).then(()=>{
-        //
-        //   setTimeout(()=>{
-        //
-        //     loading.value = false;  // 关闭loading效果
-        //
-        //     open.adddata.open = false;  // 收起抽屉
-        //
-        //     ctx.emit('add_coallback')   // 回调刷新表格
-        //
-        //     formRef.value.resetFields(); // 重置表单
-        //
-        //   },1000)
-        //
-        // }).catch(error => {
-        //
-        //   console.log('error', error);
-        //
-        // });
+          setTimeout(()=>{
+
+            loading.value = false;  // 关闭loading效果
+
+            open.adddata.open = false;  // 收起抽屉
+
+            ctx.emit('add_coallback')   // 回调刷新表格
+
+            formRef.value.resetFields(); // 重置表单
+
+          },1000)
+
+        }).catch(error => {
+
+          console.log('error', error);
+
+        });
 
       })
 
@@ -360,9 +386,9 @@ export default defineComponent({
       store,
       state_op,
       role_op,
-      department_op,
+      treeData,
+      onLoadData,
       SHOW_PARENT,
-      PAGEDATA,
       formdata,
       formRef,
       rules,

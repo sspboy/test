@@ -1,6 +1,6 @@
 <template>
 <!--新建、编辑、删除用户数据====>开始-->
-<!--<Department_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>-->
+<Department_Add :adddata="Dpartment_PAGEDATA" v-on:add_coallback="resh_department"/>
 <Team_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
 <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
 <!--新建、编辑、删除用户数据====>结束-->
@@ -42,12 +42,21 @@
             :load-data="onLoadData"
             :tree-data="treeData"
           >
-            <template #title="{ title, key }">
+            <template #title="{ title, id }">
 
               <div>
-                <span :id="key" @click="cli_fun">{{ title }}</span>
-                <span class="depart_btn_d" ><EditOutlined @click="Department_edit_fun" :id="key"/></span>
-                <span class="depart_btn_m" ><DeleteOutlined :id="key" @click="Department_del_fun" /></span>
+                <span :id="id" @click="cli_fun">{{ title }}</span>
+                <span class="depart_btn_d" ><EditOutlined @click="Department_edit_fun" :id="id"/></span>
+                <span class="depart_btn_m" >
+                  <a-popconfirm
+                    title="确认删除当前部门?"
+                    ok-text="Yes"
+                    cancel-text="No"
+                    @confirm="Department_del_fun(id)"
+                  >
+                    <DeleteOutlined :id="id" />
+                  </a-popconfirm>
+                </span>
               </div>
 
             </template>
@@ -84,8 +93,9 @@
             <!--条件查询组件 结束 -->
         </div>
 
-
         <!-- 组织架构 结束  -->
+
+
           <div :style="innerHeight">
               <!--表格组件：：发送初始化数据  开始-->
               <a-table
@@ -132,9 +142,11 @@
 </template>
 
 <script>
-import {defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref} from 'vue';
+import {computed, defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref} from 'vue';
 import { useStore } from 'vuex'
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined,ApartmentOutlined, EditOutlined,DeleteOutlined} from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
+import { Depart} from '/src/assets/JS_Model/department.js'
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
@@ -171,7 +183,7 @@ export default defineComponent({
 
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
 
-    const loading = ref(true)// 初始化loading状态
+    const loading = ref(true)// 初始化【子账号】表格loading状态
 
     // 页面初始化信息 === 组件挂在之前---请求数据
     onBeforeMount(()=>{
@@ -187,7 +199,6 @@ export default defineComponent({
         }]}
 
       Refresh_table(message) // 【页面初始化】&&刷新表格
-
 
     })
 
@@ -263,7 +274,7 @@ export default defineComponent({
     // 【删除】子账号数据初始化
     const DELDATA = reactive({
       open:false,
-      actian_name:'team/del',// 数据删除模块名称
+      actian_name:'',// 数据删除模块名称
       detaile_obj:{}         // 数据删除键值
     })
 
@@ -314,6 +325,7 @@ export default defineComponent({
     // 删除子账号
     const Del_Fun = (detaile_data)=>{
       DELDATA.detaile_obj.id = detaile_data.id;
+      DELDATA.actian_name='team/del';// 数据删除模块名称
       DELDATA.open = true;
     }
 
@@ -323,29 +335,52 @@ export default defineComponent({
 
 
 
-    // 树状结构====开始
-
+    // 【部门】树状结构====开始
     const expandedKeys = ref([]);
     const selectedKeys = ref([]);
 
-    // 初始化数据
-    const treeData = ref([
-      {
-        title: '销售一部',
-        key: '0',
-      },
-      {
-        title: '销售二部',
-        key: '1',
-      },
-      {
-        title: '综合管理部',
-        key: '2',
-        isLeaf: true,
-      },
-    ]);
+    // 部门选择下拉赋值==当前品牌所有部门id、名称
+    var D = new Depart()
+
+    // 部门选择下拉赋值==当前品牌所有部门id、名称
+    const treeData = ref([])
 
 
+    // 刷新组织架构列表
+    const resh_department = ()=> {
+      treeData.value=[]
+      D.all_.get_all_department((res)=>{
+        for(let i of res.data){
+          let r_obj = {}
+          r_obj.title = i.name
+          r_obj.id = i.id
+          // isLeaf: true,  // 是否下一级
+          if(i.parent_id == '0'){treeData.value.push(r_obj)} // 一级部门
+        }
+      })
+    }
+
+    resh_department()
+
+    // 部门列表===初始化数据
+    // const treeData = ref([
+    //   {
+    //     title: '销售一部',
+    //     key: '0',
+    //   },
+    //   {
+    //     title: '销售二部',
+    //     key: '1',
+    //   },
+    //   {
+    //     title: '综合管理部',
+    //     key: '2',
+    //     isLeaf: true,
+    //   },
+    // ]);
+
+
+    // 点击请求下级部门
     const onLoadData = treeNode => {
 
       console.log(treeNode.dataRef)
@@ -353,11 +388,15 @@ export default defineComponent({
       return new Promise(resolve => {
 
         if (treeNode.dataRef.children) {
+
           resolve();
+
           return;
+
         }
 
         setTimeout(() => {
+
           // 被点击的节点添加子菜单
           treeNode.dataRef.children = [
 
@@ -372,6 +411,7 @@ export default defineComponent({
             },
 
           ];
+
           // 重新赋值
           treeData.value = [...treeData.value];
 
@@ -383,20 +423,58 @@ export default defineComponent({
       });
     };
 
+    const Dpartment_PAGEDATA = reactive({
+      title:"",
+      actian:'',// 数据删除模块名称
+      open:false,
+    })
+
+    // 【删除】子账号数据初始化
+    const Dpartment_DELDATA = reactive({
+      open:false,
+      actian_name:'department/del',// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
+
     // 添加部门
     const Department_Add_fun=()=>{
       console.log('添加部门')
+      Dpartment_PAGEDATA.title="添加部门"
+      Dpartment_PAGEDATA.action='department/add'
+      Dpartment_PAGEDATA.data = {
+        name:'',
+        parent_id:'',
+        in_number:'',
+      };
+      Dpartment_PAGEDATA.open = true;
     }
+
     // 编辑部门
     const Department_edit_fun=(e)=>{
       console.log('编辑部门')
+      // 部门id
       console.log(e.target.parentElement.id)
+      Dpartment_PAGEDATA.title="编辑部门"
+      Dpartment_PAGEDATA.action='department/edit'
+      Dpartment_PAGEDATA.data = {
+        name:'',
+        parent_id:'',
+        in_number:'',
+      };
+      Dpartment_PAGEDATA.open = true;
     }
-    // 删除部门
-    const Department_del_fun=(e)=>{
-      console.log('删除部门')
-      console.log(e.target.parentElement.id)
 
+    // 删除部门
+    const Department_del_fun = e =>{
+
+      store.dispatch('department/del',{"id":e}).then(()=>{
+
+        message.success('删除部门成功！');
+
+        // 刷新部门
+        resh_department()
+
+      })
     }
 
     // 点击部门查询员工
@@ -412,6 +490,8 @@ export default defineComponent({
     return {
       store,
       PAGEDATA,
+      Dpartment_PAGEDATA,
+      Dpartment_DELDATA,
       ADDDATA,
       DELDATA,
       loading,
@@ -425,6 +505,7 @@ export default defineComponent({
       Department_Add_fun,
       Department_edit_fun,
       Department_del_fun,
+      resh_department,
       cli_fun,
       pagecallback,
       Del_Fun,

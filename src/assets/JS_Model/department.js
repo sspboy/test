@@ -51,7 +51,7 @@ export class Depart {
     // 获取当前品牌下所有角色\
     all_={
         // 获取当前品牌下所有的部门
-        get_all_department:async (brand_id, callback)=>{
+        get_all_department:async (callback)=>{
             var data = {}
             data.page = 1
             data.page_size = 1000
@@ -59,10 +59,6 @@ export class Depart {
                 {
                     type: "orderby",
                     condition: [{'column_name': 'create_time', 'value': 'DESC', }]
-                },
-                {
-                    type: "where",
-                    condition: [{'column_name':'b_id','value':brand_id,'operator':'='}]
                 }
             ]
 

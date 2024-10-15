@@ -21,26 +21,25 @@
         <a-row :gutter="16">
 
           <a-col :span="12">
-            <a-form-item label="功能名称" name="name">
-              <a-input v-model:value="formdata.de_name" class="font_size_12" placeholder="输入名称" type="string" />
+            <a-form-item label="部门名称" name="name">
+              <a-input v-model:value="formdata.name" class="font_size_12" placeholder="输入名称" type="string" />
             </a-form-item>
           </a-col>
 
           <a-col :span="12">
-            <a-form-item label="功能字符" name="def_name">
-              <a-input v-model:value="formdata.def_name" class="font_size_12" placeholder="输入函数字符名称" type="text" />
+            <a-form-item label="上级部门" name="parent_id">
+              <a-tree-select
+                v-model:value="formdata.parent_id"
+                tree-data-simple-mode
+                allow-clear
+                style="width: 100%"
+                :tree-data="treeData"
+                placeholder="选择部门"
+                :load-data="onLoadData"
+              />
             </a-form-item>
           </a-col>
 
-        </a-row>
-
-        <a-row :gutter="16">
-
-          <a-col :span="24">
-            <a-form-item label="描述" name="miaoshu">
-              <a-input v-model:value="formdata.miaoshu" class="font_size_12" placeholder="输入功能描述" type="text" />
-            </a-form-item>
-          </a-col>
         </a-row>
 
       </a-form>
@@ -60,6 +59,7 @@
 <script>
 import {defineComponent, reactive, ref, computed } from 'vue';
 import { useStore } from 'vuex'
+import {Depart} from "@/assets/JS_Model/department";
 
 export default defineComponent({
   // 模版名称
@@ -73,7 +73,6 @@ export default defineComponent({
   // 组合API返回到模版
   setup(props,ctx) {
 
-
     const store = useStore();// 共享数据
 
     const open = props;
@@ -82,14 +81,67 @@ export default defineComponent({
 
     const formdata = computed(()=>{
       return reactive({
-        de_name:'',
-        def_name:'',
-        miaoshu:''
+        id:undefined,
+        b_id:undefined,
+        name:undefined,
+        parent_id:undefined
       })
     })
 
-    const PAGEDATA = reactive({})
     const loading = ref(false)
+
+    const treeData = computed(()=>{
+
+       const d_list = reactive([])
+
+      // 部门选择下拉赋值==当前品牌所有部门id、名称
+      var D = new Depart()
+
+      D.all_.get_all_department((res)=>{
+
+        for(let i of res.data){
+          let r_obj = {}
+          r_obj.title = i.name
+          r_obj.value = i.id
+          r_obj.id = i.id
+          r_obj.p_id = i.parent_id
+          r_obj.isLeaf= false
+          // 判断是否有下级部门
+          if(i.parent_id == '0'){d_list.push(r_obj)} // 一级部门
+        }
+
+      })
+
+      return d_list
+
+    })
+
+    const genTreeNode = (parentId, isLeaf = false) => {
+      const random = Math.random().toString(36).substring(2, 6);
+      return {
+        id: random,
+        pId: parentId,
+        value: random,
+        title: isLeaf ? 'Tree Node' : 'Expand to load',
+        isLeaf,
+      };
+    };
+
+    const onLoadData = treeNode => {
+      return new Promise(resolve => {
+        const { id } = treeNode.dataRef;
+        setTimeout(() => {
+          // 合并数组
+          treeData.value.push(genTreeNode(id, false));
+          treeData.value.push(genTreeNode(id, true));
+          treeData.value.push(genTreeNode(id, true));
+          console.log(treeData.value);
+
+          resolve(true);
+
+          }, 300);
+      });
+    };
 
 
     // 验证规则
@@ -99,28 +151,19 @@ export default defineComponent({
         required: true,
         message: '不能为空',
       }],
-      m_name: [{
-        required: true,
-        message: '不能为空',
-      }],
-      def_name: [{
-        required: true,
-        message: '不能为空',
-      }],
-      miaoshu: [{
-        required: true,
-        message: '不能为空',
+      parent_id: [{
+        required: false
       }]
     }
     // 提交数据
     const from_submit = ()=>{
       // 新建提交
-      if(open.adddata.title === '添加功能'){
+      if(open.adddata.title === '添加部门'){
 
         fun_add_()
 
       // 编辑提交
-      }else if(open.adddata.title === '编辑功能'){
+      }else if(open.adddata.title === '编辑部门'){
 
         fun_update()
 
@@ -208,8 +251,9 @@ export default defineComponent({
 
     return {
       open,
-      PAGEDATA,
       formdata,
+      treeData,
+      onLoadData,
       formRef,
       rules,
       from_submit,

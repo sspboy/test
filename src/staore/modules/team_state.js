@@ -45,7 +45,7 @@ const mutations = {
             }
             // 品牌id
             if(colums.field_name === "name"){
-              colums['align'] = 'center'
+              colums['align'] = 'left'
               colums['width'] = 174
             }
 
