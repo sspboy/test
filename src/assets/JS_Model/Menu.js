@@ -68,6 +68,7 @@ export class Menu {
             menu_detaile_obj.title=data.name
             return menu_detaile_obj
         },
+
         // 图标配置
         ico_from:()=>{
             return {

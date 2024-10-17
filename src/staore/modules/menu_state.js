@@ -42,6 +42,7 @@ const mutations = {
     data_list:(state,resdata)=>{
 
         const neirong_list = menuLoad.parent_children(resdata.data)
+
         resdata.data = neirong_list
 
         // console.log(neirong_list)

@@ -1,14 +1,13 @@
 <template>
 <!--新建、编辑、删除用户数据====>开始-->
-<Department_Add :adddata="Dpartment_PAGEDATA" v-on:add_coallback="resh_department"/>
-<Team_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
+<Department_Add :adddata="ADDDATA" v-on:add_coallback="pagecallback"/>
 <Model_Del :deldata="DELDATA" v-on:del_coallback="pagecallback"/>
 <!--新建、编辑、删除用户数据====>结束-->
 
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
-  <menu_head></menu_head>
+    <menu_head></menu_head>
     <!--head 导航组件  结束-->
 
     <!--内容部分 菜单 右侧列表 开始-->
@@ -16,59 +15,9 @@
 
       <!--左侧 菜单组件  开始-->
       <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
-        <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
+        <menu_left :menudata="PAGEDATA.menudata"/><!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
-
-
-      <!-- 组织架构 开始 -->
-      <a-layout-sider style="background-color: #f5f5f5;height: 100%;padding: 6px 0 6px 6px;">
-
-        <div style="background-color: white;height: 100%;overflow-x:scroll;width: 100%;white-space:nowrap;" >
-
-          <p style="padding: 14px 14px 4px 10px;text-align: right;">
-
-            <span style="float: left; margin-top: 4px;"><ApartmentOutlined /> 组织架构</span>
-
-            <a-button primary size="small" style="font-size:12px;" @click="Department_Add_fun">
-               <template #icon><PlusOutlined /></template>
-            </a-button>
-
-          </p>
-
-          <a-tree
-            v-model:expandedKeys="expandedKeys"
-            v-model:selectedKeys="selectedKeys"
-            :load-data="onLoadData"
-            :tree-data="treeData"
-          >
-            <template #title="{ title, id }">
-
-              <div>
-                <span :id="id" @click="cli_fun">{{ title }}</span>
-                <span class="depart_btn_d" ><EditOutlined @click="Department_edit_fun" :id="id"/></span>
-                <span class="depart_btn_m" >
-                  <a-popconfirm
-                    title="确认删除当前部门?"
-                    ok-text="Yes"
-                    cancel-text="No"
-                    @confirm="Department_del_fun(id)"
-                  >
-                    <DeleteOutlined :id="id" />
-                  </a-popconfirm>
-                </span>
-              </div>
-
-            </template>
-
-
-          </a-tree>
-
-        </div>
-
-      </a-layout-sider>
-      <!-- 组织架构 结束 -->
-
 
       <!--表格组件 开始-->
       <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
@@ -83,10 +32,10 @@
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
                   <!-- {{ PAGEDATA.title }} -->
-                <a-button type="primary" size="small" style="font-size:12px;" @click="Add_fun">
-                  <template #icon><PlusOutlined /></template>
-                  添加成员
-                </a-button>
+                  <a-button type="primary" size="small" style="font-size:12px;" @click="Add_fun">
+                    <template #icon><PlusOutlined /></template>
+                    添加部门
+                  </a-button>
               </a-col>
               <a-col :span="6" :order="3"></a-col>
             </a-row>
@@ -102,12 +51,13 @@
                   :loading="loading"
                   :columns="PAGEDATA.colum"
                   :data-source="PAGEDATA.datalist"
-                  :scroll="{ x: 1800, y: innerHeight}"
+                  :row-selection="rowSelection"
+                  :scroll="{ x: 1200}"
                   :pagination="false"
                   style="font-size:12px;"
               >
 
-                <template #bodyCell="{  record,  column }">
+                <template #bodyCell="{ record,column }">
 
                   <!--定义操作按钮 开始-->
                   <template v-if="column.key === 'operation'">
@@ -122,17 +72,9 @@
           <!--表格组件：：发送初始化数据  结束-->
           </div>
 
-          <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
-          <nav_pagination :fandata="PAGEDATA" v-on:complete="receive"/>
-
-
 
       </a-layout-content>
-
       <!-- 表格组件 结束  -->
-
-
-
 
     </a-layout>
 
@@ -142,11 +84,9 @@
 </template>
 
 <script>
-import {computed, defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref} from 'vue';
+import {defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref} from 'vue';
 import { useStore } from 'vuex'
-import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined,ApartmentOutlined, EditOutlined,DeleteOutlined} from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
-import { Depart} from '/src/assets/JS_Model/department.js'
+import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
@@ -154,28 +94,27 @@ import menu_head from "@/components/layout/menu_head.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
 import Department_Add from "@/components/BasicSetting/Department_Add.vue";
 import Model_Del from "@/components/admin/Model_Del.vue";
-import Team_Add from "@/components/BasicSetting/Team_Add.vue";
 
 export default defineComponent({
+
   // 模版名称【组织架构】
   name: "department",
+
   // 引用组件
   components: {
-    Team_Add,
     Department_Add,
     Model_Del,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     PlusOutlined,
-    ApartmentOutlined,
-    EditOutlined,
-    DeleteOutlined,
     menu_left,
     menu_head,
     nav_pagination
   },
+
   // 父组件数据
   props: {},
+
   // 组合API返回到模版
   setup() {
 
@@ -189,10 +128,11 @@ export default defineComponent({
     onBeforeMount(()=>{
 
       store.dispatch('member/get')// 用户权限
+
       // 默认查询条件
       let message = {
         "page":1,
-        "page_size":10,
+        "page_size":1000,
         condition:[{
           type: "orderby",
           condition: [{'column_name': 'create_time', 'value': 'DESC', }]
@@ -202,7 +142,7 @@ export default defineComponent({
 
     })
 
-    //【当前页面】&&刷新表格
+    //【当前页面表格】&&刷新表格
     const pagecallback =()=>{
       let message = {}
       message.page = store.state.team.message.page;
@@ -213,13 +153,13 @@ export default defineComponent({
     // 刷新表格数据方法
     const Refresh_table = (message)=>{
 
-      store.dispatch('team/list', message).then(()=>{
+      store.dispatch('department/list', message).then(()=>{
 
         // 列表结果不为空
-        if(store.state.team.message.data_list !== undefined){
-          PAGEDATA.colum = store.state.team.message.data_list.colum
-          PAGEDATA.datalist = store.state.team.message.data_list.data
-          PAGEDATA.total_number = store.state.team.message.data_list.total_number
+        if(store.state.department.message.data_list !== undefined){
+          PAGEDATA.colum = store.state.department.message.data_list.colum
+          PAGEDATA.datalist = store.state.department.message.data_list.data
+          PAGEDATA.total_number = store.state.department.message.data_list.total_number
         }
 
         loading.value = false // loading 状态关闭
@@ -228,7 +168,7 @@ export default defineComponent({
 
     }
 
-        // [翻页]&&刷新表格
+    // [翻页组件点击后]&&刷新表格
     const receive = (message)=>{
 
       loading.value = true    // 开启loading状态
@@ -239,8 +179,8 @@ export default defineComponent({
         }]
 
       Refresh_table(message) // 刷新表格
-    }
 
+    }
 
     // 组件挂之后---请求数据
     // 定义一个函数来处理窗口大小变化 ==
@@ -259,10 +199,7 @@ export default defineComponent({
     });
 
 
-
     // 子账号管理======>开始
-
-
     const PAGEDATA = reactive({
       title:'组织架构',
       menudata:{'key':'33','openKeys':'sub0'},            // 菜单选中配置
@@ -274,7 +211,7 @@ export default defineComponent({
     // 【删除】子账号数据初始化
     const DELDATA = reactive({
       open:false,
-      actian_name:'',// 数据删除模块名称
+      actian_name:'department/del',// 数据删除模块名称
       detaile_obj:{}         // 数据删除键值
     })
 
@@ -285,228 +222,61 @@ export default defineComponent({
       open:false,
     })
 
-
-    // 编辑子账号
-    const Edit_Fun=(data)=>{
-      ADDDATA.title="编辑成员"
-      ADDDATA.action='team/update'
-      ADDDATA.data = {
-        id:data.id,
-        name:data.name.split(':')[1],
-        nickname:data.nickname,
-        mobile:data.mobile,
-        password:data.password,
-        state:data.state + '',
-        role:JSON.parse(data.role),
-        department_id:data.department_id,
-        department_name:data.department_name,
-      };
-      ADDDATA.open = true;
-    }
-
-    // 添加子账号
-    const Add_fun=()=>{
-
-      ADDDATA.title="添加成员"
-      ADDDATA.action='team/add'
-      ADDDATA.data = {
-        name:'',
-        nickname:'',
-        mobile:'',
-        password:'123456',
-        state:['0'],
-        role:[],
-        department_id:'',
-        department:'',
-      };
-      ADDDATA.open = true;
-    }
-
-    // 删除子账号
-    const Del_Fun = (detaile_data)=>{
-      DELDATA.detaile_obj.id = detaile_data.id;
-      DELDATA.actian_name='team/del';// 数据删除模块名称
-      DELDATA.open = true;
-    }
-
-    // 子账号管理======>结束
-
-
-
-
-
-    // 【部门】树状结构====开始
-    const expandedKeys = ref([]);
-    const selectedKeys = ref([]);
-
-    // 部门选择下拉赋值==当前品牌所有部门id、名称
-    var D = new Depart()
-
-    // 部门选择下拉赋值==当前品牌所有部门id、名称
-    const treeData = ref([])
-
-
-    // 刷新组织架构列表
-    const resh_department = ()=> {
-      treeData.value=[]
-      D.all_.get_all_department((res)=>{
-        for(let i of res.data){
-          let r_obj = {}
-          r_obj.title = i.name
-          r_obj.id = i.id
-          // isLeaf: true,  // 是否下一级
-          if(i.parent_id == '0'){treeData.value.push(r_obj)} // 一级部门
-        }
-      })
-    }
-
-    resh_department()
-
-    // 部门列表===初始化数据
-    // const treeData = ref([
-    //   {
-    //     title: '销售一部',
-    //     key: '0',
-    //   },
-    //   {
-    //     title: '销售二部',
-    //     key: '1',
-    //   },
-    //   {
-    //     title: '综合管理部',
-    //     key: '2',
-    //     isLeaf: true,
-    //   },
-    // ]);
-
-
-    // 点击请求下级部门
-    const onLoadData = treeNode => {
-
-      console.log(treeNode.dataRef)
-
-      return new Promise(resolve => {
-
-        if (treeNode.dataRef.children) {
-
-          resolve();
-
-          return;
-
-        }
-
-        setTimeout(() => {
-
-          // 被点击的节点添加子菜单
-          treeNode.dataRef.children = [
-
-            {
-              title: 'Child Node',
-              key: `${treeNode.eventKey}-0`,
-            },
-
-            {
-              title: 'Child Node',
-              key: `${treeNode.eventKey}-1`,
-            },
-
-          ];
-
-          // 重新赋值
-          treeData.value = [...treeData.value];
-
-          console.log(treeData.value)
-
-          resolve();
-
-        }, 1000);
-      });
-    };
-
-    const Dpartment_PAGEDATA = reactive({
-      title:"",
-      actian:'',// 数据删除模块名称
-      open:false,
-    })
-
-    // 【删除】子账号数据初始化
-    const Dpartment_DELDATA = reactive({
-      open:false,
-      actian_name:'department/del',// 数据删除模块名称
-      detaile_obj:{}         // 数据删除键值
-    })
-
     // 添加部门
-    const Department_Add_fun=()=>{
-      console.log('添加部门')
-      Dpartment_PAGEDATA.title="添加部门"
-      Dpartment_PAGEDATA.action='department/add'
-      Dpartment_PAGEDATA.data = {
-        name:'',
-        parent_id:'',
-        in_number:'',
+    const Add_fun=()=>{
+      ADDDATA.title="添加部门"
+      ADDDATA.action='department/add'
+      ADDDATA.data = {
+        name:undefined,
+        id:undefined,
+        parent_id:undefined,
       };
-      Dpartment_PAGEDATA.open = true;
+      ADDDATA.open = true;
     }
 
     // 编辑部门
-    const Department_edit_fun=(e)=>{
-      console.log('编辑部门')
-      // 部门id
-      console.log(e.target.parentElement.id)
-      Dpartment_PAGEDATA.title="编辑部门"
-      Dpartment_PAGEDATA.action='department/edit'
-      Dpartment_PAGEDATA.data = {
-        name:'',
-        parent_id:'',
-        in_number:'',
+    const Edit_Fun=(data)=>{
+      ADDDATA.title="编辑部门"
+      ADDDATA.action='department/update'
+      ADDDATA.data = {
+        name:data.name,
+        b_id:data.b_id,
+        id:data.id,
+        parent_id:data.parent_id,
       };
-      Dpartment_PAGEDATA.open = true;
+      ADDDATA.open = true;
     }
 
     // 删除部门
-    const Department_del_fun = e =>{
-
-      store.dispatch('department/del',{"id":e}).then(()=>{
-
-        message.success('删除部门成功！');
-
-        // 刷新部门
-        resh_department()
-
-      })
+    const Del_Fun = (detaile_data)=>{
+      DELDATA.detaile_obj.id = detaile_data.id;
+      DELDATA.open = true;
     }
 
-    // 点击部门查询员工
-    const cli_fun = node =>{
-      console.log(node.target.textContent)
-      console.log(node.target.id)
-    }
-
-
-    // 树状结构====结束
+    const rowSelection = ref({
+      checkStrictly: false,
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      },
+      onSelect: (record, selected, selectedRows) => {
+        console.log(record, selected, selectedRows);
+      },
+      onSelectAll: (selected, selectedRows, changeRows) => {
+        console.log(selected, selectedRows, changeRows);
+      },
+    });
 
 
     return {
       store,
       PAGEDATA,
-      Dpartment_PAGEDATA,
-      Dpartment_DELDATA,
+      rowSelection,
       ADDDATA,
       DELDATA,
       loading,
       receive,
       innerHeight,
-      expandedKeys,
-      selectedKeys,
-      onLoadData,
-      treeData,
       Add_fun,
-      Department_Add_fun,
-      Department_edit_fun,
-      Department_del_fun,
-      resh_department,
-      cli_fun,
       pagecallback,
       Del_Fun,
       Edit_Fun,
