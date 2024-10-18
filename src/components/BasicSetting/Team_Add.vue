@@ -73,10 +73,9 @@
             <a-form-item label="所属部门" name="department_name">
                 <a-tree-select
                   v-model:value="formdata.department_name"
-                  tree-data-simple-mode
                   style="width: 100%"
                   :tree-data="treeData"
-                  :load-data="onLoadData"
+                  allow-clear
                   placeholder="选择所属部门"
                 />
             </a-form-item>
@@ -178,58 +177,30 @@ export default defineComponent({
       var D = new Depart()
 
       D.all_.get_all_department((res)=>{
+        var r_list = []
         for(let i of res.data){
           let r_obj = {}
           r_obj.title = i.name
           r_obj.value = i.id
           r_obj.id = i.id
-          r_obj.p_id = i.parent_id
-          r_obj.isLeaf= false
-          d_list.push(r_obj)
+          r_obj.parent_id = i.parent_id
+          // 判断是否有下级部门
+          r_list.push(r_obj) // 一级部门
         }
+
+        var resd = D.Table_List.get_tree(r_list)
+
+        resd.forEach(item=>{d_list.push(item)})
+
       })
 
       return d_list
 
     })
 
-    const genTreeNode = (parentId, isLeaf = false) => {
 
-      const random = Math.random().toString(36).substring(2, 6);
 
-      return {
-        id: random,
-        pId: parentId,
-        value: random,
-        title: isLeaf ? 'Tree Node' : 'Expand to load',
-        isLeaf,
-      };
 
-    };
-
-    const onLoadData = treeNode => {
-      return new Promise(resolve => {
-        const { id } = treeNode.dataRef;
-        setTimeout(() => {
-          treeData.value = treeData.value.concat([
-            genTreeNode(id, false),
-            genTreeNode(id, true),
-            genTreeNode(id, true),
-          ]);
-          console.log(treeData.value);
-
-          resolve(true);
-        }, 300);
-      });
-    };
-
-    // reactive([
-      // {label:'销售一部', value:'0',children: [{label: '小组A', value: '34'}]},
-      // {label:'销售二部', value:'1'},
-      // {label:'编导一组', value:'2'},
-      // {label:'编导二组', value:'admin'},
-      // {label:'', value:'yuangong'},
-    // ])
 
     const loading = ref(false)
 
@@ -387,7 +358,6 @@ export default defineComponent({
       state_op,
       role_op,
       treeData,
-      onLoadData,
       SHOW_PARENT,
       formdata,
       formRef,

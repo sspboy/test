@@ -52,7 +52,7 @@
                   :columns="PAGEDATA.colum"
                   :data-source="PAGEDATA.datalist"
                   :row-selection="rowSelection"
-                  :scroll="{ x: 1200}"
+                  :scroll="{ x: 1200, y: innerHeight}"
                   :pagination="false"
                   style="font-size:12px;"
               >
@@ -146,7 +146,7 @@ export default defineComponent({
     const pagecallback =()=>{
       let message = {}
       message.page = store.state.team.message.page;
-      message.page_size = store.state.team.message.page_size;
+      message.page_size = 1000;
       receive(message)
     }
 

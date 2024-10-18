@@ -64,27 +64,27 @@ const mutations = {
             // 视图权限
             if(colums.field_name === "view_permissions"){
               colums['align'] = 'left'
-              colums['width'] = 140
+              colums['width'] = 80
             }
             // 数据权限
             if(colums.field_name === "data_permissions"){
               colums['align'] = 'center'
-              colums['width'] = 140
+              colums['width'] = 80
             }
             // 功能权限
             if(colums.field_name === "fun_permissions"){
               colums['align'] = 'left'
-              colums['width'] = 140
+              colums['width'] = 80
             }
             // 创建时间
             if(colums.field_name === "create_time"){
               colums['align'] = 'center'
-              colums['width'] = 200
+              colums['width'] = 80
             }
             // 更新时间
             if(colums.field_name === "update_time"){
               colums['align'] = 'center'
-              colums['width'] = 200
+              colums['width'] = 80
             }
         }
 

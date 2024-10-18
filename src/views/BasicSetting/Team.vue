@@ -353,7 +353,6 @@ export default defineComponent({
 
         for(let m of t_list){
           if(vaif(m, a_list)){
-            console.log(m)
             m.isLeaf = false
           }
         }

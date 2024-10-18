@@ -51,7 +51,7 @@ const mutations = {
             // 菜单id
             if(colums.field_name === "id"){
               colums['align'] = 'center'
-              colums['width'] = 74
+              colums['width'] = 174
             }
             // 菜单父id
             if(colums.field_name === "parent_id"){
