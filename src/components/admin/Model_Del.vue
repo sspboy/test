@@ -7,8 +7,10 @@
 </template>
 
 <script>
-import {defineComponent, reactive, ref} from 'vue';
+import {defineComponent, ref} from 'vue';
 import {useStore} from "vuex";
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/department';
 
 export default defineComponent({
   // 模版名称
@@ -26,9 +28,10 @@ export default defineComponent({
   },
   // 组合API返回到模版
   setup(props,ctx) {
+    const API = new utils.A_Patch()// 请求接口
+    const TO = new TABLE.TableOperate()// 表格操作方法
 
     const store = useStore();// 共享数据
-
     const open = props
 
 
@@ -43,8 +46,12 @@ export default defineComponent({
 
       confirmLoading.value = true;
 
-      // 用户删除==ok
-      store.dispatch(open.deldata.actian_name, open.deldata.detaile_obj).then(()=>{
+      // 新建用户接口
+      TO.message.url = open.deldata.actian_name
+
+      TO.actions.del(open.deldata.detaile_obj,(res)=>{
+
+        console.log(res)
 
         setTimeout(()=>{
 

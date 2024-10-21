@@ -95,6 +95,8 @@
 import {ref, reactive, onBeforeMount, onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/department';
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
@@ -123,15 +125,18 @@ export default {
 
   setup() {
 
+    // 数据绑定=======================================>开始
+    const API = new utils.A_Patch()// 请求接口
+    const TO = new TABLE.TableOperate()// 表格操作方法
+
     const store = useStore();// 共享数据
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)// 初始化loading状态
 
-    // 页面获取数据
+    // 【编辑】页面数据
     const PAGEDATA = reactive({
       title:'用户管理',
-      // 菜单选中配置
-      menudata:{
+      menudata:{      // 菜单选中配置
         'key':'48',
         'openKeys':'sub1'
       },
@@ -140,82 +145,7 @@ export default {
       total_number:0,     // 内容总数
     })
 
-    // 组件挂在之前---请求数据
-    onBeforeMount(()=>{
-
-      // 菜单数据
-
-      // 默认查询条件
-      let message = {
-        "page":1,
-        "page_size":10,
-        condition:[{
-          type: "orderby",
-          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
-        }]}
-
-
-
-      store.dispatch('user/list', message).then(()=>{
-
-        PAGEDATA.colum = store.state.user.message.data_list.colum
-        PAGEDATA.user_data = store.state.user.message.user_data
-        PAGEDATA.datalist = store.state.user.message.data_list.data
-        PAGEDATA.total_number = store.state.user.message.data_list.total_number
-
-        loading.value = false // loading 状态关闭
-
-      })
-
-      store.dispatch('member/get')
-
-
-    })
-
-
-    //【当前页面】&&刷新表格
-    const pagecallback =()=>{
-      let message = {}
-      message.page = store.state.user.message.page;
-      message.page_size = store.state.user.message.page_size;
-      receive(message)
-    }
-
-
-
-    // [翻页]&&刷新表格
-    const receive = (message)=>{
-
-      loading.value = true    // 开启loading状态
-      // 刷新页面查询条件
-      message.condition = [{
-          type: "orderby",
-          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
-        }]
-
-      store.dispatch('user/list', message).then(()=>{
-
-        PAGEDATA.colum = store.state.user.message.data_list.colum
-        PAGEDATA.user_data = store.state.user.message.user_data
-        PAGEDATA.datalist = store.state.user.message.data_list.data
-        PAGEDATA.total_number = store.state.user.message.data_list.total_number
-        PAGEDATA.menudata.menu = store.state.user.message.user_data.menu  // 菜单配置
-
-
-        loading.value = false // loading 状态关闭
-
-      })
-
-    }
-
-
-
-
-
-
-
-
-    // 【新建】调用组件方法===》弹出抽屉+传值
+    // 【新建】页面数据
     const ADDDATA= reactive({
       actian:'',// 数据删除模块名称
       title:"",
@@ -223,6 +153,115 @@ export default {
       open:false,
     })
 
+    // 【删除】页面数据
+    const DELDATA = reactive({
+      open:false,
+      actian_name:API.AdminAPI.user.delete,// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
+    // 数据绑定===========================================结束
+
+
+
+
+
+
+    // 【组件挂载】========================================开始
+    onBeforeMount(()=>{
+
+      // 【登录用户信息】请求登录用户会员信息
+      store.dispatch('member/get')
+
+      // 默认查询条件
+      let message = {
+
+        "page":1,
+
+        "page_size":10,
+
+        condition:[{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]}
+
+        // 请求列表
+        Get_list(message)
+
+    })
+
+    // 组件挂之后---请求数据
+    // 定义一个函数来处理窗口大小变化 ==
+    const handleResize = () => {
+      innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
+    };
+
+    // 在组件挂载时添加事件监听器
+    onMounted(() => {
+        window.addEventListener('resize', handleResize);
+    });
+
+    // 在组件卸载时移除事件监听器
+    onUnmounted(() => {
+      window.removeEventListener('resize', handleResize);
+    });
+    // 【组件挂载】========================================结束
+
+
+    //【刷新表格】
+    const pagecallback =()=>{
+
+      loading.value = true    // 开启loading状态
+
+      let message = {}
+      message.page = TO.message.page;
+      message.page_size = TO.message.page_size;
+      // 刷新页面查询条件
+      message.condition = [{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]
+
+      // 请求列表
+      Get_list(message)
+
+    }
+
+    // 【点击翻页】&&刷新表格所在的页面
+    const receive = (message)=>{
+
+      loading.value = true    // 开启loading状态
+
+      // 刷新页面查询条件
+      message.condition = [{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]
+
+      Get_list(message) // 请求列表
+
+    }
+
+    const Get_list = (message) =>{
+
+      // 请求接口地址赋值
+      TO.message.url = API.AdminAPI.user.list
+
+      TO.actions.list(message,(res)=>{
+
+        TO.user.add_colum(res)        // 添加表头
+
+        // 页面赋值
+        // console.log(res)
+        PAGEDATA.colum = res.colum
+        PAGEDATA.datalist = res.data
+        PAGEDATA.total_number =res.total_number
+
+        loading.value = false // loading 状态关闭
+
+      })
+    }
+
+    // 【新建】调用组件方法===》弹出抽屉+传值
     const Add_Fun = ()=>{
       ADDDATA.title="新建用户"
       ADDDATA.action='user/add'
@@ -238,7 +277,6 @@ export default {
       }
       ADDDATA.open = true;
     }
-    // 【新建】调用组件方法===》弹出抽屉+传值
 
     // 【编辑】调用组件方法===》弹出抽屉+传值
     const Edit_Fun = (data)=>{
@@ -256,98 +294,12 @@ export default {
       }
       ADDDATA.open = true;
     }
-    // 【编辑】调用组件方法===》弹出抽屉+传值
-
-
-
-
-    // 【删除】调用组件方法===》弹出抽屉+传值
-    const DELDATA = reactive({
-      open:false,
-      actian_name:'user/del',// 数据删除模块名称
-      detaile_obj:{}         // 数据删除键值
-    })
 
     // 【删除】调用组件方法===》弹出抽屉+传值
     const Del_Fun = (detaile_data)=>{
-      DELDATA.detaile_obj.user_id = detaile_data.id;
+      DELDATA.detaile_obj.id = detaile_data.id;
       DELDATA.open = true;
     }
-    // 【删除】调用组件方法===》弹出抽屉+传值
-
-
-
-    // 组件挂之后---请求数据
-    // 定义一个函数来处理窗口大小变化 ==
-    const handleResize = () => {
-      innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
-    };
-
-    // 在组件挂载时添加事件监听器
-    onMounted(() => {
-        window.addEventListener('resize', handleResize);
-    });
-
-    // 在组件卸载时移除事件监听器
-    onUnmounted(() => {
-      window.removeEventListener('resize', handleResize);
-    });
-
-    // 列表===查询ok
-    // const page_data = {
-    //   "page":1,
-    //   "page_size":10
-    // }
-    //
-    // store.dispatch('user/list', page_data).then(()=>{
-    //   console.log(store.state.user.message.data_list.colum)
-    // })
-
-
-    // 用户==添加ok
-    // const add_data = {
-    //     "account_type": 0,
-    //     "id": "我12345",
-    //     "v_id": 0,
-    //     "nickname": "小小的天下",
-    //     "pass_word": "123456",
-    //     "brand_name": "meme",
-    //     "mobile": "145480502223",
-    //     "role": "{\"role\":[\"admin\"]}",
-    //     "department_id": 8,
-    //     "department_name": "业务跟单",
-    //     "state": 0
-    //   }
-    // store.dispatch('user/add', add_data).then(()=>{
-    //   console.log(store.state.user.message)
-    // })
-
-
-    // 用户删除==ok
-    // store.dispatch('user/del',{user_id:'ndai@example.com'}).then(()=>{
-    //   console.log(store.state.user.message)
-    // })
-
-
-    // 用户更新==ok
-    // const sete_data = {
-    //   "user_id":"xiaohaha",
-    //   "setting_data":{
-    //     "nickname":"我的昵称"
-    //   },
-    // }
-    // store.dispatch('user/update', sete_data).then(()=>{
-    //   console.log(store.state.user.message)
-    // })
-
-
-    // 用户===批量删除ok
-    // const batch_del_data = {
-    //   "b_id":[319,315,310]
-    // }
-    // store.dispatch('user/bacth_del', batch_del_data).then(()=>{
-    //     console.log(store.state.user.message)
-    // })
 
 
     return {
@@ -368,13 +320,6 @@ export default {
   },
 };
 
-//.ant-table .ant-empty-normal {
-//    max-height: 880px;min-height: 880px;
-//}
-// .ant-table-tbody{
-//   height: calc(100vh - 265px);
-//   min-height: 0px;
-// }
 </script>
 
 <style>

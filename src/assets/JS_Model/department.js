@@ -4,6 +4,7 @@ import * as utils from '@/assets/JS_Model/public_model';
 const API = new utils.A_Patch()
 import axios from "axios";
 
+// 获取所有角色
 export class Role {
 
     // 获取所有部门
@@ -45,7 +46,7 @@ export class Role {
     }
 }
 
-
+// 获取所有部门
 export class Depart {
 
     // 获取当前品牌下所有角色\
@@ -103,9 +104,6 @@ export class Depart {
                 if(c_list.length !== 0){i.children = c_list}
             }
 
-            var shu = this.Table_List.test(data)
-
-
             return onelist
 
         },
@@ -161,6 +159,245 @@ export class Depart {
 
 
     // 【list】当前点击部门
+
+
+}
+
+// 基础模块操作方法
+export class TableOperate{
+
+    message = {
+        url:"",
+        page:1,
+        page_size:10,
+        condition:'None',   // 查询条件
+        colum:{},           // 表头设置
+        data_list:{},       // 列表
+        detaile:{},         // 详情
+        del_state:'',       // 删除结果
+        update_state:'',    // 更新结果
+        add_state:'',       // 添加结果
+        bacth_del:'',       // 批量删除结果
+    }
+
+    actions ={
+
+        // 列表查询
+        list:async ( data, callback )=>{
+
+            try{
+
+                await axios.post(this.message.url,data).then((response)=> {
+
+                    callback(response.data)
+
+                })
+
+            }catch (error){
+
+                console.error('list post request err!',error)
+
+            }
+
+        },
+        // 单条查询
+        get: ( data, callback)=>{
+
+            try{
+
+                let url = this.message.url + data.id
+
+                axios.get(url).then((response)=>{
+
+                    callback(response.data)
+
+                })
+
+            }catch (error){
+
+                console.error('get detaile request err!',error)
+
+            }
+        },
+
+        // 删除
+        del:( data, callback)=>{
+
+            let url = this.message.url + data.id
+
+            try{
+
+                axios.delete(url).then((response)=>{
+
+                    callback(response.data)
+
+                })
+            }catch (error){
+
+                console.error('del detaile request err!',error)
+
+            }
+
+        },
+
+        // 添加
+        add:( data, callback)=>{
+
+            try{
+
+                axios.post(this.message.url, data).then((response)=>{
+
+                    callback(response.data)
+
+                })
+
+            }catch (error){
+
+                console.error('add detaile request err!',error)
+
+            }
+
+        },
+        // 更新
+        update:(data,callback)=>{
+
+            let user_id = data.id
+
+            try{
+
+                let url = this.message.url + user_id
+
+                axios.put(url, data).then((response)=>{
+
+                    callback(response.data)
+
+                })
+
+            }catch (error){
+
+                console.error('put user detaile request err!',error)
+
+            }
+
+        },
+        // 批量删除
+        bacth_del:({ commit },data)=>{
+
+            try{
+
+                axios.put(API.AdminAPI.user.list, data).then((response)=>{
+
+                    commit('bacth_del', response.data)
+
+                })
+
+            }catch (error){
+
+                console.error('bacth del user request err!',error)
+
+            }
+
+        }
+
+    }
+
+    user={
+        // 用户表格添加表头
+        add_colum:(resdata)=>{
+
+            for(let colums of resdata.colum){
+                // 品牌id
+                if(colums.field_name === "b_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 74
+                }
+                // 账号类型
+                if(colums.field_name === "account_type"){
+                  colums['align'] = 'center'
+                  colums['width'] = 90
+                }
+                // 账号名称
+                if(colums.field_name === "id"){
+                  colums['align'] = 'left'
+                  colums['width'] = 180
+                }
+                // 版本id
+                if(colums.field_name === "v_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 74
+                }
+                // 昵称
+                if(colums.field_name === "nickname"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                // 密码
+                if(colums.field_name === "pass_word"){
+                  colums['align'] = 'center'
+                  colums['width'] = 140
+                }
+                // 品牌名称
+                if(colums.field_name === "brand_name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 140
+                }
+                // 手机号码
+                if(colums.field_name == "mobile"){
+                  colums['align'] = 'center'
+                  colums['width'] = 130
+                }
+                // 角色
+                if(colums.field_name === "role"){
+                  colums['align'] = 'center'
+                  colums['width'] = 140
+                }
+                // 部门id
+                if(colums.field_name == "department_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 80
+                }
+                // 部门名称
+                if(colums.field_name == "department_name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 220
+                }
+                // 账号状态
+                if(colums.field_name == "state"){
+                  colums['align'] = 'center'
+                  colums['width'] = 80
+                }
+                // 创建时间
+                if(colums.field_name === "create_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+                // 更新时间
+                if(colums.field_name === "update_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+            }
+
+            var op = {
+
+                  "dataIndex": "state",
+                  "field_name": "state",
+                  "field_type": "int",
+                  "key": "operation",
+                  "title": "操作",
+                  "fixed": 'right',
+                  "align":"center",
+                  "width":100
+            }
+
+            resdata.colum.push(op) // 添加操作按钮
+            this.message.page = resdata.now_page;
+            this.message.page_size = resdata.page_size;
+
+        }
+    }
+
+    ver_colum={}
 
 
 }

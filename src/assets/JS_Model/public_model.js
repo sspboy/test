@@ -72,9 +72,9 @@ export class A_Patch{
         // 品牌信息
         brandinfo:{
             "detaile": "api/setting/brand/",   // [get]+id详情
-
         },
     }
+
     // 应用市场
     AppSrtoreAPI={
 

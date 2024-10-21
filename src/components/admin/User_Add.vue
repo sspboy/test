@@ -105,14 +105,14 @@
 
 
   </a-drawer>
-
 </template>
 
 
 <script>
 import {reactive, ref, defineComponent, computed} from 'vue';
 import { useStore } from 'vuex'
-
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/department';
 
 export default defineComponent({
 
@@ -128,6 +128,9 @@ export default defineComponent({
     }
   },
   setup(props,ctx){
+
+    const API = new utils.A_Patch()// 请求接口
+    const TO = new TABLE.TableOperate()// 表格操作方法
 
     const store = useStore();// 共享数据
     const open = props;// 获取父组件传递的
@@ -279,8 +282,9 @@ export default defineComponent({
 
 
 
-    // 选择版本方法 ===>开始
+    // 选择版本方法 ===> 开始
     const value = ref(undefined);
+
     const filterOption = (input, option) => {
       return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
@@ -292,8 +296,7 @@ export default defineComponent({
     ]);
 
     const handleChange = value => {
-      console.log(value)
-      console.log(formdata)
+
       if(value === "2"){  // 后台管理员
         formdata.value.account_type = "2"
         formdata.value.role = 'administrator'
@@ -326,7 +329,7 @@ export default defineComponent({
       }
     }
 
-        // 【保存方法】获取表单信息
+    // 【保存方法】获取表单信息
     const fun_add=()=>{
 
       // 验证表单的全部值
@@ -334,23 +337,24 @@ export default defineComponent({
 
         loading.value = true;
 
-        console.log(formRef.value)
-        console.log(open.adddata.action)
+        // 新建用户接口
+        TO.message.url = API.AdminAPI.user.add
 
-        // 新建提交
-        store.dispatch(open.adddata.action, formdata.value).then(()=>{
+        TO.actions.add(formdata.value,(res)=>{
 
-          setTimeout(()=>{
+            console.log('新建用户' + res)
 
-            loading.value = false;  // 关闭loading效果
+            setTimeout(()=>{
 
-            open.adddata.open = false;  // 收起抽屉
+              loading.value = false;  // 关闭loading效果
 
-            ctx.emit('add_coallback')   // 回调刷新表格
+              open.adddata.open = false;  // 收起抽屉
 
-            formRef.value.resetFields(); // 重置表单
+              ctx.emit('add_coallback')   // 回调刷新表格
 
-          },1000)
+              formRef.value.resetFields(); // 重置表单
+
+            },2000)
 
         })
 
@@ -370,14 +374,18 @@ export default defineComponent({
 
         const up_date = {
 
-          user_id:open.adddata.data.id,
+          id:open.adddata.data.id,
 
           setting_data:formdata.value
 
         }
 
-        // 新建提交
-        store.dispatch(open.adddata.action, up_date).then(()=>{
+        // 编辑用户接口
+        TO.message.url = API.AdminAPI.user.edit
+
+        TO.actions.update(up_date,(res)=>{
+
+          console.log('编辑用户' + res)
 
           setTimeout(()=>{
 
@@ -392,6 +400,7 @@ export default defineComponent({
           },2000)
 
         })
+
 
       }).catch(error => {
 
