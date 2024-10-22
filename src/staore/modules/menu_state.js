@@ -71,7 +71,7 @@ const mutations = {
             // 功能字符
             if(colums.field_name === "field"){
               colums['align'] = 'center'
-              colums['width'] = 100
+              colums['width'] = 140
             }
             // 权限配置
             if(colums.field_name === "function_info"){

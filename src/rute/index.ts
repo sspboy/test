@@ -68,6 +68,22 @@ const routes = [
 
     },
     {
+        path: '/douyinorder',
+        name: 'douyinorder',
+        component: () => import('../views/admin/DouyinOrderView.vue'),    // 视图文件
+        meta:{
+            title:'服务订单',
+        }
+    },
+    {
+        path: '/shopinfo',
+        name: 'shopinfo',
+        component: () => import('../views/admin/DouyinShopView.vue'),    // 视图文件
+        meta:{
+            title:'店铺信息',
+        }
+    },
+    {
         path: '/department',
         name: 'department',
         component: () => import('../views/BasicSetting/Department.vue'),    // 视图文件
@@ -98,6 +114,30 @@ const routes = [
         component: () => import('../views/BasicSetting/BrandInf.vue'),    // 视图文件
         meta:{
             title:'品牌资料',
+        }
+    },
+    {
+        path: '/douyinproductlist',
+        name: 'douyinproductlist',
+        component: () => import('../views/AppMarket/DouyinShop/ProductList.vue'),    // 视图文件
+        meta:{
+            title:'商品列表',
+        }
+    },
+    {
+        path: '/copyrecords',
+        name: 'copyrecords',
+        component: () => import('../views/AppMarket/DouyinShop/CopyRecords.vue'),    // 视图文件
+        meta:{
+            title:'复制记录',
+        }
+    },
+    {
+        path: '/uploadrecords',
+        name: 'uploadrecords',
+        component: () => import('../views/AppMarket/DouyinShop/UploadRecords.vue'),    // 视图文件
+        meta:{
+            title:'上传记录',
         }
     },
     {   // 404 报错页面

@@ -163,6 +163,40 @@ export class Depart {
 
 }
 
+export class Version {
+
+    all_ = {
+
+        // 获取当前所有的版本
+        get_all_ver:async (callback)=>{
+            var data = {}
+            data.page = 1
+            data.page_size = 1000
+            data.condition = [
+                {
+                    type: "orderby",
+                    condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+                }
+            ]
+
+            try{
+
+                await axios.post(API.AdminAPI.version.list, data).then((response)=> {
+
+                    callback(response.data)
+
+                })
+
+            }catch (error){
+
+                console.error('team list post request err!',error)
+
+            }
+
+        }
+    }
+}
+
 // 基础模块操作方法
 export class TableOperate{
 
@@ -397,7 +431,7 @@ export class TableOperate{
         }
     }
 
-    ver_colum={}
+    ver={}
 
 
 }

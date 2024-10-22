@@ -50,8 +50,7 @@
           <a-col :span="12">
             <a-form-item label="账号类型" name="account_type">
                 <a-select v-model:value="formdata.account_type" placeholder="账号类型" class="font_size_12" disabled>
-                  <a-select-option value="0">主会员</a-select-option>
-                  <a-select-option value="1">子账号</a-select-option>
+                  <a-select-option value="0">主账号</a-select-option>
                   <a-select-option value="2">后台管理员</a-select-option>
                 </a-select>
             </a-form-item>
@@ -110,7 +109,6 @@
 
 <script>
 import {reactive, ref, defineComponent, computed} from 'vue';
-import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
 import * as TABLE from '@/assets/JS_Model/department';
 
@@ -131,8 +129,7 @@ export default defineComponent({
 
     const API = new utils.A_Patch()// 请求接口
     const TO = new TABLE.TableOperate()// 表格操作方法
-
-    const store = useStore();// 共享数据
+    const VER = new TABLE.Version()// 版本方法
     const open = props;// 获取父组件传递的
     const formRef = ref() // 表单验证数据绑定ref
 
@@ -289,20 +286,27 @@ export default defineComponent({
       return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
 
-    const options = ref([
-      {value: "0", label: '个人版'},
-      {value: "1", label: '企业版'},
-      {value: "2", label: '管理后台'},
-    ]);
+
+    const options = ref([]);
+
+    // 请求所有版本
+    VER.all_.get_all_ver((res)=>{
+      for(let i of res.data){
+        var v_obj = {}
+        v_obj.value = i.id.toString()
+        v_obj.label = i.version_name
+        options.value.push(v_obj)
+      }
+    })
 
     const handleChange = value => {
 
-      if(value === "2"){  // 后台管理员
+      if(value === "1"){  // 后台管理员
         formdata.value.account_type = "2"
-        formdata.value.role = 'administrator'
-      }else {
+        formdata.value.role = 'admin'
+      }else { // 品牌主账号
         formdata.value.account_type = "0"
-        formdata.value.role = 'superadmin'
+        formdata.value.role = 'admin'
       }
 
     };
