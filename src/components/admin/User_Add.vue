@@ -253,10 +253,15 @@ export default defineComponent({
         trigger: 'change'
         },
       ],
+      v_id: [{
+        required: true,
+        message: '不能为空',
+        },
+      ],
       pass_word: [{
         required: true,
         message: '不能为空',
-      },
+        },
       ],
       brand_name: [{
         required: true,

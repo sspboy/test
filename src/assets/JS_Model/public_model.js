@@ -3,9 +3,18 @@ import axios from "axios";
 
 // 接口请求地址配置
 export class A_Patch{
+    
+    // 登录
+    LoginAPI={
+        url:{
+            "login":"api/login",            // 登录
+            "loginout":"api/login/out"      // 登出
+        }
+    }
 
     // 管理后台
     AdminAPI={
+
         // 用户管理
         user: {
             "list": "api/admin/user/list",  // [post]列表// [put]data 批量删除

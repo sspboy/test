@@ -126,10 +126,9 @@ export default {
   setup() {
 
     // 数据绑定=======================================>开始
-    const API = new utils.A_Patch()// 请求接口
-    const TO = new TABLE.TableOperate()// 表格操作方法
-
-    const store = useStore();// 共享数据
+    const API = new utils.A_Patch()           // 请求接口
+    const TO = new TABLE.TableOperate()       // 表格操作方法
+    const store = useStore();                 // 共享数据
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)// 初始化loading状态
 

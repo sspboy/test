@@ -92,7 +92,8 @@ axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为�
 import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
 import {MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from "@ant-design/icons-vue";
 import { useStore } from 'vuex'
-
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/department';
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
@@ -117,9 +118,12 @@ export default {
   },
   setup() {
 
-    const store = useStore();// 共享数据
+  // 【数据绑定】=======================================>开始
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
+    const store = useStore();             // 共享数据
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
-    const loading = ref(true)// 初始化loading状态
+    const loading = ref(true)             // 初始化loading状态
 
     // 页面获取数据
     const PAGEDATA = reactive({
@@ -142,7 +146,17 @@ export default {
       open:false,
 
     })
+  
+    // 【删除】数据初始化
+    const DELDATA = reactive({
+      open:false,
+      actian_name:API.AdminAPI.menu.delete,// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
 
+    // 【数据绑定】=======================================>结束
+
+    // 【新建】
     const Add_fun = ()=>{
       ADDDATA.title = '添加菜单';
       ADDDATA.action = 'menu/add';
@@ -156,6 +170,7 @@ export default {
       ADDDATA.open = true;
     }
 
+    // 【编辑】
     const Edit_fun = (data)=>{
       ADDDATA.title = '编辑菜单';
       ADDDATA.action = 'menu/update';
@@ -170,26 +185,18 @@ export default {
       ADDDATA.open = true;
     }
 
-
-    // 【删除】数据初始化
-    const DELDATA = reactive({
-      open:false,
-      actian_name:'menu/del',// 数据删除模块名称
-      detaile_obj:{}         // 数据删除键值
-    })
-
-
-    // 【删除】调用组件方法===》弹出抽屉+传值
+    // 【删除】
     const Del_fun = (detaile_data)=>{
-      DELDATA.detaile_obj.m_id = detaile_data.id;
+      DELDATA.detaile_obj.id = detaile_data.id;
       DELDATA.open = true;
     }
 
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
+      store.dispatch('member/get')
       let message = {"page":1, "page_size":100}
-      Refresh_table(message) // 【页面初始化】&&刷新表格
+      Get_list(message)      // 请求列表
     })
 
     // 组件挂之后---请求数据
@@ -214,30 +221,15 @@ export default {
     // 接收来自子组件发送的数据=回调方法
     const receive = (message)=>{
       loading.value = true    // 开启loading状态
-      Refresh_table(message) // 刷新表格
+      Get_list(message)       // 请求列表
     }
 
     //【当前页面】&&刷新表格
     const pagecallback =()=>{
       let message = {}
-      message.page = store.state.menu.message.page;
-      message.page_size = store.state.menu.message.page_size;
-      receive(message)
-    }
-
-    // 刷新表格
-    const Refresh_table = (message)=>{
-      store.dispatch('menu/list', message).then(()=>{
-        PAGEDATA.colum = store.state.menu.message.data_list.colum
-        PAGEDATA.user_data = store.state.menu.message.user_data
-        PAGEDATA.datalist = store.state.menu.message.data_list.data
-        PAGEDATA.total_number = store.state.menu.message.data_list.total_number
-
-        loading.value = false // loading 状态关闭
-      })
-
-      store.dispatch('member/get')
-
+      message.page = TO.message.page;
+      message.page_size = TO.message.page_size;
+      Get_list(message) // 请求列表
     }
 
 
@@ -254,63 +246,27 @@ export default {
       },
     });
 
-    // 菜单详情查询===ok
-    // store.dispatch('menu/get',{m_id:'31'}).then(()=>{
-    //   console.log(store.state.menu)  // 页面赋值
-    // })
 
-    // 菜单列表查询==ok
-    // const page_data = {
-    //   "page":1,
-    //   "page_size":10
-    // }
-    // store.dispatch('menu/list', page_data).then(()=>{
-    //   console.log(store.state.menu.message)
-    // })
+    // 【刷新表格】
+    const Get_list = (message) =>{
 
+      // 请求接口地址赋值
+      TO.message.url = API.AdminAPI.menu.list
 
-    // 菜单新增===ok
-    // const add_data = {
-		// 	"parent_id": 0,
-		// 	"ico_name": null,
-		// 	"name": "新增测试",
-		// 	"field": "ADD",
-		// 	"function_info": "{}",
-		// }
-    // store.dispatch('menu/add_menu', add_data).then(()=>{
-    //   console.log(store.state.menu.message)
-    // })
+      TO.actions.list(message,(res)=>{
 
+        TO.menu.add_colum(res)        // 添加表头
 
-    // 菜单删除===ok
-    // store.dispatch('menu/del_menu',{m_id:54}).then(()=>{
-    //   console.log(store.state.menu.message)
-    // })
+        // 页面赋值
+        // console.log(res)
+        PAGEDATA.colum = res.colum
+        PAGEDATA.datalist = res.data
+        PAGEDATA.total_number =res.total_number
 
+        loading.value = false // loading 状态关闭
 
-    // 菜单更新
-    // const update_data = {
-    //   "setting_data":{"name":"系统设置1"}
-    // }
-    // store.dispatch('menu/update_menu', update_data).then(()=>{
-    //   console.log(store.state.menu.message)
-    // })
-
-
-    // 菜单批量删除===ok
-    // const batch_del_data = {
-    //   "id":[55,56,57]
-    // }
-    // store.dispatch('menu/bacth_del', batch_del_data).then(()=>{
-    //     console.log(store.state.user.message)
-    // })
-
-
-
-
-
-
-
+      })
+    }
 
     return {
       store,

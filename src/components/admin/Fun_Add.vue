@@ -59,13 +59,13 @@
 
 <script>
 import {defineComponent, reactive, ref, computed } from 'vue';
-import { useStore } from 'vuex'
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/department';
 
 export default defineComponent({
   name: "Fun_Add",  // 功能添加
   components: {  // 引用组件
-
-  },
+},
 
   // 父组件数据
   props: {
@@ -74,11 +74,9 @@ export default defineComponent({
 
   // 组合API返回到模版
   setup(props, ctx) {
-
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
     const open = props;
-
-    const store = useStore();// 共享数据
-
     const formRef = ref()
 
     const formdata = computed(()=>{
@@ -136,10 +134,10 @@ export default defineComponent({
       formRef.value.validate().then(() => {
 
         loading.value = true;
-        console.log(open.adddata.action)
-        console.log(formdata.value)
 
-        store.dispatch(open.adddata.action, formdata.value).then(()=>{
+        TO.message.url = API.AdminAPI.function.add
+
+        TO.actions.add(formdata.value,(res)=>{
 
           setTimeout(()=>{
 
@@ -151,7 +149,9 @@ export default defineComponent({
 
             formRef.value.resetFields(); // 重置表单
 
-          },1000)
+            },1000)
+
+        })
 
         }).catch(error => {
 
@@ -159,7 +159,6 @@ export default defineComponent({
 
         });
 
-      })
 
     }
 
@@ -178,8 +177,11 @@ export default defineComponent({
 
         }
 
-        store.dispatch(open.adddata.action, up_date).then(()=>{
+        // 编辑用户接口
+        TO.message.url = API.AdminAPI.function.edit
 
+        TO.actions.update(up_date,(res)=>{
+          
           setTimeout(()=>{
 
             loading.value = false;  // 关闭loading效果
@@ -190,15 +192,15 @@ export default defineComponent({
 
             formRef.value.resetFields(); // 重置表单
 
-          },1000)
+            },1000)
+
+        })
 
         }).catch(error => {
 
           console.log('error', error);
 
         });
-
-      })
 
     }
 

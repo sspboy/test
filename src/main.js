@@ -33,11 +33,3 @@ app.use(store)  // 初始化Vuex 数据状态共享
 app.use(Antd)   // 加载ant design UI框架
 app.use(router)
 app.mount('#app');
-
-
-
-// 登录
-// 菜单
-// 表格
-// 翻页
-// 查询

@@ -133,7 +133,8 @@
 <script>
 import {defineComponent, reactive, ref, computed} from 'vue';
 import { useStore } from 'vuex'
-
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/department';
 export default defineComponent({
   // 模版名称
   name: "Role_Add",
@@ -146,6 +147,8 @@ export default defineComponent({
   // 组合API返回到模版
   setup(props,ctx) {
 
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
     const open = props;
 
     const store = useStore();// 共享数据
@@ -311,10 +314,6 @@ export default defineComponent({
     // 视图权限&功能权限设置====结束
 
 
-
-
-
-
     // 提交数据
     const from_submit = ()=>{
       // 新建提交
@@ -339,11 +338,13 @@ export default defineComponent({
 
         // 获取权限表单
         var pre = get_checked_res()
+
         formdata.value.view_permissions = JSON.stringify(pre.view_permissions)
         formdata.value.fun_permissions = JSON.stringify(pre.fun_permissions)
 
+        TO.message.url = API.BasicsAPI.role.add
 
-        store.dispatch(open.adddata.action, formdata.value).then(()=>{
+        TO.actions.add(formdata.value,(res)=>{
 
           setTimeout(()=>{
 
@@ -357,7 +358,10 @@ export default defineComponent({
 
             resh_checked() // 重置权限表单
 
-          },1000)
+
+            },1000)
+
+        })
 
         }).catch(error => {
 
@@ -365,7 +369,6 @@ export default defineComponent({
 
         });
 
-      })
 
     }
 
@@ -389,8 +392,11 @@ export default defineComponent({
 
         }
 
-        store.dispatch(open.adddata.action, up_date).then(()=>{
+        // 编辑用户接口
+        TO.message.url = API.BasicsAPI.role.edit
 
+        TO.actions.update(up_date,(res)=>{
+          
           setTimeout(()=>{
 
             loading.value = false;  // 关闭loading效果
@@ -403,7 +409,11 @@ export default defineComponent({
 
             resh_checked()// 重置权限表单
 
-          },1000)
+
+            },1000)
+
+        })
+
 
         }).catch(error => {
 
@@ -411,7 +421,6 @@ export default defineComponent({
 
         });
 
-      })
 
     }
 

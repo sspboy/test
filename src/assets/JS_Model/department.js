@@ -136,9 +136,9 @@ export class Depart {
                         var rlist = ArrayToTree(arr, item.id)
 
                         if(rlist.length != 0){
-                            newArr.push({...item, children: ArrayToTree(arr, item.id), "key":item.id})
+                            newArr.push({...item, children: ArrayToTree(arr, item.id), "key":item.id, "value":item.id.toString(), "label":item.name})
                         }else {
-                            newArr.push({...item, "key":item.id})
+                            newArr.push({...item, "key":item.id, "value":item.id.toString(), "label":item.name})
                         }
 
                     }
@@ -153,8 +153,6 @@ export class Depart {
             return res
 
         }
-
-
     }
 
 
@@ -334,7 +332,7 @@ export class TableOperate{
         }
 
     }
-
+    // 用户表头
     user={
         // 用户表格添加表头
         add_colum:(resdata)=>{
@@ -430,8 +428,429 @@ export class TableOperate{
 
         }
     }
+    // 功能表头
+    fun={
+        add_colum:(resdata)=>{
+            for(let colums of resdata.colum){
+                // id
+                if(colums.field_name === "id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 74
+                }
+                // 关联菜单id
+                if(colums.field_name === "m_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 90
+                }
+                // 菜单名称
+                if(colums.field_name === "m_name"){
+                  colums['align'] = 'left'
+                  colums['width'] = 120
+                }
+                // 功能名称
+                if(colums.field_name === "name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 140
+                }
+                // 函数名称
+                if(colums.field_name === "def_name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 174
+                }
+                // 描述
+                if(colums.field_name === "miaoshu"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                // 创建时间
+                if(colums.field_name === "create_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+                // 更新时间
+                if(colums.field_name === "update_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+            }
+    
+            var op = {
+    
+                  "dataIndex": "state",
+                  "field_name": "state",
+                  "field_type": "int",
+                  "key": "operation",
+                  "title": "操作",
+                  "fixed": 'right',
+                  "align":"center",
+                  "width":100
+            }
+    
+            resdata.colum.push(op) // 添加操作按钮
+            this.message.page = resdata.now_page;
+            this.message.page_size = resdata.page_size;
+        }
+    }
+    // 菜单表头
+    menu={
+        add_colum:(resdata)=>{
+            
+            var D = new Depart()
 
-    ver={}
+            var neirong_list = D.Table_List.get_tree(resdata.data)
 
+            resdata.data = neirong_list
+
+            for(let colums of resdata.colum){
+                // 菜单id
+                if(colums.field_name === "id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 174
+                }
+                // 菜单父id
+                if(colums.field_name === "parent_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 90
+                }
+                // 图片名称
+                if(colums.field_name === "ico_name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 160
+                }
+                // 菜单名称
+                if(colums.field_name === "name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 174
+                }
+                // 功能字符
+                if(colums.field_name === "field"){
+                  colums['align'] = 'center'
+                  colums['width'] = 140
+                }
+                // 权限配置
+                if(colums.field_name === "function_info"){
+                  colums['align'] = 'left'
+                  colums['width'] = 240
+                }
+                // 创建时间
+                if(colums.field_name === "create_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+                // 更新时间
+                if(colums.field_name === "update_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+            }
+    
+            var op = {
+    
+                  "dataIndex": "state",
+                  "field_name": "state",
+                  "field_type": "int",
+                  "key": "operation",
+                  "title": "操作",
+                  "fixed": 'right',
+                  "align":"center",
+                  "width":100
+            }
+    
+            resdata.colum.push(op) // 添加操作按钮
+            this.message.page = 1
+            this.message.page_size = 100
+        }
+    }
+    // 版本表头
+    version = {
+        add_colum:(resdata)=>{
+            for(let colums of resdata.colum){
+                // id
+                if(colums.field_name === "id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 74
+                }
+                // 关联菜单id
+                if(colums.field_name === "m_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 90
+                }
+                // 菜单名称
+                if(colums.field_name === "m_name"){
+                  colums['align'] = 'left'
+                  colums['width'] = 120
+                }
+                // 功能名称
+                if(colums.field_name === "name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 140
+                }
+                // 函数名称
+                if(colums.field_name === "def_name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 174
+                }
+                // 描述
+                if(colums.field_name === "miaoshu"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                // 创建时间
+                if(colums.field_name === "create_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+                // 更新时间
+                if(colums.field_name === "update_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+            }
+    
+            var op = {
+    
+                  "dataIndex": "state",
+                  "field_name": "state",
+                  "field_type": "int",
+                  "key": "operation",
+                  "title": "操作",
+                  "fixed": 'right',
+                  "align":"center",
+                  "width":100
+            }
+    
+            resdata.colum.push(op) // 添加操作按钮
+            this.message.page = resdata.now_page;
+            this.message.page_size = resdata.page_size;
+        }
+    }
+    // 角色表头
+    role = {
+        add_colum:(resdata)=>{
+
+            for(let colums of resdata.colum){
+                // 账号名称
+                if(colums.field_name === "id"){
+                  colums['align'] = 'left'
+                  colums['width'] = 40
+                }
+                // 品牌id
+                if(colums.field_name === "b_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 74
+                }
+                // 账号类型
+                if(colums.field_name === "role_name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 90
+                }
+    
+                // 版本id
+                if(colums.field_name === "role_info"){
+                  colums['align'] = 'center'
+                  colums['width'] = 74
+                }
+                // 昵称
+                if(colums.field_name === "role_state"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                // 视图权限
+                if(colums.field_name === "view_permissions"){
+                  colums['align'] = 'left'
+                  colums['width'] = 80
+                }
+                // 数据权限
+                if(colums.field_name === "data_permissions"){
+                  colums['align'] = 'center'
+                  colums['width'] = 80
+                }
+                // 功能权限
+                if(colums.field_name === "fun_permissions"){
+                  colums['align'] = 'left'
+                  colums['width'] = 80
+                }
+                // 创建时间
+                if(colums.field_name === "create_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 80
+                }
+                // 更新时间
+                if(colums.field_name === "update_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 80
+                }
+            }
+    
+            var op = {
+    
+                  "dataIndex": "state",
+                  "field_name": "state",
+                  "field_type": "int",
+                  "key": "operation",
+                  "title": "操作",
+                  "fixed": 'right',
+                  "align":"center",
+                  "width":100
+            }
+    
+            resdata.colum.push(op) // 添加操作按钮
+            this.message.page = resdata.now_page;
+            this.message.page_size = resdata.page_size;
+        }
+    }
+    // 部门表头
+    department = {
+        add_colum:(resdata)=>{
+
+            var D = new Depart()
+
+            var neirong_list = D.Table_List.get_tree(resdata.data)
+
+            resdata.data = neirong_list
+
+            for(let colums of resdata.colum){
+
+                // 账号名称
+                if(colums.field_name === "id"){
+                    colums['align'] = 'center'
+                    colums['width'] = 80
+                }
+
+                // 品牌id
+                if(colums.field_name === "b_id"){
+                    colums['align'] = 'center'
+                    colums['width'] = 40
+                }
+
+                // 部门名称
+                if(colums.field_name === "name"){
+                    colums['align'] = 'center'
+                    colums['width'] = 40
+                }
+
+                // 父部门
+                if(colums.field_name === "parent_id"){
+                    colums['align'] = 'center'
+                    colums['width'] = 40
+                }
+                // 昵称
+                if(colums.field_name === "in_number"){
+                    colums['align'] = 'center'
+                    colums['width'] = 100
+                }
+                // 创建时间
+                if(colums.field_name === "create_time"){
+                    colums['align'] = 'center'
+                    colums['width'] = 80
+                }
+                // 更新时间
+                if(colums.field_name === "update_time"){
+                    colums['align'] = 'center'
+                    colums['width'] = 80
+                }
+            }
+
+            var op = {
+                "dataIndex": "state",
+                "field_name": "state",
+                "field_type": "int",
+                "key": "operation",
+                "title": "操作",
+                "fixed": 'right',
+                "align":"center",
+                "width":40
+            }
+
+            resdata.colum.push(op) // 添加操作按钮
+            this.message.page = resdata.now_page;
+            this.message.page_size = resdata.page_size;
+        }
+    }
+    // 团队表头
+    team = {
+        add_colum:(resdata)=>{
+            for(let colums of resdata.colum){
+                // 账号名称
+                if(colums.field_name === "id"){
+                  colums['align'] = 'left'
+                  colums['width'] = 40
+                }
+                // 品牌id
+                if(colums.field_name === "name"){
+                  colums['align'] = 'left'
+                  colums['width'] = 174
+                }
+    
+                // 部门名称
+                if(colums.field_name === "b_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 90
+                }
+    
+                // 父部门
+                if(colums.field_name === "nickname"){
+                  colums['align'] = 'center'
+                  colums['width'] = 74
+                }
+                // 昵称
+                if(colums.field_name === "mobile"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                            // 昵称
+                if(colums.field_name === "password"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                            // 昵称
+                if(colums.field_name === "state"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                                        // 昵称
+                if(colums.field_name === "role"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                                        // 昵称
+                if(colums.field_name === "department_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                                                    // 昵称
+                if(colums.field_name === "department_name"){
+                  colums['align'] = 'center'
+                  colums['width'] = 100
+                }
+                // 创建时间
+                if(colums.field_name === "create_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+                // 更新时间
+                if(colums.field_name === "update_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+            }
+    
+            var op = {
+    
+                  "dataIndex": "state",
+                  "field_name": "state",
+                  "field_type": "int",
+                  "key": "operation",
+                  "title": "操作",
+                  "fixed": 'right',
+                  "align":"center",
+                  "width":100
+            }
+    
+            resdata.colum.push(op) // 添加操作按钮
+            this.message.page = resdata.now_page;
+            this.message.page_size = resdata.page_size;
+        }
+    }
 
 }

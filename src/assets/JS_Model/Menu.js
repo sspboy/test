@@ -6,6 +6,7 @@ import {CodeOutlined, SettingOutlined,
   BarsOutlined,
   AccountBookOutlined,
     ShopOutlined,
+    HomeOutlined
 } from "@ant-design/icons-vue";
 
 export class Menu {
@@ -80,7 +81,7 @@ export class Menu {
                 'BarsOutlined':() => h(BarsOutlined),
                 'AccountBookOutlined':() => h(AccountBookOutlined),
                 'ShopOutlined':() => h(ShopOutlined),
-
+                'HomeOutlined':() => h(HomeOutlined),
             }
         }
 

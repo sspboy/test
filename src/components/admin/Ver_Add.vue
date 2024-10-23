@@ -91,8 +91,9 @@
 
 <script>
 import {defineComponent, reactive, ref, computed} from 'vue';
-import {useStore} from "vuex";
 import { TreeSelect } from 'ant-design-vue';
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/department';
 
 export default defineComponent({
   // 菜单添加
@@ -108,27 +109,22 @@ export default defineComponent({
   // 组合API返回到模版
   setup(props, ctx) {
 
-    const store = useStore();// 共享数据
-
-    const open = props;// 获取父组件传递的
-
-    const formRef = ref() // 表单验证数据绑定ref
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
+    const open = props;                   // 获取父组件传递的
+    const formRef = ref()                 // 表单验证数据绑定ref
 
     // 表单数据绑定
     const formdata = computed(()=>{
       return reactive({
-
         version_number:open.adddata.data.version_number,
         version_name:open.adddata.data.version_name,
         menu_setting:open.adddata.data.menu_setting,
         price:open.adddata.data.price,
         sub_account_number:open.adddata.data.sub_account_number,
         duration:open.adddata.data.duration,
-
       })
-
     })
-
 
 
     // 按钮等待效果
@@ -178,45 +174,21 @@ export default defineComponent({
 
     // 树状菜单回填方法SHOW_ALL=全部节点回填（含父节点）；SHOW_PARENT=只回填父节点
     const SHOW_PARENT = TreeSelect.SHOW_ALL;
+    
     // 关联菜单树状数据
-    const treeData = computed(()=>{
-      return reactive(store.state.menu.message.data_list.data)
-    })
+    const treeData = reactive([])
+
     // 关联菜单数据初始化
     let message = {"page":1, "page_size":100}
-    store.dispatch('menu/list', message)
 
-    // const treeData = [
-    //   {
-    //     label: 'Node1',
-    //     value: '0-0',
-    //     children: [
-    //       {
-    //         label: 'Child Node1',
-    //         value: '0-0-0',
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     label: 'Node2',
-    //     value: '0-1',
-    //     children: [
-    //       {
-    //         label: 'Child Node3',
-    //         value: '0-1-0',
-    //         disabled: true,
-    //       },
-    //       {
-    //         label: 'Child Node4',
-    //         value: '0-1-1',
-    //       },
-    //       {
-    //         label: 'Child Node5',
-    //         value: '0-1-2',
-    //       },
-    //     ],
-    //   },
-    // ];
+    // 请求接口地址赋值
+    TO.message.url = API.AdminAPI.menu.list
+    TO.actions.list(message,(res)=>{
+      TO.menu.add_colum(res)        // 添加表头
+      for(let i of res.data){
+        treeData.push(i)
+      }
+    })
 
 
     // 提交数据
@@ -233,6 +205,7 @@ export default defineComponent({
       }
     }
 
+
     // 添加数据方法
     const fun_add_ = () => {
 
@@ -240,9 +213,9 @@ export default defineComponent({
 
         loading.value = true;
 
-        // console.log(formdata.value)
+        TO.message.url = API.AdminAPI.version.add
 
-        store.dispatch(open.adddata.action, formdata.value).then(()=>{
+        TO.actions.add(formdata.value,(res)=>{
 
           setTimeout(()=>{
 
@@ -254,7 +227,9 @@ export default defineComponent({
 
             formRef.value.resetFields(); // 重置表单
 
-          },1000)
+            },1000)
+
+        })
 
         }).catch(error => {
 
@@ -262,9 +237,8 @@ export default defineComponent({
 
         });
 
-      })
-
     }
+
 
     // 更新数据方法
     const fun_update=()=>{
@@ -280,14 +254,15 @@ export default defineComponent({
           setting_data:formdata.value
 
         }
-        console.log(
-            up_date
-        )
-        store.dispatch(open.adddata.action, up_date).then(()=>{
 
+        // 编辑用户接口
+        TO.message.url = API.AdminAPI.version.edit
+
+        TO.actions.update(up_date,(res)=>{
+          
           setTimeout(()=>{
 
-            loading.value = false;  // 关闭loading效果
+            loading.value = false;      // 关闭loading效果
 
             open.adddata.open = false;  // 收起抽屉
 
@@ -295,7 +270,9 @@ export default defineComponent({
 
             formRef.value.resetFields(); // 重置表单
 
-          },1000)
+            },1000)
+
+        })
 
         }).catch(error => {
 
@@ -303,16 +280,11 @@ export default defineComponent({
 
         });
 
-      })
-
     }
-
-
 
 
     return {
       open,
-      store,
       treeData,
       formdata,
       formRef,
@@ -321,7 +293,6 @@ export default defineComponent({
       SHOW_PARENT,
       from_submit,
       loading
-
     }
   }
 
