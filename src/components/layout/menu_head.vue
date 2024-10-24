@@ -39,8 +39,8 @@ export default defineComponent({
   setup(props){
     const API = new utils.A_Patch()// 请求接口
     const router = useRouter(); // 初始化路由方法
-
     const store = useStore();// 共享数据
+    store.dispatch('member/get')
     const user_data = computed(()=>{
       return store.state.member.message.user_data
     })

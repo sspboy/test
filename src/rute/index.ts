@@ -5,7 +5,14 @@ import NotPermissions from '../views/otherRes/NotPermissions.vue'
 import NotLoginPermissions from '../views/otherRes/NotLoginPermissions.vue'
 
 const routes = [
-
+    {
+        path: '/home',
+        name: 'HomeView',
+        component: () => import('../views/HomeView.vue'),   // 视图文件
+        meta:{
+            title:'主页',
+        }
+    },
     {
         path: '/',
         name: 'Login',

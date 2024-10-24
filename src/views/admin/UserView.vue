@@ -168,9 +168,6 @@ export default {
     // 【组件挂载】========================================开始
     onBeforeMount(()=>{
 
-      // 【登录用户信息】请求登录用户会员信息
-      store.dispatch('member/get')
-
       // 默认查询条件
       let message = {
 

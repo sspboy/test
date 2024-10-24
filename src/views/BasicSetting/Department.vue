@@ -87,7 +87,8 @@
 import {defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref} from 'vue';
 import { useStore } from 'vuex'
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
-
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/department';
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
@@ -117,17 +118,41 @@ export default defineComponent({
 
   // 组合API返回到模版
   setup() {
-
+    // 【数据绑定】=======================================>开始
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
     const store = useStore();// 共享数据
-
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
-
     const loading = ref(true)// 初始化【子账号】表格loading状态
+
+    // 子账号管理======>开始
+    const PAGEDATA = reactive({
+          title:'组织架构',
+          menudata:{'key':'33','openKeys':'sub0'},            // 菜单选中配置
+          colum:[],           // 表头信息
+          datalist:[],        // 列表信息
+          total_number:0,     // 总页数
+        })
+
+    // 【删除】子账号数据初始化
+    const DELDATA = reactive({
+      open:false,
+      actian_name:API.BasicsAPI.department.delete,// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
+
+    // 新增、编辑数据 初始化
+    const ADDDATA= reactive({
+      title:"",
+      actian:'',// 数据删除模块名称
+      open:false,
+    })
+    // 【数据绑定】=======================================>结束
+
+
 
     // 页面初始化信息 === 组件挂在之前---请求数据
     onBeforeMount(()=>{
-
-      store.dispatch('member/get')// 用户权限
 
       // 默认查询条件
       let message = {
@@ -138,35 +163,18 @@ export default defineComponent({
           condition: [{'column_name': 'create_time', 'value': 'DESC', }]
         }]}
 
-      Refresh_table(message) // 【页面初始化】&&刷新表格
+        Get_list(message) // 【页面初始化】&&刷新表格
 
     })
 
     //【当前页面表格】&&刷新表格
     const pagecallback =()=>{
       let message = {}
-      message.page = store.state.team.message.page;
+      message.page = 1;
       message.page_size = 1000;
       receive(message)
     }
 
-    // 刷新表格数据方法
-    const Refresh_table = (message)=>{
-
-      store.dispatch('department/list', message).then(()=>{
-
-        // 列表结果不为空
-        if(store.state.department.message.data_list !== undefined){
-          PAGEDATA.colum = store.state.department.message.data_list.colum
-          PAGEDATA.datalist = store.state.department.message.data_list.data
-          PAGEDATA.total_number = store.state.department.message.data_list.total_number
-        }
-
-        loading.value = false // loading 状态关闭
-
-      })
-
-    }
 
     // [翻页组件点击后]&&刷新表格
     const receive = (message)=>{
@@ -178,7 +186,7 @@ export default defineComponent({
           condition: [{'column_name': 'create_time', 'value': 'DESC', }]
         }]
 
-      Refresh_table(message) // 刷新表格
+      Get_list(message) // 刷新表格
 
     }
 
@@ -199,30 +207,9 @@ export default defineComponent({
     });
 
 
-    // 子账号管理======>开始
-    const PAGEDATA = reactive({
-      title:'组织架构',
-      menudata:{'key':'33','openKeys':'sub0'},            // 菜单选中配置
-      colum:[],           // 表头信息
-      datalist:[],        // 列表信息
-      total_number:0,     // 总页数
-    })
+    
 
-    // 【删除】子账号数据初始化
-    const DELDATA = reactive({
-      open:false,
-      actian_name:'department/del',// 数据删除模块名称
-      detaile_obj:{}         // 数据删除键值
-    })
-
-    // 新增、编辑数据 初始化
-    const ADDDATA= reactive({
-      title:"",
-      actian:'',// 数据删除模块名称
-      open:false,
-    })
-
-    // 添加部门
+    // 【添加部门】
     const Add_fun=()=>{
       ADDDATA.title="添加部门"
       ADDDATA.action='department/add'
@@ -234,7 +221,7 @@ export default defineComponent({
       ADDDATA.open = true;
     }
 
-    // 编辑部门
+    // 【编辑部门】
     const Edit_Fun=(data)=>{
       ADDDATA.title="编辑部门"
       ADDDATA.action='department/update'
@@ -247,7 +234,7 @@ export default defineComponent({
       ADDDATA.open = true;
     }
 
-    // 删除部门
+    // 【删除部门】
     const Del_Fun = (detaile_data)=>{
       DELDATA.detaile_obj.id = detaile_data.id;
       DELDATA.open = true;
@@ -265,6 +252,29 @@ export default defineComponent({
         console.log(selected, selectedRows, changeRows);
       },
     });
+
+
+  // 【刷新表格】
+  const Get_list = (message) =>{
+
+    // 请求接口地址赋值
+    TO.message.url = API.BasicsAPI.department.list
+
+    TO.actions.list(message,(res)=>{
+
+      TO.department.add_colum(res)        // 添加表头
+
+      // 页面赋值
+      // console.log(res)
+      PAGEDATA.colum = res.colum
+      PAGEDATA.datalist = res.data
+      PAGEDATA.total_number =res.total_number
+
+      loading.value = false // loading 状态关闭
+
+    })
+  }
+
 
 
     return {

@@ -853,4 +853,290 @@ export class TableOperate{
         }
     }
 
+    // 抖音订单表头
+    douyinorder = {
+        add_colum:(resdata)=>{
+
+            for(let colums of resdata.colum){
+                // id
+                if(colums.field_name === "id"){
+                  colums['align'] = 'left'
+                  colums['width'] = 60
+                }
+                // 应用id
+                if(colums.field_name === "app_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 170
+                }
+    
+                // 店铺
+                if(colums.field_name === "shop_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 90
+                }
+    
+                // 订单id
+                if(colums.field_name === "order_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 170
+                }
+
+
+                // 服务开始时间
+                if(colums.field_name === "service_start_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 160
+                }
+
+                // 服务结束时间
+                if(colums.field_name === "service_end_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 160
+                }
+
+                // 状态
+                if(colums.field_name === "status"){
+                  colums['align'] = 'center'
+                  colums['width'] = 60
+                }
+
+                // 手机号
+                if(colums.field_name === "phone"){
+                  colums['align'] = 'center'
+                  colums['width'] = 120
+                }
+
+
+                // 支付金额
+                if(colums.field_name === "pay_amount"){
+                  colums['align'] = 'center'
+                  colums['width'] = 60
+                }
+
+                // 支付时间
+                if(colums.field_name === "pay_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 160
+                }
+                
+                // 订单创建时间
+                if(colums.field_name === "order_create_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 160
+                }
+                
+                // 支付类型
+                if(colums.field_name === "pay_type"){
+                  colums['align'] = 'center'
+                  colums['width'] = 120
+                }
+                
+                // 版本标题
+                if(colums.field_name === "title"){
+                  colums['align'] = 'center'
+                  colums['width'] = 120
+                }
+                
+                // 版本规格
+                if(colums.field_name === "spec_value"){
+                  colums['align'] = 'center'
+                  colums['width'] = 120
+                }
+                
+                // 时长
+                if(colums.field_name === "duration"){
+                  colums['align'] = 'center'
+                  colums['width'] = 60
+                }
+                // 单位
+                if(colums.field_name === "duration_unit"){
+                  colums['align'] = 'center'
+                  colums['width'] = 60
+                }
+                // 价格
+                if(colums.field_name === "price"){
+                  colums['align'] = 'center'
+                  colums['width'] = 60
+                }
+                
+                // 规格类型
+                if(colums.field_name === "spec_type"){
+                  colums['align'] = 'center'
+                  colums['width'] = 120
+                }
+
+                // 创建时间
+                if(colums.field_name === "create_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+
+
+
+                // 更新时间
+                if(colums.field_name === "update_time"){
+                  colums['align'] = 'center'
+                  colums['width'] = 200
+                }
+            }
+    
+            var op = {
+    
+                  "dataIndex": "state",
+                  "field_name": "state",
+                  "field_type": "int",
+                  "key": "operation",
+                  "title": "操作",
+                  "fixed": 'right',
+                  "align":"center",
+                  "width":100
+            }
+    
+            resdata.colum.push(op) // 添加操作按钮
+            this.message.page = resdata.now_page;
+            this.message.page_size = resdata.page_size;
+        }
+    }
+
+    // 抖音店铺表头
+    douyinshop = {
+      add_colum:(resdata)=>{
+
+        for(let colums of resdata.colum){
+            // id
+            if(colums.field_name === "id"){
+              colums['align'] = 'left'
+              colums['width'] = 60
+            }
+
+            // 店铺
+            if(colums.field_name === "shop_id"){
+              colums['align'] = 'center'
+              colums['width'] = 120
+            }
+
+            // 店铺名称
+            if(colums.field_name === "shop_name"){
+              colums['align'] = 'center'
+              colums['width'] = 170
+            }
+
+
+            // code
+            if(colums.field_name === "shop_code"){
+              colums['align'] = 'center'
+              colums['width'] = 260
+            }
+
+            // 电话
+            if(colums.field_name === "mobile"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+
+            // token
+            if(colums.field_name === "access_token"){
+              colums['align'] = 'center'
+              colums['width'] = 320
+            }
+
+            // 有效期
+            if(colums.field_name === "expires_in"){
+              colums['align'] = 'center'
+              colums['width'] = 90
+            }
+
+
+            // 刷新口令
+            if(colums.field_name === "refresh_token"){
+              colums['align'] = 'center'
+              colums['width'] = 320
+            }
+
+            // scope
+            if(colums.field_name === "scope"){
+              colums['align'] = 'center'
+              colums['width'] = 70
+            }
+            
+            // 过期日期
+            if(colums.field_name === "token_over_time"){
+              colums['align'] = 'center'
+              colums['width'] = 160
+            }
+            
+            // 店铺状态
+            if(colums.field_name === "shop_status"){
+              colums['align'] = 'center'
+              colums['width'] = 120
+            }
+            
+            // 类型
+            if(colums.field_name === "action_type"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+            
+            // 绑定信息
+            if(colums.field_name === "binding_inf"){
+              colums['align'] = 'center'
+              colums['width'] = 120
+            }
+            
+            // 默认素材文件夹id
+            if(colums.field_name === "material_object_id"){
+              colums['align'] = 'center'
+              colums['width'] = 360
+            }
+            // 单位
+            if(colums.field_name === "duration_unit"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+            // 价格
+            if(colums.field_name === "price"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+            
+            // 规格类型
+            if(colums.field_name === "spec_type"){
+              colums['align'] = 'center'
+              colums['width'] = 120
+            }
+
+            // 创建时间
+            if(colums.field_name === "create_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+
+
+
+            // 更新时间
+            if(colums.field_name === "update_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+        }
+
+        var op = {
+
+              "dataIndex": "state",
+              "field_name": "state",
+              "field_type": "int",
+              "key": "operation",
+              "title": "操作",
+              "fixed": 'right',
+              "align":"center",
+              "width":100
+        }
+
+        resdata.colum.push(op) // 添加操作按钮
+        this.message.page = resdata.now_page;
+        this.message.page_size = resdata.page_size;
+      }
+    }
+
+
 }

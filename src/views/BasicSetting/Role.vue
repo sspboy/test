@@ -194,9 +194,6 @@ export default defineComponent({
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
 
-      store.dispatch('member/get')
-
-
       // 默认查询条件
       let message = {
         "page":1,
@@ -259,26 +256,26 @@ export default defineComponent({
       window.removeEventListener('resize', handleResize);
     });
 
-      // 【刷新表格】
-  const Get_list = (message) =>{
+    // 【刷新表格】
+    const Get_list = (message) =>{
 
-    // 请求接口地址赋值
-    TO.message.url = API.BasicsAPI.role.list
+      // 请求接口地址赋值
+      TO.message.url = API.BasicsAPI.role.list
 
-    TO.actions.list(message,(res)=>{
+      TO.actions.list(message,(res)=>{
 
-      TO.role.add_colum(res)        // 添加表头
+        TO.role.add_colum(res)        // 添加表头
 
-      // 页面赋值
-      // console.log(res)
-      PAGEDATA.colum = res.colum
-      PAGEDATA.datalist = res.data
-      PAGEDATA.total_number =res.total_number
+        // 页面赋值
+        // console.log(res)
+        PAGEDATA.colum = res.colum
+        PAGEDATA.datalist = res.data
+        PAGEDATA.total_number =res.total_number
 
-      loading.value = false // loading 状态关闭
+        loading.value = false // loading 状态关闭
 
-    })
-  }
+      })
+    }
 
     return {
       store,

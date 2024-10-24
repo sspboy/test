@@ -71,8 +71,6 @@ export default defineComponent({
   setup(props) {
 
     const store = useStore();// 共享数据
-    store.dispatch('member/get')
-
     const PAGEDATA = reactive({
       title:'品牌资料',
       menudata:{'key':'64','openKeys':'sub0'},            // 菜单选中配置

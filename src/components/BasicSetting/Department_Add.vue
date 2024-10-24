@@ -58,6 +58,8 @@
 import {defineComponent, reactive, ref, computed } from 'vue';
 import { useStore } from 'vuex'
 import {Depart} from "@/assets/JS_Model/department";
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/department';
 
 export default defineComponent({
   // 模版名称
@@ -70,11 +72,11 @@ export default defineComponent({
   },
   // 组合API返回到模版
   setup(props,ctx) {
-
+    // 【数据绑定】=======================================>开始
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
     const store = useStore();// 共享数据
-
     const open = props;
-
     const formRef = ref()
 
     const formdata = computed(()=>{
@@ -151,7 +153,9 @@ export default defineComponent({
 
         loading.value = true;
 
-        store.dispatch(open.adddata.action, formdata.value).then(()=>{
+        TO.message.url = API.BasicsAPI.department.add
+
+        TO.actions.add(formdata.value,(res)=>{
 
           setTimeout(()=>{
 
@@ -163,15 +167,16 @@ export default defineComponent({
 
             formRef.value.resetFields(); // 重置表单
 
-          },1000)
+            },1000)
+
+        })
+
 
         }).catch(error => {
 
           console.log('error', error);
 
         });
-
-      })
 
     }
 
@@ -190,7 +195,10 @@ export default defineComponent({
 
         }
 
-        store.dispatch(open.adddata.action, up_date).then(()=>{
+        // 编辑用户接口
+        TO.message.url = API.BasicsAPI.department.edit
+
+        TO.actions.update(up_date,(res)=>{
 
           setTimeout(()=>{
 
@@ -202,15 +210,15 @@ export default defineComponent({
 
             formRef.value.resetFields(); // 重置表单
 
-          },1000)
+            },1000)
+
+          })
 
         }).catch(error => {
 
           console.log('error', error);
 
         });
-
-      })
 
     }
 

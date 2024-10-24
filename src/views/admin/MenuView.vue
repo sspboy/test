@@ -194,7 +194,6 @@ export default {
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
-      store.dispatch('member/get')
       let message = {"page":1, "page_size":100}
       Get_list(message)      // 请求列表
     })

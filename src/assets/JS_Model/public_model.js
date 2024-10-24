@@ -48,7 +48,25 @@ export class A_Patch{
             "delete": "api/admin/version/",    // [delete]+id删除
             "edit": "api/admin/version/",      // [put]setting_data + id 传数据更新
             "add": "api/admin/version/add"     // [post]
-        }
+        },
+        // 抖音订单
+        douyinorder:{
+            "list": "api/admin/order/list",  //[post]列表
+                                                // [put]data 批量删除
+            "detaile": "api/admin/order/",   // [get]+id详情
+            "delete": "api/admin/order/",    // [delete]+id删除
+            "edit": "api/admin/order/",      // [put]setting_data + id 传数据更新
+            "add": "api/admin/order/add"     // [post]
+        },
+        // 店铺信息
+        douyinshop:{
+            "list": "api/admin/shop/list",  //[post]列表
+                                                // [put]data 批量删除
+            "detaile": "api/admin/shop/",   // [get]+id详情
+            "delete": "api/admin/shop/",    // [delete]+id删除
+            "edit": "api/admin/shop/",      // [put]setting_data + id 传数据更新
+            "add": "api/admin/shop/add"     // [post]
+        },
 
     }
 
