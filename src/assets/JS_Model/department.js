@@ -351,7 +351,12 @@ export class TableOperate{
                 // 账号名称
                 if(colums.field_name === "id"){
                   colums['align'] = 'left'
-                  colums['width'] = 180
+                  colums['width'] = 120
+                }
+                // 店铺id
+                if(colums.field_name === "shop_id"){
+                  colums['align'] = 'center'
+                  colums['width'] = 130
                 }
                 // 版本id
                 if(colums.field_name === "v_id"){

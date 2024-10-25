@@ -6,12 +6,12 @@
     <menu_head />
     <!--head 导航组件  结束-->
 
-          <!--内容部分 菜单 右侧列表 开始-->
+    <!--内容部分 菜单 右侧列表 开始-->
     <a-layout>
 
       <!--左侧 菜单组件  开始-->
       <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
-        <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
+        <menu_left :menudata="PAGEDATA.menudata"/> <!--菜单局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
@@ -27,10 +27,7 @@
                       <menu-fold-outlined v-else class="trigger" />
                     </a-button>
                     <!-- {{ PAGEDATA.title }} -->
-                  <a-button type="primary" size="small" style="font-size:12px;" @click="Add_fun">
-                    <template #icon><PlusOutlined /></template>
-                    编辑资料
-                  </a-button>
+
                 </a-col>
                 <a-col :span="6" :order="3"></a-col>
               </a-row>
