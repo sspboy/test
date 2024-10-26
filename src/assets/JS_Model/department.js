@@ -353,8 +353,8 @@ export class TableOperate{
                   colums['align'] = 'left'
                   colums['width'] = 120
                 }
-                // 店铺id
-                if(colums.field_name === "shop_id"){
+                // 店铺关联id
+                if(colums.field_name === "s_id"){
                   colums['align'] = 'center'
                   colums['width'] = 130
                 }
@@ -634,6 +634,7 @@ export class TableOperate{
         add_colum:(resdata)=>{
 
             for(let colums of resdata.colum){
+              
                 // 账号名称
                 if(colums.field_name === "id"){
                   colums['align'] = 'left'
@@ -706,6 +707,7 @@ export class TableOperate{
     }
     // 部门表头
     department = {
+
         add_colum:(resdata)=>{
 
             var D = new Depart()

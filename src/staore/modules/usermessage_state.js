@@ -23,6 +23,8 @@ const mutations = {
     detaile:(state, resdata)=>{
         state.message.menu = resdata.menu;
         delete resdata.menu
+        state.message.shop = resdata.shop;
+        delete resdata.shop
         state.message.user_data = resdata;
 
     },

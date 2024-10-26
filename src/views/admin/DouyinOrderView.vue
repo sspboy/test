@@ -151,7 +151,7 @@ export default {
 
         condition:[{
           type: "orderby",
-          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+          condition: [{'column_name': 'pay_time', 'value': 'DESC', }]
         }]}
 
         // 请求列表
@@ -188,7 +188,7 @@ export default {
       // 刷新页面查询条件
       message.condition = [{
           type: "orderby",
-          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+          condition: [{'column_name': 'pay_time', 'value': 'DESC', }]
         }]
 
       // 请求列表
@@ -204,7 +204,7 @@ export default {
       // 刷新页面查询条件
       message.condition = [{
           type: "orderby",
-          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+          condition: [{'column_name': 'pay_time', 'value': 'DESC', }]
         }]
 
       Get_list(message) // 请求列表

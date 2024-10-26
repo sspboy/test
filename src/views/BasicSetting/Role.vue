@@ -271,7 +271,7 @@ export default defineComponent({
         PAGEDATA.colum = res.colum
         PAGEDATA.datalist = res.data
         PAGEDATA.total_number =res.total_number
-
+        
         loading.value = false // loading 状态关闭
 
       })

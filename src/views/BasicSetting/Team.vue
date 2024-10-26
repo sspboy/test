@@ -303,15 +303,17 @@ export default defineComponent({
       TO.message.url = API.BasicsAPI.team.list
 
       TO.actions.list(message,(res)=>{
-
+        
         TO.team.add_colum(res)        // 添加表头
 
-        // 页面赋值
-        // console.log(res)
-        PAGEDATA.colum = res.colum
-        PAGEDATA.datalist = res.data
-        PAGEDATA.total_number =res.total_number
+        if(res.data !== 'None'){
 
+          // 页面赋值
+          // console.log(res)
+          PAGEDATA.colum = res.colum
+          PAGEDATA.datalist = res.data
+          PAGEDATA.total_number =res.total_number
+        }
         loading.value = false // loading 状态关闭
 
       })
@@ -346,6 +348,7 @@ export default defineComponent({
       var a_list = []
 
       D.all_.get_all_department((res)=>{
+
         for(let i of res.data){
           let r_obj = {}
           r_obj.title = i.name;
