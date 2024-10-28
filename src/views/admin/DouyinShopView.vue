@@ -22,17 +22,40 @@
           <div style="height: 42px;">
             <!--条件查询组件 开始 -->
             <a-row type="flex">
-              <a-col :span="5" :order="1">
+              <a-col :span="1" :order="1">
                   <!--导航收起按钮-->
-                  <a-button type="primary" size="small" style="font-size: 12px; margin-right: 16px;" @click="() => { store.commit('menu/change') }">
+                  <a-button type="primary" size="small" style="font-size: 12px; margin:3px 16px 0 0;" @click="() => { store.commit('menu/change') }">
                     <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
-
               </a-col>
-              <a-col :span="12" :order="2">
+              <a-col :span="23" :order="5">
+                <a-form
+                  layout="inline"
+                  :model="formdata"
+                  @finish="handleFinish"
+                  @finishFailed="handleFinishFailed"
+                >
+                  <a-form-item>
+                    <a-input type="text" class="font_size_12" v-model:value="formdata.shop_id" placeholder="输入店铺id">
+                    </a-input>
+                  </a-form-item>
+                  <a-form-item>
+                    <a-input v-model:value="formdata.shop_name"  class="font_size_12" type="text" placeholder="输入店铺名称">
+                    </a-input>
+                  </a-form-item>
+                  <a-form-item>
+                    <a-button
+                      type="primary"
+                      size="small"
+                      html-type="submit"
+                      style="font-size: 12px;"
+                    >
+                      查询
+                    </a-button>
+                  </a-form-item>
+                </a-form>
               </a-col>
-              <a-col :span="6" :order="3"></a-col>
             </a-row>
             <!--条件查询组件 结束 -->
           </div>
@@ -78,7 +101,7 @@
 </template>
 
 <script>
-import {ref, reactive, onBeforeMount, onMounted, onUnmounted,defineComponent} from 'vue';
+import {ref, reactive, onBeforeMount, onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
@@ -89,7 +112,9 @@ import menu_left from '@/components/layout/menu_left.vue'
 import nav_pagination from "@/components/nav_pagination.vue";
 import menu_head from "@/components/layout/menu_head.vue";
 // 组件引用=====结束
-export default defineComponent({
+
+
+export default {
   // 模版名称:抖音服务订单
   name: "DouyinOrderView",
   // 引用组件
@@ -101,10 +126,9 @@ export default defineComponent({
     nav_pagination,
     menu_head,
   },
-  // 父组件数据
-  props: {},
+
   // 组合API返回到模版
-  setup(props) {
+  setup() {
 
     const API = new utils.A_Patch()           // 请求接口
     const TO = new TABLE.TableOperate()       // 表格操作方法
@@ -128,38 +152,41 @@ export default defineComponent({
     // 【组件挂载】========================================开始
     onBeforeMount(()=>{
 
-// 默认查询条件
-let message = {
+      // 默认查询条件
+      let message = {
 
-  "page":1,
+      "page":1,
 
-  "page_size":10,
+      "page_size":10,
 
-  condition:[{
-    type: "orderby",
-    condition: [{'column_name': 'create_time', 'value': 'DESC', }]
-  }]}
+      condition:[{
+        type: "orderby",
+        condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+      }]}
 
-  // 请求列表
-  Get_list(message)
+      // 请求列表
+      Get_list(message)
 
-})
 
-// 组件挂之后---请求数据
-// 定义一个函数来处理窗口大小变化 ==
-const handleResize = () => {
-innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
-};
+    })
+    
+    // 组件挂之后---请求数据
+    const handleResize = () => {
+      innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
+    };
 
-// 在组件挂载时添加事件监听器
-onMounted(() => {
-  window.addEventListener('resize', handleResize);
-});
+    // 在组件挂载时添加事件监听器
+    onMounted(() => {
+      window.addEventListener('resize', handleResize);
+    });
 
-// 在组件卸载时移除事件监听器
-onUnmounted(() => {
-window.removeEventListener('resize', handleResize);
-});
+    // 在组件卸载时移除事件监听器
+    onUnmounted(() => {
+      window.removeEventListener('resize', handleResize);
+    });
+
+
+
 // 【组件挂载】========================================结束
 
 
@@ -183,49 +210,105 @@ const pagecallback =()=>{
 
 }
 
-// 【点击翻页】&&刷新表格所在的页面
-const receive = (message)=>{
+  // 【点击翻页】&&刷新表格所在的页面
+  const receive = (message)=>{
 
-  loading.value = true    // 开启loading状态
+    loading.value = true    // 开启loading状态
 
-  // 刷新页面查询条件
-  message.condition = [{
+    // 刷新页面查询条件
+    message.condition = [{
+        type: "orderby",
+        condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+      }]
+
+    Get_list(message) // 请求列表
+
+    }
+
+
+
+  const Get_list = (message) =>{
+
+      // 请求接口地址赋值
+      TO.message.url = API.AdminAPI.douyinshop.list
+
+      TO.actions.list(message,(res)=>{
+
+        TO.douyinshop.add_colum(res)        // 添加表头
+
+        // 页面赋值
+        PAGEDATA.colum = res.colum
+        PAGEDATA.datalist = res.data
+        PAGEDATA.total_number =res.total_number
+
+        loading.value = false // loading 状态关闭
+
+      })
+    }
+
+
+// 【查询组件】========================================开始
+
+const formdata = reactive({
+  shop_id: '',
+  shop_name: '',
+});
+const handleFinish = values => {
+
+  console.log(values, formdata);
+
+  var shop_id = formdata.shop_id
+
+  var shop_name = formdata.shop_name
+
+  // 默认查询条件
+  let message = {
+
+    "page":1,
+
+    "page_size":1,
+
+    condition:[{
       type: "orderby",
       condition: [{'column_name': 'create_time', 'value': 'DESC', }]
     }]
+  }
 
-  Get_list(message) // 请求列表
+  var where_c = {'type': 'where','condition': []}
 
-}
+  if(shop_id != ''){
+    where_c.condition.push = {'column_name':'shop_id','value':shop_id,'operator':'='}
+  }
+
+  if(shop_name != ''){
+    where_c.condition.push = {'column_name':'shop_name','value':shop_name,'operator':'='}
+  }
+
+  if(where_c.condition.length >0){
+    message.condition.push(where_c)
+  }
 
 
 
 
+  // 请求列表
+  Get_list(message)
 
 
+};
+
+const handleFinishFailed = errors => {
+  console.log(errors);
+};
+// 【查询组件】========================================结束
 
 
-const Get_list = (message) =>{
-
-  // 请求接口地址赋值
-  TO.message.url = API.AdminAPI.douyinshop.list
-
-  TO.actions.list(message,(res)=>{
-
-    TO.douyinshop.add_colum(res)        // 添加表头
-
-    // 页面赋值
-    PAGEDATA.colum = res.colum
-    PAGEDATA.datalist = res.data
-    PAGEDATA.total_number =res.total_number
-
-    loading.value = false // loading 状态关闭
-
-  })
-}
 
 
     return {
+      formdata,
+      handleFinish,
+      handleFinishFailed,
       store,
       pagecallback,
       loading,
@@ -236,7 +319,7 @@ const Get_list = (message) =>{
   }
 
 
-})
+}
 </script>
 
 <style>

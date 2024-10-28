@@ -124,6 +124,14 @@ const routes = [
         }
     },
     {
+        path: '/login',
+        name: 'douyinlogin',
+        component: () => import('../views/AppMarket/DouyinShop/DouyinLogin.vue'),   // 视图文件
+        meta:{
+            title:'抖店授权',
+        }
+    }, 
+    {
         path: '/douyinproductlist',
         name: 'douyinproductlist',
         component: () => import('../views/AppMarket/DouyinShop/ProductList.vue'),    // 视图文件

@@ -7,8 +7,8 @@ export class A_Patch{
     // 登录
     LoginAPI={
         url:{
-            "login":"api/login",            // 登录
-            "loginout":"api/login/out"      // 登出
+            "login":"api/login",            // 登录：：备注：抖音login用get方式请求发送code
+            "loginout":"api/login/out",     // 登出
         }
     }
 
