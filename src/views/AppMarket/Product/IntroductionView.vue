@@ -1,4 +1,5 @@
 <template>
+  <!--内容部分 菜单 右侧列表 开始-->
   <a-layout style="height: 100vh;width: 100vw;">
     <!--head 导航组件  开始-->
     <menu_head />
@@ -16,11 +17,11 @@
       <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
 
             <a-breadcrumb style="margin: 16px 0">
-                <a-breadcrumb-item>商品列表</a-breadcrumb-item>
+                <a-breadcrumb-item>Home</a-breadcrumb-item>
                 <a-breadcrumb-item>List</a-breadcrumb-item>
                 <a-breadcrumb-item>App</a-breadcrumb-item>
             </a-breadcrumb>
-            <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">Content</div>
+            <div :style="{ background: '#fff', padding: '24px', minHeight: '280px' }">产品介绍</div>
 
       </a-layout-content>
 
@@ -28,10 +29,17 @@
 
 
 </a-layout>
-</template>
 
+
+
+
+
+
+
+</template>
 <script>
-import {reactive} from 'vue';
+import { reactive} from 'vue';
+
 import { useStore } from 'vuex'
 
 // 组件引用=====开始
@@ -39,25 +47,20 @@ import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
 // 组件引用=====结束
 export default {
-  // 模版名称
-  name: "ProductList",
-  // 引用组件
-  components: {
+    name:'introduction',
+    // 引用组件
+    components: {
         menu_left,
         menu_head,
     },
-  // 父组件数据
-  props: {},
-  // 组合API返回到模版
-  setup(props) {
+    setup() {
+      const store = useStore();                 // 共享数据
 
-    const store = useStore();                 // 共享数据
-
-    const PAGEDATA = reactive({
-        title:'商品列表',
+      const PAGEDATA = reactive({
+        title:'产品介绍',
         menudata:{      // 菜单选中配置
-            'key':'78',
-            'openKeys':'douyinshop'
+            'key':'86',
+            'openKeys':'home'
         },
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -65,16 +68,11 @@ export default {
     })
 
 
-    return {
-      PAGEDATA,
-      store
-    }
-  }
+        return{
+          PAGEDATA,
+          store
 
-
+        }
+    },
 }
 </script>
-
-<style>
-
-</style>

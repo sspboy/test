@@ -128,7 +128,7 @@ export default {
       title:'功能列表',
       menudata:{
         'key':'52',
-        'openKeys':'sub1',
+        'openKeys':'admin',
       },            // 菜单选中配置
       colum:[],           // 表头信息
       datalist:[],        // 列表信息

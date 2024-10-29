@@ -140,7 +140,7 @@ export default {
       title:'店铺信息',
       menudata:{      // 菜单选中配置
         'key':'76',
-        'openKeys':'sub1'
+        'openKeys':'admin'
       },
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -169,23 +169,21 @@ export default {
 
 
     })
-    
-    // 组件挂之后---请求数据
+
+    // 定义一个函数来处理窗口大小变化 ==
     const handleResize = () => {
       innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
     };
 
     // 在组件挂载时添加事件监听器
     onMounted(() => {
-      window.addEventListener('resize', handleResize);
+        window.addEventListener('resize', handleResize);
     });
 
     // 在组件卸载时移除事件监听器
     onUnmounted(() => {
       window.removeEventListener('resize', handleResize);
     });
-
-
 
 // 【组件挂载】========================================结束
 
@@ -233,6 +231,8 @@ const pagecallback =()=>{
       TO.message.url = API.AdminAPI.douyinshop.list
 
       TO.actions.list(message,(res)=>{
+        
+        console.log(res)
 
         TO.douyinshop.add_colum(res)        // 添加表头
 
@@ -253,6 +253,7 @@ const formdata = reactive({
   shop_id: '',
   shop_name: '',
 });
+
 const handleFinish = values => {
 
   console.log(values, formdata);
@@ -262,33 +263,38 @@ const handleFinish = values => {
   var shop_name = formdata.shop_name
 
   // 默认查询条件
-  let message = {
+  var message = {
 
     "page":1,
 
-    "page_size":1,
+    "page_size":10,
 
     condition:[{
+
       type: "orderby",
       condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+
     }]
   }
 
-  var where_c = {'type': 'where','condition': []}
-
-  if(shop_id != ''){
-    where_c.condition.push = {'column_name':'shop_id','value':shop_id,'operator':'='}
+  var where_c = {
+    type: "where",
+    condition: []
   }
 
-  if(shop_name != ''){
-    where_c.condition.push = {'column_name':'shop_name','value':shop_name,'operator':'='}
+  if(shop_id !== ''){
+    where_c.condition.push({'column_name':'shop_id','value':shop_id,'operator':'='})
   }
 
-  if(where_c.condition.length >0){
+  if(shop_name !== ''){
+    where_c.condition.push({'column_name':'shop_name','value':shop_name,'operator':'='})
+  }
+
+  if(where_c.condition.length > 0){
     message.condition.push(where_c)
   }
 
-
+  console.log(message)
 
 
   // 请求列表

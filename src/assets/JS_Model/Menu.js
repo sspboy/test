@@ -38,7 +38,8 @@ export class Menu {
 
                 }
 
-                menu_detaile_obj.key = 'sub' + i
+                menu_detaile_obj.key = data[i].field
+                
                 menu_detaile_obj.children = child_list
 
             }else {

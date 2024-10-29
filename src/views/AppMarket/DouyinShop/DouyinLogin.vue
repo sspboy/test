@@ -62,31 +62,41 @@ export default {
         // 获取链接参数
         function fetchData(id) {
 
-            error.value = post.value = null
-
             try {
             
-                // 用获取数据的工具函数 / API 包裹器替换 `getPost`
 
-                setTimeout(()=>{
+                var url = API.LoginAPI.url.login+'?code='+ code
 
-                    post.value = route.query.code
-                    var url = API.LoginAPI.url.login+'?code='+ code
-                    console.log(url)
+                axios.get(url).then((res)=>{
 
-                    axios.get(url).then((res)=>{
-                        console.log(res)
-                    })
+                    // console.log(res)
 
-                    loading.value = false
+                    if(res.data === true){
 
-                    load_text.value = '授权成功'
+                        loading.value = false
+
+                        load_text.value = '授权成功'
+
+                        post.value = true
+
+                        startCountdown()// 倒计时读秒 进入首页
+
+                    }else{
+
+                        // 授权失败
+                        // 刷新页面重新授权
+                        // 联系客服
                     
-                    post.value = true
-                    
-                    startCountdown()// 倒计时读秒
+                    }
 
-                },2000)
+
+                }).then(()=>{
+
+
+                })
+
+
+
 
             } catch (err) {
             
@@ -99,8 +109,6 @@ export default {
             }
 
         }
-
-        console.log(post);
 
 
         // 发送到后台

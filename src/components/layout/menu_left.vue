@@ -51,8 +51,8 @@ export default defineComponent({
     // 菜单状态设置
     const state = reactive({
       key:[],
-      rootSubmenuKeys: ['sub0', 'sub1'],  // 一级菜单
-      openKeys:['sub1'],                  // 选中的一级菜单
+      rootSubmenuKeys: [],  // 一级菜单
+      openKeys:[],                  // 选中的一级菜单
       selectedKeys: [],
     });
 
@@ -72,7 +72,12 @@ export default defineComponent({
 
         items.value = computed(()=>{
 
-          return menu.LoadMenu.fristlive(store.state.member.message.menu)
+          var menu_data = menu.LoadMenu.fristlive(store.state.member.message.menu)
+          for(let i of menu_data){
+            console.log(i)
+            state.rootSubmenuKeys.push(i.key)
+          }
+          return menu_data
 
         })
 

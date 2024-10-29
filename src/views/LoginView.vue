@@ -171,7 +171,7 @@ export default {
 
         }else if(res === 'true'){        // 登录成功：ture
 
-          router.push('/user');
+          router.push('/introduction');
 
         }else if(res === 'false'){        // 登录失败：：密码错误：：false
 

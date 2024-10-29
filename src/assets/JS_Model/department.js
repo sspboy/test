@@ -1007,6 +1007,7 @@ export class TableOperate{
 
     // 抖音店铺表头
     douyinshop = {
+      
       add_colum:(resdata)=>{
 
         for(let colums of resdata.colum){

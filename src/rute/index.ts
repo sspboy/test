@@ -155,6 +155,14 @@ const routes = [
             title:'上传记录',
         }
     },
+    {
+        path: '/introduction',
+        name: 'introduction',
+        component: () => import('../views/AppMarket/Product/IntroductionView.vue'),    // 视图文件
+        meta:{
+            title:'产品介绍',
+        }
+    },
     {   // 404 报错页面
         path: '/:catchAll(.*)', // 使用捕获所有路由的模式
         name:"Error404",

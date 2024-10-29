@@ -137,7 +137,7 @@ export default {
       title:'用户管理',
       menudata:{      // 菜单选中配置
         'key':'48',
-        'openKeys':'sub1'
+        'openKeys':'admin'
       },
       colum:[],           // 表头信息
       datalist:[],        // 列表信息

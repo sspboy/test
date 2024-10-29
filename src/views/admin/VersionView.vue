@@ -120,7 +120,7 @@ export default {
       title:'版本管理',
       menudata:{
         'key':'39',
-        'openKeys':'sub1',
+        'openKeys':'admin',
       },            // 菜单选中配置
       colum:[],           // 表头信息
       datalist:[],        // 列表信息

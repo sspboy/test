@@ -22,7 +22,7 @@
           <div style="height: 42px;">
             <!--条件查询组件 开始 -->
             <a-row type="flex">
-              <a-col :span="5" :order="1">
+              <a-col :span="1" :order="1">
                   <!--导航收起按钮-->
                   <a-button type="primary" size="small" style="font-size: 12px; margin-right: 16px;" @click="() => { store.commit('menu/change') }">
                     <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
@@ -30,9 +30,31 @@
                   </a-button>
 
               </a-col>
-              <a-col :span="12" :order="2">
+              <a-col :span="23" :order="5">
+
+                <a-form
+                  layout="inline"
+                  :model="formdata"
+                  @finish="handleFinish"
+                  @finishFailed="handleFinishFailed"
+                >
+                  <a-form-item>
+                    <a-input type="text" class="font_size_12" v-model:value="formdata.shop_id" placeholder="输入店铺id">
+                    </a-input>
+                  </a-form-item>
+                  <a-form-item>
+                    <a-button
+                      type="primary"
+                      size="small"
+                      html-type="submit"
+                      style="font-size: 12px;"
+                    >
+                      查询
+                    </a-button>
+                  </a-form-item>
+                </a-form>
+
               </a-col>
-              <a-col :span="6" :order="3"></a-col>
             </a-row>
             <!--条件查询组件 结束 -->
           </div>
@@ -125,7 +147,7 @@ export default {
       title:'订单信息',
       menudata:{      // 菜单选中配置
         'key':'75',
-        'openKeys':'sub1'
+        'openKeys':'admin'
       },
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -231,6 +253,60 @@ export default {
       })
     }
 
+// 【查询组件】========================================开始
+
+const formdata = reactive({
+  shop_id: undefined,
+});
+
+const handleFinish = values => {
+
+  console.log(values, formdata);
+
+  var shop_id = formdata.shop_id
+
+  // 默认查询条件
+  var message = {
+
+    "page":1,
+
+    "page_size":10,
+
+    condition:[{
+
+      type: "orderby",
+      condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+
+    }]
+  }
+
+  var where_c = {
+    type: "where",
+    condition: []
+  }
+
+  if(shop_id !== ''){
+    where_c.condition.push({'column_name':'shop_id','value':shop_id,'operator':'='})
+  }
+
+  if(where_c.condition.length > 0){
+    message.condition.push(where_c)
+  }
+
+  // 请求列表
+  Get_list(message)
+
+
+};
+
+const handleFinishFailed = errors => {
+  console.log(errors);
+};
+// 【查询组件】========================================结束
+
+
+
+
     return {
       store,
       pagecallback,
@@ -238,6 +314,9 @@ export default {
       innerHeight,
       PAGEDATA,
       receive,
+      formdata,
+      handleFinish,
+      handleFinishFailed
     };
 
 

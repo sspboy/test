@@ -70,7 +70,7 @@ export default defineComponent({
     const store = useStore();// 共享数据
     const PAGEDATA = reactive({
       title:'品牌资料',
-      menudata:{'key':'64','openKeys':'sub0'},            // 菜单选中配置
+      menudata:{'key':'64','openKeys':'setting'},            // 菜单选中配置
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数

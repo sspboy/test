@@ -131,7 +131,7 @@ export default {
       // 菜单选中
       menudata:{
         'key':'41',
-        'openKeys':'sub1',
+        'openKeys':'admin',
       },
       colum:[],           // 表头信息
       datalist:[],        // 列表信息

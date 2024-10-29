@@ -175,7 +175,7 @@ export default defineComponent({
     // 子账号管理======>开始
     const PAGEDATA = reactive({
       title:'团队管理',
-      menudata:{'key':'63','openKeys':'sub0'},            // 菜单选中配置
+      menudata:{'key':'63','openKeys':'setting'},            // 菜单选中配置
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数

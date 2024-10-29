@@ -126,7 +126,7 @@ export default defineComponent({
 
     const PAGEDATA = reactive({
       title:'角色管理',
-      menudata:{'key':'32','openKeys':'sub0'},            // 菜单选中配置
+      menudata:{'key':'32','openKeys':'setting'},            // 菜单选中配置
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
