@@ -73,10 +73,16 @@ export default defineComponent({
         items.value = computed(()=>{
 
           var menu_data = menu.LoadMenu.fristlive(store.state.member.message.menu)
+
+
           for(let i of menu_data){
-            console.log(i)
+
+            // console.log(i)
+
             state.rootSubmenuKeys.push(i.key)
+
           }
+
           return menu_data
 
         })
@@ -88,11 +94,10 @@ export default defineComponent({
 
     // 菜单点击事件===>路由
     const handleClick = e => {
-      console.log(e)
-      console.log(e.keyPath)
+      // console.log(e)
+      // console.log(e.keyPath)
       let se_obj = e.keyPath
       let name = e.item.id
-      console.log(name)
 
       if(name != undefined){
         router.push('/' +  name);

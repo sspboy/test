@@ -17,7 +17,7 @@
 
 
 
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+      <a-layout-content class="content_border">
 
           <div style="height: 42px;">
             <!--条件查询组件 开始 -->

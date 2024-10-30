@@ -13,9 +13,9 @@
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+      <a-layout-content class="content_border">
 
-            <a-breadcrumb style="margin: 16px 0">
+            <a-breadcrumb>
                 <a-breadcrumb-item>上传记录</a-breadcrumb-item>
                 <a-breadcrumb-item>List</a-breadcrumb-item>
                 <a-breadcrumb-item>App</a-breadcrumb-item>

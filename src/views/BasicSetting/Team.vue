@@ -21,9 +21,9 @@
 
 
       <!-- 组织架构 开始 -->
-      <a-layout-sider style="background-color: #f5f5f5;height: 100%;padding: 6px 0 6px 6px;">
+      <a-layout-sider style="background-color: #001529;height: 100%;padding: 6px 4px 0 0;">
 
-        <div style="background-color: white;height: 100%;overflow-x:scroll;width: 100%;white-space:nowrap;" >
+        <div style="background-color: white;height: 100%;overflow-x:scroll;width: 100%;white-space:nowrap;border-top-left-radius: 5px;border-top-right-radius: 5px;" >
 
           <p style="padding: 14px 14px 24px 30px; clear: both;">
 
@@ -56,7 +56,7 @@
 
 
       <!--表格组件 开始-->
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+      <a-layout-content class="content_border">
 
           <div style="height: 42px;">
             <!--条件查询组件 开始 -->

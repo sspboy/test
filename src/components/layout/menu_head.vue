@@ -1,11 +1,28 @@
 <template>
     <a-layout-header class="head">
-      <div class="logo_text cursor">{{ user_data.brand_name }}</div>
-      <div class="font_size_12 cursor" style="margin-left:20px;float: right; color: dimgray;" @click="Login_out">
+      
+      <div class="logo_text cursor">
+        <div style="float: left;">
+          <img src="../../assets/logo_36x36.png"/>
+        </div>
+
+        <div style="margin: 2px 0 0 8px;float: left;">
+          {{ user_data.brand_name }}
+        </div>
+
+        <div style="float: left; margin: 4px 0 0 10px;" class="font_size_12">
+          一句话的生意人激励语
+        </div>
+      
+      </div>
+
+        <div type="link" class="font_size_12 cursor" style="float: right; color: dimgray;margin: 6px 10px 0 0;"  @click="Login_out">
         <LogoutOutlined style="margin: 0 3px;" />
         退出
-      </div>
-      <div class="font_size_12 cursor" style="float: right; color: dimgray;">
+        </div>
+
+
+      <div class="font_size_12 cursor" style="float: right; color: dimgray; margin: 6px 10px 0 0;">
         <MehOutlined style="margin: 0 3px;" />
         {{ user_data.id }}
       </div>
@@ -71,6 +88,6 @@ export default defineComponent({
 
 <style scoped>
 .logo_text{width: 24%; float: left; color: #ffffff;font-size: 18px;}
-.head{textAlign:'center';color:#fff;height: 64px;paddingInline: 50px;lineHeight: '64px';backgroundColor: '#fff';width:100%;}
+.head{text-align:'center';color:#fff;height: 64px;padding: 0px 10px 0 24px;line-height: '64px';background-color: '#fff';width:100%;}
 
 </style>

@@ -29,7 +29,7 @@
 <script>
 import {ref, reactive, watch} from 'vue';
 
-import { useRoute } from 'vue-router'
+import { useRoute,useRouter } from 'vue-router'
 import axios from "axios";
 import * as utils from '@/assets/JS_Model/public_model';
 
@@ -43,7 +43,8 @@ export default {
     setup() {
         const API = new utils.A_Patch()           // 请求接口
 
-        const route =   useRoute()
+        const route =   useRoute();
+        const userouter = useRouter()
         const loading = ref(true)
         const post =    ref(false)
         const error =   ref(undefined)
@@ -56,6 +57,7 @@ export default {
 
         console.log(code);
 
+
         // 侦听路由的参数，以便再次获取数据
         watch(() => route.query.code, fetchData, { immediate: true })
 
@@ -63,13 +65,14 @@ export default {
         function fetchData(id) {
 
             try {
-            
 
+                // code 为空:
+                
                 var url = API.LoginAPI.url.login+'?code='+ code
 
                 axios.get(url).then((res)=>{
 
-                    // console.log(res)
+                    console.log(res)
 
                     if(res.data === true){
 
@@ -99,9 +102,10 @@ export default {
 
 
             } catch (err) {
-            
+
                 error.value = err.toString()
-            
+                console.log(err)
+
             } finally {
             
                 loading.value = true
@@ -127,6 +131,7 @@ export default {
                     clearInterval(s_time.intervalId); // 倒计时结束，清除定时器
                     s_time.intervalId = null;
                     console.log('欢迎来到！！！')
+                    userouter.push('/introduction')// 进入产品介绍
                 }
             }, 1000);
         }

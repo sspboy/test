@@ -13,9 +13,9 @@
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+      <a-layout-content class="content_border">
 
-            <a-breadcrumb style="margin: 16px 0">
+            <a-breadcrumb >
                 <a-breadcrumb-item>商品列表</a-breadcrumb-item>
                 <a-breadcrumb-item>List</a-breadcrumb-item>
                 <a-breadcrumb-item>App</a-breadcrumb-item>
@@ -37,6 +37,7 @@ import { useStore } from 'vuex'
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
+import { BorderTopOutlined } from '@ant-design/icons-vue';
 // 组件引用=====结束
 export default {
   // 模版名称
@@ -76,5 +77,4 @@ export default {
 </script>
 
 <style>
-
 </style>
