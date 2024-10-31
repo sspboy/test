@@ -22,21 +22,7 @@
 
             <div style="width: 100%;clear: both;">
               <a-typography>
-                <h4>产品介绍</h4>
-                <a-typography-paragraph>
-                  In the process of internal desktop applications development, many different design specs and
-                  implementations would be involved, which might cause designers and developers difficulties and
-                  duplication and reduce the efficiency of development.
-                </a-typography-paragraph>
-                <a-typography-paragraph>
-                  After massive project practice and summaries, Ant Design, a design language for background
-                  applications, is refined by Ant UED Team, which aims to
-                  <a-typography-text strong>
-                    uniform the user interface specs for internal background projects, lower the unnecessary
-                    cost of design differences and implementation and liberate the resources of design and
-                    front-end development.
-                  </a-typography-text>
-                </a-typography-paragraph>
+                <h4>商品复制</h4>
               </a-typography>
             </div>
             
@@ -44,16 +30,25 @@
                   <a-flex justify="space-between">
                     <img
                       alt="avatar"
-                      src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                      src="https://gd-hbimg.huaban.com/437c853d4c231d7ca1d9406d70702bac0d561743c8eaa-PrrXP1"
                       :style="imgStyle"
                     />
                     <a-flex vertical align="flex-end" justify="space-between" :style="{ padding: '32px' }">
                       <a-typography>
                         <a-typography-title :level="3">
-                          “antd is an enterprise-class UI design language and Vue UI library.”
+                          “手动复制 边看边采集 不限制数量 ”
                         </a-typography-title>
+                        <a-typography-paragraph>
+                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        </a-typography-paragraph>
                       </a-typography>
-                      <a-button type="primary" href="https://antdv.com" target="_blank">Get Start</a-button>
+                      <div>
+                        <a-button type="primary" href="#" size="small" target="_blank" style="font-size: 12px;margin-right: 10px;padding-top: 2px;">下载插件</a-button>
+                        <a-button type="primary" href="#" size="small" target="_blank" style="font-size: 12px;margin-right: 10px;padding-top: 2px;">安装教程</a-button>
+                        <a-button type="primary" href="#" size="small" target="_blank" style="font-size: 12px;margin-right: 10px;padding-top: 2px;">如何使用</a-button>
+                      </div>
+
+
                     </a-flex>
                   </a-flex>
               </a-card>
@@ -159,7 +154,6 @@ export default {
         width: '620px',
         float:'left',
         marginRight: '2%',
-        marginTop: '20px',
 
       };
 

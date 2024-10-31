@@ -3,15 +3,15 @@
       
       <div class="logo_text cursor">
         <div style="float: left;">
-          <img src="../../assets/logo_36x36.png"/>
+          <img src="../../assets/logo_douxiaoer.png"/>
         </div>
 
-        <div style="margin: 2px 0 0 8px;float: left;">
+        <div style="margin: 2px 0 0 18px;float: left;">
           {{ user_data.brand_name }}
         </div>
 
         <div style="float: left; margin: 4px 0 0 10px;" class="font_size_12">
-          一句话的生意人激励语
+          ~您的满意是我们最大的追求！
         </div>
       
       </div>
@@ -87,7 +87,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.logo_text{width: 24%; float: left; color: #ffffff;font-size: 18px;}
-.head{text-align:'center';color:#fff;height: 64px;padding: 0px 10px 0 24px;line-height: '64px';background-color: '#fff';width:100%;}
+.logo_text{width: 34%; float: left; color: #ffffff;font-size: 18px;}
+.head{text-align:'center';color:#fff;height: 64px;padding: 0px 10px 0 26px;line-height: '64px';background-color: '#fff';width:100%;}
 
 </style>
