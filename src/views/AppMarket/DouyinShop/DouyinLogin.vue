@@ -55,7 +55,7 @@ export default {
             intervalId:null
         })
 
-        console.log(code);
+        // console.log(code);
 
 
         // 侦听路由的参数，以便再次获取数据
