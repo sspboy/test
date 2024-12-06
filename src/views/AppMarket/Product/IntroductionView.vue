@@ -21,9 +21,9 @@
           <div style="overflow-y: scroll;" :style="{ background: '#fff', padding: '0 0 100px 0', height: innerHeight+'px'}">
 
             <div style="width: 100%;clear: both;">
-              <a-typography>
+              <!-- <a-typography>
                 <h4>商品复制</h4>
-              </a-typography>
+              </a-typography> -->
             </div>
             
               <a-card :style="cardStyle" :body-style="{ padding: 0, overflow: 'hidden' }">

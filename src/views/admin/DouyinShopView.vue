@@ -149,8 +149,8 @@ export default {
 
 
     
-    // 【组件挂载】========================================开始
-    onBeforeMount(()=>{
+  // 【组件挂载】========================================开始
+  onBeforeMount(()=>{
 
       // 默认查询条件
       let message = {
@@ -185,28 +185,28 @@ export default {
       window.removeEventListener('resize', handleResize);
     });
 
-// 【组件挂载】========================================结束
+  // 【组件挂载】========================================结束
 
 
-//【刷新表格】
-const pagecallback =()=>{
+  //【刷新表格】
+  const pagecallback =()=>{
 
-  loading.value = true    // 开启loading状态
+    loading.value = true    // 开启loading状态
 
-  let message = {}
-  message.page = TO.message.page;
-  message.page_size = TO.message.page_size;
+    let message = {}
+    message.page = TO.message.page;
+    message.page_size = TO.message.page_size;
 
-  // 刷新页面查询条件
-  message.condition = [{
-      type: "orderby",
-      condition: [{'column_name': 'create_time', 'value': 'DESC', }]
-    }]
+    // 刷新页面查询条件
+    message.condition = [{
+        type: "orderby",
+        condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+      }]
 
-  // 请求列表
-  Get_list(message)
+    // 请求列表
+    Get_list(message)
 
-}
+  }
 
   // 【点击翻页】&&刷新表格所在的页面
   const receive = (message)=>{

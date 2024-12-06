@@ -24,7 +24,7 @@
             <a-row type="flex">
               <a-col :span="1" :order="1">
                   <!--导航收起按钮-->
-                  <a-button type="primary" size="small" style="font-size: 12px; margin-right: 16px;" @click="() => { store.commit('menu/change') }">
+                  <a-button type="primary" size="small" style="font-size: 12px;  margin:3px 16px 0 0;" @click="() => { store.commit('menu/change') }">
                     <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
@@ -66,7 +66,7 @@
               :loading="loading"
               :columns="PAGEDATA?.colum"
               :data-source="PAGEDATA?.datalist"
-              :scroll="{ x: 1800, y: innerHeight}"
+              :scroll="{ x: 2900, y: innerHeight}"
               :pagination="false"
               style="font-size:12px;"
           >

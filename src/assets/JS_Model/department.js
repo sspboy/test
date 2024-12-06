@@ -366,7 +366,7 @@ export class TableOperate{
                 // 昵称
                 if(colums.field_name === "nickname"){
                   colums['align'] = 'center'
-                  colums['width'] = 100
+                  colums['width'] = 140
                 }
                 // 密码
                 if(colums.field_name === "pass_word"){
@@ -879,7 +879,7 @@ export class TableOperate{
                 // 店铺
                 if(colums.field_name === "shop_id"){
                   colums['align'] = 'center'
-                  colums['width'] = 90
+                  colums['width'] = 110
                 }
     
                 // 订单id
@@ -1014,7 +1014,7 @@ export class TableOperate{
             // id
             if(colums.field_name === "id"){
               colums['align'] = 'left'
-              colums['width'] = 60
+              colums['width'] = 160
             }
 
             // 店铺
