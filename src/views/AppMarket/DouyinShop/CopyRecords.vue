@@ -43,6 +43,25 @@
               style="font-size:12px;"
           >
 
+            <!--头图-->
+            <template v-slot:top_pic="{ record }">
+                <img :src="record.top_pic" style="width: 50px; height: 50px;" />
+            </template>
+            
+            <!--白底-->
+            <template v-slot:white_pic="{ record }">
+                <img :src="record.white_image" style="width: 50px; height: 50px;" />
+            </template>
+
+            <!--shipin-->
+            <template v-slot:video="{ record }">
+              var url = JSON.parse(record.video_url)
+                <img :src="url.pic" style="width: 50px; height: 50px;" />
+            </template>    
+            <!--主图-->
+            <template v-slot:pic="{ }">
+            </template>
+
             <template #bodyCell="{ column }">
 
               <!--定义操作按钮 开始-->
@@ -196,13 +215,13 @@ export default {
 const Get_list = (message) =>{
 
   // 请求接口地址赋值
-  TO.message.url = API.AdminAPI.douyinshop.list
+  TO.message.url = API.AppSrtoreAPI.copyrecords.list
 
   TO.actions.list(message,(res)=>{
     
     console.log(res)
 
-    TO.douyinshop.add_colum(res)        // 添加表头
+    TO.copylog.add_colum(res)        // 添加表头
 
     // 页面赋值
     PAGEDATA.colum = res.colum

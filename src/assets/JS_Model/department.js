@@ -862,6 +862,7 @@ export class TableOperate{
 
     // 抖音订单表头
     douyinorder = {
+
         add_colum:(resdata)=>{
 
             for(let colums of resdata.colum){
@@ -1003,6 +1004,7 @@ export class TableOperate{
             this.message.page = resdata.now_page;
             this.message.page_size = resdata.page_size;
         }
+
     }
 
     // 抖音店铺表头
@@ -1144,7 +1146,163 @@ export class TableOperate{
         this.message.page = resdata.now_page;
         this.message.page_size = resdata.page_size;
       }
+
     }
 
+    // 复制记录表头
+    copylog = {
+  
+      add_colum:(resdata)=>{
+
+        for(let colums of resdata.colum){
+            // id
+            if(colums.field_name === "id"){
+              colums['align'] = 'left'
+              colums['width'] = 60
+            }
+
+            // 任务id
+            if(colums.field_name === "task_id"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+
+            // 店铺id
+            if(colums.field_name === "shop_id"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+
+
+            // 平台
+            if(colums.field_name === "platform"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+
+            // 商品id
+            if(colums.field_name === "item_id"){
+              colums['align'] = 'center'
+              colums['width'] = 120
+            }
+
+            // 头图
+            if(colums.field_name === "top_pic"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+              colums['slots'] = { customRender: 'top_pic' }
+            }
+
+            // 白底图
+            if(colums.field_name === "white_image"){
+              colums['align'] = 'center'
+              colums['width'] = 320
+              colums['slots'] = { customRender: 'white_pic' }
+
+            }
+
+            // 视频地址
+            if(colums.field_name === "video_url"){
+              colums['align'] = 'center'
+              colums['width'] = 90
+              colums['slots'] = { customRender: 'video' }
+
+            }
+
+
+            // 主图
+            if(colums.field_name === "pic"){
+              colums['align'] = 'center'
+              colums['width'] = 120
+              colums['slots'] = { customRender: 'pic' }
+
+            }
+
+            // 标题
+            if(colums.field_name === "title"){
+              colums['align'] = 'center'
+              colums['width'] = 70
+            }
+            
+            // 规格
+            if(colums.field_name === "sku"){
+              colums['align'] = 'center'
+              colums['width'] = 160
+            }
+            
+            // 规格列表
+            if(colums.field_name === "sku_list"){
+              colums['align'] = 'center'
+              colums['width'] = 120
+            }
+            
+            // 属性
+            if(colums.field_name === "format"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+            
+            // 描述
+            if(colums.field_name === "description"){
+              colums['align'] = 'center'
+              colums['width'] = 120
+            }
+            
+            // 复制状态
+            if(colums.field_name === "state"){
+              colums['align'] = 'center'
+              colums['width'] = 360
+            }
+
+            // 图片上传结果
+            if(colums.field_name === "pic_upload_res"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+
+            // 分类名称
+            if(colums.field_name === "cate_name"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+            
+            // 规格地图
+            if(colums.field_name === "skumap"){
+              colums['align'] = 'center'
+              colums['width'] = 120
+            }
+
+            // 创建时间
+            if(colums.field_name === "create_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+
+            // 更新时间
+            if(colums.field_name === "update_time"){
+              colums['align'] = 'center'
+              colums['width'] = 200
+            }
+
+        }
+
+        var op = {
+
+              "dataIndex": "state",
+              "field_name": "state",
+              "field_type": "int",
+              "key": "operation",
+              "title": "操作",
+              "fixed": 'right',
+              "align":"center",
+              "width":100
+        }
+
+        resdata.colum.push(op) // 添加操作按钮
+        this.message.page = resdata.now_page;
+        this.message.page_size = resdata.page_size;
+      }
+
+    }
 
 }
