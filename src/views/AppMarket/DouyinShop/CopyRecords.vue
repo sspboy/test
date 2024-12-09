@@ -38,34 +38,51 @@
               :loading="loading"
               :columns="PAGEDATA?.colum"
               :data-source="PAGEDATA?.datalist"
-              :scroll="{ x: 3200, y: innerHeight}"
+              :scroll="{ x: 1800, y: innerHeight}"
               :pagination="false"
               style="font-size:12px;"
           >
 
-            <!--头图-->
-            <template v-slot:top_pic="{ record }">
-                <img :src="record.top_pic" style="width: 50px; height: 50px;" />
-            </template>
-            
-            <!--白底-->
-            <template v-slot:white_pic="{ record }">
-                <img :src="record.white_image" style="width: 50px; height: 50px;" />
-            </template>
+            <template v-slot:bodyCell="{ column, record }">
 
-            <!--shipin-->
-            <template v-slot:video="{ record }">
-              var url = JSON.parse(record.video_url)
-                <img :src="url.pic" style="width: 50px; height: 50px;" />
-            </template>    
-            <!--主图-->
-            <template v-slot:pic="{ }">
-            </template>
+              <!--头图-->
+              <template  v-if="column.dataIndex === 'top_pic'">
+                  <img :src="record.top_pic" style="width: 50px; height: 50px;border-radius: 5px;" />
+              </template>
 
-            <template #bodyCell="{ column }">
+              <!--白底图-->
+              <template  v-if="column.dataIndex === 'white_image'">
+                  <img :src="record.white_image" style="width: 50px; height: 50px;border-radius: 5px;" />
+              </template>
+
+              <!--视频-->
+              <template  v-if="column.dataIndex === 'video_url'">
+                  <a>查看</a>
+              </template>
+
+              <!--主图-->
+              <template  v-if="column.dataIndex === 'pic'">
+                  <a>查看</a>
+              </template>
+
+              <!--sku-->
+              <template  v-if="column.dataIndex === 'sku'">
+                  <a>查看</a>
+              </template>
+
+              <!--属性-->
+              <template  v-if="column.dataIndex === 'format'">
+                  <a>查看</a>
+              </template>
+
+              <!--描述-->
+              <template  v-if="column.dataIndex === 'description'">
+                  <a>查看</a>
+              </template>
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
+                  <a>上传</a> |                  
                   <a>编辑</a> |
                   <a>删除</a>
               </template>
@@ -94,6 +111,8 @@ import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/ic
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
 import * as TABLE from '@/assets/JS_Model/department';
+import * as CopyLog from '@/assets/douyinshop/copylog';
+
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue';
 import menu_head from "@/components/layout/menu_head.vue";
@@ -153,7 +172,6 @@ export default {
 
       // 请求列表
       Get_list(message)
-
 
     })
 
@@ -219,13 +237,12 @@ const Get_list = (message) =>{
 
   TO.actions.list(message,(res)=>{
     
-    console.log(res)
-
     TO.copylog.add_colum(res)        // 添加表头
 
     // 页面赋值
     PAGEDATA.colum = res.colum
-    PAGEDATA.datalist = res.data
+    var data = res.data
+    PAGEDATA.datalist = data
     PAGEDATA.total_number =res.total_number
 
     loading.value = false // loading 状态关闭
@@ -308,6 +325,7 @@ const handleFinishFailed = errors => {
       store,
       loading,
       receive,
+      CopyLog,
     }
   }
 
@@ -321,4 +339,5 @@ const handleFinishFailed = errors => {
   height: calc(100vh - 245px);
   min-height: 0px;
 }
+.tablehiddle{display:none;}
 </style>

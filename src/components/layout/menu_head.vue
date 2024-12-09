@@ -3,7 +3,7 @@
       
       <div class="logo_text cursor">
         <div style="float: left;">
-          <img src="../../assets/logo_douxiaoer.png"/>
+          <img src="../../assets/logo_36x36.png"/>
         </div>
 
         <div style="margin: 2px 0 0 18px;float: left;">

@@ -1153,18 +1153,23 @@ export class TableOperate{
     copylog = {
   
       add_colum:(resdata)=>{
-
+        // 过滤不用显示的字段
+        resdata.colum.splice(1, 1)
+        resdata.colum.splice(1, 1)
+        resdata.colum.splice(2, 1)
+        resdata.colum.splice(5, 1)
+        resdata.colum.splice(7, 1)
         for(let colums of resdata.colum){
+
             // id
             if(colums.field_name === "id"){
-              colums['align'] = 'left'
-              colums['width'] = 60
+              colums['align'] = 'center'
+              colums['width'] = 40
             }
 
             // 任务id
             if(colums.field_name === "task_id"){
-              colums['align'] = 'center'
-              colums['width'] = 60
+
             }
 
             // 店铺id
@@ -1177,36 +1182,31 @@ export class TableOperate{
             // 平台
             if(colums.field_name === "platform"){
               colums['align'] = 'center'
-              colums['width'] = 60
+              colums['width'] = 40
             }
 
             // 商品id
             if(colums.field_name === "item_id"){
               colums['align'] = 'center'
-              colums['width'] = 120
+              colums['width'] = 160
             }
 
             // 头图
             if(colums.field_name === "top_pic"){
               colums['align'] = 'center'
               colums['width'] = 60
-              colums['slots'] = { customRender: 'top_pic' }
             }
 
             // 白底图
             if(colums.field_name === "white_image"){
               colums['align'] = 'center'
-              colums['width'] = 320
-              colums['slots'] = { customRender: 'white_pic' }
-
+              colums['width'] = 50
             }
 
             // 视频地址
             if(colums.field_name === "video_url"){
               colums['align'] = 'center'
-              colums['width'] = 90
-              colums['slots'] = { customRender: 'video' }
-
+              colums['width'] = 50
             }
 
 
@@ -1214,50 +1214,48 @@ export class TableOperate{
             if(colums.field_name === "pic"){
               colums['align'] = 'center'
               colums['width'] = 120
-              colums['slots'] = { customRender: 'pic' }
-
             }
 
             // 标题
             if(colums.field_name === "title"){
-              colums['align'] = 'center'
-              colums['width'] = 70
+              colums['align'] = 'left'
+              colums['width'] = 220
             }
             
             // 规格
             if(colums.field_name === "sku"){
               colums['align'] = 'center'
-              colums['width'] = 160
+              colums['width'] = 40
             }
             
             // 规格列表
             if(colums.field_name === "sku_list"){
               colums['align'] = 'center'
-              colums['width'] = 120
+              colums['width'] = 40
             }
             
             // 属性
             if(colums.field_name === "format"){
               colums['align'] = 'center'
-              colums['width'] = 60
+              colums['width'] = 40
             }
             
             // 描述
             if(colums.field_name === "description"){
               colums['align'] = 'center'
-              colums['width'] = 120
+              colums['width'] = 40
             }
             
             // 复制状态
             if(colums.field_name === "state"){
               colums['align'] = 'center'
-              colums['width'] = 360
+              colums['width'] = 60
             }
 
             // 图片上传结果
             if(colums.field_name === "pic_upload_res"){
               colums['align'] = 'center'
-              colums['width'] = 60
+              colums['width'] = 80
             }
 
             // 分类名称
@@ -1269,19 +1267,19 @@ export class TableOperate{
             // 规格地图
             if(colums.field_name === "skumap"){
               colums['align'] = 'center'
-              colums['width'] = 120
+              colums['width'] = 80
             }
 
             // 创建时间
             if(colums.field_name === "create_time"){
               colums['align'] = 'center'
-              colums['width'] = 200
+              colums['width'] = 100
             }
 
             // 更新时间
             if(colums.field_name === "update_time"){
               colums['align'] = 'center'
-              colums['width'] = 200
+              colums['width'] = 100
             }
 
         }
@@ -1290,12 +1288,12 @@ export class TableOperate{
 
               "dataIndex": "state",
               "field_name": "state",
-              "field_type": "int",
               "key": "operation",
               "title": "操作",
               "fixed": 'right',
               "align":"center",
-              "width":100
+              "width":60,
+
         }
 
         resdata.colum.push(op) // 添加操作按钮
