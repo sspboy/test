@@ -93,7 +93,7 @@
 import {defineComponent, reactive, ref, computed} from 'vue';
 import { TreeSelect } from 'ant-design-vue';
 import * as utils from '@/assets/JS_Model/public_model';
-import * as TABLE from '@/assets/JS_Model/department';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 
 export default defineComponent({
   // 菜单添加

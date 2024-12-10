@@ -43,21 +43,31 @@
               style="font-size:12px;"
           >
 
-            <template v-slot:bodyCell="{ column, record }">
+            <template v-slot:bodyCell="{ column,record }">
 
               <!--头图-->
               <template  v-if="column.dataIndex === 'top_pic'">
-                  <img :src="record.top_pic" style="width: 50px; height: 50px;border-radius: 5px;" />
+                  <img :src="record.top_pic" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="a"/>
               </template>
 
               <!--白底图-->
               <template  v-if="column.dataIndex === 'white_image'">
-                  <img :src="record.white_image" style="width: 50px; height: 50px;border-radius: 5px;" />
+                <div v-if="record.white_image != 0">                  
+                  <img :src="record.white_image" style="width: 30px; height: 30px;border-radius: 5px;" />
+                </div>
+                <div v-else>                  
+                    <a-skeleton-avatar :active="false" size="default" shape="avatarShape" />
+                  </div>
               </template>
 
               <!--视频-->
               <template  v-if="column.dataIndex === 'video_url'">
-                  <a>查看</a>
+                  <div v-if="record.video_url != null">                  
+                    <img :src="JSON.parse(record.video_url).pic" style="width: 30px; height: 30px;border-radius: 5px;" />
+                  </div>
+                  <div v-else>                  
+                    <a-skeleton-avatar :active="false" size="default" shape="avatarShape" />
+                  </div>
               </template>
 
               <!--主图-->
@@ -110,8 +120,7 @@ import {ref, reactive, onBeforeMount, onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
-import * as TABLE from '@/assets/JS_Model/department';
-import * as CopyLog from '@/assets/douyinshop/copylog';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue';
@@ -241,10 +250,8 @@ const Get_list = (message) =>{
 
     // 页面赋值
     PAGEDATA.colum = res.colum
-    var data = res.data
-    PAGEDATA.datalist = data
+    PAGEDATA.datalist = res.data
     PAGEDATA.total_number =res.total_number
-
     loading.value = false // loading 状态关闭
 
   })
@@ -325,7 +332,7 @@ const handleFinishFailed = errors => {
       store,
       loading,
       receive,
-      CopyLog,
+      
     }
   }
 

@@ -1,8 +1,14 @@
-// 部门&&团队成员
+// 公用方法开始
 // 引用外部方法
-import * as utils from '@/assets/JS_Model/public_model';
+import * as utils from '@/assets/JS_Model/public_model';// 公用路径方法
 const API = new utils.A_Patch()
-import axios from "axios";
+
+// 引用【复制记录】方法
+import * as copyLog from '@/assets/douyinshop/copylog';
+import { Alert } from 'ant-design-vue';
+const CopyLog = new copyLog.CopyLog();
+
+import axios from "axios";// 网络请求方法
 
 // 获取所有角色
 export class Role {
@@ -161,6 +167,7 @@ export class Depart {
 
 }
 
+// 版本
 export class Version {
 
     all_ = {
@@ -1153,12 +1160,15 @@ export class TableOperate{
     copylog = {
   
       add_colum:(resdata)=>{
+
         // 过滤不用显示的字段
-        resdata.colum.splice(1, 1)
-        resdata.colum.splice(1, 1)
-        resdata.colum.splice(2, 1)
-        resdata.colum.splice(5, 1)
-        resdata.colum.splice(7, 1)
+        resdata.colum.splice(1, 1)// 任务id
+        resdata.colum.splice(1, 1)// 店铺id
+        resdata.colum.splice(2, 1)// 商品id
+        resdata.colum.splice(5, 1)// 主图列表
+        resdata.colum.splice(7, 1)// skulist
+        resdata.colum.splice(12, 1)// skumap
+
         for(let colums of resdata.colum){
 
             // id
@@ -1183,6 +1193,10 @@ export class TableOperate{
             if(colums.field_name === "platform"){
               colums['align'] = 'center'
               colums['width'] = 40
+              colums['customRender']=(text, record, index) => {
+                var res = CopyLog.List.get_platform(text.value)
+                return res
+              }
             }
 
             // 商品id
@@ -1203,10 +1217,14 @@ export class TableOperate{
               colums['width'] = 50
             }
 
-            // 视频地址
+            // 视频
             if(colums.field_name === "video_url"){
               colums['align'] = 'center'
               colums['width'] = 50
+              colums['customCell']=(record, index)=>{
+                var res = CopyLog.List.get_pic(record.video_url)
+                return res
+              }
             }
 
 
@@ -1214,6 +1232,15 @@ export class TableOperate{
             if(colums.field_name === "pic"){
               colums['align'] = 'center'
               colums['width'] = 120
+              colums['customCell']=(record) => {
+                return {
+                  on: {
+                    click: (e) => {
+                      console.log(record)
+                    },
+                  },
+                };
+              }
             }
 
             // 标题
