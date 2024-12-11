@@ -48,21 +48,16 @@ export class CopyLog{
     Edit_pic = {}
     // 编辑视频
     Edit_video = {}
-
     // 编辑白底图
     Edit_white_image = {}
-
     // 编辑规格
     Edit_spec= {}
     // 编辑描述
     Edit_DES= {}
-
     // 编辑属性
     Edit_Format= {}
-
     // 编辑分类
     Edit_class={}
-
     // 更新方法
     Update={}
 

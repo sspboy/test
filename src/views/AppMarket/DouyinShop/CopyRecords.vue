@@ -1,5 +1,10 @@
 <template>
-  <a-layout style="height: 100vh;width: 100vw;">
+<!--编辑组件  开始-->
+<Edit_title :data="EditData" />
+<!--导航组件  结束-->
+
+<a-layout style="height: 100vh;width: 100vw;">
+
     <!--head 导航组件  开始-->
     <menu_head />
     <!--head 导航组件  结束-->
@@ -44,6 +49,11 @@
           >
 
             <template v-slot:bodyCell="{ column,record }">
+
+              <!--标题-->
+              <template  v-if="column.dataIndex === 'title'">
+                  <a v-on:click="Edit_fun.title(record)">{{record.title}}</a>
+              </template>
 
               <!--头图-->
               <template  v-if="column.dataIndex === 'top_pic'">
@@ -92,9 +102,9 @@
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
-                  <a>上传</a> |                  
-                  <a>编辑</a> |
-                  <a>删除</a>
+                  <a style="font-size: 16px;" title="商品上传"><UploadOutlined /></a> |                  
+                  <a style="font-size: 16px;" title="编辑"><FormOutlined /></a> |
+                  <a style="font-size: 16px;" title="删除"><DeleteOutlined /></a>
               </template>
               <!--定义操作按钮 结束-->
 
@@ -117,7 +127,7 @@
 
 <script>
 import {ref, reactive, onBeforeMount, onMounted, onUnmounted} from 'vue';
-import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/icons-vue';
+import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined,DeleteOutlined,FormOutlined,UploadOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
@@ -126,7 +136,17 @@ import * as TABLE from '@/assets/JS_Model/TableOperate';
 import menu_left from '@/components/layout/menu_left.vue';
 import menu_head from "@/components/layout/menu_head.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
+import Edit_title from "@/components/AppMarket/Douyinshop/edittitle.vue";
+// 标题
+// 主图
+// 白底图
+// 视频
+// 规格
+// 属性
+// 描述
 // 组件引用=====结束
+
+
 
 export default {
   
@@ -138,9 +158,13 @@ export default {
     PlusOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
+    DeleteOutlined,
+    FormOutlined,
+    UploadOutlined,
     nav_pagination,
     menu_left,
     menu_head,
+    Edit_title,
   },
   
   // 父组件数据
@@ -148,6 +172,7 @@ export default {
 
   // 组合API返回到模版
   setup(props) {
+
     const API = new utils.A_Patch()           // 请求接口
     const TO = new TABLE.TableOperate()       // 表格操作方法
     const store = useStore();                 // 共享数据
@@ -163,6 +188,15 @@ export default {
       datalist:[],        // 列表信息
       total_number:0,     // 内容总数
     })
+
+    // 编辑数据定义
+    const EditData = reactive({
+      action:'',// 接口
+      title:'',// 标题
+      data:'',// 数据
+      open:false,// 开启状态
+    })
+
 
     // 【组件挂载】========================================开始
     onBeforeMount(()=>{
@@ -222,40 +256,40 @@ export default {
 
       }
 
-  // 【点击翻页】&&刷新表格所在的页面
-  const receive = (message)=>{
+    // 【点击翻页】&&刷新表格所在的页面
+    const receive = (message)=>{
 
-    loading.value = true    // 开启loading状态
+      loading.value = true    // 开启loading状态
 
-    // 刷新页面查询条件
-    message.condition = [{
-        type: "orderby",
-        condition: [{'column_name': 'create_time', 'value': 'DESC', }]
-      }]
+      // 刷新页面查询条件
+      message.condition = [{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]
 
-    Get_list(message) // 请求列表
+      Get_list(message) // 请求列表
 
+    }
+
+
+
+  const Get_list = (message) =>{
+
+    // 请求接口地址赋值
+    TO.message.url = API.AppSrtoreAPI.copyrecords.list
+
+    TO.actions.list(message,(res)=>{
+      
+      TO.copylog.add_colum(res)        // 添加表头
+
+      // 页面赋值
+      PAGEDATA.colum = res.colum
+      PAGEDATA.datalist = res.data
+      PAGEDATA.total_number =res.total_number
+      loading.value = false // loading 状态关闭
+
+    })
   }
-
-
-
-const Get_list = (message) =>{
-
-  // 请求接口地址赋值
-  TO.message.url = API.AppSrtoreAPI.copyrecords.list
-
-  TO.actions.list(message,(res)=>{
-    
-    TO.copylog.add_colum(res)        // 添加表头
-
-    // 页面赋值
-    PAGEDATA.colum = res.colum
-    PAGEDATA.datalist = res.data
-    PAGEDATA.total_number =res.total_number
-    loading.value = false // loading 状态关闭
-
-  })
-}
 
 
 // 【查询组件】========================================开始
@@ -319,7 +353,16 @@ const handleFinishFailed = errors => {
 };
 // 【查询组件】========================================结束
 
+// 编辑标题方法
+const Edit_fun={
+  
+  title:(data)=>{
+    EditData.title = '编辑标题';
+    EditData.open = true
+    EditData.data = data
+  },
 
+}
 
     return {
       formdata,
@@ -332,6 +375,8 @@ const handleFinishFailed = errors => {
       store,
       loading,
       receive,
+      EditData,
+      Edit_fun,
       
     }
   }
