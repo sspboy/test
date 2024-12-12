@@ -11,4 +11,9 @@ html{margin: 0px; padding: 0px;font-size: 12px;}
 /* 全局内容区域圆角样式定义*/
 .content_border{margin: 6px 0 0 0;border-top-left-radius:5px; padding:14px;background:#fff;}
 /* { margin: '6px 0 0 0', borderTopLeftRadius:'5px', padding: '14px',background: '#fff',} */
+/* aria-hidden=true 浏览器报提示问题解决 */
+div[aria-hidden=true]{
+    display: none !important;
+}
+
 </style>

@@ -1232,21 +1232,12 @@ export class TableOperate{
             if(colums.field_name === "pic"){
               colums['align'] = 'center'
               colums['width'] = 120
-              colums['customCell']=(record) => {
-                return {
-                  on: {
-                    click: (e) => {
-                      console.log(record)
-                    },
-                  },
-                };
-              }
             }
 
             // 标题
             if(colums.field_name === "title"){
               colums['align'] = 'left'
-              colums['width'] = 220
+              colums['width'] = 280
             }
             
             // 规格

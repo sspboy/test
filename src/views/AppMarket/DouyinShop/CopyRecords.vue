@@ -1,6 +1,16 @@
 <template>
 <!--编辑组件  开始-->
-<Edit_title :data="EditData" />
+<Edit_title :data="CL.Edit.title_Data" />
+<Edit_pic :data="CL.Edit.pic_Data" />
+<Edit_video :data="CL.Edit.video_Data" />
+<Edit_white_img :data="CL.Edit.white_image_Data" />
+<Edit_format :data="CL.Edit.format_Data" />
+<Edit_SKU :data="CL.Edit.SKU_Data" />
+<Edit_des :data="CL.Edit.des_Data" />
+<Edit_class :data="CL.Edit.class_Data" />
+<Edit_pic_upload :data="CL.Edit.pic_upload_Data" />
+
+
 <!--导航组件  结束-->
 
 <a-layout style="height: 100vh;width: 100vw;">
@@ -52,18 +62,18 @@
 
               <!--标题-->
               <template  v-if="column.dataIndex === 'title'">
-                  <a v-on:click="Edit_fun.title(record)">{{record.title}}</a>
+                  <a v-on:click="CL.Edit.title(record)">{{record.title}}</a>
               </template>
 
               <!--头图-->
               <template  v-if="column.dataIndex === 'top_pic'">
-                  <img :src="record.top_pic" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="a"/>
+                  <img :src="record.top_pic" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.pic(record)"/>
               </template>
 
               <!--白底图-->
               <template  v-if="column.dataIndex === 'white_image'">
                 <div v-if="record.white_image != 0">                  
-                  <img :src="record.white_image" style="width: 30px; height: 30px;border-radius: 5px;" />
+                  <img :src="record.white_image" style="width: 30px; height: 30px;border-radius: 5px;"  v-on:click="CL.Edit.white_image(record)"/>
                 </div>
                 <div v-else>                  
                     <a-skeleton-avatar :active="false" size="default" shape="avatarShape" />
@@ -73,31 +83,31 @@
               <!--视频-->
               <template  v-if="column.dataIndex === 'video_url'">
                   <div v-if="record.video_url != null">                  
-                    <img :src="JSON.parse(record.video_url).pic" style="width: 30px; height: 30px;border-radius: 5px;" />
+                    <img :src="JSON.parse(record.video_url).pic" style="width: 30px; height: 30px;border-radius: 5px;"  v-on:click="CL.Edit.video(record)"/>
                   </div>
                   <div v-else>                  
                     <a-skeleton-avatar :active="false" size="default" shape="avatarShape" />
                   </div>
               </template>
 
-              <!--主图-->
-              <template  v-if="column.dataIndex === 'pic'">
-                  <a>查看</a>
+              <!--图片上传状态-->
+              <template  v-if="column.dataIndex === 'pic_upload_res'">
+                  <a v-on:click="CL.Edit.pic_upload(record)">查看</a>
               </template>
 
               <!--sku-->
               <template  v-if="column.dataIndex === 'sku'">
-                  <a>查看</a>
+                  <a  v-on:click="CL.Edit.SKU(record)">查看</a>
               </template>
 
               <!--属性-->
               <template  v-if="column.dataIndex === 'format'">
-                  <a>查看</a>
+                  <a  v-on:click="CL.Edit.format(record)">查看</a>
               </template>
 
               <!--描述-->
               <template  v-if="column.dataIndex === 'description'">
-                  <a>查看</a>
+                  <a  v-on:click="CL.Edit.des(record)">查看</a>
               </template>
 
               <!--定义操作按钮 开始-->
@@ -130,20 +140,24 @@ import {ref, reactive, onBeforeMount, onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined,DeleteOutlined,FormOutlined,UploadOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
-import * as TABLE from '@/assets/JS_Model/TableOperate';
+import * as TABLE from '@/assets/JS_Model/TableOperate';// 表头操作方法
+import * as COPYLOG from '@/assets/douyinshop/copylog';// 方法
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue';
 import menu_head from "@/components/layout/menu_head.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
-import Edit_title from "@/components/AppMarket/Douyinshop/edittitle.vue";
-// 标题
-// 主图
-// 白底图
-// 视频
-// 规格
-// 属性
-// 描述
+import Edit_title from "@/components/AppMarket/Douyinshop/edittitle.vue";// 标题
+import Edit_pic from "@/components/AppMarket/Douyinshop/editpic.vue";// 主图
+import Edit_video from "@/components/AppMarket/Douyinshop/editvideo.vue";// 视频
+import Edit_white_img from "@/components/AppMarket/Douyinshop/editwhiteimage.vue";// 白底图
+import Edit_SKU from "@/components/AppMarket/Douyinshop/editSKU.vue";// 规格
+import Edit_format from "@/components/AppMarket/Douyinshop/editformat.vue";// 属性
+import Edit_des from "@/components/AppMarket/Douyinshop/editdes.vue";// 描述
+import Edit_class from "@/components/AppMarket/Douyinshop/editclass.vue";// 分类
+import Edit_pic_upload from "@/components/AppMarket/Douyinshop/editpicupload.vue";// 图片上传
+
+
 // 组件引用=====结束
 
 
@@ -165,6 +179,14 @@ export default {
     menu_left,
     menu_head,
     Edit_title,
+    Edit_pic,
+    Edit_SKU,
+    Edit_video,
+    Edit_white_img,
+    Edit_format,
+    Edit_des,
+    Edit_class,
+    Edit_pic_upload
   },
   
   // 父组件数据
@@ -175,6 +197,7 @@ export default {
 
     const API = new utils.A_Patch()           // 请求接口
     const TO = new TABLE.TableOperate()       // 表格操作方法
+    const CL = new COPYLOG.CopyLog()
     const store = useStore();                 // 共享数据
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)                 // 初始化loading状态
@@ -187,14 +210,6 @@ export default {
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 内容总数
-    })
-
-    // 编辑数据定义
-    const EditData = reactive({
-      action:'',// 接口
-      title:'',// 标题
-      data:'',// 数据
-      open:false,// 开启状态
     })
 
 
@@ -353,18 +368,9 @@ const handleFinishFailed = errors => {
 };
 // 【查询组件】========================================结束
 
-// 编辑标题方法
-const Edit_fun={
-  
-  title:(data)=>{
-    EditData.title = '编辑标题';
-    EditData.open = true
-    EditData.data = data
-  },
-
-}
 
     return {
+      CL,
       formdata,
       handleFinish,
       handleFinishFailed,
@@ -375,8 +381,6 @@ const Edit_fun={
       store,
       loading,
       receive,
-      EditData,
-      Edit_fun,
       
     }
   }

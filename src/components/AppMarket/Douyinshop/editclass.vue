@@ -10,7 +10,7 @@ import { defineComponent,ref } from 'vue';
 
 export default defineComponent({
 
-    name: "Edit_title",  // 功能添加
+    name: "Edit_class",  // 功能添加
 
     // 引用组件
     components: {
