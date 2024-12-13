@@ -33,7 +33,7 @@ export class CopyLog{
 
 
     }
-    // 编辑方法
+
     // 编辑标题
     Edit_title = {
         

@@ -137,13 +137,7 @@ import menu_left from '@/components/layout/menu_left.vue';
 import menu_head from "@/components/layout/menu_head.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
 import Edit_title from "@/components/AppMarket/Douyinshop/edittitle.vue";
-// 标题
-// 主图
-// 白底图
-// 视频
-// 规格
-// 属性
-// 描述
+
 // 组件引用=====结束
 
 
