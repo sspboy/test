@@ -1168,19 +1168,9 @@ export class TableOperate{
         resdata.colum.splice(5, 1)// 主图列表
         resdata.colum.splice(7, 1)// skulist
         resdata.colum.splice(12, 1)// skumap
+        resdata.colum.splice(0, 1)// id
 
         for(let colums of resdata.colum){
-
-            // id
-            if(colums.field_name === "id"){
-              colums['align'] = 'center'
-              colums['width'] = 40
-            }
-
-            // 任务id
-            if(colums.field_name === "task_id"){
-
-            }
 
             // 店铺id
             if(colums.field_name === "shop_id"){

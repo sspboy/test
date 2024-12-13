@@ -40,6 +40,8 @@
         <div :style="innerHeight">
           <!--表格组件：：发送初始化数据  开始-->
           <a-table
+              :row-key="record => record.id"
+              :row-selection = "CL.BatchConfig"
               :loading="loading"
               :columns="PAGEDATA?.colum"
               :data-source="PAGEDATA?.datalist"
@@ -114,6 +116,15 @@
           <!--表格组件：：发送初始化数据  结束-->
           </div>
 
+
+          <div class="batch_s">
+            <a-button size="small" style="font-size: 12px;" type="primary" :disabled="!CL.BatchConfig.state.value" @click="console.log('修改')">批量修改</a-button>
+            <a-button size="small" style="font-size: 12px;margin-left: 6px;" type="primary" :disabled="!CL.BatchConfig.state.value" @click="console.log('删除')">批量删除</a-button>
+            <a-button size="small" style="font-size: 12px;margin-left: 6px;" type="primary" :disabled="!CL.BatchConfig.state.value" @click="console.log('导出')">批量导出</a-button>
+
+
+          </div>
+
           <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
           <nav_pagination :fandata="PAGEDATA" v-on:complete="receive"/>
 
@@ -131,6 +142,8 @@ import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined,DeleteOutlined,FormOu
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
+import * as copylog from '@/assets/douyinshop/copylog';
+
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue';
@@ -169,6 +182,8 @@ export default {
 
     const API = new utils.A_Patch()           // 请求接口
     const TO = new TABLE.TableOperate()       // 表格操作方法
+    const CL = new copylog.CopyLog()          // 表格操作方法
+
     const store = useStore();                 // 共享数据
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)                 // 初始化loading状态
@@ -359,6 +374,7 @@ const Edit_fun={
 }
 
     return {
+      CL,
       formdata,
       handleFinish,
       handleFinishFailed,
@@ -386,4 +402,6 @@ const Edit_fun={
   min-height: 0px;
 }
 .tablehiddle{display:none;}
+.batch_s{margin:22px 0 0 0px; float: left;}
+
 </style>

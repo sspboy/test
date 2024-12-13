@@ -1,4 +1,5 @@
 /** 复制商品方法 **/
+import {ref, reactive, computed} from 'vue';
 
 export class CopyLog{
     
@@ -30,8 +31,6 @@ export class CopyLog{
                 return 0
             }
         }
-
-
     }
 
     // 编辑标题
@@ -41,6 +40,34 @@ export class CopyLog{
         load:(data)=>{
             
         }
+
+    }
+
+    BatchConfig={
+
+        // 定义行选择的selectedRowKeys
+        selectedlist:ref([]),
+
+        state:computed(() => this.BatchConfig.selectedlist.value.length > 0),
+        
+        columnWidth:16,
+
+        fixed:true,
+
+        onChange:(selectedRowKeys, selectedRows)=>{
+            console.log(selectedRowKeys)
+            console.log(this.BatchConfig.state.value)
+            this.BatchConfig.selectedlist.value = selectedRowKeys
+        },
+
+        // 定义行选择onChange事件处理函数
+        onSelectChange: (selectedRowKeys, selectedRows) => {
+            // 更新selectedRowKeys状态
+            selectedRowKeys.value = selectedRowKeys;
+            this.BatchConfig.selectedlist.value = []
+        }
+
+
 
     }
 
