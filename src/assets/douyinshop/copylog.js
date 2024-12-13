@@ -43,6 +43,20 @@ export class CopyLog{
 
     }
 
+    addmodel={
+
+            // 编辑数据定义
+        title_Data: reactive({action:'',title:'',data:'',open:false,}),
+
+        title:(data)=>{
+            EditData.title = '编辑标题';
+            EditData.open = true
+            EditData.data = data
+          },
+
+
+    }
+
     BatchConfig={
 
         // 定义行选择的selectedRowKeys
