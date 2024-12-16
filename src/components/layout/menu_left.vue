@@ -30,7 +30,8 @@ import {
   CodeOutlined,
   AccountBookOutlined,
   SettingOutlined,
-  HomeOutlined
+  HomeOutlined,
+  CopyOutlined
 } from '@ant-design/icons-vue';
 
 

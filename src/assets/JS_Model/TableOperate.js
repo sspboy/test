@@ -1303,8 +1303,8 @@ export class TableOperate{
 
         var op = {
 
-              "dataIndex": "state",
-              "field_name": "state",
+              "dataIndex": "operation",
+              "field_name": "operation",
               "key": "operation",
               "title": "操作",
               "fixed": 'right',

@@ -1,6 +1,16 @@
 <template>
 <!--编辑组件  开始-->
-<Edit_title :data="EditData" />
+<Edit_title :data="CL.Edit.title_Data" />
+<Edit_pic :data="CL.Edit.pic_Data" />
+<Edit_video :data="CL.Edit.video_Data" />
+<Edit_SKU :data="CL.Edit.SKU_Data" />
+<Edit_white_image :data="CL.Edit.white_image_Data" />
+<Edit_format :data="CL.Edit.format_Data" />
+<Edit_class :data="CL.Edit.class_Data" />
+<Edit_upload_image :data="CL.Edit.upload_imgage_Data" />
+<Edit_des :data="CL.Edit.des_Data" />
+<Model_del :data="CL.Edit.del_Data" v-on:del_coallback="pagecallback"/>
+
 <!--导航组件  结束-->
 
 <a-layout style="height: 100vh;width: 100vw;">
@@ -31,7 +41,62 @@
                   </a-button>
               </a-col>
               <a-col :span="23" :order="5">
+                <a-form
+                  layout="inline"
+                  :model="formState"
+                  @finish="handleFinish"
+                  @finishFailed="handleFinishFailed"
+                >
+                  
+                  <a-form-item label="标题">
+                    <a-input type="text" size="default" class="font_size_12" placeholder="输入标题关键字" />
+                  </a-form-item>
 
+                  <a-form-item label="平台">
+                    <a-select size="default" placeholder="选择">
+                      <a-select-option value="shanghai">全部</a-select-option>
+                      <a-select-option value="beijing">淘宝</a-select-option>
+                      <a-select-option value="beijing">阿里</a-select-option>
+                      <a-select-option value="beijing">天猫</a-select-option>
+                      <a-select-option value="beijing">PDD</a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item label="上传状态">
+                    <a-select size="default" placeholder="选状态">
+                      <a-select-option value="shanghai">选全部</a-select-option>
+                      <a-select-option value="beijing">已上传</a-select-option>
+                      <a-select-option value="beijing">未上传</a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item label="分类">
+                    <a-cascader
+                      v-model:value="value"
+                      :options="options"
+                      :load-data="loadData"
+                      placeholder="选择商品分类"
+                      change-on-select
+                    />
+                  </a-form-item>
+
+                  <a-form-item label="图片上传">
+                    <a-select size="default" placeholder="选状态">
+                      <a-select-option value="shanghai">选全部</a-select-option>
+                      <a-select-option value="beijing">已上传</a-select-option>
+                      <a-select-option value="beijing">未上传</a-select-option>
+                    </a-select>
+                  </a-form-item>
+
+                  <a-form-item name="range-picker" label="创建日期" v-bind="rangeConfig">
+                    <a-range-picker v-model:value="formState['range-picker']" value-format="YYYY-MM-DD" />
+                  </a-form-item>
+
+                  <a-form-item>
+                    <a-button type="primary" size="small" style="font-size: 12px;" html-type="submit">查询</a-button>
+                  </a-form-item>
+
+                </a-form>
               </a-col>
             </a-row>
             <!--条件查询组件 结束 -->
@@ -54,18 +119,18 @@
 
               <!--标题-->
               <template  v-if="column.dataIndex === 'title'">
-                  <a v-on:click="Edit_fun.title(record)">{{record.title}}</a>
+                  <a style="color: #000;" class="cursor" v-on:click="CL.Edit.title(record)">{{record.title}}</a>
               </template>
 
               <!--头图-->
               <template  v-if="column.dataIndex === 'top_pic'">
-                  <img :src="record.top_pic" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="a"/>
+                  <img class="cursor" :src="record.top_pic" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.pic(record)"/>
               </template>
 
               <!--白底图-->
               <template  v-if="column.dataIndex === 'white_image'">
                 <div v-if="record.white_image != 0">                  
-                  <img :src="record.white_image" style="width: 30px; height: 30px;border-radius: 5px;" />
+                  <img class="cursor" :src="record.white_image" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.white_image(record)"/>
                 </div>
                 <div v-else>                  
                     <a-skeleton-avatar :active="false" size="default" shape="avatarShape" />
@@ -75,38 +140,51 @@
               <!--视频-->
               <template  v-if="column.dataIndex === 'video_url'">
                   <div v-if="record.video_url != null">                  
-                    <img :src="JSON.parse(record.video_url).pic" style="width: 30px; height: 30px;border-radius: 5px;" />
+                    <img class="cursor" :src="JSON.parse(record.video_url).pic" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.video(record)"/>
                   </div>
                   <div v-else>                  
                     <a-skeleton-avatar :active="false" size="default" shape="avatarShape" />
                   </div>
               </template>
 
-              <!--主图-->
-              <template  v-if="column.dataIndex === 'pic'">
-                  <a>查看</a>
+              <!--上传状态-->
+              <template  v-if="column.dataIndex === 'state'">
+                <div v-if="record.state === 0"><a-tag class="cursor">未上传</a-tag></div>
+                <div v-else-if="record.state != 0"><a-tag color="blue">已上传</a-tag></div>
+              </template>
+
+              <!--图片上传-->
+              <template  v-if="column.dataIndex === 'pic_upload_res'">
+                <div v-if="record.pic_upload_res === '0'"><a-tag class="cursor">未上传</a-tag></div>
+                <div v-else-if="record.pic_upload_res != '0'"><a-tag>已上传</a-tag></div>
+              </template>
+
+              <!--商品分类-->
+              <template  v-if="column.dataIndex === 'cate_name'">
+                <div v-if="record.cate_name === null || record.cate_name === '0'"><a-tag class="cursor">未选择</a-tag></div>
+                <div v-else-if="record.cate_name != ''"><a-tag>查看</a-tag></div>
               </template>
 
               <!--sku-->
               <template  v-if="column.dataIndex === 'sku'">
-                  <a>查看</a>
-              </template>
+                  <a class="cursor" v-on:click="CL.Edit.SKU(record)"><a-tag>查看</a-tag></a>
+              </template> 
 
               <!--属性-->
               <template  v-if="column.dataIndex === 'format'">
-                  <a>查看</a>
+                  <a class="cursor" v-on:click="CL.Edit.format(record)"><a-tag>查看</a-tag></a>
               </template>
 
               <!--描述-->
               <template  v-if="column.dataIndex === 'description'">
-                  <a>查看</a>
+                  <a class="cursor" v-on:click="CL.Edit.des(record)"><a-tag>查看</a-tag></a>
               </template>
 
               <!--定义操作按钮 开始-->
               <template v-if="column.key === 'operation'">
                   <a style="font-size: 16px;" title="商品上传"><UploadOutlined /></a> |                  
-                  <a style="font-size: 16px;" title="编辑"><FormOutlined /></a> |
-                  <a style="font-size: 16px;" title="删除"><DeleteOutlined /></a>
+                  <!-- <a style="font-size: 16px;" title="编辑"><FormOutlined /></a> | -->
+                  <a style="font-size: 16px;" title="删除" v-on:click="CL.Edit.model_del(record)"><DeleteOutlined /></a>
               </template>
               <!--定义操作按钮 结束-->
 
@@ -121,8 +199,6 @@
             <a-button size="small" style="font-size: 12px;" type="primary" :disabled="!CL.BatchConfig.state.value" @click="console.log('修改')">批量修改</a-button>
             <a-button size="small" style="font-size: 12px;margin-left: 6px;" type="primary" :disabled="!CL.BatchConfig.state.value" @click="console.log('删除')">批量删除</a-button>
             <a-button size="small" style="font-size: 12px;margin-left: 6px;" type="primary" :disabled="!CL.BatchConfig.state.value" @click="console.log('导出')">批量导出</a-button>
-
-
           </div>
 
           <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
@@ -149,7 +225,17 @@ import * as copylog from '@/assets/douyinshop/copylog';
 import menu_left from '@/components/layout/menu_left.vue';
 import menu_head from "@/components/layout/menu_head.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
+
 import Edit_title from "@/components/AppMarket/Douyinshop/edittitle.vue";
+import Edit_pic from "@/components/AppMarket/Douyinshop/editpic.vue";
+import Edit_video from "@/components/AppMarket/Douyinshop/editvideo.vue";
+import Edit_SKU from "@/components/AppMarket/Douyinshop/editSKU.vue";
+import Edit_format from "@/components/AppMarket/Douyinshop/editformat.vue";
+import Edit_class from "@/components/AppMarket/Douyinshop/editclass.vue";
+import Edit_white_image from "@/components/AppMarket/Douyinshop/editwhiteimage.vue";
+import Edit_des from "@/components/AppMarket/Douyinshop/editdes.vue";
+import Edit_upload_image from "@/components/AppMarket/Douyinshop/edituploadimage.vue";
+import Model_del from '@/components/AppMarket/Douyinshop/Modeldel.vue';
 
 // 组件引用=====结束
 
@@ -172,6 +258,15 @@ export default {
     menu_left,
     menu_head,
     Edit_title,
+    Edit_pic,
+    Edit_video,
+    Edit_SKU,
+    Edit_format,
+    Edit_class,
+    Edit_white_image,
+    Edit_des,
+    Edit_upload_image,
+    Model_del
   },
   
   // 父组件数据
@@ -196,14 +291,6 @@ export default {
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 内容总数
-    })
-
-    // 编辑数据定义
-    const EditData = reactive({
-      action:'',// 接口
-      title:'',// 标题
-      data:'',// 数据
-      open:false,// 开启状态
     })
 
 
@@ -301,77 +388,79 @@ export default {
   }
 
 
-// 【查询组件】========================================开始
+  // 【查询组件】========================================开始
 
-const formdata = reactive({
-  shop_id: '',
-  shop_name: '',
-});
+  const formdata = reactive({
+    shop_id: '',
+    shop_name: '',
+  });
 
-const handleFinish = values => {
+  const handleFinish = values => {
 
-  console.log(values, formdata);
+    console.log(values, formdata);
 
-  var shop_id = formdata.shop_id
+    var shop_id = formdata.shop_id
 
-  var shop_name = formdata.shop_name
+    var shop_name = formdata.shop_name
 
-  // 默认查询条件
-  var message = {
+    // 默认查询条件
+    var message = {
 
-    "page":1,
+      "page":1,
 
-    "page_size":10,
+      "page_size":10,
 
-    condition:[{
+      condition:[{
 
-      type: "orderby",
-      condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        type: "orderby",
+        condition: [{'column_name': 'create_time', 'value': 'DESC', }]
 
-    }]
-  }
+      }]
+    }
 
-  var where_c = {
-    type: "where",
-    condition: []
-  }
+    var where_c = {
+      type: "where",
+      condition: []
+    }
 
-  if(shop_id !== ''){
-    where_c.condition.push({'column_name':'shop_id','value':shop_id,'operator':'='})
-  }
+    if(shop_id !== ''){
+      where_c.condition.push({'column_name':'shop_id','value':shop_id,'operator':'='})
+    }
 
-  if(shop_name !== ''){
-    where_c.condition.push({'column_name':'shop_name','value':shop_name,'operator':'='})
-  }
+    if(shop_name !== ''){
+      where_c.condition.push({'column_name':'shop_name','value':shop_name,'operator':'='})
+    }
 
-  if(where_c.condition.length > 0){
-    message.condition.push(where_c)
-  }
+    if(where_c.condition.length > 0){
+      message.condition.push(where_c)
+    }
 
-  console.log(message)
-
-
-  // 请求列表
-  Get_list(message)
+    console.log(message)
 
 
+    // 请求列表
+    Get_list(message)
+
+
+  };
+
+  const handleFinishFailed = errors => {
+    console.log(errors);
+  };
+
+  const formState = reactive({});
+  const rangeConfig = {
+    rules: [
+      {
+        type: 'array',
+        required: false,
+        message: '请选择日期',
+      },
+    ],
 };
+  // 【查询组件】========================================结束
 
-const handleFinishFailed = errors => {
-  console.log(errors);
-};
-// 【查询组件】========================================结束
 
-// 编辑标题方法
-const Edit_fun={
-  
-  title:(data)=>{
-    EditData.title = '编辑标题';
-    EditData.open = true
-    EditData.data = data
-  },
-
-}
 
     return {
       CL,
@@ -385,8 +474,9 @@ const Edit_fun={
       store,
       loading,
       receive,
-      EditData,
-      Edit_fun,
+      pagecallback,
+      rangeConfig,
+      formState
       
     }
   }

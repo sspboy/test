@@ -104,12 +104,14 @@ export class A_Patch{
 
     // 应用市场
     AppSrtoreAPI={
+        
         // 复制记录
         copyrecords:{
             "list":"api/douyin/copylog/list",
             "detaile":"api/douyin/copylog/",
+            "delete":"api/douyin/copylog/",
+            "edit":"api/douyin/copylog/",
             "add":"api/douyin/copylog/add"
-
         }
 
 

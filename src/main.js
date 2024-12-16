@@ -5,7 +5,6 @@ import App from './app.vue'
 import router from '/src/rute/index.ts' // 全局路由
 import store from '/src/staore'         // 全局数据状态共享
 
-
 // 页面标题设置---开始
 router.beforeEach((to, from, next) => {
   /* 路由发生变化修改页面title */

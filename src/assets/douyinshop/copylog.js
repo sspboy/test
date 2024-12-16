@@ -1,5 +1,7 @@
 /** 复制商品方法 **/
 import {ref, reactive, computed} from 'vue';
+import * as utils from '@/assets/JS_Model/public_model';
+const API = new utils.A_Patch()       // 请求接口地址合集
 
 export class CopyLog{
     
@@ -33,18 +35,9 @@ export class CopyLog{
         }
     }
 
-    // 编辑标题
-    Edit_title = {
-        
-        // 查看
-        load:(data)=>{
-            
-        }
-
-    }
 
     // 字段编辑
-    Edit={
+    Edit = {
 
         // 编辑数据定义
         pic_Data: reactive({action:'',title:'',data:'',open:false,}),   // 主图
@@ -57,35 +50,70 @@ export class CopyLog{
         state_Data: reactive({action:'',title:'',data:'',open:false,}), // 复制状态
         upload_imgage_Data: reactive({action:'',title:'',data:'',open:false,}),// 图片上传
         class_Data: reactive({action:'',title:'',data:'',open:false,}), // 商品分类
+        del_Data: reactive({action:'',title:'',data:'',open:false,}), // 删除
 
         // 标题
         title:(data)=>{
-            EditData.title = '编辑标题';
-            EditData.open = true
-            EditData.data = data.title
+            this.Edit.title_Data.title = '编辑标题';
+            this.Edit.title_Data.open = true
+            this.Edit.title_Data.action = API.AppSrtoreAPI.copyrecords.edit
+            this.Edit.title_Data.data = data.title
         },
         // 视频
         video:(data)=>{
-            EditData.title = '编辑视频';
-            EditData.open = true
-            EditData.data = data.video_url
+            this.Edit.video_Data.title = '编辑视频';
+            this.Edit.video_Data.open = true
+            this.Edit.video_Data.data = data.video_url
         },
         // 主图
         pic:(data)=>{
-            EditData.title = '编辑标题';
-            EditData.open = true
-            EditData.data = data.pic
+            this.Edit.pic_Data.title = '编辑主图';
+            this.Edit.pic_Data.open = true
+            this.Edit.pic_Data.data = data.pic
         },
         // 白底图
-        white_image:()=>{
-
+        white_image:(data)=>{
+            this.Edit.white_image_Data.title = '编辑白底图';
+            this.Edit.white_image_Data.open = true
+            this.Edit.white_image_Data.data = data.white_image
         },
         // SKU
-        SKU:()=>{
-
+        SKU:(data)=>{
+            this.Edit.SKU_Data.title = '编辑规格';
+            this.Edit.SKU_Data.open = true
+            this.Edit.SKU_Data.data = data.sku
         },
-
-
+        // 属性
+        format:(data)=>{
+            this.Edit.format_Data.title = '编辑属性';
+            this.Edit.format_Data.open = true
+            this.Edit.format_Data.data = data.format
+        },
+        // 描述
+        des:(data)=>{
+            this.Edit.des_Data.title = '编辑描述';
+            this.Edit.des_Data.open = true
+            this.Edit.des_Data.data = data.description
+        },
+        // 图片上传
+        upload_image:(data)=>{
+            this.Edit.upload_imgage_Data.title = '图片上传';
+            this.Edit.upload_imgage_Data.open = true
+            this.Edit.upload_imgage_Data.data = data.pic_upload_res
+        },
+        // 商品分类
+        class:(data)=>{
+            this.Edit.class_Data.title = '编辑分类';
+            this.Edit.class_Data.open = true
+            this.Edit.class_Data.data = data.cate_name
+        },
+        // 删除
+        model_del:(data)=>{
+            this.Edit.del_Data.title = '确认删除选中数据吗？';
+            this.Edit.del_Data.open = true
+            this.Edit.del_Data.action = API.AppSrtoreAPI.copyrecords.delete
+            this.Edit.del_Data.data = data.id
+        }
     }
 
     // 批量操作
@@ -96,9 +124,9 @@ export class CopyLog{
 
         state:computed(() => this.BatchConfig.selectedlist.value.length > 0),
         
-        columnWidth:16,
+        columnWidth:18,     // 勾选列宽度
 
-        fixed:true,
+        fixed:true,         // 定位
 
         onChange:(selectedRowKeys, selectedRows)=>{
             console.log(selectedRowKeys)
@@ -113,25 +141,7 @@ export class CopyLog{
             this.BatchConfig.selectedlist.value = []
         }
 
-
-
     }
 
-    // 编辑主图
-    Edit_pic = {}
-    // 编辑视频
-    Edit_video = {}
-    // 编辑白底图
-    Edit_white_image = {}
-    // 编辑规格
-    Edit_spec= {}
-    // 编辑描述
-    Edit_DES= {}
-    // 编辑属性
-    Edit_Format= {}
-    // 编辑分类
-    Edit_class={}
-    // 更新方法
-    Update={}
 
 }

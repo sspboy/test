@@ -11,7 +11,7 @@ import { defineComponent,ref } from 'vue';
 
 export default defineComponent({
 
-    name: "Edit_white_image",  // 功能添加
+    name: "Edit_upload_image",  // 功能添加
     // 引用组件
     components: {
 
