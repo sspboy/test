@@ -43,20 +43,52 @@ export class CopyLog{
 
     }
 
-    addmodel={
+    // 字段编辑
+    Edit={
 
-            // 编辑数据定义
-        title_Data: reactive({action:'',title:'',data:'',open:false,}),
+        // 编辑数据定义
+        pic_Data: reactive({action:'',title:'',data:'',open:false,}),   // 主图
+        video_Data: reactive({action:'',title:'',data:'',open:false,}), // 视频
+        title_Data: reactive({action:'',title:'',data:'',open:false,}), //标题
+        white_image_Data: reactive({action:'',title:'',data:'',open:false,}),//白底图
+        SKU_Data: reactive({action:'',title:'',data:'',open:false,}),   //规格
+        format_Data: reactive({action:'',title:'',data:'',open:false,}),// 属性
+        des_Data: reactive({action:'',title:'',data:'',open:false,}),   // 描述
+        state_Data: reactive({action:'',title:'',data:'',open:false,}), // 复制状态
+        upload_imgage_Data: reactive({action:'',title:'',data:'',open:false,}),// 图片上传
+        class_Data: reactive({action:'',title:'',data:'',open:false,}), // 商品分类
 
+        // 标题
         title:(data)=>{
             EditData.title = '编辑标题';
             EditData.open = true
-            EditData.data = data
-          },
+            EditData.data = data.title
+        },
+        // 视频
+        video:(data)=>{
+            EditData.title = '编辑视频';
+            EditData.open = true
+            EditData.data = data.video_url
+        },
+        // 主图
+        pic:(data)=>{
+            EditData.title = '编辑标题';
+            EditData.open = true
+            EditData.data = data.pic
+        },
+        // 白底图
+        white_image:()=>{
+
+        },
+        // SKU
+        SKU:()=>{
+
+        },
 
 
     }
 
+    // 批量操作
     BatchConfig={
 
         // 定义行选择的selectedRowKeys
