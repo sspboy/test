@@ -1,3 +1,4 @@
+// 删除组件
 <template>
     <div>
       <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" okText="删除" cancelText="取消">
@@ -10,7 +11,7 @@ import { defineComponent,ref } from 'vue';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 export default defineComponent({
 
-    name: "Model_del",  // 删除记录
+    name: "Model_del",  // 删除组件
 
 
     // 引用组件

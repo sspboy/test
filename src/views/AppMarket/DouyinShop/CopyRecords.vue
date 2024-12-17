@@ -33,14 +33,12 @@
         <div style="height: 42px;">
             <!--条件查询组件 开始 -->
             <a-row type="flex">
-              <a-col :span="1" :order="1">
-                  <!--导航收起按钮-->
-                  <a-button type="primary" ghost size="small" style="font-size: 12px; margin:3px 16px 0 0;" @click="() => { store.commit('menu/change') }">
-                    <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
-                    <menu-fold-outlined v-else class="trigger" />
-                  </a-button>
+
+              <a-col :span="2">
+                  <h3 style="margin: 4px 0 0 8px;">复制记录</h3>
               </a-col>
-              <a-col :span="23" :order="5">
+
+              <a-col :span="20">
                 <a-form
                   layout="inline"
                   :model="formState"
@@ -94,13 +92,14 @@
                   </a-form-item>
 
                   <a-form-item>
-                    <a-button type="primary" size="small" style="font-size: 12px;" html-type="submit">查询</a-button>
-                    <a-button type="primary" size="small" style="font-size: 12px;margin-left: 6px;" ghost>重置</a-button>
-
+                    <a-button type="primary" size="small" style="font-size: 12px;float: right;margin-left: 6px;" ghost>重置</a-button>
+                    <a-button type="primary" size="small" style="font-size: 12px;float: right;" html-type="submit">查询</a-button>
                   </a-form-item>
 
                 </a-form>
               </a-col>
+
+
             </a-row>
             <!--条件查询组件 结束 -->
         </div>
@@ -228,7 +227,7 @@ import * as copylog from '@/assets/douyinshop/copylog';
 import menu_left from '@/components/layout/menu_left.vue';
 import menu_head from "@/components/layout/menu_head.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
-
+// 编辑组件
 import Edit_title from "@/components/AppMarket/Douyinshop/edittitle.vue";
 import Edit_pic from "@/components/AppMarket/Douyinshop/editpic.vue";
 import Edit_video from "@/components/AppMarket/Douyinshop/editvideo.vue";
@@ -238,7 +237,9 @@ import Edit_class from "@/components/AppMarket/Douyinshop/editclass.vue";
 import Edit_white_image from "@/components/AppMarket/Douyinshop/editwhiteimage.vue";
 import Edit_des from "@/components/AppMarket/Douyinshop/editdes.vue";
 import Edit_upload_image from "@/components/AppMarket/Douyinshop/edituploadimage.vue";
+// 删除组件
 import Model_del from '@/components/AppMarket/Douyinshop/Modeldel.vue';
+// 筛选条件查询组件
 
 // 组件引用=====结束
 
