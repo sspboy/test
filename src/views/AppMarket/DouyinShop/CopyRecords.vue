@@ -35,7 +35,7 @@
             <a-row type="flex">
               <a-col :span="1" :order="1">
                   <!--导航收起按钮-->
-                  <a-button type="primary" size="small" style="font-size: 12px; margin:3px 16px 0 0;" @click="() => { store.commit('menu/change') }">
+                  <a-button type="primary" ghost size="small" style="font-size: 12px; margin:3px 16px 0 0;" @click="() => { store.commit('menu/change') }">
                     <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
@@ -49,11 +49,11 @@
                 >
                   
                   <a-form-item label="标题">
-                    <a-input type="text" size="default" class="font_size_12" placeholder="输入标题关键字" />
+                    <a-input type="text" size="small" class="font_size_12" placeholder="输入标题关键字" />
                   </a-form-item>
 
                   <a-form-item label="平台">
-                    <a-select size="default" placeholder="选择">
+                    <a-select size="small" placeholder="选择">
                       <a-select-option value="shanghai">全部</a-select-option>
                       <a-select-option value="beijing">淘宝</a-select-option>
                       <a-select-option value="beijing">阿里</a-select-option>
@@ -63,7 +63,7 @@
                   </a-form-item>
 
                   <a-form-item label="上传状态">
-                    <a-select size="default" placeholder="选状态">
+                    <a-select size="small" placeholder="选状态">
                       <a-select-option value="shanghai">选全部</a-select-option>
                       <a-select-option value="beijing">已上传</a-select-option>
                       <a-select-option value="beijing">未上传</a-select-option>
@@ -72,6 +72,7 @@
 
                   <a-form-item label="分类">
                     <a-cascader
+                      size="small"
                       v-model:value="value"
                       :options="options"
                       :load-data="loadData"
@@ -81,19 +82,21 @@
                   </a-form-item>
 
                   <a-form-item label="图片上传">
-                    <a-select size="default" placeholder="选状态">
+                    <a-select size="small" placeholder="选状态">
                       <a-select-option value="shanghai">选全部</a-select-option>
                       <a-select-option value="beijing">已上传</a-select-option>
                       <a-select-option value="beijing">未上传</a-select-option>
                     </a-select>
                   </a-form-item>
 
-                  <a-form-item name="range-picker" label="创建日期" v-bind="rangeConfig">
-                    <a-range-picker v-model:value="formState['range-picker']" value-format="YYYY-MM-DD" />
+                  <a-form-item name="range-picker" label="创建日期" v-bind="rangeConfig" >
+                    <a-range-picker size="small" v-model:value="formState['range-picker']" value-format="YYYY-MM-DD" />
                   </a-form-item>
 
                   <a-form-item>
                     <a-button type="primary" size="small" style="font-size: 12px;" html-type="submit">查询</a-button>
+                    <a-button type="primary" size="small" style="font-size: 12px;margin-left: 6px;" ghost>重置</a-button>
+
                   </a-form-item>
 
                 </a-form>
@@ -464,17 +467,20 @@ export default {
 
     return {
       CL,
+      TO,
+      API,
+      store,
+      loading,
+      PAGEDATA,
+      innerHeight,
+
+      receive,
+      pagecallback,
+
       formdata,
       handleFinish,
       handleFinishFailed,
-      API,
-      PAGEDATA,
-      innerHeight,
-      TO,
-      store,
-      loading,
-      receive,
-      pagecallback,
+
       rangeConfig,
       formState
       
@@ -487,11 +493,10 @@ export default {
 
 <style>
 
-.ant-table-body{
-  height: calc(100vh - 245px);
-  min-height: 0px;
-}
+.ant-table-body{height: calc(100vh - 245px);min-height: 0px;}
 .tablehiddle{display:none;}
 .batch_s{margin:22px 0 0 0px; float: left;}
+
+
 
 </style>
