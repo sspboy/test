@@ -58,7 +58,7 @@ export default defineComponent({
 
                     confirmLoading.value = false;
 
-                    ctx.emit('del_coallback') // 删除成功后刷新表格
+                    ctx.emit('del_callback') // 删除成功后刷新表格
 
                 },2000)
 

@@ -28,7 +28,7 @@ export default defineComponent({
 
     setup(props, ctx) {
 
-        console.log(props.data)
+        // console.log(props.data)
 
         const modalText = ref('编辑标题');
         const open = ref(false);

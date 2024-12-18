@@ -34,16 +34,5 @@ html{margin: 0px; padding: 0px;font-size: 12px;}
 div[aria-hidden="true"]{display: none !important;}
 
 
-/**下拉表单字体大小设置**/
-.ant-select{font-size: 12px !important;}
-.custom-select{font-size: 12px !important;}
-.ant-select-item-option-content {font-size: 12px !important;}
-.ant-select-selection-placeholder {font-size: 12px !important;}
-.ant-select-dropdown-menu-item-selected {font-size: 12px !important;}
-.ant-select-selection-item{font-size: 12px !important;}
-.ant-form-item-label label{font-size: 12px !important;}
-/**下拉表单字体大小设置**/
-.ant-input{border-radius: 4px;padding: 2px 2px 2px 6px;}
-.ant-picker-range{border-radius: 4px !important;}
-.ant-picker-range input{padding: 2px 1px !important;font-size: 12px !important;}
+
 </style>
