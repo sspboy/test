@@ -114,8 +114,6 @@ export default defineComponent({
 
     setup(props, ctx) {
 
-
-     
         // 表单绑定数据
         const formdata = reactive({
             title_key: '',
@@ -174,10 +172,6 @@ export default defineComponent({
 
         const value = ref([]);
 
-
-
-
-
         const rangeConfig = {
             rules: [
             {
@@ -188,12 +182,10 @@ export default defineComponent({
             ],
         };
 
-
+        // 查询按钮方法
         const handleFinish = values => {
 
-            console.log(values);
-
-            ctx.emit('sift_callback',formdata)
+            ctx.emit('sift_callback', formdata)// 回调数据到父组件
 
             var shop_id = formdata.shop_id
 
@@ -239,6 +231,7 @@ export default defineComponent({
 
         };
 
+        // 错误方法
         const handleFinishFailed = errors => {
             console.log(errors);
         };

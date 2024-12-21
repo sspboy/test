@@ -69,6 +69,7 @@ export class CopyLog{
         pic:(data)=>{
             this.Edit.pic_Data.title = '编辑主图';
             this.Edit.pic_Data.open = true
+            this.Edit.pic_Data.data = ''
             this.Edit.pic_Data.data = data.pic
         },
         // 白底图
