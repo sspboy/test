@@ -36,33 +36,40 @@ const mutations = {
     data_list:(state,resdata)=>{
 
         for(let colums of resdata.colum){
+
             // id
             if(colums.field_name === "id"){
               colums['align'] = 'center'
               colums['width'] = 74
             }
-            // 关联菜单id
-            if(colums.field_name === "m_id"){
+
+            // 版本号
+            if(colums.field_name === "version_number"){
               colums['align'] = 'center'
               colums['width'] = 90
             }
-            // 菜单名称
-            if(colums.field_name === "m_name"){
+            // 版本名称
+            if(colums.field_name === "version_name"){
               colums['align'] = 'left'
               colums['width'] = 120
             }
             // 功能名称
-            if(colums.field_name === "name"){
+            if(colums.field_name === "menu_setting"){
               colums['align'] = 'center'
               colums['width'] = 140
             }
-            // 函数名称
-            if(colums.field_name === "def_name"){
+            // 价格
+            if(colums.field_name === "price"){
               colums['align'] = 'center'
               colums['width'] = 174
             }
-            // 描述
-            if(colums.field_name === "miaoshu"){
+            // 子账号数量
+            if(colums.field_name === "sub_account_number"){
+              colums['align'] = 'center'
+              colums['width'] = 100
+            }
+            // 使用时长
+            if(colums.field_name === "duration"){
               colums['align'] = 'center'
               colums['width'] = 100
             }
