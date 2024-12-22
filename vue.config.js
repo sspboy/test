@@ -11,10 +11,7 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/api': {
-            target1: 'http://192.168.2.104:5000', // 你的后端服务地址
-        //  target1: 'http://192.168.3.120:5000', // 你的后端服务地址
-        //     target: 'http://192.168.3.120:5000', // 公司本地后端服务地址
-        // target: 'http://172.17.57.178:5000', // aliyun后端服务地址
+        target: 'http://192.168.2.100:5000', // 你的后端服务地址
 
         changeOrigin: true,
         pathRewrite: {

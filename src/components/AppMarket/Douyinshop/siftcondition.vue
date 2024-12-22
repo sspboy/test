@@ -71,9 +71,9 @@
                 </a-select>
             </a-form-item>
 
-            <a-form-item name="range-picker" label="创建日期" v-bind="rangeConfig" >
-                <a-range-picker size="small" v-model:value="formdata.select_time" value-format="YYYY-MM-DD" />
-            </a-form-item>
+<!--            <a-form-item name="range-picker" label="创建日期" v-bind="rangeConfig" >-->
+<!--                <a-range-picker size="small" v-model:value="formdata.select_time" value-format="YYYY-MM-DD" />-->
+<!--            </a-form-item>-->
 
             <a-form-item>
                 <a-button type="primary" size="small" style="font-size: 12px;float: right;margin-left: 6px;" @click="resh_condition" ghost>重置</a-button>
