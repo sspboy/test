@@ -110,7 +110,7 @@
 <script>
 import {reactive, ref, defineComponent, computed} from 'vue';
 import * as utils from '@/assets/JS_Model/public_model';
-import * as TABLE from '@/assets/JS_Model/department';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 
 export default defineComponent({
 
@@ -253,10 +253,15 @@ export default defineComponent({
         trigger: 'change'
         },
       ],
+      v_id: [{
+        required: true,
+        message: '不能为空',
+        },
+      ],
       pass_word: [{
         required: true,
         message: '不能为空',
-      },
+        },
       ],
       brand_name: [{
         required: true,

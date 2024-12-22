@@ -5,7 +5,14 @@ import NotPermissions from '../views/otherRes/NotPermissions.vue'
 import NotLoginPermissions from '../views/otherRes/NotLoginPermissions.vue'
 
 const routes = [
-
+    {
+        path: '/home',
+        name: 'HomeView',
+        component: () => import('../views/HomeView.vue'),   // 视图文件
+        meta:{
+            title:'主页',
+        }
+    },
     {
         path: '/',
         name: 'Login',
@@ -117,6 +124,14 @@ const routes = [
         }
     },
     {
+        path: '/login',
+        name: 'douyinlogin',
+        component: () => import('../views/AppMarket/DouyinShop/DouyinLogin.vue'),   // 视图文件
+        meta:{
+            title:'抖店授权',
+        }
+    }, 
+    {
         path: '/douyinproductlist',
         name: 'douyinproductlist',
         component: () => import('../views/AppMarket/DouyinShop/ProductList.vue'),    // 视图文件
@@ -138,6 +153,14 @@ const routes = [
         component: () => import('../views/AppMarket/DouyinShop/UploadRecords.vue'),    // 视图文件
         meta:{
             title:'上传记录',
+        }
+    },
+    {
+        path: '/introduction',
+        name: 'introduction',
+        component: () => import('../views/AppMarket/Product/IntroductionView.vue'),    // 视图文件
+        meta:{
+            title:'产品介绍',
         }
     },
     {   // 404 报错页面

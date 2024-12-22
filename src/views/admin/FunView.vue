@@ -21,7 +21,7 @@
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+      <a-layout-content class="content_border">
 
 
         <div style="height: 42px;">
@@ -90,6 +90,8 @@
 import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
@@ -114,16 +116,19 @@ export default {
   },
   setup(){
 
-    const store = useStore();// 共享数据
+    // 【数据绑定】=======================================>开始
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
+    const store = useStore();             // 共享数据
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
-    const loading = ref(true)// 初始化loading状态
+    const loading = ref(true)             // 初始化loading状态
 
     // 页面获取数据
     const PAGEDATA = reactive({
       title:'功能列表',
       menudata:{
         'key':'52',
-        'openKeys':'sub1',
+        'openKeys':'admin',
       },            // 菜单选中配置
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -133,7 +138,7 @@ export default {
     // 【删除】数据初始化
     const DELDATA = reactive({
       open:false,
-      actian_name:'fun/del',// 数据删除模块名称
+      actian_name:API.AdminAPI.function.delete,// 数据删除模块名称
       detaile_obj:{}         // 数据删除键值
     })
 
@@ -145,143 +150,123 @@ export default {
       open:false,
 
     })
+  // 【数据绑定】=======================================>结束
 
 
-    const Add_fun = ()=>{
-      ADDDATA.title = '添加功能';
-      ADDDATA.action = 'fun/add';
-      ADDDATA.data = {
-        name:'',
-        def_name:'',
-        miaoshu:''
-      };
-      ADDDATA.open = true;
+
+  // 【组件挂载】========================================开始
+
+  // 组件挂在之前---请求数据
+  onBeforeMount(()=>{
+
+    let message = {"page":1, "page_size":10,
+    condition:[{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]
     }
+    // 请求列表
+    Get_list(message)
+  })
 
-    const Edit_fun=(data)=>{
-      ADDDATA.title = '编辑功能';
-      ADDDATA.action = 'fun/update';
-      ADDDATA.data = {
-        id:data.id,
-        name:data.name,
-        def_name:data.def_name,
-        miaoshu:data.miaoshu
-      };
-      ADDDATA.open = true;
-    }
+  // 组件挂之后---请求数据
+  // 定义一个函数来处理窗口大小变化 ==
+  const handleResize = () => {
+    innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
+  };
+  // 在组件挂载时添加事件监听器
+  onMounted(() => {
+    window.addEventListener('resize', handleResize);
+  });
+  // 在组件卸载时移除事件监听器
+  onUnmounted(() => {
+    window.removeEventListener('resize', handleResize);
+  });
 
-    // 【删除】调用组件方法===》弹出抽屉+传值
-    const Del_Fun = (detaile_data)=>{
-      DELDATA.detaile_obj.id = detaile_data.id;
-      DELDATA.open = true;
-    }
+  // 【组件挂载】========================================结束
 
-    // 组件挂在之前---请求数据
-    onBeforeMount(()=>{
-      let message = {"page":1, "page_size":10}
-      Refresh_table(message) // 【页面初始化】&&刷新表格
-    })
 
-    // 组件挂之后---请求数据
-    // 定义一个函数来处理窗口大小变化 ==
-    const handleResize = () => {
-      innerHeight.value = window.innerHeight-245; // 作为表格自适应高度
+
+  //【添加方法】
+  const Add_fun = ()=>{
+    ADDDATA.title = '添加功能';
+    ADDDATA.action = 'fun/add';
+    ADDDATA.data = {
+      name:'',
+      def_name:'',
+      miaoshu:''
     };
-    // 在组件挂载时添加事件监听器
-    onMounted(() => {
-      window.addEventListener('resize', handleResize);
-    });
-    // 在组件卸载时移除事件监听器
-    onUnmounted(() => {
-      window.removeEventListener('resize', handleResize);
-    });
+    ADDDATA.open = true;
+  }
 
+  //【编辑方法】
+  const Edit_fun=(data)=>{
+    ADDDATA.title = '编辑功能';
+    ADDDATA.action = 'fun/update';
+    ADDDATA.data = {
+      id:data.id,
+      name:data.name,
+      def_name:data.def_name,
+      miaoshu:data.miaoshu
+    };
+    ADDDATA.open = true;
+  }
 
+  // 【删除方法】
+  const Del_Fun = (detaile_data)=>{
+    DELDATA.detaile_obj.id = detaile_data.id;
+    DELDATA.open = true;
+  }
 
+  // 接收来自子组件发送的数据=回调方法
+  const receive = (message)=>{
+    loading.value = true    // 开启loading状态
+    message.condition = [{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+    }]
 
-    // 接收来自子组件发送的数据=回调方法
-    const receive = (message)=>{
-      loading.value = true    // 开启loading状态
-      Refresh_table(message) // 刷新表格
-    }
+    Get_list(message) // 请求列表
+  }
 
-    //【当前页面】&&刷新表格
-    const pagecallback =()=>{
-      let message = {}
-      message.page = store.state.fun.message.page;
-      message.page_size = store.state.fun.message.page_size;
-      receive(message)
-    }
+  //【当前页面】&&刷新表格
+  const pagecallback =()=>{
 
-    // 刷新表格
-    const Refresh_table = (message)=>{
+    loading.value = true    // 开启loading状态
 
-      store.dispatch('fun/list', message).then(()=>{
+    let message = {}
+    message.page = TO.message.page;
+    message.page_size = TO.message.page_size;
+    // 刷新页面查询条件
+    message.condition = [{
+        type: "orderby",
+        condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+      }]
 
-        PAGEDATA.colum = store.state.fun.message.data_list.colum
-        PAGEDATA.user_data = store.state.fun.message.user_data
-        PAGEDATA.datalist = store.state.fun.message.data_list.data
-        PAGEDATA.total_number = store.state.fun.message.data_list.total_number
+    Get_list(message)    // 请求列表
 
-        loading.value = false // loading 状态关闭
-      })
-      store.dispatch('member/get')
+  }
 
-    }
+  // 【刷新表格】
+  const Get_list = (message) =>{
 
+    // 请求接口地址赋值
+    TO.message.url = API.AdminAPI.function.list
 
-    // 功能详情查询===ok
-    // store.dispatch('fun/get',{id:'1'}).then(()=>{
-    //   console.log(store.state.fun)  // 页面赋值
-    // })
+    TO.actions.list(message,(res)=>{
 
-    // 功能列表查询==ok
-    // const page_data = {
-    //   "page":1,
-    //   "page_size":10
-    // }
-    // store.dispatch('fun/list', page_data).then(()=>{
-    //   console.log(store.state.fun.message)
-    // })
+      TO.fun.add_colum(res)        // 添加表头
 
+      // 页面赋值
+      // console.log(res)
+      PAGEDATA.colum = res.colum
+      PAGEDATA.datalist = res.data
+      PAGEDATA.total_number =res.total_number
 
-    // 功能新增===ok
-    // const add_data = {
-    //     "m_id":2,
-    //     "m_name":"上一级菜单",
-    //     "name":"创意功能",
-    //     "def_name":"fun.del",
-    //     "miaoshu":"创意的好功能"
-    // }
-    // store.dispatch('fun/add', add_data).then(()=>{
-    //   console.log(store.state.fun.message)
-    // })
+      loading.value = false // loading 状态关闭
 
-
-    // 功能删除===ok
-    // store.dispatch('fun/del',{id:18}).then(()=>{
-    //   console.log(store.state.fun.message)
-    // })
-
-
-    // 功能更新==ok
-    // const update_data = {
-    //   "id":17,
-    //   "setting_data":{"name":"系统设置1"}
-    // }
-    // store.dispatch('fun/update', update_data).then(()=>{
-    //   console.log(store.state.fun.message)
-    // })
-
-
-    // 功能批量删除===ok
-    // const batch_del_data = {
-    //   "id":[15,16,17]
-    // }
-    // store.dispatch('fun/batch_del', batch_del_data).then(()=>{
-    //     console.log(store.state.fun.message)
-    // })
-
+    })
+  }
 
     return{
       store,

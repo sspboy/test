@@ -6,6 +6,9 @@ import {CodeOutlined, SettingOutlined,
   BarsOutlined,
   AccountBookOutlined,
     ShopOutlined,
+    HomeOutlined,
+    RobotOutlined,
+    CopyOutlined
 } from "@ant-design/icons-vue";
 
 export class Menu {
@@ -16,38 +19,45 @@ export class Menu {
         fristlive:(data)=>{
 
             var menu_list = []
-
+            
             for (var i=0;i<data.length;i++){
 
-            var m_obj = data[i]
+                var m_obj = data[i]
 
-            var child = m_obj.child;
+                var child = m_obj.child;
 
-            var menu_detaile_obj = this.LoadMenu.first_childlive(m_obj)
+                var menu_detaile_obj = this.LoadMenu.first_childlive(m_obj)
 
 
-            // 判断是否一级菜单
-            if(child.length > 0){
+                // 判断是否一级菜单
+                if(child.length > 0){
 
-                var child_list = []
-                for(let y of child){
-                    var child_obj =  this.LoadMenu.childlive(y)
-                    child_obj.key = y.id + ''
-                    child_list.push(child_obj)
+                    var child_list = []
+
+                    for(let y of child){
+
+                        var child_obj =  this.LoadMenu.childlive(y)
+
+                        child_obj.key = y.id + ''
+                        
+                        child_list.push(child_obj)
+
+                    }
+
+                    menu_detaile_obj.key = data[i].field
+                    
+                    menu_detaile_obj.children = child_list
+
+                }else {
+
+                    menu_detaile_obj.key = i.toString()
 
                 }
 
-                menu_detaile_obj.key = 'sub' + i
-                menu_detaile_obj.children = child_list
+                menu_list.push(menu_detaile_obj)
 
-            }else {
-
-                menu_detaile_obj.key = i.toString()
-
-            }
-
-            menu_list.push(menu_detaile_obj)
           }
+
           return menu_list
         },
 
@@ -80,7 +90,12 @@ export class Menu {
                 'BarsOutlined':() => h(BarsOutlined),
                 'AccountBookOutlined':() => h(AccountBookOutlined),
                 'ShopOutlined':() => h(ShopOutlined),
+                'HomeOutlined':() => h(HomeOutlined),
+                'RobotOutlined':() => h(RobotOutlined),
+                'CopyOutlined':() => h(CopyOutlined),
 
+
+                
             }
         }
 

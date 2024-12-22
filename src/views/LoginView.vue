@@ -57,7 +57,8 @@
 
 <script>
 import axios from 'axios';
-axios.defaults.timeout = 1000; // 1秒 设置全局超时时间（以毫秒为单位）
+import * as utils from '@/assets/JS_Model/public_model';
+
 import { useRouter } from "vue-router"; // 导入路由
 import { reactive,ref } from 'vue';
 import { UserOutlined,LockOutlined,} from '@ant-design/icons-vue';
@@ -71,7 +72,7 @@ export default {
   },
   setup() {
     
-    
+    const API = new utils.A_Patch()           // 请求接口s
     const store = useStore();// 共享数据
     const router = useRouter(); // 初始化路由方法
     const formRef = ref();     // 初始化表单
@@ -152,8 +153,7 @@ export default {
       // console.log('Success:', values);
 
       // 请求Login接口：：：
-      axios.post('/api/login', {
-
+      axios.post(API.LoginAPI.url.login, {
         username: values.username,    // 参数 firstName
         password: values.password,    // 参数 lastName
         remember: values.remember     // 参数是否记住我30天
@@ -162,6 +162,7 @@ export default {
 
         // 反馈请求结果
         const res = response.data
+        console.log(API.LoginAPI.url.login)
         console.log(response)
         if(res === 'None'){        // 用户名不存在：None
 
@@ -171,7 +172,7 @@ export default {
 
         }else if(res === 'true'){        // 登录成功：ture
 
-          router.push('/user');
+          router.push('/introduction');
 
         }else if(res === 'false'){        // 登录失败：：密码错误：：false
 

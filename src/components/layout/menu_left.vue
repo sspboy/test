@@ -10,15 +10,21 @@
       @click="handleClick"
       @openChange="onOpenChange"
     ></a-menu>
+
   </div>
+  <a-affix :offset-bottom="bottom" style="bottom: 18px;right:10px;position:absolute;">
+      <a-button type="dashed" ghost size="small" style="font-size: 12px; margin:3px 16px 0 0;" @click="() => { store.commit('menu/change') }">
+          <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
+          <menu-fold-outlined v-else class="trigger" />
+      </a-button>
+    </a-affix>
 </template>
 
 
 <script>
 
 // 请求结果获取菜单信息
-
-import {defineComponent, reactive, computed, onBeforeMount} from 'vue';
+import {defineComponent, reactive, computed, onBeforeMount,ref} from 'vue';
 import { useRouter } from "vue-router"; // 导入路由
 import { useStore } from 'vuex'
 import {Menu} from '/src/assets/JS_Model/Menu.js';
@@ -30,12 +36,19 @@ import {
   CodeOutlined,
   AccountBookOutlined,
   SettingOutlined,
+  HomeOutlined,
+  CopyOutlined,
+  MenuFoldOutlined, 
+  MenuUnfoldOutlined,
 } from '@ant-design/icons-vue';
 
 
 export default defineComponent({
   name:"menu_left",
-  components: {},
+  components: {
+    MenuFoldOutlined,
+    MenuUnfoldOutlined
+  },
   props:{
     menudata:{
       type:Object
@@ -46,12 +59,12 @@ export default defineComponent({
     const store = useStore();// 共享数据
     const router = useRouter(); // 初始化路由方法
     const menu = new Menu()
-
+    const bottom = ref(10);
     // 菜单状态设置
     const state = reactive({
       key:[],
-      rootSubmenuKeys: ['sub0', 'sub1'],  // 一级菜单
-      openKeys:['sub1'],                  // 选中的一级菜单
+      rootSubmenuKeys: [],  // 一级菜单
+      openKeys:[],                  // 选中的一级菜单
       selectedKeys: [],
     });
 
@@ -71,7 +84,18 @@ export default defineComponent({
 
         items.value = computed(()=>{
 
-          return menu.LoadMenu.fristlive(store.state.member.message.menu)
+          var menu_data = menu.LoadMenu.fristlive(store.state.member.message.menu)
+
+
+          for(let i of menu_data){
+
+            // console.log(i)
+
+            state.rootSubmenuKeys.push(i.key)
+
+          }
+
+          return menu_data
 
         })
 
@@ -82,11 +106,10 @@ export default defineComponent({
 
     // 菜单点击事件===>路由
     const handleClick = e => {
-      console.log(e)
-      console.log(e.keyPath)
+      // console.log(e)
+      // console.log(e.keyPath)
       let se_obj = e.keyPath
       let name = e.item.id
-      console.log(name)
 
       if(name != undefined){
         router.push('/' +  name);
@@ -111,6 +134,7 @@ export default defineComponent({
       onOpenChange,
       state,
       items,
+      bottom
     };
 
 

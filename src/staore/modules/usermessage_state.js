@@ -23,8 +23,9 @@ const mutations = {
     detaile:(state, resdata)=>{
         state.message.menu = resdata.menu;
         delete resdata.menu
+        state.message.shop = resdata.shop;
+        delete resdata.shop
         state.message.user_data = resdata;
-
     },
 
 }
@@ -40,7 +41,7 @@ const actions = {
             let url = API.AdminAPI.user.message
 
             await axios.get(url).then((response)=>{
-
+                
                 commit('detaile', response.data)
 
             })

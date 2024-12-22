@@ -25,7 +25,7 @@
                   v-model:value="formdata.parent_id"
                   ref="select"
                   style="width: 100%"
-                  :options="parent_select"
+                  :options="first_menu"
                   @change="handleChange"
                   class="font_size_12"
                   placeholder="选择父级菜单"
@@ -66,11 +66,11 @@
                   mode="multiple"
                   :allowClear="true"
                   style="width: 100%"
-                  :options="fun_select"
+                  :options="function_list"
                   @change="fun_handleChange"
                   class="font_size_12"
                   placeholder="输入功能描述"
-                  type="string" ></a-select>
+                  type="string"></a-select>
               </a-form-item>
             </a-col>
 
@@ -91,8 +91,8 @@
 
 <script>
 import {defineComponent, reactive, ref, computed} from 'vue';
-import {useStore} from "vuex";
-
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 export default defineComponent({
   // 菜单添加
   name: "Menu_Add",
@@ -105,7 +105,8 @@ export default defineComponent({
   // 组合API返回到模版
   setup(props, ctx) {
 
-    const store = useStore();// 共享数据
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
 
     const open = props;// 获取父组件传递的
 
@@ -186,15 +187,12 @@ export default defineComponent({
     };
 
     // 一级菜单选择
-    const parent_select = computed(()=>{
-
-      // console.log(store.state.menu.message.data_list.data)
-
-      var data_list = store.state.menu.message.data_list.data;
-
-      var first_menu = [{"value":"0","label":"一级菜单"}]
-
-      for(let i of data_list){
+    var first_menu = reactive([{"value":"0","label":"一级菜单"}])
+    TO.message.url = API.AdminAPI.menu.list    // 请求接口地址赋值
+    var message = {"page":1, "page_size":100}
+    TO.actions.list(message,(res)=>{
+      TO.menu.add_colum(res)        // 添加表头
+      for(let i of res.data){
         if(i.parent_id == 0){
           let o = {}
           o.value = i.id.toString()
@@ -202,7 +200,6 @@ export default defineComponent({
           first_menu.push(o)
         }
       }
-      return reactive(first_menu)
     })
 
     // 功能列表选择监听
@@ -210,23 +207,18 @@ export default defineComponent({
       console.log(`selected ${value}`);
     };
 
-    // 菜单功能功能选择
-    let message = {"page":1, "page_size":20}
-    store.dispatch('fun/list', message)
-
-    const fun_select = computed(()=>{
-      var data_list = store.state.fun.message.data_list.data;
-      var _menu = []
-      for(let i of data_list){
+    // 功能列表选择
+    var function_list = reactive([])
+    TO.message.url = API.AdminAPI.function.list    // 请求接口地址赋值
+    TO.actions.list(message,(res)=>{
+      for(let i of res.data){
           let o = {}
           o.index = i.index
           o.value = i.def_name
           o.label = i.name
-          _menu.push(o)
+          function_list.push(o)
       }
-      return reactive(_menu)
     })
-
 
 
     // 关闭抽屉方法
@@ -265,7 +257,9 @@ export default defineComponent({
 
         formdata.value.function_info = for_dict(formdata.value.function_info)
 
-        store.dispatch(open.adddata.action, formdata.value).then(()=>{
+        TO.message.url = API.AdminAPI.menu.add
+
+        TO.actions.add(formdata.value,(res)=>{
 
           setTimeout(()=>{
 
@@ -278,14 +272,13 @@ export default defineComponent({
             formRef.value.resetFields(); // 重置表单
 
           },1000)
+        })
 
         }).catch(error => {
 
           console.log('error', error);
 
         });
-
-      })
 
     }
 
@@ -311,19 +304,26 @@ export default defineComponent({
 
         }
 
-        store.dispatch(open.adddata.action, up_date).then(()=>{
+        TO.message.url = API.AdminAPI.menu.edit
+
+        TO.actions.update(up_date,(res)=>{
 
           setTimeout(()=>{
 
-            loading.value = false;  // 关闭loading效果
+            loading.value = false;            // 关闭loading效果
 
-            open.adddata.open = false;  // 收起抽屉
+            open.adddata.open = false;        // 收起抽屉
 
-            ctx.emit('menu_add_coallback')   // 回调刷新表格
+            ctx.emit('menu_add_coallback')    // 回调刷新表格
 
-            formRef.value.resetFields(); // 重置表单
+            formRef.value.resetFields();      // 重置表单
 
           },1000)
+
+
+
+        })
+
 
         }).catch(error => {
 
@@ -331,23 +331,18 @@ export default defineComponent({
 
         });
 
-      })
     }
 
     // 菜单功能列表转字典
     const for_dict = (array) =>{
-
       var fun_list = []
-
-      var data_list = store.state.fun.message.data_list.data;
-
+      var data_list = function_list;
       for(let i of array){
-
         for(let y of data_list){
           var obj = {}
-          if(i == y.def_name){
+          if(i == y.value){
             obj.value = i
-            obj.label = y.name
+            obj.label = y.label
             fun_list.push(obj)
           }
         }
@@ -357,13 +352,12 @@ export default defineComponent({
 
     return {
       open,
-      store,
       formdata,
       formRef,
       rules,
       onClose,
-      parent_select,
-      fun_select,
+      first_menu,
+      function_list,
       handleChange,
       fun_handleChange,
       loading,

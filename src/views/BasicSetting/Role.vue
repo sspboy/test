@@ -22,7 +22,7 @@
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+      <a-layout-content class="content_border">
 
         <div style="height: 42px;">
               <!--条件查询组件 开始 -->
@@ -88,6 +88,8 @@
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
 import {defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref} from 'vue';
 import { useStore } from 'vuex'
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 
 // 组件引用=====开始
 import menu_left from "@/components/layout/menu_left.vue";
@@ -115,34 +117,20 @@ export default defineComponent({
   // 组合API返回到模版
   setup() {
 
+    // 【数据绑定】=======================================>开始
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
     const store = useStore();// 共享数据
-
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
-
     const loading = ref(true)// 初始化loading状态
 
     const PAGEDATA = reactive({
       title:'角色管理',
-      menudata:{'key':'32','openKeys':'sub0'},            // 菜单选中配置
+      menudata:{'key':'32','openKeys':'setting'},            // 菜单选中配置
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
     })
-
-
-    // 【删除】数据初始化
-    const DELDATA = reactive({
-      open:false,
-      actian_name:'role/del',// 数据删除模块名称
-      detaile_obj:{}         // 数据删除键值
-    })
-
-    // 【删除】调用组件方法===》弹出抽屉+传值
-    const Del_Fun = (detaile_data)=>{
-      DELDATA.detaile_obj.id = detaile_data.id;
-      DELDATA.open = true;
-    }
-
 
     // 【新建】调用组件方法===》弹出抽屉+传值
     const ADDDATA= reactive({
@@ -151,6 +139,23 @@ export default defineComponent({
       open:false,
     })
 
+    // 【删除】数据初始化
+    const DELDATA = reactive({
+      open:false,
+      actian_name:API.BasicsAPI.role.delete,// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
+
+    // 【删除】调用组件方法===》弹出抽屉+传值
+    const Del_Fun = (detaile_data)=>{
+      DELDATA.detaile_obj.id = detaile_data.id;
+      DELDATA.open = true;
+    }
+    // 【数据绑定】=======================================>结束
+
+
+
+    // 【新建】
     const Add_Fun = ()=>{
       ADDDATA.title="添加角色"
       ADDDATA.action='role/add'
@@ -165,10 +170,9 @@ export default defineComponent({
       ADDDATA.open = true;
 
     }
-    // 【新建】调用组件方法===》弹出抽屉+传值
 
 
-
+    // 【编辑】
     const Edit_Fun = (data)=>{
       ADDDATA.title="编辑角色"
       ADDDATA.action='role/update'
@@ -184,12 +188,12 @@ export default defineComponent({
       ADDDATA.open = true;
 
     }
-    // 【编辑】调用组件方法===》弹出抽屉+传值
 
 
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
+
       // 默认查询条件
       let message = {
         "page":1,
@@ -199,38 +203,28 @@ export default defineComponent({
           condition: [{'column_name': 'create_time', 'value': 'DESC', }]
         }]}
 
-      Refresh_table(message) // 【页面初始化】&&刷新表格
+        Get_list(message) // 【页面初始化】&&刷新表格
 
-      store.dispatch('member/get')
 
     })
 
 
     //【当前页面】&&刷新表格
     const pagecallback =()=>{
+      loading.value = true    // 开启loading状态
+
       let message = {}
-      message.page = store.state.role.message.page;
-      message.page_size = store.state.role.message.page_size;
-      receive(message)
+      message.page = TO.message.page;
+      message.page_size = TO.message.page_size;
+      // 刷新页面查询条件
+      message.condition = [{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]
+
+      Get_list(message)    // 请求列表
     }
 
-    // 刷新表格数据方法
-    const Refresh_table = (message)=>{
-
-      store.dispatch('role/list', message).then(()=>{
-
-        // 列表结果不为空
-        if(store.state.role.message.data_list !== undefined){
-          PAGEDATA.colum = store.state.role.message.data_list.colum
-          PAGEDATA.user_data = store.state.role.message.user_data
-          PAGEDATA.datalist = store.state.role.message.data_list.data
-          PAGEDATA.total_number = store.state.role.message.data_list.total_number
-        }
-        loading.value = false // loading 状态关闭
-      })
-
-
-    }
 
     // [翻页]&&刷新表格
     const receive = (message)=>{
@@ -242,7 +236,7 @@ export default defineComponent({
           condition: [{'column_name': 'create_time', 'value': 'DESC', }]
         }]
 
-      Refresh_table(message) // 刷新表格
+        Get_list(message) // 刷新表格
     }
 
 
@@ -262,6 +256,26 @@ export default defineComponent({
       window.removeEventListener('resize', handleResize);
     });
 
+    // 【刷新表格】
+    const Get_list = (message) =>{
+
+      // 请求接口地址赋值
+      TO.message.url = API.BasicsAPI.role.list
+
+      TO.actions.list(message,(res)=>{
+
+        TO.role.add_colum(res)        // 添加表头
+
+        // 页面赋值
+        // console.log(res)
+        PAGEDATA.colum = res.colum
+        PAGEDATA.datalist = res.data
+        PAGEDATA.total_number =res.total_number
+        
+        loading.value = false // loading 状态关闭
+
+      })
+    }
 
     return {
       store,

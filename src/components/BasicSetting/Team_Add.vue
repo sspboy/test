@@ -101,7 +101,9 @@
 import {defineComponent, reactive, ref, computed } from 'vue';
 import { useStore } from 'vuex'
 import {TreeSelect} from "ant-design-vue";
-import {Role, Depart} from '/src/assets/JS_Model/department.js'
+import {Role, Depart} from '/src/assets/JS_Model/TableOperate'
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 export default defineComponent({
   // 模版名称
   name: "Team_Add",
@@ -113,11 +115,10 @@ export default defineComponent({
   },
   // 组合API返回到模版
   setup(props,ctx) {
-
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
     const store = useStore();// 共享数据
-
     const open = props; // 组件传递数据
-
     const formRef = ref() // 表单获取数据初始化
 
     // 表单填充数据初始化
@@ -198,10 +199,6 @@ export default defineComponent({
 
     })
 
-
-
-
-
     const loading = ref(false)
 
     // 验证规则
@@ -274,29 +271,29 @@ export default defineComponent({
         // 子账号名称
         formdata.value.name = brand_name + ':' +  formdata.value.name
 
-        store.dispatch(open.adddata.action, formdata.value).then(()=>{
+        TO.message.url = API.BasicsAPI.team.add
 
-          console.log(formdata.value)
+        TO.actions.add(formdata.value,(res)=>{
 
           setTimeout(()=>{
 
-              loading.value = false;  // 关闭loading效果
+            loading.value = false;  // 关闭loading效果
 
-              open.adddata.open = false;  // 收起抽屉
+            open.adddata.open = false;  // 收起抽屉
 
-              ctx.emit('add_coallback')   // 回调刷新表格
+            ctx.emit('add_coallback')   // 回调刷新表格
 
-              formRef.value.resetFields(); // 重置表单
+            formRef.value.resetFields(); // 重置表单
 
-            },1000)
+          },1000)
+
+        })
 
         }).catch(error => {
 
           console.log('error', error);
 
         });
-
-      })
 
     }
 
@@ -321,7 +318,10 @@ export default defineComponent({
 
         }
 
-        store.dispatch(open.adddata.action, up_date).then(()=>{
+        // 编辑用户接口
+        TO.message.url = API.BasicsAPI.team.edit
+
+        TO.actions.update(up_date,(res)=>{
 
           setTimeout(()=>{
 
@@ -335,13 +335,14 @@ export default defineComponent({
 
           },1000)
 
-        }).catch(error => {
+        })
 
-          console.log('error', error);
 
-        });
+      }).catch(error => {
 
-      })
+        console.log('error', error);
+
+      });
 
     }
 

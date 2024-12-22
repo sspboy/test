@@ -23,7 +23,7 @@
 
 
 
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+      <a-layout-content class="content_border">
 
           <div style="height: 42px;">
             <!--条件查询组件 开始 -->
@@ -96,7 +96,7 @@ import {ref, reactive, onBeforeMount, onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
-import * as TABLE from '@/assets/JS_Model/department';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
@@ -126,10 +126,9 @@ export default {
   setup() {
 
     // 数据绑定=======================================>开始
-    const API = new utils.A_Patch()// 请求接口
-    const TO = new TABLE.TableOperate()// 表格操作方法
-
-    const store = useStore();// 共享数据
+    const API = new utils.A_Patch()           // 请求接口
+    const TO = new TABLE.TableOperate()       // 表格操作方法
+    const store = useStore();                 // 共享数据
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)// 初始化loading状态
 
@@ -138,7 +137,7 @@ export default {
       title:'用户管理',
       menudata:{      // 菜单选中配置
         'key':'48',
-        'openKeys':'sub1'
+        'openKeys':'admin'
       },
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
@@ -168,9 +167,6 @@ export default {
 
     // 【组件挂载】========================================开始
     onBeforeMount(()=>{
-
-      // 【登录用户信息】请求登录用户会员信息
-      store.dispatch('member/get')
 
       // 默认查询条件
       let message = {

@@ -2,7 +2,7 @@
 import axios from "axios";
 // 引用外部方法
 import * as utils from '@/assets/JS_Model/public_model';
-import * as DEP from "@/assets/JS_Model/department";
+import * as DEP from "@/assets/JS_Model/TableOperate";
 
 const API = new utils.A_Patch()
 const Depart = new DEP.Depart()

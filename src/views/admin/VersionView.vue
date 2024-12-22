@@ -21,7 +21,7 @@
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+      <a-layout-content class="content_border">
         <div style="height: 42px;">
             <!--条件查询组件 开始 -->
             <a-row type="flex">
@@ -78,13 +78,11 @@
 </template>
 
 <script>
-import axios from 'axios';      // 网络请求模块
-axios.defaults.timeout = 1000;  // 1秒 设置全局超时时间（以毫秒为单位）
-
 import { ref, reactive, onBeforeMount , onMounted, onUnmounted} from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
-
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 // 组件引用=====开始
 import menu_left from "@/components/layout/menu_left.vue";
 import nav_pagination from "@/components/nav_pagination.vue";
@@ -110,6 +108,9 @@ export default {
   },
   setup(){
 
+    // 【数据绑定】=======================================>开始
+    const API = new utils.A_Patch()       // 请求接口地址合集
+    const TO = new TABLE.TableOperate()   // 表格操作方法
     const store = useStore();// 共享数据
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)// 初始化loading状态
@@ -119,14 +120,14 @@ export default {
       title:'版本管理',
       menudata:{
         'key':'39',
-        'openKeys':'sub1',
+        'openKeys':'admin',
       },            // 菜单选中配置
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
     })
 
-        // 【添加】数据初始化
+    // 【添加】数据初始化
     const ADDDATA = reactive({
       action:'',
       title:'',
@@ -134,7 +135,18 @@ export default {
       open:false,
 
     })
+    
+    // 【删除】数据初始化
+    const DELDATA = reactive({
+      open:false,
+      actian_name:API.AdminAPI.version.delete,// 数据删除模块名称
+      detaile_obj:{}         // 数据删除键值
+    })
+    // 【数据绑定】=======================================>结束
 
+
+
+    //【新建】
     const Add_fun = ()=>{
       ADDDATA.title = '添加版本';
       ADDDATA.action = 'ver/add';
@@ -149,6 +161,7 @@ export default {
       ADDDATA.open = true;
     }
 
+    // 【编辑】
     const Edit_fun = (data)=>{
       ADDDATA.title = '编辑版本';
       ADDDATA.action = 'ver/update';
@@ -164,15 +177,8 @@ export default {
       ADDDATA.open = true;
     }
 
-    // 【删除】数据初始化
-    const DELDATA = reactive({
-      open:false,
-      actian_name:'ver/del',// 数据删除模块名称
-      detaile_obj:{}         // 数据删除键值
-    })
 
-
-    // 【删除】调用组件方法===》弹出抽屉+传值
+    // 【删除】
     const Del_Fun = (detaile_data)=>{
       DELDATA.detaile_obj.id = detaile_data.id;
       DELDATA.open = true;
@@ -180,8 +186,13 @@ export default {
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
+      store.dispatch('member/get')
       let message = {"page":1, "page_size":10}
-      Refresh_table(message) // 【页面初始化】&&刷新表格
+      message.condition = [{
+            type: "orderby",
+            condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+      }]
+      Get_list(message) // 【页面初始化】&&刷新表格
 
     })
 
@@ -205,88 +216,52 @@ export default {
 
     // 接收来自子组件发送的数据=回调方法
     const receive = (message)=>{
-      loading.value = true   // 开启loading状态
-      Refresh_table(message) // 刷新表格
+      loading.value = true    // 开启loading状态
+      message.condition = [{
+            type: "orderby",
+            condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+      }]
+
+      Get_list(message) // 请求列表
     }
 
     //【当前页面】&&刷新表格
     const pagecallback =()=>{
+      loading.value = true    // 开启loading状态
+
       let message = {}
-      message.page = store.state.ver.message.page;
-      message.page_size = store.state.ver.message.page_size;
-      receive(message)
-    }
+      message.page = TO.message.page;
+      message.page_size = TO.message.page_size;
+      // 刷新页面查询条件
+      message.condition = [{
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC', }]
+        }]
 
-    // 刷新表格
-    const Refresh_table = (message)=>{
-
-      store.dispatch('ver/list', message).then(()=>{
-        PAGEDATA.colum = store.state.ver.message.data_list.colum
-        PAGEDATA.user_data = store.state.ver.message.user_data
-        PAGEDATA.datalist = store.state.ver.message.data_list.data
-        PAGEDATA.total_number = store.state.ver.message.data_list.total_number
-
-        loading.value = false // loading 状态关闭
-      })
-      store.dispatch('member/get')
-
+      Get_list(message)    // 请求列表
     }
 
 
-    // 版本详情==ok
-    // store.dispatch('ver/get',{id:'1'}).then(()=>{
-    //   console.log(store.state.ver.message)  // 页面赋值
-    // })
+  // 【刷新表格】
+  const Get_list = (message) =>{
 
-    // 版本列表===ok
-    // const page_data = {
-    //   "page":1,
-    //   "page_size":10
-    // }
-    // store.dispatch('ver/list', page_data).then(()=>{
-    //   console.log(store.state.ver.message)
-    // })
+    // 请求接口地址赋值
+    TO.message.url = API.AdminAPI.version.list
 
+    TO.actions.list(message,(res)=>{
 
-    // 版本新增===ok
-    // const add_data = {
-    //     "version_number":2.0,
-    //     "version_name":"heheda",
-    //     "menu_setting":"{}",
-    //     "price":1980,
-    //     "sub_account_number":5,
-    //     "duration":12
-    // }
-    // store.dispatch('ver/add', add_data).then(()=>{
-    //   console.log(store.state.ver.message)
-    // })
+      TO.version.add_colum(res)        // 添加表头
 
+      // 页面赋值
+      // console.log(res)
+      PAGEDATA.colum = res.colum
+      PAGEDATA.datalist = res.data
+      PAGEDATA.total_number =res.total_number
 
-    // 版本编辑===ok
-    // const update_data = {
-    //   "id":1,
-    //   "setting_data":{"version_name":"系统设置"}
-    // }
-    // store.dispatch('ver/update', update_data).then(()=>{
-    //   console.log(store.state.ver.message)
-    // })
+      loading.value = false // loading 状态关闭
 
-
-
-    // 版本删除==ok
-    // store.dispatch('ver/del',{id:8}).then(()=>{
-    //   console.log(store.state.ver.message)
-    // })
-
-
-    // 批量删除==ok
-    // const batch_del_data = {
-    //   "id":[6,7]
-    // }
-    // store.dispatch('ver/batch_del', batch_del_data).then(()=>{
-    //     console.log(store.state.ver.message)
-    // })
-
+    })
+    }
 
     return{
       store,

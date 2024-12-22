@@ -6,16 +6,16 @@
     <menu_head />
     <!--head 导航组件  结束-->
 
-          <!--内容部分 菜单 右侧列表 开始-->
+    <!--内容部分 菜单 右侧列表 开始-->
     <a-layout>
 
       <!--左侧 菜单组件  开始-->
       <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
-        <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
+        <menu_left :menudata="PAGEDATA.menudata"/> <!--菜单局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
-      <a-layout-content :style="{ margin: '6px', padding: '14px', background: '#fff',}">
+      <a-layout-content class="content_border">
 
         <div style="height: 42px;">
               <!--条件查询组件 开始 -->
@@ -27,10 +27,7 @@
                       <menu-fold-outlined v-else class="trigger" />
                     </a-button>
                     <!-- {{ PAGEDATA.title }} -->
-                  <a-button type="primary" size="small" style="font-size:12px;" @click="Add_fun">
-                    <template #icon><PlusOutlined /></template>
-                    编辑资料
-                  </a-button>
+
                 </a-col>
                 <a-col :span="6" :order="3"></a-col>
               </a-row>
@@ -71,11 +68,9 @@ export default defineComponent({
   setup(props) {
 
     const store = useStore();// 共享数据
-    store.dispatch('member/get')
-
     const PAGEDATA = reactive({
       title:'品牌资料',
-      menudata:{'key':'64','openKeys':'sub0'},            // 菜单选中配置
+      menudata:{'key':'64','openKeys':'setting'},            // 菜单选中配置
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
