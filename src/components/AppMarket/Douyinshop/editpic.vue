@@ -20,7 +20,7 @@
               </div>
 
               <span style="display: block;float: right; width: 20px;height: 20px; margin:14px 0 0 10px;"><MinusCircleOutlined @click="removeUser(user)" /></span>
-              <a-input v-model:value="user.url" placeholder="输入图片地址"  style="float: right;width: 360px;margin:10px 0 0 10px;font-size: 12px;"/>
+              <a-textarea rows={2} v-model:value="user.url" placeholder="输入图片地址"  style="float: right;width: 360px;margin:2px 0 0 10px;font-size: 12px;"/>
 
 
             </a-form-item>

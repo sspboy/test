@@ -2,7 +2,11 @@
     <div>
       <!-- <a-button type="primary" @click="showModal">Open Modal with async logic</a-button> -->
       <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
-        <p>{{ props.data.data }}</p>
+        <div style="text-align: center;padding:20px 0 ;">
+
+          <a-textarea rows={2} v-model:value="props.data.data" placeholder="输入视频地址"  style="width: 100%;margin:0 0 0 0;font-size: 12px;"/>
+               
+        </div>
       </a-modal>
     </div>
 </template>

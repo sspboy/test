@@ -1,13 +1,15 @@
 <template>
     <div>
-      <!-- <a-button type="primary" @click="showModal">Open Modal with async logic</a-button> -->
       <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
-        <p>{{ props.data.data }}</p>
+        <div style="text-align: center;padding:20px 0 ;">
+          <video width="320" height="320" :src="videodata.data.url" type="video/mp4" controls />
+          <a-textarea rows={2} v-model:value="videodata.data.url" placeholder="输入视频地址"  style="width: 360px;margin:10px 0 0 0;font-size: 12px;"/>        
+        </div>
       </a-modal>
     </div>
 </template>
   <script>
-import { defineComponent,ref } from 'vue';
+import { defineComponent,ref,reactive,computed } from 'vue';
 
 export default defineComponent({
 
@@ -27,32 +29,33 @@ export default defineComponent({
     },
 
     setup(props, ctx) {
+      const get_video_data = (data)=>{
+        return JSON.parse(data)
+      }
 
-        // console.log(props.data)
+      const videodata = computed(()=>{
+        
+        return reactive({
+          data:get_video_data(props.data.data)
+        })
+      })
 
-        const modalText = ref('编辑标题');
-        const open = ref(false);
-        const confirmLoading = ref(false);
-        const showModal = () => {
-            open.value = true;
-        };
-        const handleOk = () => {
-            modalText.value = 'The modal will be closed after two seconds';
-            confirmLoading.value = true;
-            setTimeout(() => {
+      const confirmLoading = ref(false);
+
+      const handleOk = () => {
+          confirmLoading.value = true;
+          setTimeout(() => {
             open.value = false;
             confirmLoading.value = false;
-            }, 2000);
-        };
+          }, 2000);
+      };
     
     
     
     return {
         props,
-        modalText,
-        open,
+        videodata,
         confirmLoading,
-        showModal,
         handleOk,
 
         }
