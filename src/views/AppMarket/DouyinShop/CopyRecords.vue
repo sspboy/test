@@ -103,6 +103,12 @@
                     <a class="cursor" v-on:click="CL.Edit.SKU(record)"><a-tag>查看</a-tag></a>
                 </template> 
 
+                <!--sku list-->
+                <template  v-if="column.dataIndex === 'sku_list'">
+                  <div v-if="record.sku_list === '0'"><a-tag class="cursor">暂无</a-tag></div>
+                  <div v-else-if="record.sku_list != '0'"><a class="cursor" v-on:click="CL.Edit.SKULIST(record)"><a-tag>查看</a-tag></a></div>
+                </template> 
+
                 <!--属性-->
                 <template  v-if="column.dataIndex === 'format'">
                     <a class="cursor" v-on:click="CL.Edit.format(record)"><a-tag>查看</a-tag></a>

@@ -4,7 +4,7 @@
       <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
 
         <div style="padding: 10px 0;">
-        <img :src="props.data.data" width="50" height="50" style="border-radius: 4px;"/>
+        <a-image :src="props.data.data" :width="50" :height="50" style="border-radius: 4px;"/>
         <a-textarea v-model:value="props.data.data" placeholder="输入图片地址"  style="width: 360px;margin:0 0 0 10px;font-size: 12px;"/>
         </div>
       </a-modal>

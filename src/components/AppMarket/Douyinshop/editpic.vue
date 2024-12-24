@@ -16,11 +16,11 @@
             >
               <div v-if="user.url === ''" style="float: left;width: 50px;height: 50px;text-align: center;background-color: #f2f2f2;border-radius: 4px;"></div>
               <div v-else-if="user.url != ''" style="float: left;">
-                <img :src="user.url" width="50" height="50" style="float: left;border-radius: 4px;" />
+                <a-image :src="user.url" :width="50" :height="50" style="float: left;border-radius: 4px;" />
               </div>
 
               <span style="display: block;float: right; width: 20px;height: 20px; margin:14px 0 0 10px;"><MinusCircleOutlined @click="removeUser(user)" /></span>
-              <a-textarea rows={2} v-model:value="user.url" placeholder="输入图片地址"  style="float: right;width: 360px;margin:2px 0 0 10px;font-size: 12px;"/>
+              <a-textarea v-model:value="user.url" placeholder="输入图片地址"  style="float: right;width: 360px;margin:2px 0 0 10px;font-size: 12px;"/>
 
 
             </a-form-item>

@@ -1166,7 +1166,7 @@ export class TableOperate{
         resdata.colum.splice(1, 1)// 店铺id
         resdata.colum.splice(2, 1)// 商品id
         resdata.colum.splice(5, 1)// 主图列表
-        resdata.colum.splice(7, 1)// skulist
+        resdata.colum.splice(8, 1)// 属性
         resdata.colum.splice(12, 1)// skumap
         resdata.colum.splice(0, 1)// id
 
@@ -1248,7 +1248,7 @@ export class TableOperate{
             // 规格列表
             if(colums.field_name === "sku_list"){
               colums['align'] = 'center'
-              colums['width'] = 40
+              colums['width'] = 60
             }
             
             // 属性

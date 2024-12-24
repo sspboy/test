@@ -32,7 +32,9 @@ export class CopyLog{
             }else{
                 return 0
             }
-        }
+        },
+        // sku_list 数据格式转换
+
     }
 
 
@@ -83,6 +85,12 @@ export class CopyLog{
             this.Edit.SKU_Data.title = '编辑规格';
             this.Edit.SKU_Data.open = true
             this.Edit.SKU_Data.data = data.sku
+        },
+        // SKU-LIST
+        SKULIST:(data)=>{
+            this.Edit.SKU_Data.title = '编辑规格';
+            this.Edit.SKU_Data.open = true
+            this.Edit.SKU_Data.data = data.sku_list
         },
         // 属性
         format:(data)=>{
