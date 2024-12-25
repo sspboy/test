@@ -5,7 +5,7 @@ const API = new utils.A_Patch()       // 请求接口地址合集
 
 export class CopyLog{
     
-    // 列表方法
+    // 列表字段转义方法
     List = {
 
         load:()=>{
@@ -125,7 +125,7 @@ export class CopyLog{
         }
     }
 
-    // 批量操作
+    // 批量勾选操作
     BatchConfig={
 
         // 定义行选择的selectedRowKeys
@@ -151,6 +151,8 @@ export class CopyLog{
         }
 
     }
+
+    // 批量处理方法
 
 
 }

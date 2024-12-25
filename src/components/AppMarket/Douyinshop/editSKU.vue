@@ -1,7 +1,8 @@
 <template>
+
     <div>
 
-      <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
+      <a-modal v-model:open="props.data.open" width="800px" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
 
         <a-form ref="formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm" @finish="onFinish">
 
@@ -31,11 +32,11 @@
                     </span>
                     <span v-else-if="user.img != undefined"><a-image :width="30" :height="30" :src="user.img"/></span>
 
-                    <a-input placeholder="输入图片地址" v-model:value="user.img" style="font-size:12px;margin-left:6px;width: 80%;" allow-clear/>
+                    <a-input placeholder="输入图片地址" v-model:value="user.img" size="middle" style="font-size:12px;margin-left:6px;width: 80%;" allow-clear/>
                   </a-form-item>
               
                   <a-form-item :name="['obj', spec_value_index]" :rules="{ required: true,message: 'Missing first name',}">
-                      <a-input v-model:value="user.value" placeholder="输入值" style="font-size: 12px;" allow-clear/>
+                      <a-input v-model:value="user.value" placeholder="输入值" size="middle" style="font-size: 12px;" allow-clear/>
                   </a-form-item>
 
                   <MinusCircleOutlined @click="remove_spec_value(user, spec_index)" style="margin-right: 10px;" />
@@ -43,25 +44,37 @@
                 </a-space>
             </div>
 
-          </a-form-item>
+        </a-form-item>
           
 
-          <a-form-item>
+        <a-form-item>
 
-            <a-button type="primary" @click="addspec" size="small">添加规格</a-button>
+          <a-button type="dashed" @click="addspec" size="middle">添加规格</a-button>
 
-          </a-form-item>
+        </a-form-item>
 
-        </a-form>
+      </a-form>
 
-        <a-form>
+      <a-table :columns="sku_list.columns" :data-source="sku_list.data" :pagination="false" style="font-size: 12px;" size="small" bordered>
+        <template #bodyCell="{ column, text, record }">
+          <template v-if="column.dataIndex === 'name'">
+            <a>{{ text }}</a>
+          </template>
+          <template v-if="column.dataIndex === 'price'">
+            <a-input-number placeholder="输入价格" size="small" v-model:value="record.price" style="font-size: 12px;"/>
+          </template>
+          <template v-if="column.dataIndex === 'stock_num'">
+            <a-input-number placeholder="输入库存" size="small" v-model:value="record.stock_num"  style="font-size: 12px;"/>
+          </template>
+          <template v-if="column.dataIndex === 'code'">
+            <a-input placeholder="商家编码" size="small" style="font-size: 12px;"/>
+          </template>
+        </template>
+        <template #title>规格列表</template>
+        <template #footer>Footer</template>
+      </a-table>
 
-          规格列表
 
-        </a-form>
-
-
-        
       </a-modal>
     </div>
 </template>
@@ -69,12 +82,15 @@
 import { message } from 'ant-design-vue';
 import { defineComponent,ref,reactive,computed } from 'vue';
 import { MinusCircleOutlined, PlusOutlined,MinusOutlined } from '@ant-design/icons-vue';
+
+/**js组件方法*/
+import * as tool from '@/assets/JS_Model/tool';
+
 export default defineComponent({
 
     name: "Edit_SKU",  // 功能添加
     // 引用组件
     components: {
-
       MinusCircleOutlined,
       PlusOutlined,
       MinusOutlined
@@ -89,14 +105,15 @@ export default defineComponent({
 
     setup(props, ctx) {
 
-      const get_spec_data = (data)=>{
-        
-        return JSON.parse(data)
-      }
+      const t = new tool.TOOL()// 公用方法
 
       const confirmLoading = ref(false);
 
+      // 确认按钮方法
       const handleOk = () => {
+        console.log(dynamicValidateForm.value)
+        console.log(sku_list.value)
+
           confirmLoading.value = true;
           setTimeout(() => {
             open.value = false;
@@ -110,14 +127,92 @@ export default defineComponent({
       // 规格值初始化
       const dynamicValidateForm = computed(()=>{
         return reactive({
-          obj:get_spec_data(props.data.data)
+          obj:JSON.parse(props.data.data)
         });
       })
 
       // 初始化规格列表
       const sku_list = computed(()=>{
+        
+        // 规格所属平台
+
+        // sku_name数组取值
+        var get_name_sku_list = () =>{
+          var name_list = []
+          var datalist = dynamicValidateForm.value.obj;
+          for(let i of datalist){
+            name_list.push(i.name)
+          }
+          return name_list
+        }
+        
+        // sku_value数组取值
+        var get_value_sku_list= () =>{
+          var res_list = []
+          var datalist = dynamicValidateForm.value.obj;
+          // 规格取值
+          for(let i of datalist){
+            var v_list = []
+            for(let y of i.value){v_list.push(y.value)}
+            res_list.push(v_list)
+          }
+
+          // 笛卡尔积方法
+          var d_list = t.Fun_.cartesianProduct(res_list)
+
+          return d_list
+
+        }
+
+        // comlum取值
+        var get_colums = () =>{
+          var name_list = get_name_sku_list()
+          var res_list = []
+          for(let i of name_list){
+            let c_obj = {}
+            c_obj.title = i;
+            c_obj.dataIndex = i;
+            res_list.push(c_obj)
+          }
+
+          let price_obj = {title:'价格',dataIndex:'price'}
+          let stock_num_obj = {title:'库存',dataIndex:'stock_num'}
+          let code_obj = {title:'编码',dataIndex:'code'}
+          res_list.push(price_obj)
+          res_list.push(stock_num_obj)
+          res_list.push(code_obj)
+          return res_list
+        }
+        
+        // 规格表单data取值
+        var get_data = () =>{
+
+          var name_list = get_name_sku_list()//名称列表
+
+          var d_list = get_value_sku_list()// 值列表
+
+          var data_list = []
+
+          for(let y of d_list){
+
+            var data = {}
+            // data.key= y.indexOf();
+            for(var i=0;i<name_list.length;i++){
+              data[name_list[i]] = y[i];
+            }
+            data.price = 0
+            data.stock_num = 0
+            data_list.push(data)
+          }
+
+          return data_list
+
+        }
+
+        // 价格、库存、商家编码
 
         var value_list = [{
+
           "spec_detail_name1":"红色",
           "spec_detail_name2":"S",
           "spec_detail_name3":"",
@@ -156,28 +251,33 @@ export default defineComponent({
         // value_name为规格值名称,
         // remark为规格值备注(选填),
         // measurement为度量衡信息，当规格值为度量衡属性自定义值时传递。 */
-        
-        var res_list = []
-        var datalist = dynamicValidateForm.value.obj;
 
-        for(let i of datalist){
-          var v_list = []
-          for(let y of i.value){v_list.push(y.value)}
-          res_list.push(v_list)
-        }
 
         // 笛卡尔积方法
+        var d_list = get_value_sku_list()
 
         // 数据格式构建
+        // 1688 数据添加价格库存
         
         return reactive({
-          list: res_list
+          columns: get_colums(),
+          data:get_data()
         })
 
       })
 
+      // 删除【规格】
+      const removeSpec = (item, data)=>{
 
-      // 删除规格值
+        let index = dynamicValidateForm.value.obj.indexOf(item);
+
+        if (index !== -1) {
+          dynamicValidateForm.value.obj.splice(index, 1);
+        }
+
+      }
+
+      // 删除【规格值】
       const remove_spec_value = (item, data) => {
 
         let index = dynamicValidateForm.value.obj[data].value.indexOf(item);
@@ -188,14 +288,29 @@ export default defineComponent({
 
       };
 
-      // 删除规格
-      const removeSpec = (item, data)=>{
 
-        let index = dynamicValidateForm.value.obj.indexOf(item);
+      // 添加规格
+      const addspec = () =>{
+        
+        console.log(dynamicValidateForm.value)
 
-        if (index !== -1) {
-          dynamicValidateForm.value.obj.splice(index, 1);
+        var obj_number = dynamicValidateForm.value.obj.length;
+
+        if(obj_number>=3){
+          
+          message.info('规格最多不能超过三组！');
+          
+          return false
+
+        }else{
+
+          dynamicValidateForm.value.obj.push({
+            name:"规格名称",
+            value:[{value:"name"}],
+          })
+
         }
+
       }
 
       // 添加规格值
@@ -217,38 +332,55 @@ export default defineComponent({
         
       };
       
-      // 添加规格
-      const addspec = () =>{
-        
-        console.log(sku_list.value)
 
-        var obj_number = dynamicValidateForm.value.obj.length;
-
-        if(obj_number>=3){
-          
-          message.info('规格最多不能超过三组！');
-          
-          return false
-
-        }else{
-
-          dynamicValidateForm.value.obj.push({
-            name:"规格名称",
-            value:[{name:"name"}]
-          })
-
-        }
-
-      }
-
-      
+      // 提交规格表单
       const onFinish = values => {
         
         console.log('Received values of form:', values);
 
-        console.log('dynamicValidateForm.users:', dynamicValidateForm.users);
+        console.log('dynamicValidateForm.users:', dynamicValidateForm.value.objvalue.obj);
 
       };
+
+      // 规格列表
+
+      const columns = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+      },
+      {
+        title: 'Cash Assets',
+        className: 'column-money',
+        dataIndex: 'money',
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+      },
+    ];
+
+
+    const data = [
+      {
+        key: '1',
+        name: 'John Brown',
+        money: '￥300,000.00',
+        address: 'New York No. 1 Lake Park',
+      },
+      {
+        key: '2',
+        name: 'Jim Green',
+        money: '￥1,256,000.00',
+        address: 'London No. 1 Lake Park',
+      },
+      {
+        key: '3',
+        name: 'Joe Black',
+        money: '￥120,000.00',
+        address: 'Sidney No. 1 Lake Park',
+      },
+    ];
 
         
         return {
@@ -261,7 +393,10 @@ export default defineComponent({
           remove_spec_value,
           removeSpec,
           addspecvalue,
-          addspec
+          addspec,
+          columns,
+          data,
+          sku_list
         };
     }
 

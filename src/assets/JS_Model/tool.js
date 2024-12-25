@@ -1,6 +1,6 @@
 export class TOOL{
 
-    Defaule = {
+    Fun_ = {
     
         // 笛卡尔积算法
         cartesianProduct:(sets)=> {
@@ -9,6 +9,8 @@ export class TOOL{
                 [[]]
             );
         }
+
+        // 其他方法 
     }
 
 }
