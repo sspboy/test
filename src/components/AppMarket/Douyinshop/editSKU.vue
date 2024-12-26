@@ -10,7 +10,7 @@
             
             <div style="width: 30%;float: left; margin-bottom: 20px;">
 
-              <a-input v-model:value="spec.name" placeholder="输入规格名称" allow-clear />
+              <a-input v-model:value="spec.name" size="small" placeholder="输入规格名称" allow-clear />
             
             </div>
             
@@ -23,25 +23,35 @@
             </a-button>
 
             <div style="width: 100%;clear: both; margin-bottom: 0;">
-              
-              <a-space v-for="(user, spec_value_index) in spec.value" :key="user.id" style="margin:2px 0 0 0;clear: both;" align="baseline">
 
-                  <a-form-item v-if="spec_index === 0">
-                    <span v-if="user.img === undefined || user.img === ''">
-                      <span style="width: 30px;height: 30px;display: block;border:1px silver solid;float: left;"></span>
-                    </span>
-                    <span v-else-if="user.img != undefined"><a-image :width="30" :height="30" :src="user.img"/></span>
+              <a-space v-for="(user, spec_value_index) in spec.value" :key="user.id" style="margin:2px 4px 0 0;" align="baseline">
+                    
+                <a-form-item v-if="spec_index === 0">
+                      
+                      <span v-if="user.img === undefined || user.img === ''">
+                        <span style="width: 50px;height: 50px;display: block;border:1px silver solid;border-radius:4px;float: left;"></span>
+                      </span>
+                      
+                      <span v-else-if="user.img != undefined" style="float: left;">
+                        <a-image style="border-radius:4px;" :width="50" :height="50" :src="user.img"/>
+                      </span>
+                      
+                      <a-input placeholder="输入图片地址" v-model:value="user.img" size="small" style="font-size:12px;margin-left:6px;width: 210px;" allow-clear/>
 
-                    <a-input placeholder="输入图片地址" v-model:value="user.img" size="middle" style="font-size:12px;margin-left:6px;width: 80%;" allow-clear/>
-                  </a-form-item>
-              
-                  <a-form-item :name="['obj', spec_value_index]" :rules="{ required: true,message: 'Missing first name',}">
-                      <a-input v-model:value="user.value" placeholder="输入值" size="middle" style="font-size: 12px;" allow-clear/>
-                  </a-form-item>
+                      <div :name="['obj', spec_index, 'value', spec_value_index, 'value',]" :rules="{required: true, message:'规格值不能为空'}" style="margin-top: 4px;">
+                        <a-input v-model:value="user.value" placeholder="输入值" size="small" style="font-size: 12px;margin-left:6px;width: 210px;" allow-clear/>
+                      </div>
 
-                  <MinusCircleOutlined @click="remove_spec_value(user, spec_index)" style="margin-right: 10px;" />
+                </a-form-item>
 
-                </a-space>
+                <a-form-item v-if="spec_index != 0" :name="['obj', spec_index, 'value', spec_value_index, 'value',]" :rules="{required: true, message:'规格值不能为空'}">
+                  <a-input v-model:value="user.value" placeholder="输入值" size="small" style="font-size: 12px;width: 210px;" allow-clear/>
+                </a-form-item>
+
+                <MinusCircleOutlined @click="remove_spec_value(user, spec_index)" style="margin: 0 5px 0 0;" />
+
+              </a-space>
+
             </div>
 
         </a-form-item>
@@ -50,6 +60,7 @@
         <a-form-item>
 
           <a-button type="dashed" @click="addspec" size="middle">添加规格</a-button>
+          <a-button type="dashed" html-type="submit" size="middle">ok</a-button>
 
         </a-form-item>
 
@@ -61,10 +72,10 @@
             <a>{{ text }}</a>
           </template>
           <template v-if="column.dataIndex === 'price'">
-            <a-input-number placeholder="输入价格" size="small" v-model:value="record.price" style="font-size: 12px;"/>
+            <a-input-number placeholder="输入价格" size="small" v-model:value="record.price" prefix="￥" :min="0" :step="0.01" style="font-size: 12px;width: 100%;"/>
           </template>
           <template v-if="column.dataIndex === 'stock_num'">
-            <a-input-number placeholder="输入库存" size="small" v-model:value="record.stock_num"  style="font-size: 12px;"/>
+            <a-input-number placeholder="输入库存" size="small" v-model:value="record.stock_num" :min="0" style="font-size: 12px;"/>
           </template>
           <template v-if="column.dataIndex === 'code'">
             <a-input placeholder="商家编码" size="small" style="font-size: 12px;"/>
@@ -122,7 +133,9 @@ export default defineComponent({
       };
 
 
-      const formRef = ref();
+      const formRef = ref({
+
+      });
       
       // 规格值初始化
       const dynamicValidateForm = computed(()=>{
@@ -131,7 +144,7 @@ export default defineComponent({
         });
       })
 
-      // 初始化规格列表
+      // 更具规格--->构造规格列表
       const sku_list = computed(()=>{
         
         // 规格所属平台
@@ -145,6 +158,8 @@ export default defineComponent({
           }
           return name_list
         }
+
+        // sku_价格、库存、提取
         
         // sku_value数组取值
         var get_value_sku_list= () =>{
@@ -153,7 +168,10 @@ export default defineComponent({
           // 规格取值
           for(let i of datalist){
             var v_list = []
-            for(let y of i.value){v_list.push(y.value)}
+            for(let y of i.value){
+              console.log(y)
+              v_list.push(y.value)
+            }
             res_list.push(v_list)
           }
 
@@ -196,12 +214,14 @@ export default defineComponent({
           for(let y of d_list){
 
             var data = {}
-            // data.key= y.indexOf();
             for(var i=0;i<name_list.length;i++){
               data[name_list[i]] = y[i];
             }
+
             data.price = 0
+            
             data.stock_num = 0
+
             data_list.push(data)
           }
 
@@ -266,6 +286,7 @@ export default defineComponent({
 
       })
 
+
       // 删除【规格】
       const removeSpec = (item, data)=>{
 
@@ -306,7 +327,7 @@ export default defineComponent({
 
           dynamicValidateForm.value.obj.push({
             name:"规格名称",
-            value:[{value:"name"}],
+            value:[{value:undefined}],
           })
 
         }
@@ -324,7 +345,7 @@ export default defineComponent({
         }else{
         
           dynamicValidateForm.value.obj[data].value.push({
-            name: "add_value"
+            value: undefined
           });
         
         }
