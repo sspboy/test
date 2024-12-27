@@ -160,6 +160,23 @@ export default defineComponent({
         }
 
         // sku_价格、库存、提取
+        var get_p_s_obj = () => {
+
+            var res_obj = {}
+          
+            for(let i of dynamicValidateForm.value.obj){
+                for(let y of i.value){if(y.price != undefined){
+                    var p_s_obj = {}
+                    p_s_obj.price = y.price
+                    p_s_obj.stock = y.stock
+                    res_obj[y.value] = p_s_obj
+                }}
+            }
+            // var res = {"name":{"price":"","stock":""},"name":{"price":"","stock":""},}
+            
+            return res_obj
+        
+          }
         
         // sku_value数组取值
         var get_value_sku_list= () =>{
@@ -205,6 +222,10 @@ export default defineComponent({
         // 规格表单data取值
         var get_data = () =>{
 
+          var p_s_obj = get_p_s_obj()// 价格、库存关联对象
+
+          console.log(p_s_obj)
+
           var name_list = get_name_sku_list()//名称列表
 
           var d_list = get_value_sku_list()// 值列表
@@ -215,12 +236,17 @@ export default defineComponent({
 
             var data = {}
             for(var i=0;i<name_list.length;i++){
+              var name = name_list[i]
+              var value = y[i]
+              var p_s_res = p_s_obj[value]
+              if(p_s_res != undefined){
+                data.price = p_s_res.price
+                data.stock_num = p_s_res.stock
+              }
               data[name_list[i]] = y[i];
+
             }
 
-            data.price = 0
-            
-            data.stock_num = 0
 
             data_list.push(data)
           }
