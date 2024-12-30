@@ -88,14 +88,12 @@
 
                 <!--图片上传-->
                 <template  v-if="column.dataIndex === 'pic_upload_res'">
-                  <div v-if="record.pic_upload_res === '0'"><a-tag class="cursor">未上传</a-tag></div>
-                  <div v-else-if="record.pic_upload_res != '0'"><a-tag>已上传</a-tag></div>
+                  <a class="cursor" v-on:click="CL.Edit.upload_image(record)"><a-tag>查看</a-tag></a>
                 </template>
 
                 <!--商品分类-->
                 <template  v-if="column.dataIndex === 'cate_name'">
-                  <div v-if="record.cate_name === null || record.cate_name === '0'"><a-tag class="cursor">未选择</a-tag></div>
-                  <div v-else-if="record.cate_name != ''"><a-tag>查看</a-tag></div>
+                  <a class="cursor" v-on:click="CL.Edit.class(record)"><a-tag>查看</a-tag></a>
                 </template>
 
                 <!--sku-->

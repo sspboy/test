@@ -1236,7 +1236,7 @@ export class TableOperate{
             // 标题
             if(colums.field_name === "title"){
               colums['align'] = 'left'
-              colums['width'] = 220
+              colums['width'] = 290
             }
             
             // 规格

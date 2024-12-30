@@ -10,6 +10,8 @@
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
     "@surely-vue/table": "^4.3.5",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
     "ant-design-vue": "^4.2.3",
     "axios": "^1.7.2",
     "core-js": "^3.8.3",

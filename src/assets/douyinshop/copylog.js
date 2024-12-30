@@ -102,13 +102,14 @@ export class CopyLog{
         des:(data)=>{
             this.Edit.des_Data.title = '编辑描述';
             this.Edit.des_Data.open = true
+            this.Edit.des_Data.data = ''
             this.Edit.des_Data.data = data.description
         },
         // 图片上传
         upload_image:(data)=>{
             this.Edit.upload_imgage_Data.title = '图片上传';
             this.Edit.upload_imgage_Data.open = true
-            this.Edit.upload_imgage_Data.data = data.pic_upload_res
+            this.Edit.upload_imgage_Data.data = data
         },
         // 商品分类
         class:(data)=>{

@@ -1,6 +1,5 @@
 <template>
     <div>
-      <!-- <a-button type="primary" @click="showModal">Open Modal with async logic</a-button> -->
       <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
         <p>{{ props.data.data }}</p>
       </a-modal>

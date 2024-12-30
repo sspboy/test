@@ -74,15 +74,18 @@
           <template v-if="column.dataIndex === 'price'">
             <a-input-number placeholder="输入价格" size="small" v-model:value="record.price" prefix="￥" :min="0" :step="0.01" style="font-size: 12px;width: 100%;"/>
           </template>
+
           <template v-if="column.dataIndex === 'stock_num'">
             <a-input-number placeholder="输入库存" size="small" v-model:value="record.stock_num" :min="0" style="font-size: 12px;"/>
           </template>
+          
           <template v-if="column.dataIndex === 'code'">
-            <a-input placeholder="商家编码" size="small" style="font-size: 12px;"/>
+            <a-input placeholder="商家编码" v-model:value="record.code" size="small" style="font-size: 12px;"/>
           </template>
+          
         </template>
-        <template #title>规格列表</template>
-        <template #footer>Footer</template>
+        <!-- <template #title>规格列表</template>
+        <template #footer>Footer</template> -->
       </a-table>
 
 
@@ -235,16 +238,16 @@ export default defineComponent({
           for(let y of d_list){
 
             var data = {}
+
             for(var i=0;i<name_list.length;i++){
-              var name = name_list[i]
-              var value = y[i]
-              var p_s_res = p_s_obj[value]
-              if(p_s_res != undefined){
+              var name = name_list[i]//名称
+              var value = y[i]        // 值
+              var p_s_res = p_s_obj[value] // 价格库存关系匹配
+              if(p_s_res != undefined){     // 匹配成功
                 data.price = p_s_res.price
                 data.stock_num = p_s_res.stock
               }
               data[name_list[i]] = y[i];
-
             }
 
 
@@ -352,8 +355,11 @@ export default defineComponent({
         }else{
 
           dynamicValidateForm.value.obj.push({
+            
             name:"规格名称",
+
             value:[{value:undefined}],
+          
           })
 
         }
