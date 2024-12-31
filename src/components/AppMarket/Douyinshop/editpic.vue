@@ -89,7 +89,7 @@ export default defineComponent({
           obj.url = i
           img_obj.push(obj)
         }
-        console.log(img_obj)
+        // console.log(img_obj)
         return img_obj
       }
 

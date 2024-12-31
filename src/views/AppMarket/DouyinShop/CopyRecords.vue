@@ -43,16 +43,16 @@
                 :loading="loading"
                 :columns="PAGEDATA?.colum"
                 :data-source="PAGEDATA?.datalist"
-                :scroll="{ x: 1800, y: innerHeight}"
+                :scroll="{ x: 2800, y: innerHeight}"
                 :pagination="false"
                 style="font-size:12px;"
             >
 
-              <template v-slot:bodyCell="{ column,record }">
+              <template v-slot:bodyCell="{ column, record, text }">
 
                 <!--标题-->
                 <template  v-if="column.dataIndex === 'title'">
-                    <a style="color: #000;" class="cursor" v-on:click="CL.Edit.title(record)">{{record.title}}</a>
+                    <div class="ellipsis"><a style="color: #000;" class="cursor" :title="record.title" v-on:click="CL.Edit.title(record)">{{record.title}}</a></div>
                 </template>
 
                 <!--头图-->
@@ -82,39 +82,64 @@
 
                 <!--上传状态-->
                 <template  v-if="column.dataIndex === 'state'">
-                  <div v-if="record.state === 0"><a-tag class="cursor">未上传</a-tag></div>
-                  <div v-else-if="record.state != 0"><a-tag color="blue">已上传</a-tag></div>
+                  <div v-if="record.state === 0" class="cursor font_size_12">未上传</div>
+                  <div v-else-if="record.state != 0" class="cursor font_size_12">已上传</div>
                 </template>
 
                 <!--图片上传-->
                 <template  v-if="column.dataIndex === 'pic_upload_res'">
-                  <a class="cursor" v-on:click="CL.Edit.upload_image(record)"><a-tag>查看</a-tag></a>
+                  <a class="cursor font_size_12" v-on:click="CL.Edit.upload_image(record)">查看</a>
                 </template>
 
                 <!--商品分类-->
                 <template  v-if="column.dataIndex === 'cate_name'">
-                  <a class="cursor" v-on:click="CL.Edit.class(record)"><a-tag>查看</a-tag></a>
+                  <a class="cursor font_size_12" v-on:click="CL.Edit.class(record)">查看</a>
                 </template>
 
                 <!--sku-->
                 <template  v-if="column.dataIndex === 'sku'">
-                    <a class="cursor" v-on:click="CL.Edit.SKU(record)"><a-tag>查看</a-tag></a>
+                    <a class="cursor font_size_12" v-on:click="CL.Edit.SKU(record)">查看</a>
                 </template> 
 
                 <!--sku list-->
                 <template  v-if="column.dataIndex === 'sku_list'">
-                  <div v-if="record.sku_list === '0'"><a-tag class="cursor">暂无</a-tag></div>
-                  <div v-else-if="record.sku_list != '0'"><a class="cursor" v-on:click="CL.Edit.SKULIST(record)"><a-tag>查看</a-tag></a></div>
+                  <div v-if="record.sku_list === '0'" class="cursor font_size_12">暂无</div>
+                  <div v-else-if="record.sku_list != '0'"><a class="cursor font_size_12" v-on:click="CL.Edit.SKULIST(record)">查看</a></div>
                 </template> 
 
                 <!--属性-->
                 <template  v-if="column.dataIndex === 'format'">
-                    <a class="cursor" v-on:click="CL.Edit.format(record)"><a-tag>查看</a-tag></a>
+                    <a class="cursor font_size_12" v-on:click="CL.Edit.format(record)">查看</a>
                 </template>
 
                 <!--描述-->
                 <template  v-if="column.dataIndex === 'description'">
-                    <a class="cursor" v-on:click="CL.Edit.des(record)"><a-tag>查看</a-tag></a>
+                    <a class="cursor font_size_12" v-on:click="CL.Edit.des(record)">查看</a>
+                </template>
+
+                <!--减库存-->
+                <template  v-if="column.dataIndex === 'reduce_type'">
+                    <a v-if="text === '1'" class="cursor font_size_12" v-on:click="CL.Edit.reduce_type(record)">拍下减库存</a>
+                    <a v-else-if="text === '2'" class="cursor font_size_12" v-on:click="CL.Edit.reduce_type(record)">付款减库存</a>
+                </template>
+
+                <!--客服电话-->
+                <template  v-if="column.dataIndex === 'mobile'">
+                    <a class="cursor font_size_12" v-on:click="CL.Edit.mobile(record)">{{text}}</a>
+                </template>
+
+                <!--提交方式-->
+                <template  v-if="column.dataIndex === 'commit'">
+                    <a v-if="text === 'false'" class="cursor font_size_12" v-on:click="CL.Edit.commit(record)">保存草稿</a>
+                    <a v-else-if="text === 'true'" class="cursor font_size_12" v-on:click="CL.Edit.commit(record)">保存+提交</a>
+                </template>
+
+                <!--商品类型-->
+                <template  v-if="column.dataIndex === 'product_type'">
+                    <a v-if="text === '0'" class="cursor font_size_12" v-on:click="CL.Edit.product_type(record)">普通</a>
+                    <a v-else-if="text === '3'" class="cursor font_size_12" v-on:click="CL.Edit.product_type(record)">虚拟</a>
+                    <a v-else-if="text === '6'" class="cursor font_size_12" v-on:click="CL.Edit.product_type(record)">玉石闪购</a>
+                    <a v-else-if="text === '7'" class="cursor font_size_12" v-on:click="CL.Edit.product_type(record)">云闪购</a>
                 </template>
 
                 <!--定义操作按钮 开始-->
@@ -362,7 +387,12 @@ export default {
 </script>
 
 <style>
-
+.ellipsis {
+  white-space: nowrap;      /* 确保文本在一行内显示 */
+  overflow: hidden;         /* 隐藏超出容器的文本 */
+  text-overflow: ellipsis;  /* 使用省略号表示被截断的文本 */
+  width: 200px;             /* 定义容器宽度 */
+}
 .ant-table-body{height: calc(100vh - 245px);min-height: 0px;}
 .tablehiddle{display:none;}
 .batch_s{margin:22px 0 0 0px; float: left;}

@@ -1222,21 +1222,12 @@ export class TableOperate{
             if(colums.field_name === "pic"){
               colums['align'] = 'center'
               colums['width'] = 120
-              colums['customCell']=(record) => {
-                return {
-                  on: {
-                    click: (e) => {
-                      console.log(record)
-                    },
-                  },
-                };
-              }
             }
 
             // 标题
             if(colums.field_name === "title"){
               colums['align'] = 'left'
-              colums['width'] = 290
+              colums['width'] = 120
             }
             
             // 规格
@@ -1283,6 +1274,40 @@ export class TableOperate{
             
             // 规格地图
             if(colums.field_name === "skumap"){
+              colums['align'] = 'center'
+              colums['width'] = 80
+            }
+
+            // 减库存
+            if(colums.field_name === "reduce_type"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+
+            // 运费模板
+            if(colums.field_name === "freight_id"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+              colums['customRender']=(text, record, index) => {
+                var res = CopyLog.List.get_freight_id(text.value)
+                return res
+              }
+            }
+
+            // 客服电话
+            if(colums.field_name === "mobile"){
+              colums['align'] = 'center'
+              colums['width'] = 80
+            }
+
+            // 提交方式
+            if(colums.field_name === "commit"){
+              colums['align'] = 'center'
+              colums['width'] = 80
+            }
+
+            // 商品类型
+            if(colums.field_name === "product_type"){
               colums['align'] = 'center'
               colums['width'] = 80
             }
