@@ -3,25 +3,25 @@
 
       <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
 
-        <a-form ref="formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm" @finish="onFinish" style="padding-top: 20px;">
+        <a-form ref="formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm" style="padding-top: 20px;">
 
           <a-space v-for="(user, index) in dynamicValidateForm.users" :key="user.id" style="display: flex; width: 100%; margin-bottom: 8px" align="baseline">
 
+            <a-form-item :name="['users', index, 'url']" :rules="{required: true,trigger: 'change', message: '图片地址不能为空'}">
 
-            <a-form-item :name="['users', index, 'url']"
-                :rules="{
-                required: true,
-                message: '图片地址不能为空',
-              }"
-            >
               <div v-if="user.url === ''" style="float: left;width: 50px;height: 50px;text-align: center;background-color: #f2f2f2;border-radius: 4px;"></div>
+
               <div v-else-if="user.url != ''" style="float: left;">
                 <a-image :src="user.url" :width="50" :height="50" style="float: left;border-radius: 4px;" />
               </div>
 
-              <span style="display: block;float: right; width: 20px;height: 20px; margin:14px 0 0 10px;"><MinusCircleOutlined @click="removeUser(user)" /></span>
-              <a-textarea v-model:value="user.url" placeholder="输入图片地址"  style="float: right;width: 360px;margin:2px 0 0 10px;font-size: 12px;"/>
+              <span style="display: block;float: right; width: 20px;height: 20px; margin:14px 0 0 10px;">
+                
+                <MinusCircleOutlined @click="removeUser(user)" />
 
+              </span>
+
+              <a-textarea v-model:value="user.url" placeholder="输入图片地址" style="float:right;width: 360px;margin:2px 0 0 10px;font-size: 12px;"/>
 
             </a-form-item>
 
@@ -33,11 +33,6 @@
               <PlusOutlined />
               添加图片
             </a-button>
-          </a-form-item>
-
-
-          <a-form-item>
-            <a-button type="primary" html-type="submit">Submit</a-button>
           </a-form-item>
        
         </a-form>
@@ -61,6 +56,7 @@
 <script>
 import { defineComponent,ref,reactive,computed } from 'vue';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
 
 
 export default defineComponent({
@@ -81,27 +77,25 @@ export default defineComponent({
 
     setup(props, ctx) {
       
+      const confirmLoading = ref(false); // 确认按钮状态
+      const formRef = ref();
+
+      // 请求图片列表
       const get_img_obj = (data)=>{
         const img_obj = []
         const img_list = data.split('|')
-        for (let i of img_list){
+        for (let i=0;i<img_list.length;i++){
           var obj = {}
-          obj.url = i
+          obj.url = img_list[i]
+          obj.id = i
           img_obj.push(obj)
         }
         // console.log(img_obj)
         return img_obj
       }
 
-
-
-      const confirmLoading = ref(false);
-
-      const formRef = ref();
-
       // 数据集
       const dynamicValidateForm = computed(()=>{
-
         return reactive({
           users:get_img_obj(props.data.data)
         })
@@ -121,31 +115,90 @@ export default defineComponent({
       
       // 添加数据
       const addUser = () => {
-        dynamicValidateForm.value.users.push({
-          url: ''
-        });
-      };
-      
-      const onFinish = values => {
-        try {
-          console.log('Received values of form:', values);
-        } catch (error) {
-          // 可能抛出异常的代码
-          console.log('hehe')
+
+        var url_num = dynamicValidateForm.value.users.length;// 已输入图片数量
+        if(url_num >= 5){          
+          message.info('主图最多不能超过5张！');        // 提示图片数量不能超过5张
+        }else{
+          dynamicValidateForm.value.users.push({url: ''});
         }
       };
-
-
-
+      
       const handleOk = () => {
-            modalText.value = 'The modal will be closed after two seconds';
-            confirmLoading.value = true;
-            setTimeout(() => {
-              open.value = false;
-              confirmLoading.value = false;
-            }, 2000);
-        };
-    
+
+          // 验证表单结果是否正确
+          formRef.value.validate().then(() => {
+
+            // console.log('values', dynamicValidateForm.value);
+
+            var url_num = dynamicValidateForm.value.users.length;// 已输入图片数量
+        
+            if(url_num > 5){          
+              
+              message.info('主图最多不能超过5张！');        // 提示图片数量不能超过5张
+
+            }else if(url_num == 0){
+              
+              message.info('主图最多不能为空！');        // 提示图片数量不能超过5张
+
+            }else{
+
+              confirmLoading.value = true;
+
+              setTimeout(() => {
+
+                confirmLoading.value = false;             
+
+                var url_list = []
+
+                for(let i of dynamicValidateForm.value.users){url_list.push(i.url)}
+
+                console.log(url_list.join('|'))
+
+              },2000)
+
+              // 编辑用户接口
+              
+              TO.message.url = API.AdminAPI.user.edit
+
+              TO.actions.update(up_date,(res)=>{
+
+                console.log('编辑用户' + res)
+
+                setTimeout(()=>{
+
+                  loading.value = false;  // 关闭loading效果
+
+                  open.adddata.open = false;  // 收起抽屉
+
+                  ctx.emit('add_coallback')   // 回调刷新表格
+
+                  formRef.value.resetFields(); // 重置表单
+
+                },2000)
+
+              })
+
+
+
+
+
+
+
+
+            }
+
+          }).catch(error => {// 表单验证错误
+
+            console.log('error', error);
+
+
+          });
+
+        }
+
+
+
     
     return {
         props,
@@ -154,7 +207,6 @@ export default defineComponent({
 
         formRef,
         dynamicValidateForm,
-        onFinish,
         removeUser,
         addUser,
         }
