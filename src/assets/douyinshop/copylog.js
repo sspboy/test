@@ -94,6 +94,8 @@ export class CopyLog{
             this.Edit.title_Data.open = true
             this.Edit.title_Data.action = API.AppSrtoreAPI.copyrecords.edit
             this.Edit.title_Data.data = data.title
+            this.Edit.title_Data.id = data.id
+
         },
         // 视频
         video:(data)=>{
@@ -107,6 +109,8 @@ export class CopyLog{
             this.Edit.pic_Data.open = true
             this.Edit.pic_Data.data = ''
             this.Edit.pic_Data.data = data.pic
+            this.Edit.pic_Data.id = data.id
+
         },
         // 白底图
         white_image:(data)=>{

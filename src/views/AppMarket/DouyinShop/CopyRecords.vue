@@ -1,7 +1,7 @@
 <template>
 <!--编辑组件  开始-->
 <Edit_title :data="CL.Edit.title_Data" />
-<Edit_pic :data="CL.Edit.pic_Data" />
+<Edit_pic :data="CL.Edit.pic_Data" v-on:edit_pic_callback="pagecallback"/>
 <Edit_video :data="CL.Edit.video_Data" />
 <Edit_SKU :data="CL.Edit.SKU_Data" />
 <Edit_white_image :data="CL.Edit.white_image_Data" />

@@ -57,7 +57,8 @@
 import { defineComponent,ref,reactive,computed } from 'vue';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
-
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 
 export default defineComponent({
 
@@ -76,7 +77,8 @@ export default defineComponent({
     },
 
     setup(props, ctx) {
-      
+      const API = new utils.A_Patch()       // 请求接口地址合集
+      const TO = new TABLE.TableOperate()   // 表格操作方法
       const confirmLoading = ref(false); // 确认按钮状态
       const formRef = ref();
 
@@ -117,11 +119,13 @@ export default defineComponent({
       const addUser = () => {
 
         var url_num = dynamicValidateForm.value.users.length;// 已输入图片数量
+
         if(url_num >= 5){          
           message.info('主图最多不能超过5张！');        // 提示图片数量不能超过5张
         }else{
           dynamicValidateForm.value.users.push({url: ''});
         }
+
       };
       
       const handleOk = () => {
@@ -141,50 +145,45 @@ export default defineComponent({
               
               message.info('主图最多不能为空！');        // 提示图片数量不能超过5张
 
-            }else{
+            }else{// 更新数据
 
               confirmLoading.value = true;
 
-              setTimeout(() => {
+              TO.message.url = API.AppSrtoreAPI.copyrecords.edit // 编辑用户接口调用
 
-                confirmLoading.value = false;             
+              var url_list = []
 
-                var url_list = []
+              for(let i of dynamicValidateForm.value.users){url_list.push(i.url)}
 
-                for(let i of dynamicValidateForm.value.users){url_list.push(i.url)}
+              const up_date = {
 
-                console.log(url_list.join('|'))
+                id:props.data.id,
 
-              },2000)
+                setting_data:{
+                  "pic":url_list.join('|'),
+                  "top_pic":url_list[0]
+                }
 
-              // 编辑用户接口
-              
-              TO.message.url = API.AdminAPI.user.edit
+                }
 
               TO.actions.update(up_date,(res)=>{
 
-                console.log('编辑用户' + res)
+                // console.log('更新主图' + res)
 
-                setTimeout(()=>{
+                setTimeout(() => {
 
-                  loading.value = false;  // 关闭loading效果
+                  confirmLoading.value = false;             
 
-                  open.adddata.open = false;  // 收起抽屉
+                  props.data.open = false;  // 收起model
 
-                  ctx.emit('add_coallback')   // 回调刷新表格
+                  ctx.emit('edit_pic_callback')   // 回调刷新表格
 
                   formRef.value.resetFields(); // 重置表单
 
                 },2000)
 
+              
               })
-
-
-
-
-
-
-
 
             }
 
@@ -195,11 +194,9 @@ export default defineComponent({
 
           });
 
-        }
+      }
 
-
-
-    
+      
     return {
         props,
         confirmLoading,
