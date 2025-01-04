@@ -1,10 +1,10 @@
 <template>
 <!--编辑组件  开始-->
-<Edit_title :data="CL.Edit.title_Data" />
+<Edit_title :data="CL.Edit.title_Data" v-on:edit_title_callback="pagecallback"/>
 <Edit_pic :data="CL.Edit.pic_Data" v-on:edit_pic_callback="pagecallback"/>
 <Edit_video :data="CL.Edit.video_Data" />
 <Edit_SKU :data="CL.Edit.SKU_Data" />
-<Edit_white_image :data="CL.Edit.white_image_Data" />
+<Edit_white_image :data="CL.Edit.white_image_Data"  v-on:edit_white_image_callback="pagecallback"/>
 <Edit_format :data="CL.Edit.format_Data" />
 <Edit_class :data="CL.Edit.class_Data" />
 <Edit_upload_image :data="CL.Edit.upload_imgage_Data" />
@@ -66,8 +66,8 @@
                     <img class="cursor" :src="record.white_image" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.white_image(record)"/>
                   </div>
                   <div v-else>                  
-                      <a-skeleton-avatar :active="false" size="default" shape="avatarShape" />
-                    </div>
+                      <a-skeleton-avatar :active="false" size="default" shape="avatarShape" v-on:click="CL.Edit.white_image(record)"/>
+                  </div>
                 </template>
 
                 <!--视频-->

@@ -1,7 +1,7 @@
 <template>
     <div>
 
-      <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
+      <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" @cancel="cancel">
 
         <a-form ref="formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm" style="padding-top: 20px;">
 
@@ -164,7 +164,7 @@ export default defineComponent({
                   "top_pic":url_list[0]
                 }
 
-                }
+              }
 
               TO.actions.update(up_date,(res)=>{
 
@@ -196,12 +196,17 @@ export default defineComponent({
 
       }
 
+
+      const cancel=()=>{
+
+        formRef.value.resetFields(); // 重置表单
+      }
       
     return {
         props,
         confirmLoading,
         handleOk,
-
+        cancel,
         formRef,
         dynamicValidateForm,
         removeUser,

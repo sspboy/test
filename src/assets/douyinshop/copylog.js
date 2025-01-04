@@ -93,6 +93,7 @@ export class CopyLog{
             this.Edit.title_Data.title = '编辑标题';
             this.Edit.title_Data.open = true
             this.Edit.title_Data.action = API.AppSrtoreAPI.copyrecords.edit
+            this.Edit.title_Data.data = ''
             this.Edit.title_Data.data = data.title
             this.Edit.title_Data.id = data.id
 
@@ -116,7 +117,10 @@ export class CopyLog{
         white_image:(data)=>{
             this.Edit.white_image_Data.title = '编辑白底图';
             this.Edit.white_image_Data.open = true
+            this.Edit.white_image_Data.data = ''
             this.Edit.white_image_Data.data = data.white_image
+            this.Edit.white_image_Data.id = data.id
+
         },
         // SKU
         SKU:(data)=>{
