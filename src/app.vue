@@ -33,6 +33,4 @@ html{margin: 0px; padding: 0px;font-size: 12px;}
 /**model对话框报错设置**/
 div[aria-hidden="true"]{display: none !important;}
 
-
-
 </style>

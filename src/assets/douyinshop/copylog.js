@@ -76,17 +76,18 @@ export class CopyLog{
     Edit = {
 
         // 编辑数据定义
-        pic_Data: reactive({action:'',title:'',data:'',open:false,}),   // 主图
-        video_Data: reactive({action:'',title:'',data:'',open:false,}), // 视频
-        title_Data: reactive({action:'',title:'',data:'',open:false,}), //标题
-        white_image_Data: reactive({action:'',title:'',data:'',open:false,}),//白底图
-        SKU_Data: reactive({action:'',title:'',data:'',open:false,}),   //规格
-        format_Data: reactive({action:'',title:'',data:'',open:false,}),// 属性
-        des_Data: reactive({action:'',title:'',data:'',open:false,}),   // 描述
-        state_Data: reactive({action:'',title:'',data:'',open:false,}), // 复制状态
+        pic_Data: reactive({action:'',title:'',data:'',open:false,}),           // 主图
+        video_Data: reactive({action:'',title:'',data:'',open:false,}),         // 视频
+        title_Data: reactive({action:'',title:'',data:'',open:false,}),         //标题
+        white_image_Data: reactive({action:'',title:'',data:'',open:false,}),   //白底图
+        SKU_Data: reactive({action:'',title:'',data:'',open:false,}),           //规格
+        format_Data: reactive({action:'',title:'',data:'',open:false,}),        // 属性
+        des_Data: reactive({action:'',title:'',data:'',open:false,}),           // 描述
+        state_Data: reactive({action:'',title:'',data:'',open:false,}),         // 复制状态
         upload_imgage_Data: reactive({action:'',title:'',data:'',open:false,}),// 图片上传
-        class_Data: reactive({action:'',title:'',data:'',open:false,}), // 商品分类
-        del_Data: reactive({action:'',title:'',data:'',open:false,}), // 删除
+        class_Data: reactive({action:'',title:'',data:'',open:false,}),         // 商品分类
+        del_Data: reactive({action:'',title:'',data:'',open:false,}),           // 删除
+        reduce_type_Data: reactive({action:'',title:'',data:'',open:false,}),           // 删除
 
         // 标题
         title:(data)=>{
@@ -102,7 +103,10 @@ export class CopyLog{
         video:(data)=>{
             this.Edit.video_Data.title = '编辑视频';
             this.Edit.video_Data.open = true
+            this.Edit.video_Data.id = ''
             this.Edit.video_Data.data = data.video_url
+            this.Edit.video_Data.id = data.id
+
         },
         // 主图
         pic:(data)=>{
@@ -146,6 +150,8 @@ export class CopyLog{
             this.Edit.des_Data.open = true
             this.Edit.des_Data.data = ''
             this.Edit.des_Data.data = data.description
+            this.Edit.des_Data.id = data.id
+
         },
         // 图片上传
         upload_image:(data)=>{
@@ -161,9 +167,11 @@ export class CopyLog{
         },
         // 减库存
         reduce_type:(data)=>{
-            this.Edit.class_Data.title = '减库存方式';
-            this.Edit.class_Data.open = true
-            this.Edit.class_Data.data = data.reduce_type
+            this.Edit.reduce_type_Data.title = '减库存方式';
+            this.Edit.reduce_type_Data.open = true
+            this.Edit.reduce_type_Data.data = data.reduce_type
+            this.Edit.reduce_type_Data.id = data.id
+
         },
         // 运费模板
         freight_id:(data)=>{

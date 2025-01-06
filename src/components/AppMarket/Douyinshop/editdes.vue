@@ -1,8 +1,7 @@
 <template>
     <div>
       <a-modal v-model:open="props.data.open" width="750px" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
-
-        <div style="border: 1px solid #ccc">
+        <div style="border: 1px solid #ccc;">
           
           <Toolbar
             style="border-bottom: 1px solid #ccc"
@@ -13,14 +12,13 @@
 
           <Editor
             style="height: 600px; overflow-y: hidden;"
-            v-model="valueHtml"
+            v-model="valueHtml.html"
             :defaultConfig="editorConfig"
             :mode="mode"
             @onCreated="handleCreated"
           />
 
         </div>
-
       </a-modal>
     </div>
 
@@ -29,11 +27,12 @@
 
 </template>
   <script>
-import { defineComponent, onBeforeUnmount, ref, shallowRef, onMounted, computed,reactive } from 'vue'
+import { defineComponent, onBeforeUnmount, ref, shallowRef, computed,reactive } from 'vue'
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
-import { IToolbarConfig,DomEditor } from '@wangeditor/editor'
-import { Editor,editor, Toolbar } from '@wangeditor/editor-for-vue'
-
+import { message } from 'ant-design-vue';
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 export default defineComponent({
 
     name: "Edit_des",  // 功能添加
@@ -52,8 +51,11 @@ export default defineComponent({
     },
 
     setup(props, ctx) {
-
-      const get_img_list = ()=>{
+      const API = new utils.A_Patch()       // 请求接口地址合集
+      const TO = new TABLE.TableOperate()   // 表格操作方法
+        
+      // 图片数据
+      const valueHtml = computed(()=>{
 
         var img_data = props.data.data
 
@@ -62,26 +64,23 @@ export default defineComponent({
         var img_html = ''
 
         for(let i of img_list){
-          var img_text = "<img src='" + i + "' />"
+          var img_text = "<p style='margin: 0;padding: 0;'><img src='" + i + "' /></p>"
           img_html = img_html + img_text
         }
 
-        return img_html
-      
-      }
-        
-      // 图片数据
-      const valueHtml = computed(()=>{
-
-        return get_img_list()
-
+        return reactive({
+          html:img_html
+        })
       })
+      
+      // 编辑器实例，必须用 shallowRef
+      const editorRef = shallowRef()
+
+      const editorConfig = { placeholder: '请输入内容...' }
 
       // 编辑器工具栏配置
       const toolbarConfig = {
-      }
-
-      toolbarConfig.excludeKeys = [
+        excludeKeys: [
           'bold',
           "underline",
           "italic",
@@ -107,14 +106,12 @@ export default defineComponent({
           "uploadVideo",
           "todo",
           "redo",
-          "undo"
+          "undo",
+          "uploadImage"
         ]
+      }
 
 
-      // 编辑器实例，必须用 shallowRef
-      const editorRef = shallowRef()
-
-      const editorConfig = { placeholder: '请输入内容...' }
 
       // 组件销毁时，也及时销毁编辑器
       onBeforeUnmount(() => {
@@ -128,21 +125,80 @@ export default defineComponent({
         editorRef.value = editor // 记录 editor 实例，重要！
 
         // 查看所有工具栏key
-        console.log(editor.getAllMenuKeys());
+        // console.log(editor.getAllMenuKeys());
 
       }
 
+      // 获取图片html
+      const Get_img_list=()=>{
+        var img_list = []
+        var content = valueHtml.value.html
+        // 解析出图片地址
+        var imgTags = content.match(/<img[^>]+src="([^"]+)"/g);
+        if (imgTags) {
+          imgTags.forEach(tag => {
+            const url = tag.match(/src="([^"]+)"/)[1];
+            img_list.push(url)
+          });
+        }
+        return img_list
+      }
 
-
-        
       const confirmLoading = ref(false);
 
       const handleOk = () => {
-          confirmLoading.value = true;
-          setTimeout(() => {
-            confirmLoading.value = false;
-          }, 2000);
-      };
+        
+          var img_list = Get_img_list() // 获取图片地址
+          var img_num = img_list.length // 图片数量
+
+          if(img_num = 0){
+
+            message.info('描述图不能为空！');        // 提示图片数量不能为空
+
+          }else if(img_num > 50){
+
+            message.info('商品图不能超过50张！');    // 提示图片数量不能超过50张
+          
+          }else{
+
+            confirmLoading.value = true;
+            
+            TO.message.url = API.AppSrtoreAPI.copyrecords.edit // 编辑用户接口调用
+
+            const up_date = {
+
+              id:props.data.id,
+
+              setting_data:{
+
+                "description":img_list.join('|')
+              }
+
+            }
+
+            TO.actions.update(up_date,(res)=>{
+
+              // console.log('更新主图' + res)
+
+              setTimeout(() => {
+
+                confirmLoading.value = false;             
+
+                props.data.open = false;  // 收起model
+
+                ctx.emit('edit_des_callback')   // 回调刷新表格
+                
+                valueHtml.value.html = '<p>hello</p>'
+
+              },2000)
+
+
+            })
+
+
+          }
+
+        };
 
     
     return {

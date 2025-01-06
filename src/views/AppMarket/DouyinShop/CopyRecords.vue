@@ -2,13 +2,14 @@
 <!--编辑组件  开始-->
 <Edit_title :data="CL.Edit.title_Data" v-on:edit_title_callback="pagecallback"/>
 <Edit_pic :data="CL.Edit.pic_Data" v-on:edit_pic_callback="pagecallback"/>
-<Edit_video :data="CL.Edit.video_Data" />
+<Edit_video :data="CL.Edit.video_Data" v-on:edit_video_url_callback="pagecallback"/>
 <Edit_SKU :data="CL.Edit.SKU_Data" />
 <Edit_white_image :data="CL.Edit.white_image_Data"  v-on:edit_white_image_callback="pagecallback"/>
 <Edit_format :data="CL.Edit.format_Data" />
 <Edit_class :data="CL.Edit.class_Data" />
+<Edit_reduce_type :data="CL.Edit.reduce_type_Data" v-on:edit_reduce_type_callback="pagecallback"/>
 <Edit_upload_image :data="CL.Edit.upload_imgage_Data" />
-<Edit_des :data="CL.Edit.des_Data" />
+<Edit_des :data="CL.Edit.des_Data" v-on:edit_des_callback="pagecallback"/>
 <Model_del :data="CL.Edit.del_Data" v-on:del_callback="pagecallback"/>
 
 <!--导航组件  结束-->
@@ -66,17 +67,25 @@
                     <img class="cursor" :src="record.white_image" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.white_image(record)"/>
                   </div>
                   <div v-else>                  
-                      <a-skeleton-avatar :active="false" size="default" shape="avatarShape" v-on:click="CL.Edit.white_image(record)"/>
+                      <a-skeleton-avatar :active="false" size="default" shape="avatarShape" class="cursor" v-on:click="CL.Edit.white_image(record)"/>
                   </div>
                 </template>
 
                 <!--视频-->
                 <template  v-if="column.dataIndex === 'video_url'">
-                    <div v-if="record.video_url != null">                  
-                      <img class="cursor" :src="JSON.parse(record.video_url).pic" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.video(record)"/>
+                    <div v-if="record.video_url != '0'"> 
+                      <span v-if="JSON.parse(record.video_url).pic === undefined" class="play_ico cursor">
+                        <PlayCircleOutlined v-on:click="CL.Edit.video(record)" />
+                      </span>
+                      <span v-else-if="JSON.parse(record.video_url).pic != undefined">
+                        <img class="cursor" :src="JSON.parse(record.video_url).pic" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.video(record)"/>
+                      </span>
                     </div>
-                    <div v-else>                  
-                      <a-skeleton-avatar :active="false" size="default" shape="avatarShape" />
+
+                    <div v-else-if="record.video_url === '0'">
+
+                        <a-skeleton-avatar :active="false" size="default" shape="avatarShape" class="cursor" v-on:click="CL.Edit.video(record)"/>
+
                     </div>
                 </template>
 
@@ -176,7 +185,7 @@
 
 <script>
 import {ref, reactive, onBeforeMount, onMounted, onUnmounted} from 'vue';
-import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined,DeleteOutlined,FormOutlined,UploadOutlined} from '@ant-design/icons-vue';
+import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined,DeleteOutlined,FormOutlined,UploadOutlined,PlayCircleOutlined} from '@ant-design/icons-vue';
 import { useStore } from 'vuex'
 /** js方法引用 */
 import * as utils from '@/assets/JS_Model/public_model';
@@ -200,6 +209,8 @@ import Edit_class from "@/components/AppMarket/Douyinshop/editclass.vue";
 import Edit_white_image from "@/components/AppMarket/Douyinshop/editwhiteimage.vue";
 import Edit_des from "@/components/AppMarket/Douyinshop/editdes.vue";
 import Edit_upload_image from "@/components/AppMarket/Douyinshop/edituploadimage.vue";
+import Edit_reduce_type from "@/components/AppMarket/Douyinshop/editreducetype.vue";
+
 // 删除组件
 import Model_del from '@/components/AppMarket/Douyinshop/Modeldel.vue';
 // 筛选条件查询组件
@@ -222,6 +233,7 @@ export default {
     DeleteOutlined,
     FormOutlined,
     UploadOutlined,
+    PlayCircleOutlined,
     nav_pagination,
     menu_left,
     menu_head,
@@ -235,6 +247,7 @@ export default {
     Edit_des,
     Edit_upload_image,
     Model_del,
+    Edit_reduce_type,
     Siftcondition
   },
   
@@ -396,7 +409,7 @@ export default {
 .ant-table-body{height: calc(100vh - 245px);min-height: 0px;}
 .tablehiddle{display:none;}
 .batch_s{margin:22px 0 0 0px; float: left;}
-
+.play_ico{font-size: 18px;margin: 0;padding: 0;width: 30px; height: 30px;display: block; margin: 0 auto;border-radius:5px; background-color: #f2f2f2;color: #999;}
 
 
 </style>

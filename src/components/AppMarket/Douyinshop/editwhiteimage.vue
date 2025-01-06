@@ -10,7 +10,7 @@
               </div>
             
               <div v-else-if="formfata.url === '' || formfata.url === '0'" style="width: 50px;height: 50px;float: left;text-align: center;margin-top: 6px;">
-                <a-skeleton-avatar :active="false" size="large" shape="avatarShape" />
+                <a-skeleton-avatar :active="false" size="large" shape="avatarShape"/>
               </div>
 
 
@@ -51,9 +51,14 @@ export default defineComponent({
       const TO = new TABLE.TableOperate()   // 表格操作方法
       const formRef = ref('');
       const formfata = computed(()=>{
+        if(props.data.data === '0'){
+          var img_url = '';
+        }else{
+          var img_url = props.data.data;
+        }
         return reactive({
           id:props.data.id,
-          url:props.data.data
+          url:img_url
         });
 
       })
@@ -71,7 +76,7 @@ export default defineComponent({
       const confirmLoading = ref(false);
 
       const handleOk = () => {
-        
+
         // 验证表单结果是否正确
         formRef.value.validate().then(() => {
 

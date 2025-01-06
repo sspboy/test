@@ -13,7 +13,7 @@
                 @finishFailed="handleFinishFailed"
             >
 
-            <h4 style="margin: 5px 0 0 0;padding-right:24px;float:left;"><CopyOutlined style="margin-right: 6px;" />复制记录</h4>
+            <!-- <h4 style="margin: 5px 0 0 0;padding-right:24px;float:left;"><CopyOutlined style="margin-right: 6px;" />复制记录</h4> -->
 
             <a-form-item label="标题" name="title_key">
                 <a-input type="text" size="small" class="font_size_12" placeholder="输入标题关键字" v-model:value="formdata.title_key" style="width: 100px"/>
@@ -71,15 +71,10 @@
                 </a-select>
             </a-form-item>
 
-            <a-form-item name="range-picker" label="创建日期" v-bind="rangeConfig" >
-                <a-range-picker size="small" v-model:value="formdata.select_time" value-format="YYYY-MM-DD" />
-            </a-form-item>
-
             <a-form-item>
                 <a-button type="primary" size="small" style="font-size: 12px;float: right;margin-left: 6px;" @click="resh_condition" ghost>重置</a-button>
                 <a-button type="primary" size="small" style="font-size: 12px;float: right;" html-type="submit">查询</a-button>
             </a-form-item>
-
 
         </a-form>
         </a-col>
