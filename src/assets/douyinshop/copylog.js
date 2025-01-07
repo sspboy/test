@@ -47,6 +47,16 @@ export class CopyLog{
                 return '包邮'
             }
         },
+        // sku
+        get_sku_name:(text)=>{
+            var sku_obj = JSON.parse(text)
+            var sku_name = ""
+            for(let i of sku_obj){
+                sku_name = sku_name + i.name +  ' | '
+            }
+            var new_name = sku_name.slice(0, -2);
+            return new_name
+        },
         // 提交方式
         get_commit:(text)=>{
             // false仅保存，true保存+提审
@@ -87,7 +97,10 @@ export class CopyLog{
         upload_imgage_Data: reactive({action:'',title:'',data:'',open:false,}),// 图片上传
         class_Data: reactive({action:'',title:'',data:'',open:false,}),         // 商品分类
         del_Data: reactive({action:'',title:'',data:'',open:false,}),           // 删除
-        reduce_type_Data: reactive({action:'',title:'',data:'',open:false,}),           // 删除
+        reduce_type_Data: reactive({action:'',title:'',data:'',open:false,}),   // 减库存
+        commit_Data: reactive({action:'',title:'',data:'',open:false,}),        // 提交
+        product_type_Data: reactive({action:'',title:'',data:'',open:false,}),  // 商品类型
+        mobile_Data: reactive({action:'',title:'',data:'',open:false,}),        // 客服电话
 
         // 标题
         title:(data)=>{
@@ -169,6 +182,7 @@ export class CopyLog{
         reduce_type:(data)=>{
             this.Edit.reduce_type_Data.title = '减库存方式';
             this.Edit.reduce_type_Data.open = true
+            this.Edit.reduce_type_Data.data = ''
             this.Edit.reduce_type_Data.data = data.reduce_type
             this.Edit.reduce_type_Data.id = data.id
 
@@ -181,21 +195,30 @@ export class CopyLog{
         },
         // 客服电话
         mobile:(data)=>{
-            this.Edit.class_Data.title = '客服电话';
-            this.Edit.class_Data.open = true
-            this.Edit.class_Data.data = data.mobile
+            this.Edit.mobile_Data.title = '客服电话';
+            this.Edit.mobile_Data.open = true
+            this.Edit.mobile_Data.data = ''
+            this.Edit.mobile_Data.data = data.mobile
+            this.Edit.mobile_Data.id = data.id
+
         },
         // 提交方式
         commit:(data)=>{
-            this.Edit.class_Data.title = '提交方式';
-            this.Edit.class_Data.open = true
-            this.Edit.class_Data.data = data.commit
+            this.Edit.commit_Data.title = '提交方式';
+            this.Edit.commit_Data.open = true
+            this.Edit.commit_Data.data = ''
+            this.Edit.commit_Data.data = data.commit
+            this.Edit.commit_Data.id = data.id
+
         },
         // 商品类型
         product_type:(data)=>{
-            this.Edit.class_Data.title = '商品类型';
-            this.Edit.class_Data.open = true
-            this.Edit.class_Data.data = data.product_type
+            this.Edit.product_type_Data.title = '商品类型';
+            this.Edit.product_type_Data.open = true
+            this.Edit.product_type_Data.data = ''
+            this.Edit.product_type_Data.data = data.product_type
+            this.Edit.product_type_Data.id = data.id
+
         },
         // 删除
         model_del:(data)=>{

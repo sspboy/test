@@ -10,6 +10,10 @@
 <Edit_reduce_type :data="CL.Edit.reduce_type_Data" v-on:edit_reduce_type_callback="pagecallback"/>
 <Edit_upload_image :data="CL.Edit.upload_imgage_Data" />
 <Edit_des :data="CL.Edit.des_Data" v-on:edit_des_callback="pagecallback"/>
+<Edit_commit :data="CL.Edit.commit_Data" v-on:edit_commit_callback="pagecallback"/>
+<Edit_product_type :data="CL.Edit.product_type_Data" v-on:edit_product_type_callback="pagecallback"/>
+<Edit_mobile :data="CL.Edit.mobile_Data" v-on:edit_mobile_callback="pagecallback"/>
+
 <Model_del :data="CL.Edit.del_Data" v-on:del_callback="pagecallback"/>
 
 <!--导航组件  结束-->
@@ -107,7 +111,7 @@
 
                 <!--sku-->
                 <template  v-if="column.dataIndex === 'sku'">
-                    <a class="cursor font_size_12" v-on:click="CL.Edit.SKU(record)">查看</a>
+                    <a class="cursor font_size_12" v-on:click="CL.Edit.SKU(record)" :title="CL.List.get_sku_name(text)">{{ CL.List.get_sku_name(text) }}</a>
                 </template> 
 
                 <!--sku list-->
@@ -210,6 +214,11 @@ import Edit_white_image from "@/components/AppMarket/Douyinshop/editwhiteimage.v
 import Edit_des from "@/components/AppMarket/Douyinshop/editdes.vue";
 import Edit_upload_image from "@/components/AppMarket/Douyinshop/edituploadimage.vue";
 import Edit_reduce_type from "@/components/AppMarket/Douyinshop/editreducetype.vue";
+import Edit_commit from "@/components/AppMarket/Douyinshop/editcommit.vue";
+import Edit_product_type from "@/components/AppMarket/Douyinshop/editproducttype.vue";
+import Edit_mobile from "@/components/AppMarket/Douyinshop/editmobile.vue";
+
+
 
 // 删除组件
 import Model_del from '@/components/AppMarket/Douyinshop/Modeldel.vue';
@@ -248,6 +257,9 @@ export default {
     Edit_upload_image,
     Model_del,
     Edit_reduce_type,
+    Edit_commit,
+    Edit_product_type,
+    Edit_mobile,
     Siftcondition
   },
   

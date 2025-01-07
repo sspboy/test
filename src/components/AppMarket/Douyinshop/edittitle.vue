@@ -43,6 +43,8 @@ export default defineComponent({
         });
 
       })
+
+
       const validate_title = async (_rule, value) => {
 
       
@@ -72,11 +74,6 @@ export default defineComponent({
           trigger: ['change', 'blur'],
           validator: validate_title,// 绑定验证方法
         }],
-        
-
-
-
-
       }
 
 
@@ -123,7 +120,7 @@ export default defineComponent({
     
       const cancel=()=>{
 
-      formRef.value.resetFields(); // 重置表单
+        formRef.value.resetFields(); // 重置表单
       }
     
     return {

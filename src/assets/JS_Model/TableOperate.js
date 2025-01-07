@@ -1232,8 +1232,8 @@ export class TableOperate{
             
             // 规格
             if(colums.field_name === "sku"){
-              colums['align'] = 'center'
-              colums['width'] = 40
+              colums['align'] = 'left'
+              colums['width'] = 100
             }
             
             // 规格列表
