@@ -3,7 +3,7 @@
       <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" @cancel="cancel">
         <a-form :model="formfata" ref="formRef" :rules="rules">
           <a-form-item style="margin-top: 20px;" name="mobile" :key="formfata.id"  class="font_size_12">
-            <a-input type="tel" v-model:value="formfata.mobile" placeholder="输入标题文字" show-count style="width: 100%;font-size: 12px;padding-top: 8px;"/>
+            <a-input type="tel" v-model:value="formfata.mobile" placeholder="输入手机号码" show-count :maxlength="11" style="width: 100%;font-size: 12px;padding-top: 8px;"/>
         </a-form-item>
       </a-form>
       </a-modal>

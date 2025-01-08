@@ -143,7 +143,10 @@ export class CopyLog{
         SKU:(data)=>{
             this.Edit.SKU_Data.title = '编辑规格';
             this.Edit.SKU_Data.open = true
+            this.Edit.SKU_Data.data = ''
             this.Edit.SKU_Data.data = data.sku
+            this.Edit.SKU_Data.id = data.id
+
         },
         // SKU-LIST
         SKULIST:(data)=>{

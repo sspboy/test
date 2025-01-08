@@ -149,9 +149,10 @@ export default defineComponent({
       const handleOk = () => {
         
           var img_list = Get_img_list() // 获取图片地址
+
           var img_num = img_list.length // 图片数量
 
-          if(img_num = 0){
+          if(img_num === 0){
 
             message.info('描述图不能为空！');        // 提示图片数量不能为空
 

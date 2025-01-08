@@ -4,64 +4,61 @@
 
       <a-modal v-model:open="props.data.open" width="800px" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
 
-        <a-form ref="formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm" @finish="onFinish">
+        <a-form ref="formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm">
 
-          <a-form-item v-for="(spec, spec_index) in dynamicValidateForm.obj" :key="spec.id" style="display: flex;padding: 10px 0 0 0;">
-            
-            <div style="width: 30%;float: left; margin-bottom: 20px;">
+          <a-form-item v-for="(spec, spec_index) in dynamicValidateForm.obj" :name="['obj', spec_index, 'name']" :key="spec.id" :rules="{required: true,trigger: 'change', message:''}">
+              
+                <a-input v-model:value="spec.name" size="small" placeholder="输入规格名称" style="width: 200px;" allow-clear />
+                
+                <a-button type="dashed" size="small" class="add_btn_class" block @click="addspecvalue(spec_index)">
+                  <PlusOutlined />
+                </a-button>
 
-              <a-input v-model:value="spec.name" size="small" placeholder="输入规格名称" allow-clear />
-            
-            </div>
-            
-            <a-button type="dashed" size="small" style="float:left;width: 40px;font-size: 12px; margin:2px 0 0 20px;" block @click="addspecvalue(spec_index)">
-              <PlusOutlined />
-            </a-button>
+                <a-button type="dashed" size="small" class="add_btn_class" block @click="removeSpec(spec,spec_index)">
+                  <MinusOutlined />
+                </a-button>
 
-            <a-button type="dashed" size="small" style="float:left;width: 40px;font-size: 12px; margin:2px 0 0 20px;" block @click="removeSpec(spec,spec_index)">
-              <MinusOutlined />
-            </a-button>
+                <div style="width: 100%;clear: both; margin:4px 0 0 0;">
 
-            <div style="width: 100%;clear: both; margin-bottom: 0;">
+                  <a-space v-for="(user, spec_value_index) in spec.value" :key="user.id" style="margin:2px 4px 0 0;" align="baseline" >
+                        
+                    <a-form-item v-if="spec_index === 0" :name="['obj', spec_index, 'value', spec_value_index, 'value',]" :rules="{required: true, trigger: 'change', message:''}">
 
-              <a-space v-for="(user, spec_value_index) in spec.value" :key="user.id" style="margin:2px 4px 0 0;" align="baseline">
-                    
-                <a-form-item v-if="spec_index === 0">
-                      
-                      <span v-if="user.img === undefined || user.img === ''">
-                        <span style="width: 50px;height: 50px;display: block;border:1px silver solid;border-radius:4px;float: left;"></span>
-                      </span>
-                      
-                      <span v-else-if="user.img != undefined" style="float: left;">
-                        <a-image style="border-radius:4px;" :width="50" :height="50" :src="user.img"/>
-                      </span>
-                      
-                      <a-input placeholder="输入图片地址" v-model:value="user.img" size="small" style="font-size:12px;margin-left:6px;width: 210px;" allow-clear/>
-
-                      <div :name="['obj', spec_index, 'value', spec_value_index, 'value',]" :rules="{required: true, message:'规格值不能为空'}" style="margin-top: 4px;">
-                        <a-input v-model:value="user.value" placeholder="输入值" size="small" style="font-size: 12px;margin-left:6px;width: 210px;" allow-clear/>
+                      <div style="width: 200px;margin: 10px 0 4px 0;">
+                        <a-input v-model:value="user.value" placeholder="输入值" size="small" style="font-size: 12px;margin:0 0 6px 0;" allow-clear/>
                       </div>
 
-                </a-form-item>
+                      <span v-if="user.img === undefined || user.img === ''">
+                        <span style="width: 42px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
+                          <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor"/>
+                        </span>
+                      </span>
 
-                <a-form-item v-if="spec_index != 0" :name="['obj', spec_index, 'value', spec_value_index, 'value',]" :rules="{required: true, message:'规格值不能为空'}">
-                  <a-input v-model:value="user.value" placeholder="输入值" size="small" style="font-size: 12px;width: 210px;" allow-clear/>
-                </a-form-item>
+                      <span v-else-if="user.img != undefined" style="float: left;">
+                        <a-image style="border-radius:4px;" :width="42" :height="42" :src="user.img"/>
+                      </span>
+                      <a-form-item>
+                      <a-textarea placeholder="输入规格图片地址" v-model:value="user.img" size="small" :auto-size="{ minRows: 2, maxRows: 2 }" style="font-size:12px;margin:0 0 0 6px;width: 150px;"/>
+                    </a-form-item>
+                    </a-form-item>
 
-                <MinusCircleOutlined @click="remove_spec_value(user, spec_index)" style="margin: 0 5px 0 0;" />
 
-              </a-space>
 
-            </div>
+                    <a-form-item v-if="spec_index != 0" :name="['obj', spec_index, 'value', spec_value_index, 'value',]" :rules="{required: true, message:''}">
+                      <a-input v-model:value="user.value" placeholder="输入值" size="small" style="font-size: 12px;width: 200px;" allow-clear/>
+                    </a-form-item>
+
+                    <MinusCircleOutlined @click="remove_spec_value(user, spec_index)" style="margin: 0 5px 0 0;" />
+
+                  </a-space>
+
+                </div>
 
         </a-form-item>
           
 
         <a-form-item>
-
           <a-button type="dashed" @click="addspec" size="middle">添加规格</a-button>
-          <a-button type="dashed" html-type="submit" size="middle">ok</a-button>
-
         </a-form-item>
 
       </a-form>
@@ -120,38 +117,30 @@ export default defineComponent({
     setup(props, ctx) {
 
       const t = new tool.TOOL()// 公用方法
-
       const confirmLoading = ref(false);
-
-      // 确认按钮方法
-      const handleOk = () => {
-        console.log(dynamicValidateForm.value)
-        console.log(sku_list.value)
-
-          confirmLoading.value = true;
-          setTimeout(() => {
-            open.value = false;
-            confirmLoading.value = false;
-          }, 2000);
-      };
-
-
-      const formRef = ref({
-
-      });
+      const formRef = ref();
       
-      // 规格值初始化
+      // 规格值-->构造表
       const dynamicValidateForm = computed(()=>{
+
+        // 数据id
+        var obj_id = props.data.id;
+        // 添加id
+        var spec_obj = JSON.parse(props.data.data)
+        for(let i = 0;i<spec_obj.length;i++){
+          spec_obj[i]['id'] = i
+        }
+
         return reactive({
-          obj:JSON.parse(props.data.data)
+          id:obj_id,
+          obj:spec_obj
         });
       })
 
-      // 更具规格--->构造规格列表
+
+      // 根据规格-->构造规格列表
       const sku_list = computed(()=>{
         
-        // 规格所属平台
-
         // sku_name数组取值
         var get_name_sku_list = () =>{
           var name_list = []
@@ -159,6 +148,7 @@ export default defineComponent({
           for(let i of datalist){
             name_list.push(i.name)
           }
+
           return name_list
         }
 
@@ -183,13 +173,15 @@ export default defineComponent({
         
         // sku_value数组取值
         var get_value_sku_list= () =>{
+          
           var res_list = []
+
           var datalist = dynamicValidateForm.value.obj;
+          
           // 规格取值
           for(let i of datalist){
             var v_list = []
             for(let y of i.value){
-              console.log(y)
               v_list.push(y.value)
             }
             res_list.push(v_list)
@@ -327,6 +319,7 @@ export default defineComponent({
 
       }
 
+
       // 删除【规格值】
       const remove_spec_value = (item, data) => {
 
@@ -341,7 +334,7 @@ export default defineComponent({
 
       // 添加规格
       const addspec = () =>{
-        
+
         console.log(dynamicValidateForm.value)
 
         var obj_number = dynamicValidateForm.value.obj.length;
@@ -366,34 +359,64 @@ export default defineComponent({
 
       }
 
+
       // 添加规格值
       const addspecvalue = (data) => {
         
         var value_number = dynamicValidateForm.value.obj[data].value.length;
 
         if(value_number >= 20){
+          
           message.info('规格值最多不能超过20组！');
+
           return false
+
         }else{
         
           dynamicValidateForm.value.obj[data].value.push({
-            value: undefined
-          });
-        
-        }
 
-        
+            value: undefined
+
+          });
+
+        }
       };
       
 
-      // 提交规格表单
-      const onFinish = values => {
+      // 确认按钮方法
+      const handleOk = () => {
         
-        console.log('Received values of form:', values);
+        // 验证表单结果是否正确
+        formRef.value.validate().then(() => {
 
-        console.log('dynamicValidateForm.users:', dynamicValidateForm.value.objvalue.obj);
+          console.log('验证通过')
+          console.log(dynamicValidateForm.value)
+          console.log(sku_list.value)
 
+
+          confirmLoading.value = true;
+          setTimeout(() => {
+            props.data.open = false;
+            confirmLoading.value = false;
+          }, 2000);
+
+        }).catch(error => {// 表单验证错误
+
+          console.log('error', error);
+
+        });
+
+
+
+
+
+
+
+
+          
       };
+
+
 
       // 规格列表
 
@@ -442,7 +465,6 @@ export default defineComponent({
           formRef,
           dynamicValidateForm,
           handleOk,
-          onFinish,
           remove_spec_value,
           removeSpec,
           addspecvalue,
@@ -457,6 +479,7 @@ export default defineComponent({
 })
   
   </script>
-<style>
-
+<style scoped>
+.ant-form-item{margin-bottom: 10px;}
+.add_btn_class{width: 40px; margin:0 0 0 20px;}
 </style>
