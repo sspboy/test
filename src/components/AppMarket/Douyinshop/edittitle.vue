@@ -3,7 +3,14 @@
       <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" @cancel="cancel">
           <a-form :model="formfata" ref="formRef" :rules="rules">
             <a-form-item name="title" :key="formfata.id"  class="font_size_12">
-              <a-textarea v-model:value="formfata.title" placeholder="输入标题文字" show-count :maxlength="30" style="width: 100%;font-size: 12px;padding-top: 8px;"/>
+              <a-textarea v-model:value="formfata.title" 
+              placeholder="输入标题文字" 
+              show-count 
+              :maxlength="30" 
+              style="width: 100%;font-size: 12px;
+              padding-top: 8px;"
+              autocomplete="off"
+              />
             </a-form-item>
           </a-form>
       </a-modal>

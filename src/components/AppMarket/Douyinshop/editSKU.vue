@@ -6,9 +6,20 @@
 
         <a-form ref="formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm">
 
-          <a-form-item v-for="(spec, spec_index) in dynamicValidateForm.obj" :name="['obj', spec_index, 'name']" :key="spec.id" :rules="{required: true,trigger: 'change', message:''}">
-              
-                <a-input v-model:value="spec.name" size="small" placeholder="输入规格名称" style="width: 200px;" allow-clear />
+          <a-form-item 
+            v-for="(spec, spec_index) in dynamicValidateForm.obj" 
+            :name="['obj', spec_index, 'name']" 
+            :key="spec.id" 
+            :rules="{required: true,trigger: 'change', message:''}"
+            >
+                <!--规格名称 开始-->
+                <a-input 
+                v-model:value="spec.name"
+                size="small" 
+                placeholder="输入规格名称" 
+                style="width: 200px;" 
+                autocomplete="off"
+                allow-clear />
                 
                 <a-button type="dashed" size="small" class="add_btn_class" block @click="addspecvalue(spec_index)">
                   <PlusOutlined />
@@ -17,7 +28,9 @@
                 <a-button type="dashed" size="small" class="add_btn_class" block @click="removeSpec(spec,spec_index)">
                   <MinusOutlined />
                 </a-button>
+                <!--规格名称 结束-->
 
+                <!--规格值 开始-->
                 <div style="width: 100%;clear: both; margin:4px 0 0 0;">
 
                   <a-space v-for="(user, spec_value_index) in spec.value" :key="user.id" style="margin:2px 4px 0 0;" align="baseline" >
@@ -25,27 +38,46 @@
                     <a-form-item v-if="spec_index === 0" :name="['obj', spec_index, 'value', spec_value_index, 'value',]" :rules="{required: true, trigger: 'change', message:''}">
 
                       <div style="width: 200px;margin: 10px 0 4px 0;">
-                        <a-input v-model:value="user.value" placeholder="输入值" size="small" style="font-size: 12px;margin:0 0 6px 0;" allow-clear/>
+                        <a-input v-model:value="user.value" 
+                        placeholder="输入值" 
+                        size="small" 
+                        style="font-size: 12px;margin:0 0 6px 0;" 
+                        autocomplete="off"
+                        allow-clear/>
                       </div>
 
                       <span v-if="user.img === undefined || user.img === ''">
-                        <span style="width: 42px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
+                        <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
                           <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor"/>
                         </span>
                       </span>
 
                       <span v-else-if="user.img != undefined" style="float: left;">
-                        <a-image style="border-radius:4px;" :width="42" :height="42" :src="user.img"/>
+                        <a-image style="border-radius:4px;margin-top: 5px;" :width="42" :height="42" :src="user.img"/>
                       </span>
                       <a-form-item>
-                      <a-textarea placeholder="输入规格图片地址" v-model:value="user.img" size="small" :auto-size="{ minRows: 2, maxRows: 2 }" style="font-size:12px;margin:0 0 0 6px;width: 150px;"/>
+                      <a-textarea 
+                      placeholder="输入规格图片地址" 
+                      v-model:value="user.img" 
+                      size="small"
+                      autocomplete="off"
+                      :auto-size="{ minRows: 2, maxRows: 2 }" 
+                      allow-clear
+                      style="font-size:12px;margin:0 0 0 6px;width: 150px;"
+                      />
                     </a-form-item>
                     </a-form-item>
 
 
 
-                    <a-form-item v-if="spec_index != 0" :name="['obj', spec_index, 'value', spec_value_index, 'value',]" :rules="{required: true, message:''}">
-                      <a-input v-model:value="user.value" placeholder="输入值" size="small" style="font-size: 12px;width: 200px;" allow-clear/>
+                    <a-form-item v-if="spec_index != 0" :name="['obj', spec_index, 'value', spec_value_index, 'value',]" :rules="{required: true, trigger: 'change', message:''}">
+                      <a-input 
+                      v-model:value="user.value" 
+                      placeholder="输入值" 
+                      size="small"
+                      autocomplete="off"
+                      style="font-size: 12px;width: 200px;" 
+                      allow-clear/>
                     </a-form-item>
 
                     <MinusCircleOutlined @click="remove_spec_value(user, spec_index)" style="margin: 0 5px 0 0;" />
@@ -53,6 +85,8 @@
                   </a-space>
 
                 </div>
+                <!--规格值 结束-->
+
 
         </a-form-item>
           
@@ -63,28 +97,57 @@
 
       </a-form>
 
+      <a-form ref="skulistRef" :model="sku_list" name="basic">
       <a-table :columns="sku_list.columns" :data-source="sku_list.data" :pagination="false" style="font-size: 12px;" size="small" bordered>
-        <template #bodyCell="{ column, text, record }">
+        
+        <template #bodyCell="{ column, text, record, index }">
+          
           <template v-if="column.dataIndex === 'name'">
             <a>{{ text }}</a>
           </template>
+
           <template v-if="column.dataIndex === 'price'">
-            <a-input-number placeholder="输入价格" size="small" v-model:value="record.price" prefix="￥" :min="0" :step="0.01" style="font-size: 12px;width: 100%;"/>
+            <a-form-item :name="['data', index, 'price']" :rules="{required: true, trigger: 'change', message:''}">
+              <a-input-number 
+              placeholder="输入价格" 
+              size="small" 
+              v-model:value="record.price" 
+              prefix="￥" :min="0" 
+              :step="0.01"
+              autocomplete="off"
+              allow-clear
+              style="font-size: 12px;width: 100%;"/>
+            </a-form-item>
           </template>
 
           <template v-if="column.dataIndex === 'stock_num'">
-            <a-input-number placeholder="输入库存" size="small" v-model:value="record.stock_num" :min="0" style="font-size: 12px;"/>
+            <a-form-item :name="['data', index, 'stock_num']" :rules="{required: true, trigger: 'change', message:''}">
+              <a-input-number 
+              placeholder="输入库存" 
+              size="small" 
+              v-model:value="record.stock_num" 
+              :min="0" 
+              autocomplete="off"
+              allow-clear
+              style="font-size: 12px;"/>
+            </a-form-item>
           </template>
           
           <template v-if="column.dataIndex === 'code'">
-            <a-input placeholder="商家编码" v-model:value="record.code" size="small" style="font-size: 12px;"/>
+            <a-input 
+            placeholder="商家编码"
+            autocomplete="off"
+            v-model:value="record.code" 
+            size="small" 
+            style="font-size: 12px;" />
           </template>
           
         </template>
         <!-- <template #title>规格列表</template>
         <template #footer>Footer</template> -->
+      
       </a-table>
-
+    </a-form>
 
       </a-modal>
     </div>
@@ -119,7 +182,8 @@ export default defineComponent({
       const t = new tool.TOOL()// 公用方法
       const confirmLoading = ref(false);
       const formRef = ref();
-      
+      const skulistRef = ref();
+
       // 规格值-->构造表
       const dynamicValidateForm = computed(()=>{
 
@@ -169,7 +233,7 @@ export default defineComponent({
             
             return res_obj
         
-          }
+        }
         
         // sku_value数组取值
         var get_value_sku_list= () =>{
@@ -219,7 +283,7 @@ export default defineComponent({
 
           var p_s_obj = get_p_s_obj()// 价格、库存关联对象
 
-          console.log(p_s_obj)
+          // console.log(p_s_obj)
 
           var name_list = get_name_sku_list()//名称列表
 
@@ -294,8 +358,6 @@ export default defineComponent({
         // measurement为度量衡信息，当规格值为度量衡属性自定义值时传递。 */
 
 
-        // 笛卡尔积方法
-        var d_list = get_value_sku_list()
 
         // 数据格式构建
         // 1688 数据添加价格库存
@@ -388,20 +450,30 @@ export default defineComponent({
         
         // 验证表单结果是否正确
         formRef.value.validate().then(() => {
+          
+          skulistRef.value.validate().then(() => {
 
-          console.log('验证通过')
-          console.log(dynamicValidateForm.value)
-          console.log(sku_list.value)
+            console.log('验证通过')
+            console.log(dynamicValidateForm.value)
+            console.log(sku_list.value)
 
 
-          confirmLoading.value = true;
-          setTimeout(() => {
-            props.data.open = false;
-            confirmLoading.value = false;
-          }, 2000);
+            confirmLoading.value = true;
+            setTimeout(() => {
+              props.data.open = false;
+              confirmLoading.value = false;
+            }, 2000);
 
-        }).catch(error => {// 表单验证错误
 
+
+          }).catch(error => {
+            // 表单验证错误
+            console.log('error', error);
+          })
+
+        }).catch(error => {
+          
+          // 表单验证错误
           console.log('error', error);
 
         });
@@ -463,6 +535,7 @@ export default defineComponent({
           props,
           confirmLoading,
           formRef,
+          skulistRef,
           dynamicValidateForm,
           handleOk,
           remove_spec_value,
