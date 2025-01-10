@@ -3,7 +3,7 @@
 <Edit_title :data="CL.Edit.title_Data" v-on:edit_title_callback="pagecallback"/>
 <Edit_pic :data="CL.Edit.pic_Data" v-on:edit_pic_callback="pagecallback"/>
 <Edit_video :data="CL.Edit.video_Data" v-on:edit_video_url_callback="pagecallback"/>
-<Edit_SKU :data="CL.Edit.SKU_Data" />
+<Edit_SKU :data="CL.Edit.SKU_Data" v-on:edit_sku_callback="pagecallback"/>
 <Edit_white_image :data="CL.Edit.white_image_Data"  v-on:edit_white_image_callback="pagecallback"/>
 <Edit_format :data="CL.Edit.format_Data" />
 <Edit_class :data="CL.Edit.class_Data" />

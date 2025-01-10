@@ -146,7 +146,9 @@ export class CopyLog{
             this.Edit.SKU_Data.data = ''
             this.Edit.SKU_Data.data = data.sku
             this.Edit.SKU_Data.id = data.id
+            this.Edit.SKU_Data.sku_list = ''
             this.Edit.SKU_Data.sku_list = data.sku_list
+
 
 
         },

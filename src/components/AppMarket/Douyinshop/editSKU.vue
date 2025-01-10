@@ -156,6 +156,8 @@
 import { message } from 'ant-design-vue';
 import { defineComponent,ref,reactive,computed } from 'vue';
 import { MinusCircleOutlined, PlusOutlined,MinusOutlined } from '@ant-design/icons-vue';
+import * as utils from '@/assets/JS_Model/public_model';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 
 /**js组件方法*/
 import * as tool from '@/assets/JS_Model/tool';
@@ -179,6 +181,8 @@ export default defineComponent({
 
     setup(props, ctx) {
 
+      const API = new utils.A_Patch()       // 请求接口地址合集
+      const TO = new TABLE.TableOperate()   // 表格操作方法
       const t = new tool.TOOL()// 公用方法
       const confirmLoading = ref(false);
       const formRef = ref();
@@ -189,7 +193,8 @@ export default defineComponent({
 
         // 数据id
         var obj_id = props.data.id;
-        // 添加id
+        
+        // 添加spec—id
         var spec_obj = JSON.parse(props.data.data)
         for(let i = 0;i<spec_obj.length;i++){
           spec_obj[i]['id'] = i
@@ -199,28 +204,26 @@ export default defineComponent({
           id:obj_id,
           obj:spec_obj
         });
-      })
 
+      })
 
       // 根据规格-->构造规格列表
       const sku_list = computed(()=>{
         
-        // sku_name数组取值
+        // 提取sku的name数组
         var get_name_sku_list = () =>{
           var name_list = []
           var datalist = dynamicValidateForm.value.obj;
           for(let i of datalist){
             name_list.push(i.name)
           }
-
           return name_list
         }
 
-        // sku_价格、库存、提取
+        // 提取-初始情况下-sku_价格、库存
         var get_p_s_obj = () => {
 
             var res_obj = {}
-          
             for(let i of dynamicValidateForm.value.obj){
                 for(let y of i.value){if(y.price != undefined){
                     var p_s_obj = {}
@@ -229,13 +232,37 @@ export default defineComponent({
                     res_obj[y.value] = p_s_obj
                 }}
             }
-            // var res = {"name":{"price":"","stock":""},"name":{"price":"","stock":""},}
-            
             return res_obj
-        
+
+
+        }
+
+        // 规格表单p价格、s库存、c商家编码对照对象
+        var get_p_s_c_data = () =>{
+          var res_data = {}
+          var data_list = JSON.parse(props.data.sku_list).data
+          for(let i of data_list){
+            var p_s_c_obj = {}
+            console.log(i)
+            // 名称字符串
+            p_s_c_obj.price = i.price;// 价格
+            p_s_c_obj.stock_num = i.stock_num;// 库存
+            p_s_c_obj.code = i.code; // 商家编码
+            delete i.price
+            delete i.stock_num
+            delete i.code
+            var name_list = []
+            for(let key in i){name_list.push(i[key])}
+            var name = name_list.join('')
+            res_data[name] = p_s_c_obj
+          }
+          console.log(res_data)
+          return res_data
+
         }
         
-        // sku_value数组取值
+        
+        // 笛卡尔积方法sku_value数组取值
         var get_value_sku_list= () =>{
           
           var res_list = []
@@ -281,9 +308,8 @@ export default defineComponent({
         // 规格表单data取值
         var get_data = () =>{
 
-          var p_s_obj = get_p_s_obj()// 价格、库存关联对象
-
-          // console.log(p_s_obj)
+          var p_s_obj = get_p_s_obj()
+          console.log(p_s_obj)
 
           var name_list = get_name_sku_list()//名称列表
 
@@ -297,15 +323,17 @@ export default defineComponent({
 
             for(var i=0;i<name_list.length;i++){
               var name = name_list[i]//名称
-              var value = y[i]        // 值
+              var value = y[i]       // 值
+
               var p_s_res = p_s_obj[value] // 价格库存关系匹配
               if(p_s_res != undefined){     // 匹配成功
                 data.price = p_s_res.price
                 data.stock_num = p_s_res.stock
               }
+            
               data[name_list[i]] = y[i];
+            
             }
-
 
             data_list.push(data)
           }
@@ -314,60 +342,38 @@ export default defineComponent({
 
         }
 
-        // 价格、库存、商家编码
 
-        var value_list = [{
 
-          "spec_detail_name1":"红色",
-          "spec_detail_name2":"S",
-          "spec_detail_name3":"",
-          "stock_num":11,// 库存
-          "price":100,//价格
-          "code":"",// 商家编码
+        // 渲染列表时候匹配价格、库存、商家编码
+        // 读取sku列表：直接渲染数据以及价格
+        var sku_list_data = props.data.sku_list;
+        // console.log(sku_list_data)
 
-          "step_stock_num":0,
-          "supplier_id":"",
-          "outer_sku_id":"",
-          "delivery_infos":[{"info_type":"weight","info_value":"100","info_unit":"mg"}] // 物流信息
-        }]
-
-        //**sku详情，数量应该等于规格1规格2规格3，sku数量和规格组合数必须一致 sku不可售时，库存可设置为0。
-        // price单位为分。 
-
-        // delivery_infos为SKU物流信息，
-        // info_value为字符串类型（示例："12"），
-        // info_type填weight，
-        // info_unit支持mg,g,kg，
-        // 
-        // 超市小时达场景主品用普通库存，子品用区域库存（"sku_type": 1 // 区域库存，"stock_num_map": {"123": 99999 // 门店ID:库存数量}）; 
-        // 
-        // “gold_process_charge”为黄金加工费，只有计价金类目可填并且必填。 
-        // 
-        // sell_properties为sku规格信息，代替spec_detail_name1、spec_detail_name2、spec_detail_name3，
-        // 
-        // 支持填写超过三级规格，样式:[
-        // {"property_id":123,"property_name":"颜色","value_id":456,"value_name":"红色","remark":"偏深"},
-        // {"property_id":789,"property_name":"净含量","value_id":891,"value_name":"30ml","remark":null,
-        // "measurement":{"measure_unit":"ml","measure_unit_id":4,"value":"30"}
-        // }] 
-        // 其中property_id规格项属性id,自定义时传0,
-        // property_name为规格项名称,
-        // value_id为规格值属性id自定义时传0,
-        // value_name为规格值名称,
-        // remark为规格值备注(选填),
-        // measurement为度量衡信息，当规格值为度量衡属性自定义值时传递。 */
+        if(sku_list_data === '0'){ // 没有SKU—list的情况下
+            var data_list = get_data()            // 实时排列的sku列表
+        }else{// 有SKU-list的情况下
+          console.log(get_p_s_c_data())
+            
+        }
 
 
 
-        // 数据格式构建
-        // 1688 数据添加价格库存
+          return reactive({
+            columns: get_colums(),
+            data:get_data()
+          }) 
         
-        return reactive({
-          columns: get_colums(),
-          data:get_data()
-        })
-
       })
+
+
+      // 判断sku列表是否为空：空》
+      // var sku_list_data = props.data.sku_list;
+      // if(sku_list_data != '0' || sku_list_data != undefined ){
+      //   var sku_list_obj = JSON.parse(sku_list_data)
+      //   sku_list.value.columns = sku_list_obj.columns;
+      //   sku_list.value.data = sku_list_obj.columns;
+      // }
+
 
 
       // 删除【规格】
@@ -456,13 +462,32 @@ export default defineComponent({
             console.log('验证通过')
             console.log(dynamicValidateForm.value)
             console.log(sku_list.value)
-
-
             confirmLoading.value = true;
-            setTimeout(() => {
-              props.data.open = false;
-              confirmLoading.value = false;
-            }, 2000);
+
+            TO.message.url = API.AppSrtoreAPI.copyrecords.edit // 编辑用户接口调用
+
+            const up_date = {
+
+              id:props.data.id,
+
+              setting_data:{
+                "sku": dynamicValidateForm.value.obj,
+                "sku_list":sku_list.value
+              }
+
+            }
+
+            TO.actions.update(up_date,(res)=>{
+
+              // console.log('更新sku' + res)
+              setTimeout(() => {
+                confirmLoading.value = false;
+                props.data.open = false;  // 收起model
+                ctx.emit('edit_sku_callback')   // 回调刷新表格
+                formRef.value.resetFields(); // 重置表单
+              }, 2000);
+
+          })
 
 
 
