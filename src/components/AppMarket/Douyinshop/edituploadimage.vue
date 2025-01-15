@@ -1,6 +1,6 @@
 <template>
     <div>
-      <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
+      <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" width="100%" wrap-class-name="full-modal" @ok="handleOk" >
         
         <!-- <p>{{ props.data.data }}</p> -->
 
@@ -250,9 +250,27 @@ export default defineComponent({
 })
   
   </script>
-  <style>
-  th.column-money,
-  td.column-money {
+<style lang="less">
+  
+th.column-money,
+td.column-money {
     text-align: right !important;
   }
-  </style>
+
+.full-modal {
+  .ant-modal {
+    max-width: 100%;
+    top: 0;
+    padding-bottom: 0;
+    margin: 0;
+  }
+  .ant-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh);
+  }
+  .ant-modal-body {
+    flex: 1;
+  }
+}
+</style>

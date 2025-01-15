@@ -207,6 +207,7 @@ export default defineComponent({
 
       })
 
+
       // 根据规格-->构造规格列表
       const sku_list = computed(()=>{
         
@@ -228,7 +229,7 @@ export default defineComponent({
                 for(let y of i.value){if(y.price != undefined){
                     var p_s_obj = {}
                     p_s_obj.price = y.price
-                    p_s_obj.stock = y.stock
+                    p_s_obj.stock = y.stock_num
                     res_obj[y.value] = p_s_obj
                 }}
             }
@@ -239,14 +240,17 @@ export default defineComponent({
 
         // 规格表单p价格、s库存、c商家编码对照对象
         var get_p_s_c_data = () =>{
-          var res_data = {}
+
+          var res_data = {}// 对照表
+          
           var data_list = JSON.parse(props.data.sku_list).data
+
           for(let i of data_list){
             var p_s_c_obj = {}
-            console.log(i)
+            // console.log(i)
             // 名称字符串
             p_s_c_obj.price = i.price;// 价格
-            p_s_c_obj.stock_num = i.stock_num;// 库存
+            p_s_c_obj.stock_num = i.stock_num + '';// 库存
             p_s_c_obj.code = i.code; // 商家编码
             delete i.price
             delete i.stock_num
@@ -256,11 +260,12 @@ export default defineComponent({
             var name = name_list.join('')
             res_data[name] = p_s_c_obj
           }
-          console.log(res_data)
+
+          // console.log(res_data)
+
           return res_data
 
         }
-        
         
         // 笛卡尔积方法sku_value数组取值
         var get_value_sku_list= () =>{
@@ -305,11 +310,12 @@ export default defineComponent({
           return res_list
         }
         
-        // 规格表单data取值
+        // 规格表单data取值(实时)
         var get_data = () =>{
 
           var p_s_obj = get_p_s_obj()
-          console.log(p_s_obj)
+
+          // console.log(p_s_obj)
 
           var name_list = get_name_sku_list()//名称列表
 
@@ -328,7 +334,7 @@ export default defineComponent({
               var p_s_res = p_s_obj[value] // 价格库存关系匹配
               if(p_s_res != undefined){     // 匹配成功
                 data.price = p_s_res.price
-                data.stock_num = p_s_res.stock
+                data.stock_num = p_s_res.stock_num
               }
             
               data[name_list[i]] = y[i];
@@ -342,6 +348,53 @@ export default defineComponent({
 
         }
 
+        // 规格表单data取值(实时)
+        var get_old_data = () =>{
+
+          var p_s_obj = get_p_s_c_data()
+
+          // console.log(p_s_obj)
+
+          var name_list = get_name_sku_list()//名称列表
+
+          console.log(name_list)
+
+          var d_list = get_value_sku_list()// 值列表
+
+          console.log(d_list)
+
+          var data_list = []
+
+          for(let y of d_list){
+
+            var data = {}
+
+            for(var i=0;i<name_list.length;i++){
+              var name = name_list[i]//名称
+              var value = y.join('')       // 值
+              console.log(value)
+
+              var p_s_res = p_s_obj[value] // 价格库存关系匹配
+              console.log(p_s_res)
+
+              if(p_s_res != undefined){     // 匹配成功
+                data.price = p_s_res.price
+                data.stock_num = p_s_res.stock_num +''
+                data.code = p_s_res.code +''
+
+              }
+            
+              data[name_list[i]] = y[i];
+            
+            }
+            console.log(data)
+
+            data_list.push(data)
+          }
+
+          return data_list
+
+        }
 
 
         // 渲染列表时候匹配价格、库存、商家编码
@@ -349,31 +402,18 @@ export default defineComponent({
         var sku_list_data = props.data.sku_list;
         // console.log(sku_list_data)
 
-        if(sku_list_data === '0'){ // 没有SKU—list的情况下
+        if(sku_list_data === '0'){                // 没有SKU—list的情况下
             var data_list = get_data()            // 实时排列的sku列表
-        }else{// 有SKU-list的情况下
-          console.log(get_p_s_c_data())
-            
+        }else{// 有SKU-list数据的情况下
+          var data_list = get_old_data()            // 实时排列的sku列表
         }
-
-
 
           return reactive({
             columns: get_colums(),
-            data:get_data()
+            data:data_list
           }) 
         
       })
-
-
-      // 判断sku列表是否为空：空》
-      // var sku_list_data = props.data.sku_list;
-      // if(sku_list_data != '0' || sku_list_data != undefined ){
-      //   var sku_list_obj = JSON.parse(sku_list_data)
-      //   sku_list.value.columns = sku_list_obj.columns;
-      //   sku_list.value.data = sku_list_obj.columns;
-      // }
-
 
 
       // 删除【规格】
@@ -497,20 +537,9 @@ export default defineComponent({
           })
 
         }).catch(error => {
-          
           // 表单验证错误
           console.log('error', error);
-
         });
-
-
-
-
-
-
-
-
-          
       };
 
 
