@@ -30,7 +30,7 @@
                   <a-flex justify="space-between">
                     <img
                       alt="avatar"
-                      src="https://gd-hbimg.huaban.com/437c853d4c231d7ca1d9406d70702bac0d561743c8eaa-PrrXP1"
+                      src="../../../assets/keji.jpg"
                       :style="imgStyle"
                     />
                     <a-flex vertical align="flex-end" justify="space-between" :style="{ padding: '32px' }">
