@@ -190,7 +190,7 @@ const routes = [
     {   // 没有登录权限
         path: '/pleaselogin',
         name: 'NotLoginPermissions',
-        component: NotLoginPermissions, // 403错误页面组件
+        component: NotLoginPermissions, // 提示登录
         meta:{
             title:'没有登录',
         }

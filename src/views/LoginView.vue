@@ -162,8 +162,10 @@ export default {
 
         // 反馈请求结果
         const res = response.data
-        console.log(API.LoginAPI.url.login)
-        console.log(response)
+        
+        // console.log(API.LoginAPI.url.login)
+        // console.log(response)
+
         if(res === 'None'){        // 用户名不存在：None
 
           formState.user_state = "None"

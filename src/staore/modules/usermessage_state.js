@@ -21,11 +21,19 @@ const getters = {}
 const mutations = {
     // 更新>详情
     detaile:(state, resdata)=>{
-        state.message.menu = resdata.menu;
-        delete resdata.menu
-        state.message.shop = resdata.shop;
-        delete resdata.shop
-        state.message.user_data = resdata;
+        
+        console.log(resdata)
+
+        if(resdata === 'NOT_Login_Power'){
+            state.message.user_data = resdata;
+        }else{
+            state.message.menu = resdata.menu;
+            delete resdata.menu
+            state.message.shop = resdata.shop;
+            delete resdata.shop
+            state.message.user_data = resdata;
+        }
+
     },
 
 }
@@ -33,6 +41,7 @@ const mutations = {
 
 /* Action */
 const actions = {
+    
     // 查询登录用户的信息
     get:async ({ commit })=>{
 
@@ -43,7 +52,7 @@ const actions = {
             await axios.get(url).then((response)=>{
                 
                 commit('detaile', response.data)
-
+                
             })
 
         }catch (error){

@@ -60,6 +60,7 @@ export default defineComponent({
     const router = useRouter(); // 初始化路由方法
     const menu = new Menu()
     const bottom = ref(10);
+    
     // 菜单状态设置
     const state = reactive({
       key:[],
@@ -81,15 +82,12 @@ export default defineComponent({
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
-
+        console.log(store.state.member.message.menu)
         items.value = computed(()=>{
 
-          var menu_data = menu.LoadMenu.fristlive(store.state.member.message.menu)
-
+          var menu_data = menu.LoadMenu.fristlive(store.state.member.message.menu)  //加载菜单信息
 
           for(let i of menu_data){
-
-            // console.log(i)
 
             state.rootSubmenuKeys.push(i.key)
 
@@ -98,7 +96,6 @@ export default defineComponent({
           return menu_data
 
         })
-
 
     })
 
