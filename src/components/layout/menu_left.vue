@@ -82,7 +82,9 @@ export default defineComponent({
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
-        console.log(store.state.member.message.menu)
+        
+      // console.log(store.state.member.message.menu)
+
         items.value = computed(()=>{
 
           var menu_data = menu.LoadMenu.fristlive(store.state.member.message.menu)  //加载菜单信息

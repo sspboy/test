@@ -7,12 +7,12 @@
 
           <a-space v-for="(user, index) in dynamicValidateForm.users" :key="user.id" style="display: flex; width: 100%; margin-bottom: 8px" align="baseline">
 
-            <a-form-item :name="['users', index, 'url']" :rules="{required: true,trigger: 'change', message: '图片地址不能为空'}">
+            <a-form-item :name="['users', index, 'OriginUrl']" :rules="{required: true,trigger: 'change', message: '图片地址不能为空'}">
 
-              <div v-if="user.url === ''" style="float: left;width: 50px;height: 50px;text-align: center;background-color: #f2f2f2;border-radius: 4px;"></div>
+              <div v-if="user.OriginUrl === ''" style="float: left;width: 50px;height: 50px;text-align: center;background-color: #f2f2f2;border-radius: 4px;"></div>
 
-              <div v-else-if="user.url != ''" style="float: left;">
-                <a-image :src="user.url" :width="50" :height="50" style="float: left;border-radius: 4px;" />
+              <div v-else-if="user.OriginUrl != ''" style="float: left;">
+                <a-image :src="user.OriginUrl" :width="50" :height="50" style="float: left;border-radius: 4px;" />
               </div>
 
               <span style="display: block;float: right; width: 20px;height: 20px; margin:14px 0 0 10px;">
@@ -21,7 +21,7 @@
 
               </span>
 
-              <a-textarea v-model:value="user.url" placeholder="输入图片地址" style="float:right;width: 360px;margin:2px 0 0 10px;font-size: 12px;"/>
+              <a-textarea v-model:value="user.OriginUrl" placeholder="输入图片地址" style="float:right;width: 360px;margin:2px 0 0 10px;font-size: 12px;"/>
 
             </a-form-item>
 
@@ -84,6 +84,7 @@ export default defineComponent({
 
       // 请求图片列表
       const get_img_obj = (data)=>{
+        console.log(JSON.parse(data))
         const img_obj = []
         const img_list = data.split('|')
         for (let i=0;i<img_list.length;i++){
@@ -99,7 +100,7 @@ export default defineComponent({
       // 数据集
       const dynamicValidateForm = computed(()=>{
         return reactive({
-          users:get_img_obj(props.data.data)
+          users:JSON.parse(props.data.data)
         })
       })
 
@@ -133,7 +134,7 @@ export default defineComponent({
           // 验证表单结果是否正确
           formRef.value.validate().then(() => {
 
-            // console.log('values', dynamicValidateForm.value);
+            console.log('values', dynamicValidateForm.value);
 
             var url_num = dynamicValidateForm.value.users.length;// 已输入图片数量
         
@@ -166,24 +167,24 @@ export default defineComponent({
 
               }
 
-              TO.actions.update(up_date,(res)=>{
+              // TO.actions.update(up_date,(res)=>{
 
-                // console.log('更新主图' + res)
+              //   // console.log('更新主图' + res)
 
-                setTimeout(() => {
+              //   setTimeout(() => {
 
-                  confirmLoading.value = false;             
+              //     confirmLoading.value = false;             
 
-                  props.data.open = false;  // 收起model
+              //     props.data.open = false;  // 收起model
 
-                  ctx.emit('edit_pic_callback')   // 回调刷新表格
+              //     ctx.emit('edit_pic_callback')   // 回调刷新表格
 
-                  formRef.value.resetFields(); // 重置表单
+              //     formRef.value.resetFields(); // 重置表单
 
-                },2000)
+              //   },2000)
 
               
-              })
+              // })
 
             }
 

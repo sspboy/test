@@ -22,7 +22,7 @@ const mutations = {
     // 更新>详情
     detaile:(state, resdata)=>{
         
-        console.log(resdata)
+        // console.log(resdata)
 
         if(resdata === 'NOT_Login_Power'){
             state.message.user_data = resdata;
@@ -35,7 +35,6 @@ const mutations = {
         }
 
     },
-
 }
 
 

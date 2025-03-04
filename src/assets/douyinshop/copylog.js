@@ -4,6 +4,7 @@ import * as utils from '@/assets/JS_Model/public_model';
 const API = new utils.A_Patch()       // 请求接口地址合集
 
 export class CopyLog{
+
     
     // 列表字段转义方法
     List = {
@@ -94,7 +95,7 @@ export class CopyLog{
         format_Data: reactive({action:'',title:'',data:'',open:false,}),        // 属性
         des_Data: reactive({action:'',title:'',data:'',open:false,}),           // 描述
         state_Data: reactive({action:'',title:'',data:'',open:false,}),         // 复制状态
-        upload_imgage_Data: reactive({action:'',title:'',data:'',open:false,}),// 图片上传
+        upload_imgage_Data: reactive({action:'',title:'',data:'',open:false,}), // 图片上传
         class_Data: reactive({action:'',title:'',data:'',open:false,}),         // 商品分类
         del_Data: reactive({action:'',title:'',data:'',open:false,}),           // 删除
         reduce_type_Data: reactive({action:'',title:'',data:'',open:false,}),   // 减库存
@@ -148,9 +149,6 @@ export class CopyLog{
             this.Edit.SKU_Data.id = data.id
             this.Edit.SKU_Data.sku_list = ''
             this.Edit.SKU_Data.sku_list = data.sku_list
-
-
-
         },
         // SKU-LIST
         SKULIST:(data)=>{
@@ -174,10 +172,12 @@ export class CopyLog{
 
         },
         // 图片上传
-        upload_image:(data)=>{
+        upload_image:(data,user_data)=>{
             this.Edit.upload_imgage_Data.title = '图片上传';
             this.Edit.upload_imgage_Data.open = true
             this.Edit.upload_imgage_Data.data = data
+            this.Edit.upload_imgage_Data.user_data = user_data
+
         },
         // 商品分类
         class:(data)=>{

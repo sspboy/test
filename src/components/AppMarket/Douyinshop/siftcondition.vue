@@ -260,7 +260,6 @@ export default defineComponent({
 .ant-select-selection-item{font-size: 12px !important;}
 .ant-form-item-label label{font-size: 12px !important;}
 /**下拉表单字体大小设置**/
-.ant-input{border-radius: 4px;padding: 2px 2px 2px 6px;}
 .ant-picker-range{border-radius: 4px !important;}
 .ant-picker-range input{padding: 2px 1px !important;font-size: 12px !important;}
 </style>

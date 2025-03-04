@@ -61,7 +61,7 @@ export class A_Patch{
         // 店铺信息
         douyinshop:{
             "list": "api/admin/shop/list",  //[post]列表
-                                                // [put]data 批量删除
+                                            // [put]data 批量删除
             "detaile": "api/admin/shop/",   // [get]+id详情
             "delete": "api/admin/shop/",    // [delete]+id删除
             "edit": "api/admin/shop/",      // [put]setting_data + id 传数据更新
@@ -112,6 +112,10 @@ export class A_Patch{
             "delete":"api/douyin/copylog/",
             "edit":"api/douyin/copylog/",
             "add":"api/douyin/copylog/add"
+        },
+        // 店铺信息
+        Shopinfo:{
+            "detaile":"api/douyin/shopinfo/"
         }
 
 

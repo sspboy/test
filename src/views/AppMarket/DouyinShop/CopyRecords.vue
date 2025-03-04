@@ -8,7 +8,7 @@
 <Edit_format :data="CL.Edit.format_Data" />
 <Edit_class :data="CL.Edit.class_Data" />
 <Edit_reduce_type :data="CL.Edit.reduce_type_Data" v-on:edit_reduce_type_callback="pagecallback"/>
-<Edit_upload_image :data="CL.Edit.upload_imgage_Data" />
+<Edit_upload_image :data="CL.Edit.upload_imgage_Data" v-on:edit_upload_image_callback="pagecallback"/>
 <Edit_des :data="CL.Edit.des_Data" v-on:edit_des_callback="pagecallback"/>
 <Edit_commit :data="CL.Edit.commit_Data" v-on:edit_commit_callback="pagecallback"/>
 <Edit_product_type :data="CL.Edit.product_type_Data" v-on:edit_product_type_callback="pagecallback"/>
@@ -99,9 +99,9 @@
                   <div v-else-if="record.state != 0" class="cursor font_size_12">已上传</div>
                 </template>
 
-                <!--图片上传-->
+                <!--图片上传 传入用户信息（素材文件夹id）-->
                 <template  v-if="column.dataIndex === 'pic_upload_res'">
-                  <a class="cursor font_size_12" v-on:click="CL.Edit.upload_image(record)">查看</a>
+                  <a class="cursor font_size_12" v-on:click="CL.Edit.upload_image(record,store.state.member.message.user_data)">查看</a>
                 </template>
 
                 <!--商品分类-->
@@ -274,6 +274,7 @@ export default {
     const CL = new copylog.CopyLog()          // 表格操作方法
 
     const store = useStore();                 // 共享数据
+    
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)                 // 初始化loading状态
     const PAGEDATA = reactive({
@@ -369,16 +370,19 @@ export default {
       TO.message.url = API.AppSrtoreAPI.copyrecords.list
 
       TO.actions.list(message,(res)=>{
+        console.log(res)
         
         TO.copylog.add_colum(res)        // 添加表头
 
         // 页面赋值
         PAGEDATA.colum = res.colum
-        PAGEDATA.datalist = res.data
+        PAGEDATA.datalist = res.data != 'None' ? res.data:[]
         PAGEDATA.total_number =res.total_number
         loading.value = false // loading 状态关闭
 
       })
+
+
     }
 
 

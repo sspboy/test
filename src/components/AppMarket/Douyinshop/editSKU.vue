@@ -46,19 +46,19 @@
                         allow-clear/>
                       </div>
 
-                      <span v-if="user.img === undefined || user.img === ''">
+                      <span v-if="user.OriginUrl === undefined || user.OriginUrl === ''">
                         <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
                           <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor"/>
                         </span>
                       </span>
 
-                      <span v-else-if="user.img != undefined" style="float: left;">
-                        <a-image style="border-radius:4px;margin-top: 5px;" :width="42" :height="42" :src="user.img"/>
+                      <span v-else-if="user.OriginUrl != undefined" style="float: left;">
+                        <a-image style="border-radius:4px;margin-top: 5px;" :width="42" :height="42" :src="user.OriginUrl"/>
                       </span>
                       <a-form-item>
                       <a-textarea 
                       placeholder="输入规格图片地址" 
-                      v-model:value="user.img" 
+                      v-model:value="user.OriginUrl" 
                       size="small"
                       autocomplete="off"
                       :auto-size="{ minRows: 2, maxRows: 2 }" 

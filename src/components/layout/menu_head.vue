@@ -89,7 +89,7 @@ export default defineComponent({
 
       axios.get(API.LoginAPI.url.loginout).then((res)=>{
 
-        console.log(res)
+        // console.log(res)
         
         if(res.data === "login out True"){
 

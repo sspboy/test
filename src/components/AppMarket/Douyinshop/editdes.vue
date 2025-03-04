@@ -57,14 +57,14 @@ export default defineComponent({
       // 图片数据
       const valueHtml = computed(()=>{
 
-        var img_data = props.data.data
+        var img_list = JSON.parse(props.data.data)
 
-        var img_list = img_data.split('|')
+        // var img_list = img_data.split('|')
 
         var img_html = ''
 
         for(let i of img_list){
-          var img_text = "<p style='margin: 0;padding: 0;'><img src='" + i + "' /></p>"
+          var img_text = "<p style='margin: 0;padding: 0;'><img src='" + i.OriginUrl + "' /></p>"
           img_html = img_html + img_text
         }
 

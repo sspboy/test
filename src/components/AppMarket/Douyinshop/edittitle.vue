@@ -42,6 +42,7 @@ export default defineComponent({
       const TO = new TABLE.TableOperate()   // 表格操作方法
       const confirmLoading = ref(false);
       const formRef = ref('');
+      
       const formfata = computed(()=>{
 
         return reactive({

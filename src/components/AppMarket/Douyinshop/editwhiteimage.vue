@@ -5,11 +5,11 @@
           <a-form :model="formfata" ref="formRef" :rules="rules" style="float: left;margin-top: 4px;">
             
             <a-form-item name="url" :key="formfata.id">
-              <div v-if="formfata.url != '' && formfata.url != '0'" style="width: 50px;height: 50px;float: left;">
-                <a-image :src="formfata.url" :width="50" :height="50" style="border-radius: 4px;"/>
+              <div v-if="formfata.OriginUrl != '' && formfata.OriginUrl != '0'" style="width: 50px;height: 50px;float: left;">
+                <a-image :src="formfata.OriginUrl" :width="50" :height="50" style="border-radius: 4px;"/>
               </div>
             
-              <div v-else-if="formfata.url === '' || formfata.url === '0'" style="width: 50px;height: 50px;float: left;text-align: center;margin-top: 6px;">
+              <div v-else-if="formfata.OriginUrl === '' || formfata.url === '0'" style="width: 50px;height: 50px;float: left;text-align: center;margin-top: 6px;">
                 <a-skeleton-avatar :active="false" size="large" shape="avatarShape"/>
               </div>
 
