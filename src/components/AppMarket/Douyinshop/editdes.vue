@@ -1,6 +1,6 @@
 <template>
     <div>
-      <a-modal v-model:open="props.data.open" width="750px" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
+      <a-modal v-model:open="props.data.open" width="750px" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" :destroyOnClose="true">
         <div style="border: 1px solid #ccc;">
           
           <Toolbar
@@ -12,7 +12,7 @@
 
           <Editor
             style="height: 600px; overflow-y: hidden;"
-            v-model="valueHtml.html"
+            v-model="valueHtml"
             :defaultConfig="editorConfig"
             :mode="mode"
             @onCreated="handleCreated"
@@ -55,23 +55,7 @@ export default defineComponent({
       const TO = new TABLE.TableOperate()   // 表格操作方法
         
       // 图片数据
-      const valueHtml = computed(()=>{
-
-        var img_list = JSON.parse(props.data.data)
-
-        // var img_list = img_data.split('|')
-
-        var img_html = ''
-
-        for(let i of img_list){
-          var img_text = "<p style='margin: 0;padding: 0;'><img src='" + i.OriginUrl + "' /></p>"
-          img_html = img_html + img_text
-        }
-
-        return reactive({
-          html:img_html
-        })
-      })
+      const valueHtml = ref('<p></p>')
       
       // 编辑器实例，必须用 shallowRef
       const editorRef = shallowRef()
@@ -111,44 +95,58 @@ export default defineComponent({
         ]
       }
 
-
-
       // 组件销毁时，也及时销毁编辑器
       onBeforeUnmount(() => {
         const editor = editorRef.value
-        if (editor == null) return
-        editor.destroy()
+        if (editor == null) {
+          return editor.destroy()
+        }
       })
 
+      //  创建编辑器
       const handleCreated = (editor) => {
         
         editorRef.value = editor // 记录 editor 实例，重要！
+        
+        editor.clear() // 清空编辑器
 
-        // 查看所有工具栏key
-        // console.log(editor.getAllMenuKeys());
+        var img_list = JSON.parse(props.data.data) // 初始数据
 
-      }
+        for(let i of img_list){
 
-      // 获取图片html
-      const Get_img_list=()=>{
-        var img_list = []
-        var content = valueHtml.value.html
-        // 解析出图片地址
-        var imgTags = content.match(/<img[^>]+src="([^"]+)"/g);
-        if (imgTags) {
-          imgTags.forEach(tag => {
-            const url = tag.match(/src="([^"]+)"/)[1];
-            img_list.push(url)
-          });
+          const node = { type: 'image', children: [{ text: '' }]}
+
+          node.src = i.OriginUrl
+          node.OriginUrl = i.OriginUrl  
+          node.Name= i.Name
+          node.MaterialId = i.MaterialId
+          node.ByteUrl = i.ByteUrl
+          node.AuditStatus = i.AuditStatus
+          node.IsNew = i.IsNew
+          node.FolderId = i.FolderId
+          editor.insertNode(node)
+
         }
-        return img_list
+
       }
+
+
 
       const confirmLoading = ref(false);
 
+      // 确认按钮
       const handleOk = () => {
         
-          var img_list = Get_img_list() // 获取图片地址
+          var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
+
+          if (img_list) {img_list.forEach(tag => {
+            delete tag.id;
+            delete tag.type;
+            delete tag.children;
+            delete tag.src;
+          });
+          }
+
 
           var img_num = img_list.length // 图片数量
 
@@ -172,7 +170,7 @@ export default defineComponent({
 
               setting_data:{
 
-                "description":img_list.join('|')
+                "description":img_list
               }
 
             }
@@ -188,8 +186,6 @@ export default defineComponent({
                 props.data.open = false;  // 收起model
 
                 ctx.emit('edit_des_callback')   // 回调刷新表格
-                
-                valueHtml.value.html = '<p>hello</p>'
 
               },2000)
 
@@ -199,7 +195,7 @@ export default defineComponent({
 
           }
 
-        };
+      };
 
     
     return {

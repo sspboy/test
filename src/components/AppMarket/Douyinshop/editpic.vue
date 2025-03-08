@@ -152,39 +152,35 @@ export default defineComponent({
 
               TO.message.url = API.AppSrtoreAPI.copyrecords.edit // 编辑用户接口调用
 
-              var url_list = []
-
-              for(let i of dynamicValidateForm.value.users){url_list.push(i.url)}
-
               const up_date = {
 
                 id:props.data.id,
 
                 setting_data:{
-                  "pic":url_list.join('|'),
-                  "top_pic":url_list[0]
+                  "pic":dynamicValidateForm.value.users,
+                  "top_pic":dynamicValidateForm.value.users[0].OriginUrl
                 }
 
               }
 
-              // TO.actions.update(up_date,(res)=>{
+              TO.actions.update(up_date,(res)=>{
 
-              //   // console.log('更新主图' + res)
+                // console.log('更新主图' + res)
 
-              //   setTimeout(() => {
+                setTimeout(() => {
 
-              //     confirmLoading.value = false;             
+                  confirmLoading.value = false;             
 
-              //     props.data.open = false;  // 收起model
+                  props.data.open = false;  // 收起model
 
-              //     ctx.emit('edit_pic_callback')   // 回调刷新表格
+                  ctx.emit('edit_pic_callback')   // 回调刷新表格
 
-              //     formRef.value.resetFields(); // 重置表单
+                  formRef.value.resetFields(); // 重置表单
 
-              //   },2000)
+                },2000)
 
               
-              // })
+              })
 
             }
 

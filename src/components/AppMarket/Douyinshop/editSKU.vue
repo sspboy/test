@@ -98,56 +98,55 @@
       </a-form>
 
       <a-form ref="skulistRef" :model="sku_list" name="basic">
-      <a-table :columns="sku_list.columns" :data-source="sku_list.data" :pagination="false" style="font-size: 12px;" size="small" bordered>
+        <a-table :columns="sku_list.columns" :data-source="sku_list.data" :pagination="false" style="font-size: 12px;" size="small" bordered>
+          
+          <template #bodyCell="{ column, text, record, index }">
+            
+            <template v-if="column.dataIndex === 'name'">
+              <a>{{ text }}</a>
+            </template>
+
+            <template v-if="column.dataIndex === 'price'">
+              <a-form-item :name="['data', index, 'price']" :rules="{required: true, trigger: 'change', message:''}">
+                <a-input-number 
+                placeholder="输入价格" 
+                size="small" 
+                v-model:value="record.price" 
+                prefix="￥" :min="0" 
+                :step="0.01"
+                autocomplete="off"
+                allow-clear
+                style="font-size: 12px;width: 100%;"/>
+              </a-form-item>
+            </template>
+
+            <template v-if="column.dataIndex === 'stock_num'">
+              <a-form-item :name="['data', index, 'stock_num']" :rules="{required: true, trigger: 'change', message:''}">
+                <a-input-number 
+                placeholder="输入库存" 
+                size="small" 
+                v-model:value="record.stock_num" 
+                autocomplete="off"
+                allow-clear
+                style="font-size: 12px;"/>
+              </a-form-item>
+            </template>
+            
+            <template v-if="column.dataIndex === 'code'">
+              <a-input 
+              placeholder="商家编码"
+              autocomplete="off"
+              v-model:value="record.code" 
+              size="small" 
+              style="font-size: 12px;" />
+            </template>
+            
+          </template>
+          <!-- <template #title>规格列表</template>
+          <template #footer>Footer</template> -->
         
-        <template #bodyCell="{ column, text, record, index }">
-          
-          <template v-if="column.dataIndex === 'name'">
-            <a>{{ text }}</a>
-          </template>
-
-          <template v-if="column.dataIndex === 'price'">
-            <a-form-item :name="['data', index, 'price']" :rules="{required: true, trigger: 'change', message:''}">
-              <a-input-number 
-              placeholder="输入价格" 
-              size="small" 
-              v-model:value="record.price" 
-              prefix="￥" :min="0" 
-              :step="0.01"
-              autocomplete="off"
-              allow-clear
-              style="font-size: 12px;width: 100%;"/>
-            </a-form-item>
-          </template>
-
-          <template v-if="column.dataIndex === 'stock_num'">
-            <a-form-item :name="['data', index, 'stock_num']" :rules="{required: true, trigger: 'change', message:''}">
-              <a-input-number 
-              placeholder="输入库存" 
-              size="small" 
-              v-model:value="record.stock_num" 
-              :min="0" 
-              autocomplete="off"
-              allow-clear
-              style="font-size: 12px;"/>
-            </a-form-item>
-          </template>
-          
-          <template v-if="column.dataIndex === 'code'">
-            <a-input 
-            placeholder="商家编码"
-            autocomplete="off"
-            v-model:value="record.code" 
-            size="small" 
-            style="font-size: 12px;" />
-          </template>
-          
-        </template>
-        <!-- <template #title>规格列表</template>
-        <template #footer>Footer</template> -->
-      
-      </a-table>
-    </a-form>
+        </a-table>
+      </a-form>
 
       </a-modal>
     </div>
@@ -229,7 +228,8 @@ export default defineComponent({
                 for(let y of i.value){if(y.price != undefined){
                     var p_s_obj = {}
                     p_s_obj.price = y.price
-                    p_s_obj.stock = y.stock_num
+                    p_s_obj.stock_num = y.stock_num
+                    p_s_obj.code = y.code === undefined ? '':y.code
                     res_obj[y.value] = p_s_obj
                 }}
             }
@@ -251,7 +251,7 @@ export default defineComponent({
             // 名称字符串
             p_s_c_obj.price = i.price;// 价格
             p_s_c_obj.stock_num = i.stock_num + '';// 库存
-            p_s_c_obj.code = i.code; // 商家编码
+            p_s_c_obj.code = i.code === undefined ? '':i.code; // 商家编码
             delete i.price
             delete i.stock_num
             delete i.code
@@ -335,8 +335,9 @@ export default defineComponent({
               if(p_s_res != undefined){     // 匹配成功
                 data.price = p_s_res.price
                 data.stock_num = p_s_res.stock_num
+                data.code = p_s_res.code
               }
-            
+
               data[name_list[i]] = y[i];
             
             }
@@ -357,11 +358,7 @@ export default defineComponent({
 
           var name_list = get_name_sku_list()//名称列表
 
-          console.log(name_list)
-
           var d_list = get_value_sku_list()// 值列表
-
-          console.log(d_list)
 
           var data_list = []
 
@@ -371,23 +368,20 @@ export default defineComponent({
 
             for(var i=0;i<name_list.length;i++){
               var name = name_list[i]//名称
-              var value = y.join('')       // 值
-              console.log(value)
+              var value = y.join('')// 值
 
               var p_s_res = p_s_obj[value] // 价格库存关系匹配
-              console.log(p_s_res)
 
               if(p_s_res != undefined){     // 匹配成功
                 data.price = p_s_res.price
-                data.stock_num = p_s_res.stock_num +''
-                data.code = p_s_res.code +''
-
+                data.stock_num = p_s_res.stock_num + ''
+                data.code = p_s_res.code + ''
               }
-            
+              // console.log(p_s_res)
+
               data[name_list[i]] = y[i];
             
             }
-            console.log(data)
 
             data_list.push(data)
           }
@@ -502,6 +496,7 @@ export default defineComponent({
             console.log('验证通过')
             console.log(dynamicValidateForm.value)
             console.log(sku_list.value)
+            
             confirmLoading.value = true;
 
             TO.message.url = API.AppSrtoreAPI.copyrecords.edit // 编辑用户接口调用

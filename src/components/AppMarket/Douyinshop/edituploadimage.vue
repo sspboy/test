@@ -10,7 +10,7 @@
         width="100%" 
         wrap-class-name="full-modal" 
         @ok="handleOk" 
-        okText="上传并保存"
+        okText="保存"
       >
         
         <a-row>
@@ -49,9 +49,9 @@
             bordered>
                 <template #bodyCell="{ column,record }">
                   <!--图片-->
-                  <template v-if="column.dataIndex === 'origin_url'">
+                  <template v-if="column.dataIndex === 'OriginUrl'">
                     <a href="#">
-                      <a-image :src="record.origin_url" :width="24" :height="24" />
+                      <a-image :src="record.OriginUrl" :width="24" :height="24" />
                     </a>
                   </template>
                   <!--图片-->
@@ -86,14 +86,14 @@
             bordered>
                 <template #bodyCell="{ column, record }">
                   <!--图片-->
-                  <template v-if="column.dataIndex === 'origin_url'">
+                  <template v-if="column.dataIndex === 'OriginUrl'">
                     <a href="#">
-                      <a-image :src="record.origin_url" :width="24" :height="24" />
+                      <a-image :src="record.OriginUrl" :width="24" :height="24" />
                     </a>
                   </template>
                   <!--图片-->
-                                    <!--操作-->
-                                    <template v-if="column.dataIndex === 'op'">
+                  <!--操作-->
+                  <template v-if="column.dataIndex === 'op'">
                     <a href="#">删除</a>
                   </template>
                   <!--操作-->
@@ -118,9 +118,9 @@
             bordered>
                 <template #bodyCell="{ column, record }">
                   <!--图片-->
-                  <template v-if="column.dataIndex === 'origin_url'">
+                  <template v-if="column.dataIndex === 'OriginUrl'">
                     <a href="#">
-                      <a-image :src="record.origin_url" :width="24" :height="24"/>
+                      <a-image :src="record.OriginUrl" :width="24" :height="24"/>
                     </a>
                   </template>
                   <!--图片-->
@@ -190,37 +190,17 @@ export default defineComponent({
       
       })
 
-      // 详情数据初始化
+      // 主图数据初始化
       const pic_data = computed(()=>{
         
-        const item_pic = props.data.data.pic;            // 主图
-
-        // 渲染主图
-        const get_pic_list = () =>{
-
-          var itempiclist = item_pic.split('|')
-          var v_list = []
-          for(var i=0;i<itempiclist.length;i++){
-            var pic_obj = {
-              key:i,
-              origin_url:itempiclist[i],
-              material_url:'',
-              state:'0',
-              op:'0',
-            }
-            v_list.push(pic_obj)
-          }
-          return v_list
-        }
-
         return reactive({
           columns:[
-            {title: '图片地址',dataIndex: 'origin_url','align':'center','width':'80px'},
-            {title: '素材地址',className: 'up_state',dataIndex: 'material_url'},
-            {title: '审核状态',dataIndex: 'state','align':'center','width':'80px'},
+            {title: '图片地址',dataIndex: 'OriginUrl','align':'center','width':'80px'},
+            {title: '素材地址',className: 'up_state',dataIndex: 'ByteUrl'},
+            {title: '审核状态',dataIndex: 'AuditStatus','align':'center','width':'80px'},
             {title: '操作',className: 'sucai_add',dataIndex: 'op','align':'center','width':'80px'}
           ],
-          data:get_pic_list() // 获取图片数组
+          data:JSON.parse(props.data.data.pic) // 获取图片数组
 
         })
       })
@@ -234,29 +214,19 @@ export default defineComponent({
 
         // 渲染规格图片
         const get_spec_img = () =>{
+          
           var spec_img_list = []
+
           for(let i of spec_images){
             var value_list = i.value
             for(let v of value_list){
-              if(v.img !== undefined){spec_img_list.push(v.img)}
+              if(v.OriginUrl !== undefined){spec_img_list.push(v)}
             }
           }
           
           // 不为空
           if(spec_img_list.length > 0){
-            var v_list = []
-            for(var i=0;i<spec_img_list.length;i++){
-            var pic_obj = {
-              key:i,
-              origin_url:spec_img_list[i],
-              material_url:'',
-              state:'0',
-              op:'0',
-
-            }
-            v_list.push(pic_obj)
-          }
-            return v_list
+            return spec_img_list
           }else{// 为空
             return false
           }
@@ -264,9 +234,9 @@ export default defineComponent({
         }
         return reactive({
           columns:[
-            {title: '图片地址',dataIndex: 'origin_url','align':'center','width':'80px'},
-            {title: '素材地址',className: 'up_state',dataIndex: 'material_url'},
-            {title: '审核状态',dataIndex: 'state','align':'center','width':'80px'},
+            {title: '图片地址',dataIndex: 'OriginUrl','align':'center','width':'80px'},
+            {title: '素材地址',className: 'up_state',dataIndex: 'ByteUrl'},
+            {title: '审核状态',dataIndex: 'AuditStatus','align':'center','width':'80px'},
             {title: '操作',className: 'sucai_add',dataIndex: 'op','align':'center','width':'80px'}
           ],
           data:get_spec_img() // 获取图片数组
@@ -277,36 +247,14 @@ export default defineComponent({
       // 描述图初始化
       const des_data = computed(()=>{
 
-        const description = props.data.data.description // 描述图
-
-        // 渲染描述图
-        const get_des_img_list = () =>{
-
-          var itempiclist = description.split('|')
-
-          var v_list = []
-
-          for(var i=0;i<itempiclist.length;i++){
-            var pic_obj = {
-              key:i,
-              origin_url:itempiclist[i],
-              material_url:'0',
-              state:'1',
-              op:'1'
-            }
-            v_list.push(pic_obj)
-          }
-          return v_list
-        }
-
         return reactive({
           columns:[
-            {title: '图片地址',dataIndex: 'origin_url','align':'center','width':'80px'},
-            {title: '素材地址',className: 'up_state',dataIndex: 'material_url'},
-            {title: '审核状态',dataIndex: 'state','align':'center','width':'80px'},
+          {title: '图片地址',dataIndex: 'OriginUrl','align':'center','width':'80px'},
+            {title: '素材地址',className: 'up_state',dataIndex: 'ByteUrl'},
+            {title: '审核状态',dataIndex: 'AuditStatus','align':'center','width':'80px'},
             {title: '操作',className: 'sucai_add',dataIndex: 'op','align':'center','width':'80px'}
           ],
-          data:get_des_img_list() // 获取图片数组
+          data:JSON.parse(props.data.data.description) // 描述图
 
         })
 
