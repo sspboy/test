@@ -370,6 +370,7 @@ export default {
       TO.message.url = API.AppSrtoreAPI.copyrecords.list
 
       TO.actions.list(message,(res)=>{
+        
         console.log(res)
         
         TO.copylog.add_colum(res)        // 添加表头

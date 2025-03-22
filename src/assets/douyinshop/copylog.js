@@ -3,6 +3,7 @@ import {ref, reactive, computed} from 'vue';
 import * as utils from '@/assets/JS_Model/public_model';
 const API = new utils.A_Patch()       // 请求接口地址合集
 
+// 复制商品记录列表
 export class CopyLog{
 
     

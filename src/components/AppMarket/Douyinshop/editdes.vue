@@ -83,7 +83,7 @@ export default defineComponent({
           'headerSelect',
           'italic',
           'group-more-style', // 排除菜单组，写菜单组 key 的值即可
-          "fullScreen",
+          //"fullScreen",
           "insertLink",
           "editLink",
           "insertVideo",

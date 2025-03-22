@@ -116,6 +116,18 @@ export class A_Patch{
         // 店铺信息
         Shopinfo:{
             "detaile":"api/douyin/shopinfo/"
+        },
+        // 素材接口
+        material:{
+            "list":"api/douyin/material/list",
+            "detaile":"api/douyin/material/getmaterialdetaile",
+            "delete":"api/douyin/material/",
+            "edit":"api/douyin/material/",
+            "add":"api/douyin/material/add"
+        },
+        // 上传商品图片
+        upload:{
+            "product_img":"api/douyin/material/uploadproductimage" 
         }
 
 
