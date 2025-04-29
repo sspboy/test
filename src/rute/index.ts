@@ -156,6 +156,14 @@ const routes = [
         }
     },
     {
+        path: '/batchedit',
+        name: 'batchedit',
+        component: () => import('../views/AppMarket/DouyinShop/DouyinBatchEdit.vue'),    // 视图文件
+        meta:{
+            title:'批量修改',
+        }
+    },
+    {
         path: '/introduction',
         name: 'introduction',
         component: () => import('../views/AppMarket/Product/IntroductionView.vue'),    // 视图文件

@@ -28,12 +28,6 @@
               <!--条件查询组件 开始 -->
               <a-row type="flex">
                 <a-col :span="5" :order="1">
-                    <!--导航收起按钮-->
-                    <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('menu/change')}">
-                      <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
-                      <menu-fold-outlined v-else class="trigger" />
-                    </a-button>
-                    <!-- {{ PAGEDATA.title }} -->
                   <a-button type="primary" size="small" style="font-size:12px;" @click="Add_Fun">
                     <template #icon><PlusOutlined /></template>
                     添加角色

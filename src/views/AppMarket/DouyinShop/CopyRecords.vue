@@ -55,14 +55,19 @@
 
               <template v-slot:bodyCell="{ column, record, text }">
 
+                <!--价格-->
+                <template  v-if="column.dataIndex === 'price'">
+                    <span class="cursor">{{ JSON.parse(record.price)[0].price }}</span>
+                </template>
+
                 <!--标题-->
                 <template  v-if="column.dataIndex === 'title'">
                     <div class="ellipsis"><a style="color: #000;" class="cursor" :title="record.title" v-on:click="CL.Edit.title(record)">{{record.title}}</a></div>
                 </template>
 
                 <!--头图-->
-                <template  v-if="column.dataIndex === 'top_pic'">
-                    <img class="cursor" :src="record.top_pic" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.pic(record)"/>
+                <template  v-if="column.dataIndex === 'pic'">
+                    <img class="cursor" :src="JSON.parse(record.pic)[0].size220x220ImageURI" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.pic(record)"/>
                 </template>
 
                 <!--白底图-->

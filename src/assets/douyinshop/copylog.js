@@ -51,13 +51,18 @@ export class CopyLog{
         },
         // sku
         get_sku_name:(text)=>{
-            var sku_obj = JSON.parse(text)
-            var sku_name = ""
-            for(let i of sku_obj){
-                sku_name = sku_name + i.name +  ' | '
+            if(text !== 'None'){//规格不为空
+                var sku_obj = JSON.parse(text)
+                var sku_name = ""
+                for(let i of sku_obj){
+                    sku_name = sku_name + i.name +  ' | '
+                }
+                var new_name = sku_name.slice(0, -2);
+                return new_name
+            }else{// 规格为空
+                return 'None' 
             }
-            var new_name = sku_name.slice(0, -2);
-            return new_name
+            
         },
         // 提交方式
         get_commit:(text)=>{

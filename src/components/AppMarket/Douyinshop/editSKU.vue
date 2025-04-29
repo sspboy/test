@@ -125,6 +125,8 @@
                 <a-input-number 
                 placeholder="输入库存" 
                 size="small" 
+                :min="0"
+                :max="999999999"
                 v-model:value="record.stock_num" 
                 autocomplete="off"
                 allow-clear
@@ -133,12 +135,15 @@
             </template>
             
             <template v-if="column.dataIndex === 'code'">
-              <a-input 
+              <a-form-item :name="['data', index, 'code']" :rules="{required: false, trigger: 'change', message:''}">
+              <a-input
               placeholder="商家编码"
               autocomplete="off"
               v-model:value="record.code" 
               size="small" 
+              allow-clear
               style="font-size: 12px;" />
+              </a-form-item>
             </template>
             
           </template>
@@ -187,6 +192,7 @@ export default defineComponent({
       const formRef = ref();
       const skulistRef = ref();
 
+
       // 规格值-->构造表
       const dynamicValidateForm = computed(()=>{
 
@@ -195,10 +201,11 @@ export default defineComponent({
         
         // 添加spec—id
         var spec_obj = JSON.parse(props.data.data)
+
         for(let i = 0;i<spec_obj.length;i++){
           spec_obj[i]['id'] = i
         }
-
+        
         return reactive({
           id:obj_id,
           obj:spec_obj
@@ -227,8 +234,8 @@ export default defineComponent({
             for(let i of dynamicValidateForm.value.obj){
                 for(let y of i.value){if(y.price != undefined){
                     var p_s_obj = {}
-                    p_s_obj.price = y.price
-                    p_s_obj.stock_num = y.stock_num
+                    p_s_obj.price === undefined ? '':y.price
+                    p_s_obj.stock_num === undefined ? '':y.stock_num
                     p_s_obj.code = y.code === undefined ? '':y.code
                     res_obj[y.value] = p_s_obj
                 }}
@@ -238,35 +245,7 @@ export default defineComponent({
 
         }
 
-        // 规格表单p价格、s库存、c商家编码对照对象
-        var get_p_s_c_data = () =>{
 
-          var res_data = {}// 对照表
-          
-          var data_list = JSON.parse(props.data.sku_list).data
-
-          for(let i of data_list){
-            var p_s_c_obj = {}
-            // console.log(i)
-            // 名称字符串
-            p_s_c_obj.price = i.price;// 价格
-            p_s_c_obj.stock_num = i.stock_num + '';// 库存
-            p_s_c_obj.code = i.code === undefined ? '':i.code; // 商家编码
-            delete i.price
-            delete i.stock_num
-            delete i.code
-            var name_list = []
-            for(let key in i){name_list.push(i[key])}
-            var name = name_list.join('')
-            res_data[name] = p_s_c_obj
-          }
-
-          // console.log(res_data)
-
-          return res_data
-
-        }
-        
         // 笛卡尔积方法sku_value数组取值
         var get_value_sku_list= () =>{
           
@@ -285,6 +264,22 @@ export default defineComponent({
 
           // 笛卡尔积方法
           var d_list = t.Fun_.cartesianProduct(res_list)
+          
+          // 比对价格、库存、编码
+          // console.log(d_list)
+          JSON.parse(props.data.sku_list)
+
+          for (let i of d_list){
+            var value = i.join('&gt;')
+            var p_s_res = JSON.parse(props.data.sku_list) // 价格库存关系匹配 
+            // console.log(p_s_res[value])
+            let obj = p_s_res[value];
+            let price = obj.price // 价格
+            let stock_num = obj.canBookCount // 库存
+            i.push(price)
+            i.push(stock_num)
+
+          }
 
           return d_list
 
@@ -315,8 +310,6 @@ export default defineComponent({
 
           var p_s_obj = get_p_s_obj()
 
-          // console.log(p_s_obj)
-
           var name_list = get_name_sku_list()//名称列表
 
           var d_list = get_value_sku_list()// 值列表
@@ -333,9 +326,9 @@ export default defineComponent({
 
               var p_s_res = p_s_obj[value] // 价格库存关系匹配
               if(p_s_res != undefined){     // 匹配成功
-                data.price = p_s_res.price
-                data.stock_num = p_s_res.stock_num
-                data.code = p_s_res.code
+                data.price === undefined ? '':p_s_res.price
+                data.stock_num === undefined ? '':p_s_res.stock_num
+                data.code === undefined ? '':p_s_res.code
               }
 
               data[name_list[i]] = y[i];
@@ -352,10 +345,6 @@ export default defineComponent({
         // 规格表单data取值(实时)
         var get_old_data = () =>{
 
-          var p_s_obj = get_p_s_c_data()
-
-          // console.log(p_s_obj)
-
           var name_list = get_name_sku_list()//名称列表
 
           var d_list = get_value_sku_list()// 值列表
@@ -367,22 +356,10 @@ export default defineComponent({
             var data = {}
 
             for(var i=0;i<name_list.length;i++){
-              var name = name_list[i]//名称
-              var value = y.join('')// 值
-
-              var p_s_res = p_s_obj[value] // 价格库存关系匹配
-
-              if(p_s_res != undefined){     // 匹配成功
-                data.price = p_s_res.price
-                data.stock_num = p_s_res.stock_num + ''
-                data.code = p_s_res.code + ''
-              }
-              // console.log(p_s_res)
-
               data[name_list[i]] = y[i];
-            
             }
-
+            data.price = y[y.length-2] === undefined? 0:y[y.length-2] + ''
+            data.stock_num = y[y.length-1] + ''
             data_list.push(data)
           }
 
@@ -394,12 +371,16 @@ export default defineComponent({
         // 渲染列表时候匹配价格、库存、商家编码
         // 读取sku列表：直接渲染数据以及价格
         var sku_list_data = props.data.sku_list;
-        // console.log(sku_list_data)
+        console.log(JSON.parse(sku_list_data))
 
         if(sku_list_data === '0'){                // 没有SKU—list的情况下
+
             var data_list = get_data()            // 实时排列的sku列表
+
         }else{// 有SKU-list数据的情况下
+
           var data_list = get_old_data()            // 实时排列的sku列表
+
         }
 
           return reactive({
@@ -512,17 +493,17 @@ export default defineComponent({
 
             }
 
-            TO.actions.update(up_date,(res)=>{
+            // TO.actions.update(up_date,(res)=>{
 
-              // console.log('更新sku' + res)
-              setTimeout(() => {
-                confirmLoading.value = false;
-                props.data.open = false;  // 收起model
-                ctx.emit('edit_sku_callback')   // 回调刷新表格
-                formRef.value.resetFields(); // 重置表单
-              }, 2000);
+            //   // console.log('更新sku' + res)
+            //   setTimeout(() => {
+            //     confirmLoading.value = false;
+            //     props.data.open = false;  // 收起model
+            //     ctx.emit('edit_sku_callback')   // 回调刷新表格
+            //     formRef.value.resetFields(); // 重置表单
+            //   }, 2000);
 
-          })
+            // })
 
 
 

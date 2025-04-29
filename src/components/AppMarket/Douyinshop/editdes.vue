@@ -98,9 +98,9 @@ export default defineComponent({
       // 组件销毁时，也及时销毁编辑器
       onBeforeUnmount(() => {
         const editor = editorRef.value
-        if (editor == null) {
-          return editor.destroy()
-        }
+        // if (editor == null) {
+        //   return editor.destroy()
+        // }
       })
 
       //  创建编辑器

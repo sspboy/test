@@ -401,8 +401,9 @@ export default defineComponent({
           spec_list:JSON.parse(props.data.data.sku),
           des_list:des_data.value.data
         }
-        
-        axios.post(API.AppSrtoreAPI.upload.product_img, data).then((res)=>{
+        var url = API.AppSrtoreAPI.upload.product_img
+        console.log(url)
+        axios.post(url, data).then((res)=>{
           console.log(res)
         })
 

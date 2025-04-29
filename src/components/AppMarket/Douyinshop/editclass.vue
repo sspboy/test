@@ -1,11 +1,24 @@
 <template>
+
     <div>
       <a-modal v-model:open="props.data.open" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
         <p>{{ props.data.data }}</p>
+            <a-cascader
+              v-model:value="value"
+              :options="options"
+              :load-data="loadData"
+              placeholder="Please select"
+              change-on-select
+            />
       </a-modal>
     </div>
+
+
+
+
 </template>
-  <script>
+
+<script>
 import { defineComponent,ref } from 'vue';
 
 export default defineComponent({
@@ -44,7 +57,39 @@ export default defineComponent({
             }, 2000);
         };
     
-    
+        const options = ref([
+        {
+          value: 'zhejiang',
+          label: 'Zhejiang',
+          isLeaf: false,
+        },
+        {
+          value: 'jiangsu',
+          label: 'Jiangsu',
+          isLeaf: false,
+        },
+      ]);
+        const loadData = selectedOptions => {
+          const targetOption = selectedOptions[selectedOptions.length - 1];
+          targetOption.loading = true;
+
+          // load options lazily
+          setTimeout(() => {
+            targetOption.loading = false;
+            targetOption.children = [
+              {
+                label: `${targetOption.label} Dynamic 1`,
+                value: 'dynamic1',
+              },
+              {
+                label: `${targetOption.label} Dynamic 2`,
+                value: 'dynamic2',
+              },
+            ];
+            options.value = [...options.value];
+          }, 1000);
+        };
+        const value = ref([]);
     
     return {
         props,
@@ -53,11 +98,13 @@ export default defineComponent({
         confirmLoading,
         showModal,
         handleOk,
-
+        options,
+        loadData,
+        value
         }
     }
 
 
 })
-  
-  </script>
+
+</script>

@@ -25,7 +25,6 @@ window.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
 
 
 
-
 // 初始化项项目
 const app = createApp(App);
 app.use(store)  // 初始化Vuex 数据状态共享
