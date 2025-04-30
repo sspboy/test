@@ -15,34 +15,60 @@
         <!--左侧 菜单组件  结束-->
 
         <a-layout-content class="content_border">
-            <a-row>
-                <a-col :span="24">
 
-                    <a-steps
-                        :current="1"
-                        :items="[
-                        {
-                            title: 'Finished',
-                            description,
-                        },
-                        {
-                            title: 'In Progress',
-                            description,
-                            subTitle: 'Left 00:00:08',
-                        },
-                        {
-                            title: 'Waiting',
-                            description,
-                        },
-                        ]"
-                    ></a-steps>
+            <a-row>
+                <a-col :span="8">
+
+                    <h4 class="title_h">第一步：选择商品</h4>
+
+                    <div class="bor_r" :style="{height:'80vh'}">
+                        <a-form
+                            :model="formState"
+                            v-bind="layout"
+                            name="nest-messages"
+                            :validate-messages="validateMessages"
+                            @finish="onFinish"
+                        >
+                            <a-form-item :name="['user', 'name']" label="商品分类" :rules="[{ required: true }]">
+                                <a-input v-model:value="formState.user.name" size="small" />
+                            </a-form-item>
+                            <a-form-item :name="['user', 'email']" label="审核状态" >
+                                <a-select v-model:value="formState.state" :options="state.data" size="small" :style="{fontSize:'12px'}"/>
+                            </a-form-item>
+                            <a-form-item :name="['user', 'age']" label="创建时间">
+                                <a-input v-model:value="formState.user.age" size="small"/>
+                            </a-form-item>
+                            <a-form-item :name="['user', 'website']" label="更新时间">
+                                <a-input v-model:value="formState.user.website" size="small"/>
+                            </a-form-item>
+                            <a-form-item :name="['user', 'introduction']" label="标题关键字">
+                                <a-textarea v-model:value="formState.user.introduction" size="small"/>
+                            </a-form-item>
+                            <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 4 }">
+                            <a-button type="primary" html-type="submit">查询</a-button>
+                            </a-form-item>
+                        </a-form>
+
+                    </div>
+
 
                 </a-col>
-            </a-row>
-            <a-row>
-                <a-col :span="8" class="content_border">col-8</a-col>
-                <a-col :span="8" class="content_border">col-8</a-col>
-                <a-col :span="8" class="content_border">col-8</a-col>
+
+
+                <a-col :span="8">
+                    <h4 class="title_h">第二步：修改方式</h4>
+                    <div class="bor_r" :style="{height:'80vh'}">
+
+
+
+                    </div>
+                </a-col>
+
+
+                <a-col :span="8">
+                    <h4 class="title_h">第三步：处理结果</h4>
+
+                </a-col>
             </a-row>
             
         </a-layout-content>
@@ -62,6 +88,7 @@ import * as TABLE from '@/assets/JS_Model/TableOperate';
 // 组件引用=====开始
 import menu_left from "@/components/layout/menu_left.vue";
 import menu_head from "@/components/layout/menu_head.vue";
+import { Option } from 'ant-design-vue/es/vc-select';
 
 export default defineComponent({
   // 模版名称【角色管理】
@@ -92,20 +119,63 @@ export default defineComponent({
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
     })
-    const description = 'This is a description.';
+
+    const layout = {
+        labelCol: {span: 4,},
+        wrapperCol: {span: 18,},
+    };
+    const validateMessages = {
+    required: '${label} is required!',
+    types: {
+        email: '${label} is not a valid email!',
+        number: '${label} is not a valid number!',
+    },
+    number: {
+        range: '${label} must be between ${min} and ${max}',
+    },
+    };
+    const formState = reactive({
+        user: {
+            name: '',
+            age: undefined,
+            email: '',
+            website: '',
+            introduction: '',
+        },
+        state:undefined
+    });
+    const state = reactive({
+        data:[{value:'1',label:'待审核'},{value:'2',label:'审核通过'},{value:'3',label:'审核不通过'}]
+    });
+    const onFinish = values => {
+    console.log('Success:', values);
+    };
+
+
+
+
+
+
+
+
+
     return {
       store,
       loading,
       innerHeight,
       PAGEDATA,
-      description
+      layout,
+      validateMessages,
+      formState,
+      onFinish,
+      state,
 
     }
     }
 })
 </script>
-<style scoped>
-.content_border{
-text-align: center;border: 1px silver solid;border-radius: 4px;
-}
+<style>
+.title_h{padding: 20px 0 10px 0; width: 100%;text-align: center;}
+.bor_r{border-right: 1px silver solid;padding:20px 20px 0 40px;}
+.ant-col{font-size: 12px;}
 </style>

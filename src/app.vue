@@ -29,6 +29,13 @@ html{margin: 0px; padding: 0px;font-size: 12px;}
 /* 全局内容区域圆角样式定义*/
 .content_border{margin: 6px 0 0 0;border-top-left-radius:5px; padding:14px;background:#fff;}
 /* { margin: '6px 0 0 0', borderTopLeftRadius:'5px', padding: '14px',background: '#fff',} */
+/* 在全局样式文件（如 `styles.css` 或 `App.vue` 的 `<style>` 中） */
+.ant-form-item-label > label {font-size: 12px !important; /* 设置表单标签的字体大小 */}
+.ant-form-item-control {font-size: 12px !important; /* 设置表单控件的字体大小 */}
+.ant-select{font-size: 12px !important; /* 设置下拉框的字体大小 */}
+.ant-select-dropdown {font-size: 12px !important; /* 设置下拉菜单的字体大小 */}
+.ant-select-selection-item{font-size: 12px !important;}
+.ant-select-item-option-content {font-size: 12px !important;}
 
 /**model对话框报错设置**/
 div[aria-hidden="true"]{display: none !important;}
