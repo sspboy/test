@@ -148,18 +148,18 @@ export default defineComponent({
 
             // load options lazily
             setTimeout(() => {
-            targetOption.loading = false;
-            targetOption.children = [
-                {
-                label: `${targetOption.label} Dynamic 1`,
-                value: 'dynamic1',
-                },
-                {
-                label: `${targetOption.label} Dynamic 2`,
-                value: 'dynamic2',
-                },
-            ];
-            options.value = [...options.value];
+                targetOption.loading = false;
+                targetOption.children = [
+                    {
+                    label: `${targetOption.label} Dynamic 1`,
+                    value: 'dynamic1',
+                    },
+                    {
+                    label: `${targetOption.label} Dynamic 2`,
+                    value: 'dynamic2',
+                    },
+                ];
+                options.value = [...options.value];
             }, 1000);
             
     
