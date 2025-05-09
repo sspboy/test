@@ -46,15 +46,15 @@
                                 placeholder="选择状态"
                                 :options="formState.state_list" 
                                 size="small" 
-                                :style="{fontSize:'12px'}"/>
+                                />
                             </a-form-item>
 
                             <a-form-item name="create_time" label="创建时间">
                                 <a-space direction="vertical">
                                     <a-range-picker
-                                        style="font-size: 12px;"
+                                        class="font_size_12"
                                         size="small"
-                                        :show-time="{ format: 'HH:mm' }"
+                                        :show-time="{ format: 'HH:mm:ss' }"
                                         format="YYYY-MM-DD HH:mm"
                                         :placeholder="['选择开始时间', '选择结束时间']"
                                         @change="onRangeChange"
@@ -66,9 +66,9 @@
                             <a-form-item name="update_time" label="更新时间">
                                 <a-space direction="vertical">
                                     <a-range-picker
-                                        style="font-size: 12px;"
+                                        class="font_size_12"
                                         size="small"
-                                        :show-time="{ format: 'HH:mm' }"
+                                        :show-time="{ format: 'HH:mm:ss' }"
                                         format="YYYY-MM-DD HH:mm"
                                         :placeholder="['选择开始时间', '选择结束时间']"
                                         @change="onRangeChange"
@@ -83,9 +83,11 @@
 
                             <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 4 }">
                                 <a-space>
-                                    <a-button type="primary" html-type="submit" size="small" style="font-size: 12px;">查询</a-button>
+                                    <a-button html-type="submit" size="small" style="font-size: 12px;">查询商品</a-button>
 
                                     <a-button size="small" style="font-size: 12px;">重置</a-button>
+
+                                    <div style="font-size: 12px;">已选择商品 123 个</div>
                                 </a-space>
                             </a-form-item>
                         </a-form>
@@ -97,36 +99,179 @@
 
 
                 <a-col :span="8">
-                    <h4 class="title_h">第二步：修改方式</h4>
+                    <h4 class="title_h">第二步：修改字段</h4>
                     <div class="bor_r" :style="{height:'80vh'}">
-                        <div>
-                            <!-- 分段控制器 -->
-                            <a-segmented v-model:value="currentTab" block :options="tabs" />
+                        <a-tabs
+                            v-model:activeKey="activeKey"
+                            tab-position="top"
+                            :style="{ height: '500px'}"
+                            size="small"
+                            @tabScroll="callback"
+                        >
+                        <a-tab-pane key="1" tab="标题">
 
-                            <!-- 动态显示关联区域 -->
-                            <div v-if="currentTab === 'tab1'">
-                            <h2>Tab 1 Content</h2>
-                            <p>This is the content of Tab 1.</p>
-                            </div>
-                            <div v-if="currentTab === 'tab2'">
-                            <h2>Tab 2 Content</h2>
-                            <p>This is the content of Tab 2.</p>
-                            </div>
-                            <div v-if="currentTab === 'tab3'">
-                            <h2>Tab 3 Content</h2>
-                            <p>This is the content of Tab 3.</p>
-                            </div>
-                        </div>
+                                <a-form
+                                    :model="title_options"
+                                    name="title_options"
+                                    :label-col="{ span: 4 }"
+                                    :wrapper-col="{ span: 20 }"
+                                    labelAlign="left"
+                                    autocomplete="off"
+                                    @finish="title_onFinish"
+                                    @finishFailed="title_onFinishFailed"
+                                >
 
+                                    <a-form-item label="过滤文字">
+                                        <a-input size="small" class="font_size_12" placeholder="输入关键字" v-model:value="title_options.filter_key" allowClear/>
+                                    </a-form-item>
+                                    <a-form-item label="替换文字">
+                                        <a-space class="font_size_12">
+                                            <a-input size="small" class="font_size_12" placeholder="输入文字" v-model:value="title_options.replace_key" style="width: 100px;" allowClear/>
+                                            替换为
+                                            <a-input size="small" class="font_size_12" placeholder="输入文字" v-model:value="title_options.replace_key" style="width: 100px;" allowClear/>
+                                        </a-space>
+                                    </a-form-item>
 
+                                    <a-form-item label="加前后缀">
+                                        <a-space class="font_size_12">
+                                            <a-input class="font_size_12" size="small" placeholder="输入前缀" v-model:value="title_options.after_key" style="width: 100px;" allowClear />
+                                            原标题
+                                            <a-input class="font_size_12" size="small" placeholder="输入后缀" v-model:value="title_options.before_key"  style="width: 100px;" allowClear />
+                                        </a-space>
+                                    </a-form-item>
+                                </a-form>
+                            </a-tab-pane>
+
+                            <a-tab-pane key="2" tab="客服电话">
+                                <a-form
+                                    :model="title_options"
+                                    name="title_options"
+                                    :label-col="{ span: 4 }"
+                                    :wrapper-col="{ span: 20 }"
+                                    labelAlign="left"
+                                    autocomplete="off"
+                                    @finish="title_onFinish"
+                                    @finishFailed="title_onFinishFailed"
+                                >
+                                <a-form-item label="客服电话">
+                                    <a-input size="small" class="font_size_12" v-model:value="title_options.mobile" placeholder="输入新的电话替换" allowClear/>
+                                </a-form-item>
+                                </a-form>
+                            </a-tab-pane>
+
+                            <a-tab-pane key="3" tab="库存类型">
+                                <a-form
+                                    :model="title_options"
+                                    name="title_options"
+                                    :label-col="{ span: 4 }"
+                                    :wrapper-col="{ span: 20 }"
+                                    labelAlign="left"
+                                    autocomplete="off"
+                                    @finish="title_onFinish"
+                                    @finishFailed="title_onFinishFailed"
+                                >
+                                <a-form-item label="库存类型" name="reduce_type">
+                                    <a-select size="small" class="font_size_12" v-model:value="title_options.reduce_type" placeholder="选择减库存类型" allowClear>
+                                        <a-select-option value="1">拍下减库存</a-select-option>
+                                        <a-select-option value="2">付款减库存</a-select-option>
+                                    </a-select>
+                                </a-form-item>
+                                </a-form>
+                            </a-tab-pane>
+
+                            <a-tab-pane key="4" tab="运费模板">
+                                <a-form
+                                    :model="title_options"
+                                    name="title_options"
+                                    :label-col="{ span: 4 }"
+                                    :wrapper-col="{ span: 20 }"
+                                    labelAlign="left"
+                                    autocomplete="off"
+                                    @finish="title_onFinish"
+                                    @finishFailed="title_onFinishFailed"
+                                >
+                                    <a-form-item label="运费模板" name="freight_id">
+                                        <a-select size="small" class="font_size_12" v-model:value="title_options.freight_id"  placeholder="选择运费模板" allowClear>
+                                            <a-select-option value="1">异步加载更多模板</a-select-option>
+                                            <a-select-option value="2">付款减库存</a-select-option>
+                                        </a-select>
+                                    </a-form-item>
+                                </a-form>
+                            </a-tab-pane>
+
+                            <a-tab-pane key="5" tab="发货模式">
+                                <a-form
+                                    :model="title_options"
+                                    name="title_options"
+                                    :label-col="{ span: 4 }"
+                                    :wrapper-col="{ span: 20 }"
+                                    labelAlign="left"
+                                    autocomplete="off"
+                                    @finish="title_onFinish"
+                                    @finishFailed="title_onFinishFailed"
+                                >
+                                </a-form>
+                            </a-tab-pane>
+
+                        </a-tabs>
+
+                    </div>
+                    <div style="text-align: center;">
+                        <a-button type="primary" html-type="submit" size="small" style="font-size: 12px;">提交</a-button>
                     </div>
                 </a-col>
 
 
                 <a-col :span="8">
-                    <h4 class="title_h">第三步：处理结果</h4>
+                    
+                    <h4 class="title_h">第三步：操作记录</h4>
+                    <div class="bor_l" :style="{height:'80vh'}">
+
+                        <a-list
+                        class="demo-loadmore-list"
+                        :loading="initLoading"
+                        item-layout="horizontal"
+                        :data-source="list"
+                    >
+                        <template #loadMore>
+
+                            <div
+                                v-if="!initLoading && !loading"
+                                :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"
+                            >
+                                <a-button @click="onLoadMore" size="small" style="font-size: 12px;">加载更多</a-button>
+                            </div>
+                        </template>
+
+                        <template #renderItem="{ item }">
+
+                            <a-list-item>
+                                
+                                <template #actions>
+                                    <a key="list-loadmore-more" class="font_size_12">查看明细</a>
+                                </template>
+
+                                <a-skeleton avatar :title="false" :loading="!!item.loading" active>
+
+                                    <a-list-item-meta>
+                                        <template #title>
+                                            <a href="https://www.antdv.com/">{{ item.name.last }}</a>
+                                        </template>
+                                        <template #avatar>
+                                            <a-avatar :src="item.picture.large" />
+                                        </template>
+                                    </a-list-item-meta>
+
+                                    <div>content</div>
+                                
+                            </a-skeleton>
+                            </a-list-item>
+                        </template>
+                        </a-list>
+                    </div>
 
                 </a-col>
+
             </a-row>
             
         </a-layout-content>
@@ -138,7 +283,7 @@
 
 <script>
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
-import {defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref} from 'vue';
+import {defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref, nextTick} from 'vue';
 import { Segmented } from 'ant-design-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
@@ -169,7 +314,7 @@ export default defineComponent({
     const TO = new TABLE.TableOperate()   // 表格操作方法
     const store = useStore();// 共享数据
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
-    const loading = ref(true)// 初始化loading状态
+    // const loading = ref(true)// 初始化loading状态
 
     const PAGEDATA = reactive({
       title:'批量修改',
@@ -181,7 +326,7 @@ export default defineComponent({
 
     const layout = {
         labelCol: {span: 4,},
-        wrapperCol: {span: 18,},
+        wrapperCol: {span: 20,},
     };
 
     const validateMessages = {
@@ -195,15 +340,8 @@ export default defineComponent({
         },
     };
 
-    // 表单数据绑定
+    // 查询商品表单数据绑定
     const formState = reactive({
-        user: {
-            name: '',
-            age: undefined,
-            email: '',
-            website: '',
-            introduction: '',
-        },
 
         cate_name:[],//分类
 
@@ -211,89 +349,148 @@ export default defineComponent({
 
         state_list:ref([{value:'1',label:'待审核'},{value:'2',label:'审核通过'},{value:'3',label:'审核不通过'}]),//审核状态
 
-        // 创建时间
+        create_time:'',// 创建时间
 
-        // 更新时间
+        update_time:'',// 更新时间
 
-        // 标题关键字
-        title_key:ref(undefined),
+        title_key:ref(undefined),// 标题关键字
+
         
     });
 
+    // 时间选择
+    const onRangeChange = (value, dateString) => {
+        formState.create_time = dateString;
+        console.log('Selected Time: ', value);
+        console.log('Formatted Selected Time: ', dateString);
+    };
+
+    const onRangeOk = value => {
+        console.log('onOk: ', value);
+    };
 
     const onFinish = values => {
         console.log('Success:', values);
     };
 
+    // 分类选择初始化
     const options =  ref([
         {
             value: 'zhejiang',
             label: 'Zhejiang',
             isLeaf: false,
-
         },
         {
             value: 'jiangsu',
             label: 'Jiangsu',
             isLeaf: false,
-
         },
     ]);
 
+    // 异步请求子分类
     const loadData = selectedOptions => {
 
-            const targetOption = selectedOptions[selectedOptions.length - 1];
+        const targetOption = selectedOptions[selectedOptions.length - 1];
 
-            targetOption.loading = true;
+        targetOption.loading = true;
 
-            // load options lazily
-            setTimeout(() => {
+        // load options lazily
+        setTimeout(() => {
 
-                targetOption.loading = false;
+            targetOption.loading = false;
 
-                targetOption.children = [
+            targetOption.children = [
 
-                    {
-                        label: `${targetOption.label} Dynamic 1`,
-                        value: 'dynamic1',
-                        // isLeaf: false,
+                {
+                    label: `${targetOption.label} Dynamic 1`,
+                    value: 'dynamic1',
+                    // isLeaf: false,
 
-                    },
-                    {
-                        label: `${targetOption.label} Dynamic 2`,
-                        value: 'dynamic2',
-                        // isLeaf: false,
+                },
+                {
+                    label: `${targetOption.label} Dynamic 2`,
+                    value: 'dynamic2',
+                    // isLeaf: false,
 
-                    },
+                },
 
-                ];
-                options.value = [...options.value];
+            ];
+            options.value = [...options.value];
 
-            }, 1000);
+        }, 1000);
             
     };
 
-    // 时间选择
-    const onRangeChange = (value, dateString) => {
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
+    // 操作方法
+    const activeKey = ref('1');
+    const callback = val => {
+        console.log(val);
     };
-    const onRangeOk = value => {
-        console.log('onOk: ', value);
+    
+    const title_options = reactive({
+
+        after_key: '', // 前缀
+        before_key: '', // 后缀
+        replace_key: '', // 替换关键字
+        filter_key: '',// 过滤关键字
+        mobile:'',// 客服电话
+        reduce_type:undefined,// 库存类型
+        freight_id:undefined// 运费模板
+
+    });
+    const title_onFinish = values => {
+        console.log('Success:', values);
+    };
+    const title_onFinishFailed = errorInfo => {
+        console.log('Failed:', errorInfo);
     };
 
 
-    const currentTab = ref('tab1'); // 当前选中的分段值
-    const tabs = [
-    { label: '主图', value: 'tab1' },
-    { label: '标题', value: 'tab2' },
-    { label: '发货模式', value: 'tab3' },
-    { label: '价格库存', value: 'tab4' },
-    { label: '客服电话', value: 'tab5' },
-    { label: '其它', value: 'tab6' },
 
-    ];
 
+
+    //* 处理结果列表加载 *//
+    const count = 3;
+    const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
+    const initLoading = ref(true);
+    const loading = ref(false);
+    const data = ref([]);
+    const list = ref([]);
+    
+    onMounted(() => {
+        fetch(fakeDataUrl)
+            .then(res => res.json())
+            .then(res => {
+                initLoading.value = false;
+                data.value = res.results;
+                list.value = res.results;
+            });
+    });
+
+    const onLoadMore = () => {
+        loading.value = true;
+        list.value = data.value.concat(
+        [...new Array(count)].map(() => ({
+        loading: true,
+        name: {},
+        picture: {},
+        })),
+    );
+        fetch(fakeDataUrl)
+            .then(res => res.json())
+            .then(res => {
+        const newData = data.value.concat(res.results);
+        loading.value = false;
+        data.value = newData;
+        list.value = newData;
+        nextTick(() => {
+            // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
+            // In real scene, you can using public method of react-virtualized:
+            // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
+            window.dispatchEvent(new Event('resize'));
+        });
+        });
+    };
 
     return {
       store,
@@ -308,14 +505,23 @@ export default defineComponent({
       loadData,
       onRangeChange,
       onRangeOk,
-      currentTab,
-      tabs,
+      initLoading,
+      list,
+      onLoadMore,
+      activeKey,
+      callback,
+
+      title_options,
+      title_onFinish,
+      title_onFinishFailed,
     }
     }
 })
 </script>
 <style>
 .title_h{padding: 20px 0 10px 0; width: 100%;text-align: center;}
-.bor_r{border-right: 1px silver solid;padding:20px 10px 0 30px;}
+.bor_r{border-right: 1px silver solid;padding:20px 30px 0 30px;}
+.bor_l{padding:20px 30px 0 30px;}
 
+.xiuga{padding: 20px 0 0 0;height: 280px;}
 </style>

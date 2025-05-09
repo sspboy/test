@@ -21,11 +21,8 @@ export default {
 </script>
 
 <style>
-:root {
-  --ant-font-size-base: 12px; /* 设置全局字体大小 */
-}
+
 html{margin: 0px; padding: 0px;font-size: 12px;}
-.font_size_12{font-size: 12px;}
 .cursor{cursor: pointer}
 /* 页面内容区域背景色全局定义 */
 .ant-layout{background-color: #001529;}
@@ -35,6 +32,9 @@ html{margin: 0px; padding: 0px;font-size: 12px;}
 /* 在全局样式文件（如 `styles.css` 或 `App.vue` 的 `<style>` 中） */
 .ant-form-item-label > label {font-size: 12px !important; /* 设置表单标签的字体大小 */}
 .ant-form-item-control {font-size: 12px !important; /* 设置表单控件的字体大小 */}
+
+.font_size_12{font-size: 12px;padding: 1px 3px;}
+
  /* 设置下拉框的字体大小 */
 .ant-select{font-size: 12px !important;}
 .ant-select-dropdown {font-size: 12px !important;}
