@@ -21,7 +21,6 @@ export default {
 </script>
 
 <style>
-
 html{margin: 0px; padding: 0px;font-size: 12px;}
 .cursor{cursor: pointer}
 /* 页面内容区域背景色全局定义 */

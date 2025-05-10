@@ -128,6 +128,23 @@ export class A_Patch{
         // 上传商品图片
         upload:{
             "product_img":"api/douyin/material/uploadproductimage" 
+        },
+        // 抖音商品
+        dou_product:{   
+            "list":"api/douyin/product/list",       // 商品列表
+            "detaile":"api/douyin/product/detaile", // 商品详情
+            "delete":"api/douyin/product/del",      // 删除商品
+            "edit":"api/douyin/product/edit",       // 编辑商品
+            "cate":"api/douyin/product/shopcategory", // 获取商品分类
+            "freight":"api/douyin/product/freightid", // 获取运费模板
+            "addrule":"api/douyin/product/getpublishrule",// 商品发布规则
+            "audit":"api/douyin/product/auditlist",// 审批记录 
+        },
+        // 批量修改
+        batch:{
+            "add":"api/douyin/batchproduct/add", // 添加
+            "list":"api/douyin/batchproduct/list", // 列表
+            "detaile":"api/douyin/batchproduct/detaile/", // 详情
         }
 
 

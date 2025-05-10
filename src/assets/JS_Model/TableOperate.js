@@ -1,4 +1,4 @@
-// 公用方法开始
+// 公用方法开始【表格】
 // 引用外部方法
 import * as utils from '@/assets/JS_Model/public_model';// 公用路径方法
 const API = new utils.A_Patch()
