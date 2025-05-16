@@ -24,9 +24,14 @@
 
                     <div class="bor_r" :style="{height:'80vh'}">
 
-                        <a-form :model="formState" v-bind="layout" name="nest-messages" @finish="onFinish">
+                        <a-form ref="first_formRef" 
+                        :model="formState" 
+                        :label-col="{ span: 4 }"
+                        :wrapper-col="{ span: 20 }"
+                        name="nest-messages" 
+                        @finish="onFinish">
 
-                            <a-form-item name="cate_name" label="商品分类" >
+                            <a-form-item name="cate_name" label="商品类目" >
                                 <a-cascader
                                     size="small"
                                     v-model:value="formState.cate_name"
@@ -36,9 +41,9 @@
                                 />
                             </a-form-item>
 
-                            <a-form-item name="state" label="审核状态" >
+                            <a-form-item name="status" label="商品状态" >
                                 <a-select 
-                                v-model:value="formState.state" 
+                                v-model:value="formState.status" 
                                 placeholder="选择状态"
                                 :options="formState.state_list" 
                                 size="small" 
@@ -48,13 +53,12 @@
                             <a-form-item name="create_time" label="创建时间">
                                 <a-space direction="vertical">
                                     <a-range-picker
+                                        v-model:value="formState.create_time"
                                         class="font_size_12"
                                         size="small"
+                                        :placeholder="['选择开始时间', '选择结束时间']"
                                         :show-time="{ format: 'HH:mm:ss' }"
                                         format="YYYY-MM-DD HH:mm:ss"
-                                        :placeholder="['选择开始时间', '选择结束时间']"
-                                        @change="onCreateChange"
-                                        @ok="onRangeOk"
                                     />
                                 </a-space>
                             </a-form-item>
@@ -62,13 +66,12 @@
                             <a-form-item name="update_time" label="更新时间">
                                 <a-space direction="vertical">
                                     <a-range-picker
+                                        v-model:value="formState.update_time"
                                         class="font_size_12"
                                         size="small"
                                         :show-time="{ format: 'HH:mm:ss' }"
                                         format="YYYY-MM-DD HH:mm:ss"
                                         :placeholder="['选择开始时间', '选择结束时间']"
-                                        @change="onRangeChange"
-                                        @ok="onRangeOk"
                                     />
                                 </a-space>
                             </a-form-item>
@@ -77,14 +80,14 @@
                                 <a-textarea v-model:value="formState.title_key" placeholder="标题包含关键字查找" class="font_size_12" size="small"/>
                             </a-form-item>
 
-                            <a-form-item :wrapper-col="{ ...layout.wrapperCol, offset: 4 }">
+                            <a-form-item :wrapper-col="{ span: 20 , offset: 4 }">
                                 <a-space>
 
-                                    <a-button html-type="submit" size="small" style="font-size: 12px;">查询商品</a-button>
+                                    <a-button html-type="submit" size="small" style="font-size: 12px;" :loading="formState.select_loading">查询商品</a-button>
 
-                                    <a-button size="small" style="font-size: 12px;">重置</a-button>
+                                    <a-button size="small" style="font-size: 12px;" @click="resetForm">重置</a-button>
 
-                                    <div style="font-size: 12px;">已选择商品 123 个</div>
+                                    <div style="font-size: 12px;">已选择商品 {{ formState.product_result_list.length }} 个</div>
                                 
                                 </a-space>
                             </a-form-item>
@@ -97,79 +100,78 @@
 
 
                 <a-col :span="8">
+
                     <h4 class="title_h">第二步：修改字段</h4>
+
                     <div class="bor_r" :style="{height:'80vh'}">
+
                         <a-tabs
-                            v-model:activeKey="activeKey"
+                            v-model:activeKey="OptfunctionData.activeKey"
                             tab-position="top"
                             :style="{ height: '500px'}"
                             size="small"
-                            @tabScroll="callback"
+                            @tabScroll="OptfunctionData.callback"
                         >
-                        <a-tab-pane key="1" tab="标题">
+
+                            <a-tab-pane key="1" tab="标题">
 
                                 <a-form
-                                    :model="title_options"
-                                    name="title_options"
+                                    :model="OptfunctionData"
+                                    name="title_form"
                                     :label-col="{ span: 4 }"
                                     :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
-                                    @finish="title_onFinish"
-                                    @finishFailed="title_onFinishFailed"
                                 >
 
                                     <a-form-item label="过滤文字">
-                                        <a-input size="small" class="font_size_12" placeholder="输入关键字" v-model:value="title_options.filter_key" allowClear/>
+                                        <a-input size="small" class="font_size_12" placeholder="输入关键字" v-model:value="OptfunctionData.title.filter_key" allowClear/>
                                     </a-form-item>
                                     <a-form-item label="替换文字">
                                         <a-space class="font_size_12">
-                                            <a-input size="small" class="font_size_12" placeholder="输入文字" v-model:value="title_options.replace_key" style="width: 100px;" allowClear/>
+                                            <a-input size="small" class="font_size_12" placeholder="输入文字" v-model:value="OptfunctionData.title.target_key" style="width: 100px;" allowClear/>
                                             替换为
-                                            <a-input size="small" class="font_size_12" placeholder="输入文字" v-model:value="title_options.replace_key" style="width: 100px;" allowClear/>
+                                            <a-input size="small" class="font_size_12" placeholder="输入文字" v-model:value="OptfunctionData.title.replace_key" style="width: 100px;" allowClear/>
                                         </a-space>
                                     </a-form-item>
 
                                     <a-form-item label="加前后缀">
                                         <a-space class="font_size_12">
-                                            <a-input class="font_size_12" size="small" placeholder="输入前缀" v-model:value="title_options.after_key" style="width: 100px;" allowClear />
+                                            <a-input class="font_size_12" size="small" placeholder="输入前缀" v-model:value="OptfunctionData.title.after_key" style="width: 100px;" allowClear />
                                             原标题
-                                            <a-input class="font_size_12" size="small" placeholder="输入后缀" v-model:value="title_options.before_key"  style="width: 100px;" allowClear />
+                                            <a-input class="font_size_12" size="small" placeholder="输入后缀" v-model:value="OptfunctionData.title.before_key"  style="width: 100px;" allowClear />
                                         </a-space>
                                     </a-form-item>
                                 </a-form>
+
                             </a-tab-pane>
 
                             <a-tab-pane key="2" tab="客服电话">
                                 <a-form
-                                    :model="title_options"
-                                    name="title_options"
+                                    :model="OptfunctionData"
+                                    name="mobile_form"
                                     :label-col="{ span: 4 }"
                                     :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
-                                    @finish="title_onFinish"
-                                    @finishFailed="title_onFinishFailed"
                                 >
                                 <a-form-item label="客服电话">
-                                    <a-input size="small" class="font_size_12" v-model:value="title_options.mobile" placeholder="输入新的电话替换" allowClear/>
+                                    <a-input size="small" class="font_size_12" v-model:value="OptfunctionData.mobile" placeholder="输入新的电话替换" allowClear/>
                                 </a-form-item>
                                 </a-form>
                             </a-tab-pane>
 
                             <a-tab-pane key="3" tab="库存类型">
                                 <a-form
-                                    :model="title_options"
-                                    name="title_options"
+                                    :model="OptfunctionData"
+                                    name="reduce"
                                     :label-col="{ span: 4 }"
                                     :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
-                                    @finish="title_onFinish"
-                                    @finishFailed="title_onFinishFailed"
                                 >
                                 <a-form-item label="库存类型" name="reduce_type">
-                                    <a-select size="small" class="font_size_12" v-model:value="title_options.reduce_type" placeholder="选择减库存类型" allowClear>
+                                    <a-select size="small" class="font_size_12" v-model:value="OptfunctionData.reduce_type" placeholder="选择减库存类型" allowClear>
                                         <a-select-option value="1">拍下减库存</a-select-option>
                                         <a-select-option value="2">付款减库存</a-select-option>
                                     </a-select>
@@ -179,17 +181,15 @@
 
                             <a-tab-pane key="4" tab="运费模板">
                                 <a-form
-                                    :model="title_options"
-                                    name="title_options"
+                                    :model="OptfunctionData"
+                                    name="freight"
                                     :label-col="{ span: 4 }"
                                     :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
-                                    @finish="title_onFinish"
-                                    @finishFailed="title_onFinishFailed"
                                 >
                                     <a-form-item label="运费模板" name="freight_id">
-                                        <a-select size="small" class="font_size_12" v-model:value="title_options.freight_id"  placeholder="选择运费模板" allowClear>
+                                        <a-select size="small" class="font_size_12" v-model:value="OptfunctionData.freight_id"  placeholder="选择运费模板" allowClear>
                                             <a-select-option value="1">异步加载更多模板</a-select-option>
                                             <a-select-option value="2">付款减库存</a-select-option>
                                         </a-select>
@@ -199,17 +199,15 @@
 
                             <a-tab-pane key="5" tab="发货模式">
                                 <a-form
-                                    :model="title_options"
-                                    name="title_options"
+                                    :model="OptfunctionData"
+                                    name="presell"
                                     :label-col="{ span: 4 }"
                                     :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
-                                    @finish="title_onFinish"
-                                    @finishFailed="title_onFinishFailed"
                                 >
                                     <a-form-item label="发货模式" name="presell_config_level">
-                                        <a-radio-group v-model:value="title_options.presell_config_level">
+                                        <a-radio-group v-model:value="OptfunctionData.presell_config_level">
                                             <a-radio class="font_size_12" value="1">现货</a-radio>
                                             <a-radio class="font_size_12" value="2">现货+预售</a-radio>
                                         </a-radio-group>
@@ -221,7 +219,7 @@
 
                     </div>
                     <div style="text-align: center;">
-                        <a-button type="primary" html-type="submit" size="small" style="font-size: 12px;">提交</a-button>
+                        <a-button type="primary" @click="add_task" size="small" style="font-size: 12px;">提交</a-button>
                     </div>
                 </a-col>
 
@@ -292,12 +290,14 @@ import { Segmented } from 'ant-design-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
+import * as TOOL from '@/assets/JS_Model/tool';
+import * as BatchEdit from '@/assets/douyinshop/BatchEditFun';
+
 import axios from "axios";// 网络请求方法
 
 // 组件引用=====开始
 import menu_left from "@/components/layout/menu_left.vue";
 import menu_head from "@/components/layout/menu_head.vue";
-import { Option } from 'ant-design-vue/es/vc-select';
 
 export default defineComponent({
   // 模版名称【角色管理】
@@ -315,9 +315,11 @@ export default defineComponent({
   // 组合API返回到模版
   setup() {
     // 【数据绑定】=======================================>开始
-    const API = new utils.A_Patch()       // 请求接口地址合集
-    const TO = new TABLE.TableOperate()   // 表格操作方法
-    const store = useStore();// 共享数据
+    const API = new utils.A_Patch()         // 请求接口地址合集
+    const TO = new TABLE.TableOperate()     // 表格操作方法
+    const store = useStore();               // 共享数据
+    const tool = new TOOL.TOOL()            // 工具方法
+    const B_Fun = new BatchEdit.B_Fun()     // 批量修改方法
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
 
     // const loading = ref(true)// 初始化loading状态
@@ -330,16 +332,15 @@ export default defineComponent({
       total_number:0,     // 总页数
     })
 
-    const layout = {
-        labelCol: {span: 4,},
-        wrapperCol: {span: 20,},
-    };
 
+    // 表单数据绑定
+    const first_formRef = ref();
 
     // 查询商品表单数据绑定
     const formState = reactive({
         
-        get_cate_list:(obj)=>{
+        // 类目列表转换
+        get_cate_list:(obj)=>{ 
             var obj_list = []
             for(let i of obj){
                 let cate_obj = {}
@@ -350,31 +351,39 @@ export default defineComponent({
             }
             return obj_list
         },
+        // 查询按钮loading
+        select_loading:ref(false),
         
         options:ref([]),// 分类选项
 
-        cate_name:[],//分类
+        cate_name:undefined,//分类
 
-        state:undefined,
+        status:undefined,//审核状态
 
-        state_list:ref([{value:'1',label:'待审核'},{value:'2',label:'审核通过'},{value:'3',label:'审核不通过'}]),//审核状态
+        state_list:ref([
+            {value:'0',label:'在售'},
+            {value:'1',label:'审核中'},
+            {value:'2',label:'仓库中'},
+            {value:'3',label:'草稿箱'},
+            {value:'4',label:'已删除商品'}
+        ]),
 
-        create_time:'',// 创建时间
+        create_time:ref(undefined),// 创建时间
 
-        update_time:'',// 更新时间
+        update_time:ref(undefined),// 更新时间
 
         title_key:ref(undefined),// 标题关键字
 
+        product_result_list:ref([]) // 商品查询结果
+
     });
 
-    // 分类选择初始化
-    axios.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
-        // console.log(res.data)
-        // console.log(formState.options)
-        formState.options = formState.get_cate_list(res.data.data)
+    // 分类初始化
+    tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
+        formState.options = formState.get_cate_list(res.data.data) 
     })
 
-    // 异步请求子分类
+    // 分类异步请求子分类
     const loadData = selectedOptions => {
 
         const targetOption = selectedOptions[selectedOptions.length - 1];
@@ -397,57 +406,160 @@ export default defineComponent({
             formState.options = [...formState.options];
         })
 
-        console.log(formState.cate_name.value)
+        console.log(formState.cate_name)
             
     };
 
     // 创建时间选择
     const onCreateChange = (value, dateString) => {
         formState.create_time = dateString;
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
     };
+
     // 更新时间选择
-    const onRangeChange2 = (value, dateString) => {
+    const onupdateChange = (value, dateString) => {
         formState.update_time = dateString;
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
-       };
-
-    const onRangeOk = value => {
-        console.log('onOk: ', value);
     };
 
+    // 查询商品表单提交
     const onFinish = values => {
-        console.log('Success:', values);
+
+        // 验证表单字段是否为空或是否正确
+        formState.select_loading = true;// 查询按钮loading状态
+        
+        console.log('查询商品', values);
+
+        const submit_obj = B_Fun.verify_first_submit(values) // 验证表单字段是否为空或是否正确
+        console.log(submit_obj)
+
+        setTimeout(()=>{
+
+            formState.select_loading = false; // 查询按钮loading状态
+
+            const result = []
+
+            async function master_get() {
+
+                // 请求商品列表数据
+                let data = {
+                    
+                    "page":1,
+                    
+                    "size":100,
+
+                    "status":0,         //  0-在线；1-下线；2-删除；
+                    
+                    //"check_status":1,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
+
+                    //"product_type":0,   // 0-普通；1-新客商品；3-虚拟；6-玉石闪购；7-云闪购 ；127-其他类型；
+                    
+                    // "start_time":"",    // 创建开始时间
+                    // "end_time":"",      // 创建结束时间
+                    
+                    // "update_start_time":"",// 更新开始时间
+                    // "update_end_time":"",// 更新结束时间
+
+                    // "name":"",          // 标题模糊查询
+                    // "product_id":"",    // 商品id个 
+                    // "use_cursor":"",    // 是否使用游标
+                    
+                    "use_cursor":true,
+                    // "cursor_id":"",      // 游标id
+
+                    // "can_combine_product":"", // 是否参加搭配
+                    // "lookup_option":{
+                    //     "need_name_affix":"", // 是否需要获取标题前后缀
+                    //     "need_title_limit":"" // 是否需要获取商品标题长度限制规则
+                    //     }, // op
+                    // "need_rectification_info":"", // 是否需要自动整改信息
+                    // "query_options":{
+                    //     "exist_audit_reject_suggest":"", // 只查询有驳回建议的商品
+                    //     "need_audit_reject_suggest":""  // 需要返回审核驳回建议信息
+                    // }// 查询定制参数
+
+                }
+                
+                var ob = 0
+
+                while (ob < 3) {
+
+                    // 请求商品接口
+                    const res = await axios.post(API.AppSrtoreAPI.dou_product.list, data)
+
+                    const list = res.data.data.data; // 商品列表
+                    
+                    if(list.length >0){
+                        console.log(list[0].name)
+                        for(let i of list){formState.product_result_list.push(i.product_id)}
+                        ob= ob+3
+                    }else{
+                        ob= ob+3
+                    }
+
+                    var cursor_id = res.data.data.cursor_id
+                    console.log(cursor_id)
+                    data.cursor_id = cursor_id
+
+                }
+                
+                
+            }
+
+            master_get().then(()=>{
+                console.log(formState.product_result_list.length)
+                formState.product_result_list = [...new Set(formState.product_result_list)]; // 去重
+                console.log('数组去重后：：：',formState.product_result_list.length)
+
+            })
+
+
+        },1000)
+
     };
 
-
+    // 重置表单
+    const resetForm = () => {
+        first_formRef.value.resetFields();
+        formState.product_result_list = [];
+    };
 
     // 批量修改-操作方法
-    const activeKey = ref('1');
-    const callback = val => {
-        console.log(val);
-    };
-    
-    const title_options = reactive({
+    const OptfunctionData = reactive({
 
-        after_key: '', // 前缀
-        before_key: '', // 后缀
-        replace_key: '', // 替换关键字
-        filter_key: '',// 过滤关键字
-        mobile:'',// 客服电话
+        activeKey:ref('1'),// 选中标签
+
+        callback:val=>{// 标签切换回掉
+            console.log(val)
+        },
+
+        // 标题
+        title:{
+
+            after_key: undefined, // 前缀
+            before_key: undefined, // 后缀
+            replace_key: undefined, // 替换关键字
+            target_key:undefined, // 目标关键字
+            filter_key: undefined,// 过滤关键字
+
+        },
+
+
+        mobile:undefined,// 客服电话
+
         reduce_type:undefined,// 库存类型
+
         freight_id:undefined,// 运费模板
-        presell_config_level:''// 发货模式
+        
+        presell_config_level:undefined// 发货模式
 
     });
-    const title_onFinish = values => {
-        console.log('Success:', values);
-    };
-    const title_onFinishFailed = errorInfo => {
-        console.log('Failed:', errorInfo);
-    };
+
+    const add_task = () => {
+        let submit_obj = B_Fun.verify_second_submit(OptfunctionData) // 验证表单字段是否为空或是否正确
+        console.log('标题', submit_obj)
+        // console.log('客服电话', submit_obj.mobile)
+        // console.log('库存类型', submit_obj.reduce_type)
+        // console.log('运费模板', submit_obj.freight_id)
+    }
 
 
 
@@ -497,25 +609,35 @@ export default defineComponent({
     };
 
     return {
+
       store,
       loading,
       innerHeight,
       PAGEDATA,
-      layout,
+
+      // 请求商品方法
+      first_formRef,
       formState,
+      resetForm,
       onFinish,
       loadData,
       onCreateChange,
-      onRangeOk,
+      onupdateChange,
+      
+      // 操作方法
+      OptfunctionData,
+      add_task,
+
+
+      // 任务查询
+
+
       initLoading,
       list,
       onLoadMore,
-      activeKey,
-      callback,
 
-      title_options,
-      title_onFinish,
-      title_onFinishFailed,
+
+
     }
     }
 })

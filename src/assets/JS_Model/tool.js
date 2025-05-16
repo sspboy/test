@@ -1,4 +1,21 @@
-export class TOOL{
+import axios from "axios";// 网络请求方法
+
+    // 添加响应拦截器
+    axios.interceptors.response.use(function (response) {
+        // 对响应数据做点什么
+        // 接口错误
+        // 权限错误
+        // cookie过期
+        
+        // console.log('响应拦截器')
+        return response;
+    }, function (error) {
+        // 对响应错误做点什么
+        return Promise.reject(error);
+    });
+
+
+  export class TOOL{
 
     Fun_ = {
     
@@ -11,6 +28,50 @@ export class TOOL{
         }
 
         // 其他方法 
+    }
+
+    Http_= {
+
+        get:(url,data)=>{
+            return new Promise((resolve,reject)=>{
+                axios.get(url,data).then((res)=>{
+                    resolve(res)
+                }).catch((err)=>{
+                    reject(err)
+                })
+            }) 
+        },
+
+        post:(url,data)=>{
+            return new Promise((resolve,reject)=>{
+                axios.post(url,data).then((res)=>{
+                    console.log(res)
+                    resolve(res)
+                }).catch((err)=>{
+                    reject(err)
+                })
+            })
+        },
+        
+        delete:(url,data)=>{
+            return new Promise((resolve,reject)=>{
+                axios.delete(url,data).then((res)=>{
+                    resolve(res)
+                }).catch((err)=>{
+                    reject(err)
+                })
+            })
+        },
+        
+        update:(url,data)=>{
+            return new Promise((resolve,reject)=>{
+                axios.put(url,data).then((res)=>{
+                    resolve(res)
+                }).catch((err)=>{
+                    reject(err)
+                })
+            })
+        }
     }
 
 }
