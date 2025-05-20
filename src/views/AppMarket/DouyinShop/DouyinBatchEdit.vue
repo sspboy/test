@@ -101,7 +101,7 @@
 
                 <a-col :span="8">
 
-                    <h4 class="title_h">第二步：修改字段</h4>
+                    <h3 class="title_h">第二步：修改字段</h3>
 
                     <div class="bor_r" :style="{height:'80vh'}">
 
@@ -129,7 +129,7 @@
                                     </a-form-item>
                                     <a-form-item label="替换文字">
                                         <a-space class="font_size_12">
-                                            <a-input size="small" class="font_size_12" placeholder="输入文字" v-model:value="OptfunctionData.title.target_key" style="width: 100px;" allowClear/>
+                                            <a-input size="small" class="font_size_12" placeholder="查找文字" v-model:value="OptfunctionData.title.target_key" style="width: 100px;" allowClear/>
                                             替换为
                                             <a-input size="small" class="font_size_12" placeholder="输入文字" v-model:value="OptfunctionData.title.replace_key" style="width: 100px;" allowClear/>
                                         </a-space>
@@ -137,9 +137,9 @@
 
                                     <a-form-item label="加前后缀">
                                         <a-space class="font_size_12">
-                                            <a-input class="font_size_12" size="small" placeholder="输入前缀" v-model:value="OptfunctionData.title.after_key" style="width: 100px;" allowClear />
+                                            <a-input class="font_size_12" size="small" placeholder="前缀" v-model:value="OptfunctionData.title.after_key" style="width: 100px;" allowClear />
                                             原标题
-                                            <a-input class="font_size_12" size="small" placeholder="输入后缀" v-model:value="OptfunctionData.title.before_key"  style="width: 100px;" allowClear />
+                                            <a-input class="font_size_12" size="small" placeholder="后缀" v-model:value="OptfunctionData.title.before_key"  style="width: 100px;" allowClear />
                                         </a-space>
                                     </a-form-item>
                                 </a-form>
@@ -219,32 +219,32 @@
 
                     </div>
                     <div style="text-align: center;">
-                        <a-button type="primary" @click="add_task" size="small" style="font-size: 12px;">提交</a-button>
+                        <a-button type="primary" @click="add_task" size="small" :loading="OptfunctionData.sub_load" style="font-size: 12px;">提交</a-button>
                     </div>
                 </a-col>
 
 
                 <a-col :span="8">
                     
-                    <h4 class="title_h">第三步：操作记录</h4>
+                    <h3 class="title_h">第三步：操作记录</h3>
                     <div class="bor_l" :style="{height:'80vh'}">
 
                         <a-list
-                        class="demo-loadmore-list"
-                        :loading="initLoading"
-                        item-layout="horizontal"
-                        :data-source="list"
-                    >
-                        <template #loadMore>
+                            class="demo-loadmore-list"
+                            :loading="initLoading"
+                            item-layout="horizontal"
+                            :data-source="list"
+                        >
 
+                        <template #loadMore>
                             <div
-                                v-if="!initLoading && !loading"
                                 :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"
                             >
                                 <a-button @click="onLoadMore" size="small" style="font-size: 12px;">加载更多</a-button>
                             </div>
                         </template>
 
+                        
                         <template #renderItem="{ item }">
 
                             <a-list-item>
@@ -257,10 +257,10 @@
 
                                     <a-list-item-meta>
                                         <template #title>
-                                            <a href="#">{{ item.name.last }}</a>
+                                            <a href="#">{{ item.shop_id }}</a>
                                         </template>
                                         <template #avatar>
-                                            <a-avatar :src="item.picture.large" />
+                                            <!-- <a-avatar :src="item.picture.large" /> -->
                                         </template>
                                     </a-list-item-meta>
 
@@ -269,6 +269,7 @@
                             </a-skeleton>
                             </a-list-item>
                         </template>
+
                         </a-list>
                     </div>
 
@@ -298,6 +299,7 @@ import axios from "axios";// 网络请求方法
 // 组件引用=====开始
 import menu_left from "@/components/layout/menu_left.vue";
 import menu_head from "@/components/layout/menu_head.vue";
+import Operation from 'ant-design-vue/es/transfer/operation';
 
 export default defineComponent({
   // 模版名称【角色管理】
@@ -321,8 +323,6 @@ export default defineComponent({
     const tool = new TOOL.TOOL()            // 工具方法
     const B_Fun = new BatchEdit.B_Fun()     // 批量修改方法
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
-
-    // const loading = ref(true)// 初始化loading状态
 
     const PAGEDATA = reactive({
       title:'批量修改',
@@ -358,14 +358,14 @@ export default defineComponent({
 
         cate_name:undefined,//分类
 
-        status:undefined,//审核状态
+        status:0,//审核状态
 
         state_list:ref([
-            {value:'0',label:'在售'},
-            {value:'1',label:'审核中'},
-            {value:'2',label:'仓库中'},
-            {value:'3',label:'草稿箱'},
-            {value:'4',label:'已删除商品'}
+            {value:0,label:'在售'},
+            {value:1,label:'审核中'},
+            {value:2,label:'仓库中'},
+            {value:3,label:'草稿箱'},
+            {value:4,label:'已删除'}
         ]),
 
         create_time:ref(undefined),// 创建时间
@@ -378,10 +378,6 @@ export default defineComponent({
 
     });
 
-    // 分类初始化
-    tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
-        formState.options = formState.get_cate_list(res.data.data) 
-    })
 
     // 分类异步请求子分类
     const loadData = selectedOptions => {
@@ -426,14 +422,13 @@ export default defineComponent({
         // 验证表单字段是否为空或是否正确
         formState.select_loading = true;// 查询按钮loading状态
         
-        console.log('查询商品', values);
+        // console.log('查询商品', values);
 
         const submit_obj = B_Fun.verify_first_submit(values) // 验证表单字段是否为空或是否正确
+
         console.log(submit_obj)
 
         setTimeout(()=>{
-
-            formState.select_loading = false; // 查询按钮loading状态
 
             const result = []
 
@@ -444,7 +439,7 @@ export default defineComponent({
                     
                     "page":1,
                     
-                    "size":100,
+                    "size":10,
 
                     "status":0,         //  0-在线；1-下线；2-删除；
                     
@@ -478,12 +473,15 @@ export default defineComponent({
 
                 }
                 
+                // 合并参数
                 var ob = 0
 
                 while (ob < 3) {
 
                     // 请求商品接口
                     const res = await axios.post(API.AppSrtoreAPI.dou_product.list, data)
+                    
+                    console.log(res.data)
 
                     const list = res.data.data.data; // 商品列表
                     
@@ -505,9 +503,14 @@ export default defineComponent({
             }
 
             master_get().then(()=>{
+                
                 console.log(formState.product_result_list.length)
-                formState.product_result_list = [...new Set(formState.product_result_list)]; // 去重
+
+                formState.product_result_list = ref([...new Set(formState.product_result_list)]); // 去重
+                
                 console.log('数组去重后：：：',formState.product_result_list.length)
+
+                formState.select_loading = false; // 查询按钮loading状态
 
             })
 
@@ -531,17 +534,18 @@ export default defineComponent({
             console.log(val)
         },
 
+        sub_load:ref(false),// 提交按钮loading
+
         // 标题
         title:{
 
-            after_key: undefined, // 前缀
-            before_key: undefined, // 后缀
-            replace_key: undefined, // 替换关键字
-            target_key:undefined, // 目标关键字
-            filter_key: undefined,// 过滤关键字
+            after_key: undefined,       // 前缀
+            before_key: undefined,      // 后缀
+            replace_key: undefined,     // 替换关键字
+            target_key:undefined,       // 目标关键字
+            filter_key: undefined,      // 过滤关键字
 
         },
-
 
         mobile:undefined,// 客服电话
 
@@ -553,59 +557,118 @@ export default defineComponent({
 
     });
 
+    // 提交任务
     const add_task = () => {
+
+        OptfunctionData.sub_load = true;    // 提交按钮loading
+
         let submit_obj = B_Fun.verify_second_submit(OptfunctionData) // 验证表单字段是否为空或是否正确
-        console.log('标题', submit_obj)
-        // console.log('客服电话', submit_obj.mobile)
-        // console.log('库存类型', submit_obj.reduce_type)
-        // console.log('运费模板', submit_obj.freight_id)
+
+        if(formState.product_result_list.length == 0){      // 验证商品id是否为空
+            OptfunctionData.sub_load = false;    // 提交按钮loading
+
+            return tool.Fun_.message('error','【第一步】选择商品不能为空') // 提示信息
+
+        }else if(JSON.stringify(submit_obj) === '{}'){      // 验证条件是否为空
+            OptfunctionData.sub_load = false;    // 提交按钮loading
+            return tool.Fun_.message('error','【第二步】修改字段不能为空') // 提示信息
+
+        }else{ // 提交任务
+
+            const data = {
+
+                "product_list": JSON.stringify(formState.product_result_list),  // 商品id列表
+                "setting": JSON.stringify(submit_obj),                          // 修改条件
+                "number":JSON.stringify(formState.product_result_list.length),  // 修改数量
+
+            }
+            
+            console.log(data)
+
+            tool.Http_.post(API.AppSrtoreAPI.batch.add, data).then(res=>{
+
+                console.log(res)
+                setTimeout(()=>{
+                    OptfunctionData.sub_load = false;      // 提交按钮loading
+                    tool.Fun_.message('success','提交成功') // 提示信息
+                    // window.location.reload()               // 刷新页面
+                },1000)
+
+            })
+        }
     }
 
 
-
-
-
     //* 处理结果列表加载 *//
-    const count = 3;
-    const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
+    const count = ref(1); // 每次加载3条数据
     const initLoading = ref(true);
     const loading = ref(false);
     const data = ref([]);
     const list = ref([]);
     
     onMounted(() => {
-        fetch(fakeDataUrl)
-            .then(res => res.json())
-            .then(res => {
-                initLoading.value = false;
-                data.value = res.results;
-                list.value = res.results;
-            });
+        
+        // 分类信息初始化
+        tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
+
+            let obj_list = res.data.data
+            console.log(res)
+            formState.options = formState.get_cate_list(obj_list) 
+        })
+
+        tool.Http_.post(API.AppSrtoreAPI.batch.list, {"page":1,"page_size":3, }).then(res=>{
+            console.log('批量列表',res)
+            initLoading.value = false;
+            data.value = res.data.data;
+            list.value = res.data.data;
+        })
+
     });
 
+    // 加载更多数据
     const onLoadMore = () => {
+
         loading.value = true;
+
         list.value = data.value.concat(
-        [...new Array(count)].map(() => ({
-        loading: true,
-        name: {},
-        picture: {},
-        })),
-    );
-        fetch(fakeDataUrl)
-            .then(res => res.json())
-            .then(res => {
-        const newData = data.value.concat(res.results);
-        loading.value = false;
-        data.value = newData;
-        list.value = newData;
-        nextTick(() => {
-            // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
-            // In real scene, you can using public method of react-virtualized:
-            // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
-            window.dispatchEvent(new Event('resize'));
-        });
-        });
+            [...new Array(3)].map(() => ({
+                loading: true,
+                name: {},
+                picture: {},
+            })),
+        );
+
+        count.value = count.value + 1;
+
+        const get_more_data = {
+            "page":count.value,
+            "page_size":3, 
+        }
+
+        tool.Http_.post(API.AppSrtoreAPI.batch.list, get_more_data).then(res=>{
+            console.log(res)
+            if(res.data.data == "None"){
+                list.value = data.value;
+                return tool.Fun_.message('info','没有更多数据了') // 提示信息
+            
+            }else{
+
+                const newData = data.value.concat(res.data.data);
+
+                loading.value = false;
+
+                data.value = newData;
+                list.value = newData;
+
+                nextTick(() => {
+                    window.dispatchEvent(new Event('resize'));
+                });
+            }
+            
+
+        })
+
+
     };
 
     return {
@@ -630,8 +693,6 @@ export default defineComponent({
 
 
       // 任务查询
-
-
       initLoading,
       list,
       onLoadMore,

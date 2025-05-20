@@ -1,4 +1,5 @@
 import axios from "axios";// 网络请求方法
+import { message } from 'ant-design-vue';
 
     // 添加响应拦截器
     axios.interceptors.response.use(function (response) {
@@ -25,10 +26,17 @@ import axios from "axios";// 网络请求方法
                 acc.flatMap(accItem => currentSet.map(currentItem => [...accItem, currentItem])),
                 [[]]
             );
+        },
+        // 提示信息
+        message:(type,msg)=>{
+            message.config({
+                duration: 2,
+                maxCount: 3,
+            })
+            message[type](msg)
         }
-
-        // 其他方法 
     }
+
 
     Http_= {
 
@@ -45,7 +53,6 @@ import axios from "axios";// 网络请求方法
         post:(url,data)=>{
             return new Promise((resolve,reject)=>{
                 axios.post(url,data).then((res)=>{
-                    console.log(res)
                     resolve(res)
                 }).catch((err)=>{
                     reject(err)

@@ -45,35 +45,65 @@ export class B_Fun {
 
     // 验证第二步操作方法数据
     verify_second_submit = (values) => {
-        console.log(values)
-        const submit_obj = {};
+
+        // console.log(values)
+        const submit_obj = {};// 提交数据
+        const title_obj = {}; // 标题数据
+
         var title = values.title;
-        var after_key= title.after_key; // 前缀
-        var before_key= title.before_key; // 后缀
-        var replace_key= title.reduce_type; // 替换关键字
-        var target_key = title.target_key; // 目标关键字
+        var after_key= title.after_key;// 后缀
+        var before_key= title.before_key;// 前缀
+        var replace_key= title.reduce_type;// 替换关键字
+        var target_key = title.target_key;// 目标关键字
         var filter_key = title.filter_key;// 过滤关键字
-        // 标题
-        if(values.title!== null && values.title!== undefined){
-            submit_obj.title = values.title
+
+        // 前缀验证
+        if(before_key !== '' && before_key !== undefined){
+            title_obj.before_key = before_key
         }
+        // 后缀验证
+        if(after_key !== '' && after_key !== undefined){
+            title_obj.after_key = after_key
+        }
+
+        // 目标关键字验证
+        if(target_key !== '' && target_key !== undefined){
+
+            title_obj.target_key = target_key
+        }
+
+        // 替换关键字验证
+        if(replace_key !== '' && replace_key !== undefined){
+
+            title_obj.replace_key = replace_key
+        }
+        // 过滤关键字验证
+        if(filter_key !== '' && filter_key !== undefined){
+            title_obj.filter_key = filter_key
+        }
+        // 标题
+        if(JSON.stringify(title_obj) !== "{}"){
+            submit_obj.title = title_obj;
+        }
+
+
         // 电话
-        if(values.mobile!== null && values.mobile!== undefined){
+        if(values.mobile !== '' && values.mobile!== undefined){
             submit_obj.mobile = values.mobile
         }
 
         // 库存类型
-        if(values.reduce_type!== null && values.reduce_type!== undefined){
+        if(values.reduce_type !== '' && values.reduce_type!== undefined){
             submit_obj.reduce_type = values.reduce_type
         }
 
         // 运费模板
-        if(values.freight_id!== null && values.freight_id!== undefined){
+        if(values.freight_id !== '' && values.freight_id!== undefined){
             submit_obj.freight_id = values.freight_id
         }
 
         // 发货模式
-        if(values.presell_config_level!== null && values.presell_config_level!== undefined){
+        if(values.presell_config_level !== null && values.presell_config_level!== undefined){
             submit_obj.presell_config_level = values.presell_config_level
         }
 

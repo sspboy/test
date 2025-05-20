@@ -142,8 +142,8 @@ export class A_Patch{
         },
         // 批量修改
         batch:{
-            "add":"api/douyin/batchproduct/add", // 添加
-            "list":"api/douyin/batchproduct/list", // 列表
+            "add":"api/douyin/batchproduct/add",    // 添加
+            "list":"api/douyin/batchproduct/list",  // 列表
             "detaile":"api/douyin/batchproduct/detaile/", // 详情
         }
 

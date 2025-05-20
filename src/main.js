@@ -29,5 +29,5 @@ window.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
 const app = createApp(App);
 app.use(store)  // 初始化Vuex 数据状态共享
 app.use(Antd)   // 加载ant design UI框架
-app.use(router)
+app.use(router) // 加载路由
 app.mount('#app');
