@@ -33,7 +33,6 @@
 
                             <a-form-item name="cate_name" label="商品类目" >
                                 <a-cascader
-                                    size="small"
                                     v-model:value="formState.cate_name"
                                     :options="formState.options"
                                     :load-data="loadData"
@@ -43,19 +42,18 @@
 
                             <a-form-item name="status" label="商品状态" >
                                 <a-select 
+                                :allowClear="true"
                                 v-model:value="formState.status" 
                                 placeholder="选择状态"
                                 :options="formState.state_list" 
-                                size="small" 
                                 />
                             </a-form-item>
 
                             <a-form-item name="create_time" label="创建时间">
                                 <a-space direction="vertical">
                                     <a-range-picker
+                                        :allowClear="true"
                                         v-model:value="formState.create_time"
-                                        class="font_size_12"
-                                        size="small"
                                         :placeholder="['选择开始时间', '选择结束时间']"
                                         :show-time="{ format: 'HH:mm:ss' }"
                                         format="YYYY-MM-DD HH:mm:ss"
@@ -66,9 +64,8 @@
                             <a-form-item name="update_time" label="更新时间">
                                 <a-space direction="vertical">
                                     <a-range-picker
+                                        :allowClear="true"
                                         v-model:value="formState.update_time"
-                                        class="font_size_12"
-                                        size="small"
                                         :show-time="{ format: 'HH:mm:ss' }"
                                         format="YYYY-MM-DD HH:mm:ss"
                                         :placeholder="['选择开始时间', '选择结束时间']"
@@ -76,8 +73,12 @@
                                 </a-space>
                             </a-form-item>
 
-                            <a-form-item name="title_key" label="标题关键字">
-                                <a-textarea v-model:value="formState.title_key" placeholder="标题包含关键字查找" class="font_size_12" size="small"/>
+                            <a-form-item name="title_key" label="文字匹配">
+                                <a-textarea
+                                :allowClear="true"
+                                v-model:value="formState.title_key" 
+                                placeholder="标题包含关键字查找" 
+                                class="font_size_12"/>
                             </a-form-item>
 
                             <a-form-item :wrapper-col="{ span: 20 , offset: 4 }">
@@ -99,6 +100,10 @@
                 </a-col>
 
 
+
+
+
+
                 <a-col :span="8">
 
                     <h3 class="title_h">第二步：修改字段</h3>
@@ -109,7 +114,6 @@
                             v-model:activeKey="OptfunctionData.activeKey"
                             tab-position="top"
                             :style="{ height: '500px'}"
-                            size="small"
                             @tabScroll="OptfunctionData.callback"
                         >
 
@@ -118,28 +122,26 @@
                                 <a-form
                                     :model="OptfunctionData"
                                     name="title_form"
-                                    :label-col="{ span: 4 }"
-                                    :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
                                 >
 
-                                    <a-form-item label="过滤文字">
-                                        <a-input size="small" class="font_size_12" placeholder="输入关键字" v-model:value="OptfunctionData.title.filter_key" allowClear/>
+                                    <a-form-item>
+                                        <a-input  class="font_size_12" placeholder="输入标题中需要删除的关键字" v-model:value="OptfunctionData.title.filter_key" allowClear/>
                                     </a-form-item>
-                                    <a-form-item label="替换文字">
-                                        <a-space class="font_size_12">
-                                            <a-input size="small" class="font_size_12" placeholder="查找文字" v-model:value="OptfunctionData.title.target_key" style="width: 100px;" allowClear/>
+                                    <a-form-item>
+                                        <a-space>
+                                            <a-input  class="font_size_12" placeholder="查找文字" v-model:value="OptfunctionData.title.target_key" style="width: 100px;" allowClear/>
                                             替换为
-                                            <a-input size="small" class="font_size_12" placeholder="输入文字" v-model:value="OptfunctionData.title.replace_key" style="width: 100px;" allowClear/>
+                                            <a-input class="font_size_12" placeholder="输入文字" v-model:value="OptfunctionData.title.replace_key" style="width: 100px;" allowClear/>
                                         </a-space>
                                     </a-form-item>
 
-                                    <a-form-item label="加前后缀">
+                                    <a-form-item>
                                         <a-space class="font_size_12">
-                                            <a-input class="font_size_12" size="small" placeholder="前缀" v-model:value="OptfunctionData.title.after_key" style="width: 100px;" allowClear />
+                                            <a-input class="font_size_12" placeholder="标题前缀" v-model:value="OptfunctionData.title.after_key" style="width: 100px;" allowClear />
                                             原标题
-                                            <a-input class="font_size_12" size="small" placeholder="后缀" v-model:value="OptfunctionData.title.before_key"  style="width: 100px;" allowClear />
+                                            <a-input class="font_size_12" placeholder="标题后缀" v-model:value="OptfunctionData.title.before_key"  style="width: 100px;" allowClear />
                                         </a-space>
                                     </a-form-item>
                                 </a-form>
@@ -150,13 +152,11 @@
                                 <a-form
                                     :model="OptfunctionData"
                                     name="mobile_form"
-                                    :label-col="{ span: 4 }"
-                                    :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
                                 >
-                                <a-form-item label="客服电话">
-                                    <a-input size="small" class="font_size_12" v-model:value="OptfunctionData.mobile" placeholder="输入新的电话替换" allowClear/>
+                                <a-form-item>
+                                    <a-input class="font_size_12" v-model:value="OptfunctionData.mobile" placeholder="输入新的电话替换" allowClear/>
                                 </a-form-item>
                                 </a-form>
                             </a-tab-pane>
@@ -165,13 +165,11 @@
                                 <a-form
                                     :model="OptfunctionData"
                                     name="reduce"
-                                    :label-col="{ span: 4 }"
-                                    :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
                                 >
-                                <a-form-item label="库存类型" name="reduce_type">
-                                    <a-select size="small" class="font_size_12" v-model:value="OptfunctionData.reduce_type" placeholder="选择减库存类型" allowClear>
+                                <a-form-item name="reduce_type">
+                                    <a-select class="font_size_12" v-model:value="OptfunctionData.reduce_type" placeholder="选择减库存类型" allowClear>
                                         <a-select-option value="1">拍下减库存</a-select-option>
                                         <a-select-option value="2">付款减库存</a-select-option>
                                     </a-select>
@@ -183,13 +181,11 @@
                                 <a-form
                                     :model="OptfunctionData"
                                     name="freight"
-                                    :label-col="{ span: 4 }"
-                                    :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
                                 >
-                                    <a-form-item label="运费模板" name="freight_id">
-                                        <a-select size="small" class="font_size_12" v-model:value="OptfunctionData.freight_id"  placeholder="选择运费模板" allowClear>
+                                    <a-form-item name="freight_id">
+                                        <a-select class="font_size_12" v-model:value="OptfunctionData.freight_id"  placeholder="选择运费模板" allowClear>
                                             <a-select-option value="1">异步加载更多模板</a-select-option>
                                             <a-select-option value="2">付款减库存</a-select-option>
                                         </a-select>
@@ -201,12 +197,10 @@
                                 <a-form
                                     :model="OptfunctionData"
                                     name="presell"
-                                    :label-col="{ span: 4 }"
-                                    :wrapper-col="{ span: 20 }"
                                     labelAlign="left"
                                     autocomplete="off"
                                 >
-                                    <a-form-item label="发货模式" name="presell_config_level">
+                                    <a-form-item name="presell_config_level">
                                         <a-radio-group v-model:value="OptfunctionData.presell_config_level">
                                             <a-radio class="font_size_12" value="1">现货</a-radio>
                                             <a-radio class="font_size_12" value="2">现货+预售</a-radio>
@@ -224,6 +218,10 @@
                 </a-col>
 
 
+
+
+
+
                 <a-col :span="8">
                     
                     <h3 class="title_h">第三步：操作记录</h3>
@@ -235,39 +233,45 @@
                             item-layout="horizontal"
                             :data-source="list"
                         >
+                    
 
                         <template #loadMore>
-                            <div
-                                :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }"
-                            >
-                                <a-button @click="onLoadMore" size="small" style="font-size: 12px;">加载更多</a-button>
+
+                            <div :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
+                                <a-button @click="onLoadMore" size="small" style="font-size: 12px;" :loading="loading">加载更多</a-button>
                             </div>
+                            
                         </template>
 
                         
                         <template #renderItem="{ item }">
 
                             <a-list-item>
-                                
-                                <template #actions>
-                                    <a key="list-loadmore-more" class="font_size_12">查看明细</a>
-                                </template>
 
-                                <a-skeleton avatar :title="false" :loading="!!item.loading" active>
+                                <a-skeleton :title="true" :paragraph="false" :loading="!!item.loading" active>
 
                                     <a-list-item-meta>
-                                        <template #title>
-                                            <a href="#">{{ item.shop_id }}</a>
+
+                                        <template  #title>
+                                            {{ item.create_time }}
+                                            <span class="font_size_12" style="font-weight:normal;">
+                                                提交 {{ item.number }} 个 修改商品
+                                            </span>
+
                                         </template>
-                                        <template #avatar>
-                                            <!-- <a-avatar :src="item.picture.large" /> -->
-                                        </template>
+
                                     </a-list-item-meta>
 
-                                    <div>content</div>
+                                </a-skeleton>
+
                                 
-                            </a-skeleton>
+                                <template v-if="item.id !== undefined" #actions>
+                                    <a href="#" key="list-loadmore-more" class="font_size_12">查看</a>
+                                    <a href="#" class="font_size_12">删除</a>
+                                </template>
+
                             </a-list-item>
+                            
                         </template>
 
                         </a-list>
@@ -358,7 +362,7 @@ export default defineComponent({
 
         cate_name:undefined,//分类
 
-        status:0,//审核状态
+        status:undefined,//审核状态
 
         state_list:ref([
             {value:0,label:'在售'},
@@ -508,7 +512,7 @@ export default defineComponent({
 
                 formState.product_result_list = ref([...new Set(formState.product_result_list)]); // 去重
                 
-                console.log('数组去重后：：：',formState.product_result_list.length)
+                // console.log('数组去重后：：：',formState.product_result_list.length)
 
                 formState.select_loading = false; // 查询按钮loading状态
 
@@ -565,12 +569,15 @@ export default defineComponent({
         let submit_obj = B_Fun.verify_second_submit(OptfunctionData) // 验证表单字段是否为空或是否正确
 
         if(formState.product_result_list.length == 0){      // 验证商品id是否为空
+
             OptfunctionData.sub_load = false;    // 提交按钮loading
 
             return tool.Fun_.message('error','【第一步】选择商品不能为空') // 提示信息
 
         }else if(JSON.stringify(submit_obj) === '{}'){      // 验证条件是否为空
+            
             OptfunctionData.sub_load = false;    // 提交按钮loading
+
             return tool.Fun_.message('error','【第二步】修改字段不能为空') // 提示信息
 
         }else{ // 提交任务
@@ -615,12 +622,22 @@ export default defineComponent({
             console.log(res)
             formState.options = formState.get_cate_list(obj_list) 
         })
+        const first_Data = {
+            "page":1,
+            "page_size":3, 
+            "condition":[{"type": "orderby", "condition": [{"column_name": "create_time", "value": "desc"}]}]
+        }
 
-        tool.Http_.post(API.AppSrtoreAPI.batch.list, {"page":1,"page_size":3, }).then(res=>{
+        tool.Http_.post(API.AppSrtoreAPI.batch.list, first_Data).then(res=>{
+            
             console.log('批量列表',res)
+            
             initLoading.value = false;
+            
             data.value = res.data.data;
+
             list.value = res.data.data;
+
         })
 
     });
@@ -631,7 +648,7 @@ export default defineComponent({
         loading.value = true;
 
         list.value = data.value.concat(
-            [...new Array(3)].map(() => ({
+            [...new Array(1)].map(() => ({
                 loading: true,
                 name: {},
                 picture: {},
@@ -643,26 +660,36 @@ export default defineComponent({
         const get_more_data = {
             "page":count.value,
             "page_size":3, 
+            "condition":[{"type": "orderby", "condition": [{"column_name": "create_time", "value": "desc"}]}]
+
         }
 
         tool.Http_.post(API.AppSrtoreAPI.batch.list, get_more_data).then(res=>{
-            console.log(res)
-            if(res.data.data == "None"){
-                list.value = data.value;
-                return tool.Fun_.message('info','没有更多数据了') // 提示信息
             
-            }else{
+            console.log(res)
 
-                const newData = data.value.concat(res.data.data);
+            if(res.data.data == "None"){ // 请求数据为空
+
+                list.value = data.value;
 
                 loading.value = false;
 
+                return tool.Fun_.message('info','没有更多数据了') // 提示信息
+            
+            }else{ // 请求数据不为空
+
+                const newData = data.value.concat(res.data.data);
+
                 data.value = newData;
+
                 list.value = newData;
 
                 nextTick(() => {
                     window.dispatchEvent(new Event('resize'));
                 });
+                
+                loading.value = false;
+
             }
             
 
