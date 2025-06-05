@@ -19,87 +19,9 @@
             <a-row>
 
                 <a-col :span="8">
-
                     <h3 class="title_h">第一步：选择商品</h3>
-
-                    <div class="bor_r" :style="{height:'80vh'}">
-
-                        <a-form ref="first_formRef" 
-                        :model="formState" 
-                        :label-col="{ span: 4 }"
-                        :wrapper-col="{ span: 20 }"
-                        name="nest-messages" 
-                        @finish="onFinish">
-
-                            <a-form-item name="cate_name" label="商品类目" >
-                                <a-cascader
-                                    v-model:value="formState.cate_name"
-                                    :options="formState.options"
-                                    :load-data="loadData"
-                                    placeholder="选择分类"
-                                />
-                            </a-form-item>
-
-                            <a-form-item name="status" label="商品状态" >
-                                <a-select 
-                                :allowClear="true"
-                                v-model:value="formState.status" 
-                                placeholder="选择状态"
-                                :options="formState.state_list" 
-                                />
-                            </a-form-item>
-
-                            <a-form-item name="create_time" label="创建时间">
-                                <a-space direction="vertical">
-                                    <a-range-picker
-                                        :allowClear="true"
-                                        v-model:value="formState.create_time"
-                                        :placeholder="['选择开始时间', '选择结束时间']"
-                                        :show-time="{ format: 'HH:mm:ss' }"
-                                        format="YYYY-MM-DD HH:mm:ss"
-                                    />
-                                </a-space>
-                            </a-form-item>
-                            
-                            <a-form-item name="update_time" label="更新时间">
-                                <a-space direction="vertical">
-                                    <a-range-picker
-                                        :allowClear="true"
-                                        v-model:value="formState.update_time"
-                                        :show-time="{ format: 'HH:mm:ss' }"
-                                        format="YYYY-MM-DD HH:mm:ss"
-                                        :placeholder="['选择开始时间', '选择结束时间']"
-                                    />
-                                </a-space>
-                            </a-form-item>
-
-                            <a-form-item name="title_key" label="文字匹配">
-                                <a-textarea
-                                :allowClear="true"
-                                v-model:value="formState.title_key" 
-                                placeholder="标题包含关键字查找" 
-                                class="font_size_12"/>
-                            </a-form-item>
-
-                            <a-form-item :wrapper-col="{ span: 20 , offset: 4 }">
-                                <a-space>
-
-                                    <a-button html-type="submit" size="small" style="font-size: 12px;" :loading="formState.select_loading">查询商品</a-button>
-
-                                    <a-button size="small" style="font-size: 12px;" @click="resetForm">重置</a-button>
-
-                                    <div style="font-size: 12px;">已选择商品 {{ formState.product_result_list.length }} 个</div>
-                                
-                                </a-space>
-                            </a-form-item>
-                        </a-form>
-
-                    </div>
-
-
+                    <first_step :data="formState"/>
                 </a-col>
-
-
 
 
 
@@ -212,12 +134,12 @@
                         </a-tabs>
 
                     </div>
+
                     <div style="text-align: center;">
-                        <a-button type="primary" @click="add_task" size="small" :loading="OptfunctionData.sub_load" style="font-size: 12px;">提交</a-button>
+                        <a-button type="primary" @click="add_task" size="small" :loading="OptfunctionData.sub_load" style="font-size: 12px;">提交批量修改任务</a-button>
                     </div>
+
                 </a-col>
-
-
 
 
 
@@ -295,17 +217,20 @@ import { Segmented } from 'ant-design-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
-import * as TOOL from '@/assets/JS_Model/tool';
-import * as BatchEdit from '@/assets/douyinshop/BatchEditFun';
 
+import * as TOOL from '@/assets/JS_Model/tool';
+
+import * as BatchEdit from '@/assets/douyinshop/BatchEditFun';
 import axios from "axios";// 网络请求方法
 
 // 组件引用=====开始
 import menu_left from "@/components/layout/menu_left.vue";
 import menu_head from "@/components/layout/menu_head.vue";
 import Operation from 'ant-design-vue/es/transfer/operation';
+import first_step from "@/components/AppMarket/Douyinshop/batchedit/FirstStep.vue";
 
-export default defineComponent({
+export default {
+
   // 模版名称【角色管理】
   name: "BatchEdit",
   // 引用组件
@@ -315,6 +240,7 @@ export default defineComponent({
     PlusOutlined,
     menu_left,
     menu_head,
+    first_step
   },
   // 父组件数据
   props: {},
@@ -331,11 +257,7 @@ export default defineComponent({
     const PAGEDATA = reactive({
       title:'批量修改',
       menudata:{'key':'92','openKeys':'douyinshop'},            // 菜单选中配置
-      colum:[],           // 表头信息
-      datalist:[],        // 列表信息
-      total_number:0,     // 总页数
     })
-
 
     // 表单数据绑定
     const first_formRef = ref();
@@ -355,6 +277,7 @@ export default defineComponent({
             }
             return obj_list
         },
+
         // 查询按钮loading
         select_loading:ref(false),
         
@@ -362,14 +285,25 @@ export default defineComponent({
 
         cate_name:undefined,//分类
 
-        status:undefined,//审核状态
-
+        status:undefined,//商品状态
+        
+        check_status:undefined, // 审核状态
+        
+        // 状态下拉列表
         state_list:ref([
-            {value:0,label:'在售'},
-            {value:1,label:'审核中'},
-            {value:2,label:'仓库中'},
-            {value:3,label:'草稿箱'},
-            {value:4,label:'已删除'}
+            {value:0,label:'在线'},
+            {value:1,label:'下线'},
+            {value:2,label:'删除'}
+        ]),
+        
+        // 审核下拉选项列表
+        check_status_list:ref([
+            {value:3,label:'审核通过'},
+            {value:4,label:'审核未通过'},
+            {value:1,label:'未提交'},
+            {value:2,label:'待审核'},
+            {value:5,label:'封禁'},
+            {value:7,label:'审核通过待上架'},
         ]),
 
         create_time:ref(undefined),// 创建时间
@@ -383,151 +317,9 @@ export default defineComponent({
     });
 
 
-    // 分类异步请求子分类
-    const loadData = selectedOptions => {
-
-        const targetOption = selectedOptions[selectedOptions.length - 1];
-
-        var cid = targetOption.value;       // 分类id
-
-        var isLeaf = targetOption.isLeaf;   // 是否叶子类目
-
-        console.log(targetOption)
-
-        targetOption.loading = true; // load options
-
-        axios.post(API.AppSrtoreAPI.dou_product.cate, {"cid":cid}).then(res=>{
-            // console.log(res.data)
-            // console.log(formState.options)
-            targetOption.loading = false;
-
-            targetOption.children = formState.get_cate_list(res.data.data)
-
-            formState.options = [...formState.options];
-        })
-
-        console.log(formState.cate_name)
-            
-    };
-
-    // 创建时间选择
-    const onCreateChange = (value, dateString) => {
-        formState.create_time = dateString;
-    };
-
-    // 更新时间选择
-    const onupdateChange = (value, dateString) => {
-        formState.update_time = dateString;
-    };
-
-    // 查询商品表单提交
-    const onFinish = values => {
-
-        // 验证表单字段是否为空或是否正确
-        formState.select_loading = true;// 查询按钮loading状态
-        
-        // console.log('查询商品', values);
-
-        const submit_obj = B_Fun.verify_first_submit(values) // 验证表单字段是否为空或是否正确
-
-        console.log(submit_obj)
-
-        setTimeout(()=>{
-
-            const result = []
-
-            async function master_get() {
-
-                // 请求商品列表数据
-                let data = {
-                    
-                    "page":1,
-                    
-                    "size":10,
-
-                    "status":0,         //  0-在线；1-下线；2-删除；
-                    
-                    //"check_status":1,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
-
-                    //"product_type":0,   // 0-普通；1-新客商品；3-虚拟；6-玉石闪购；7-云闪购 ；127-其他类型；
-                    
-                    // "start_time":"",    // 创建开始时间
-                    // "end_time":"",      // 创建结束时间
-                    
-                    // "update_start_time":"",// 更新开始时间
-                    // "update_end_time":"",// 更新结束时间
-
-                    // "name":"",          // 标题模糊查询
-                    // "product_id":"",    // 商品id个 
-                    // "use_cursor":"",    // 是否使用游标
-                    
-                    "use_cursor":true,
-                    // "cursor_id":"",      // 游标id
-
-                    // "can_combine_product":"", // 是否参加搭配
-                    // "lookup_option":{
-                    //     "need_name_affix":"", // 是否需要获取标题前后缀
-                    //     "need_title_limit":"" // 是否需要获取商品标题长度限制规则
-                    //     }, // op
-                    // "need_rectification_info":"", // 是否需要自动整改信息
-                    // "query_options":{
-                    //     "exist_audit_reject_suggest":"", // 只查询有驳回建议的商品
-                    //     "need_audit_reject_suggest":""  // 需要返回审核驳回建议信息
-                    // }// 查询定制参数
-
-                }
-                
-                // 合并参数
-                var ob = 0
-
-                while (ob < 3) {
-
-                    // 请求商品接口
-                    const res = await axios.post(API.AppSrtoreAPI.dou_product.list, data)
-                    
-                    console.log(res.data)
-
-                    const list = res.data.data.data; // 商品列表
-                    
-                    if(list.length >0){
-                        console.log(list[0].name)
-                        for(let i of list){formState.product_result_list.push(i.product_id)}
-                        ob= ob+3
-                    }else{
-                        ob= ob+3
-                    }
-
-                    var cursor_id = res.data.data.cursor_id
-                    console.log(cursor_id)
-                    data.cursor_id = cursor_id
-
-                }
-                
-                
-            }
-
-            master_get().then(()=>{
-                
-                console.log(formState.product_result_list.length)
-
-                formState.product_result_list = ref([...new Set(formState.product_result_list)]); // 去重
-                
-                // console.log('数组去重后：：：',formState.product_result_list.length)
-
-                formState.select_loading = false; // 查询按钮loading状态
-
-            })
 
 
-        },1000)
 
-    };
-
-    // 重置表单
-    const resetForm = () => {
-        first_formRef.value.resetFields();
-        formState.product_result_list = [];
-    };
 
     // 批量修改-操作方法
     const OptfunctionData = reactive({
@@ -619,9 +411,14 @@ export default defineComponent({
         tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
 
             let obj_list = res.data.data
+
             console.log(res)
+
             formState.options = formState.get_cate_list(obj_list) 
+
         })
+
+
         const first_Data = {
             "page":1,
             "page_size":3, 
@@ -630,7 +427,7 @@ export default defineComponent({
 
         tool.Http_.post(API.AppSrtoreAPI.batch.list, first_Data).then(res=>{
             
-            console.log('批量列表',res)
+            // console.log('批量列表',res)
             
             initLoading.value = false;
             
@@ -666,7 +463,7 @@ export default defineComponent({
 
         tool.Http_.post(API.AppSrtoreAPI.batch.list, get_more_data).then(res=>{
             
-            console.log(res)
+            // console.log(res)
 
             if(res.data.data == "None"){ // 请求数据为空
 
@@ -706,13 +503,8 @@ export default defineComponent({
       PAGEDATA,
 
       // 请求商品方法
-      first_formRef,
       formState,
-      resetForm,
-      onFinish,
-      loadData,
-      onCreateChange,
-      onupdateChange,
+
       
       // 操作方法
       OptfunctionData,
@@ -728,7 +520,7 @@ export default defineComponent({
 
     }
     }
-})
+}
 </script>
 <style scoped>
 .title_h{padding: 20px 0 10px 0; width: 100%;text-align: center;}

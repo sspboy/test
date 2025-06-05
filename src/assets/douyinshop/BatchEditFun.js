@@ -1,5 +1,4 @@
 //**批量修改js方法**//
-
 export class B_Fun {
 
     // 验证第一步查询数据
@@ -12,9 +11,14 @@ export class B_Fun {
             submit_obj.cate_name = Object.values(values.cate_name)
         }
 
-        // 状态信息
+        // 商品状态信息
         if(values.status!== null && values.status!== undefined){
             submit_obj.status = values.status 
+        }
+
+        // 商品审核信息
+        if(values.check_status!== null && values.check_status!== undefined){
+            submit_obj.check_status = values.check_status
         }
         
         // 创建时间
@@ -61,6 +65,7 @@ export class B_Fun {
         if(before_key !== '' && before_key !== undefined){
             title_obj.before_key = before_key
         }
+
         // 后缀验证
         if(after_key !== '' && after_key !== undefined){
             title_obj.after_key = after_key
@@ -110,6 +115,17 @@ export class B_Fun {
         return submit_obj;
 
     }
+
+    // 筛选回调商品：类目、
+    filter_product = (values, product_list) => {
+
+        const submit_obj = {};
+        
+        cate_name = []
+
+
+    }
+
 
 
 }
