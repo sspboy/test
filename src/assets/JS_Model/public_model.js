@@ -61,7 +61,7 @@ export class A_Patch{
         // 店铺信息
         douyinshop:{
             "list": "api/admin/shop/list",  //[post]列表
-                                                // [put]data 批量删除
+                                            // [put]data 批量删除
             "detaile": "api/admin/shop/",   // [get]+id详情
             "delete": "api/admin/shop/",    // [delete]+id删除
             "edit": "api/admin/shop/",      // [put]setting_data + id 传数据更新
@@ -112,6 +112,39 @@ export class A_Patch{
             "delete":"api/douyin/copylog/",
             "edit":"api/douyin/copylog/",
             "add":"api/douyin/copylog/add"
+        },
+        // 店铺信息
+        Shopinfo:{
+            "detaile":"api/douyin/shopinfo/"
+        },
+        // 素材接口
+        material:{
+            "list":"api/douyin/material/list",
+            "detaile":"api/douyin/material/getmaterialdetaile",
+            "delete":"api/douyin/material/",
+            "edit":"api/douyin/material/",
+            "add":"api/douyin/material/add"
+        },
+        // 上传商品图片
+        upload:{
+            "product_img":"api/douyin/material/uploadproductimage" 
+        },
+        // 抖音商品
+        dou_product:{   
+            "list":"api/douyin/product/list",       // 商品列表
+            "detaile":"api/douyin/product/detaile", // 商品详情
+            "delete":"api/douyin/product/del",      // 删除商品
+            "edit":"api/douyin/product/edit",       // 编辑商品
+            "cate":"api/douyin/product/shopcategory", // 获取商品分类
+            "freight":"api/douyin/product/freightid", // 获取运费模板
+            "addrule":"api/douyin/product/getpublishrule",// 商品发布规则
+            "audit":"api/douyin/product/auditlist",// 审批记录 
+        },
+        // 批量修改
+        batch:{
+            "add":"api/douyin/batchproduct/add",    // 添加
+            "list":"api/douyin/batchproduct/list",  // 列表
+            "detaile":"api/douyin/batchproduct/detaile/", // 详情
         }
 
 

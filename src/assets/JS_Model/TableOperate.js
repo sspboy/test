@@ -1,4 +1,4 @@
-// 公用方法开始
+// 公用方法开始【表格】
 // 引用外部方法
 import * as utils from '@/assets/JS_Model/public_model';// 公用路径方法
 const API = new utils.A_Patch()
@@ -1164,14 +1164,18 @@ export class TableOperate{
         // 过滤不用显示的字段
         resdata.colum.splice(1, 1)// 任务id
         resdata.colum.splice(1, 1)// 店铺id
-        resdata.colum.splice(2, 1)// 商品id
-        resdata.colum.splice(5, 1)// 主图列表
-        resdata.colum.splice(7, 1)// skulist
-        resdata.colum.splice(12, 1)// skumap
+        resdata.colum.splice(3, 1)// 商品id
+        resdata.colum.splice(8, 1)// 属性
         resdata.colum.splice(0, 1)// id
 
         for(let colums of resdata.colum){
 
+            // 主图
+            if(colums.field_name === "pic"){
+              colums['align'] = 'center'
+              colums['width'] = 50
+            }
+          
             // 店铺id
             if(colums.field_name === "shop_id"){
               colums['align'] = 'center'
@@ -1195,8 +1199,10 @@ export class TableOperate{
               colums['width'] = 160
             }
 
-            // 头图
-            if(colums.field_name === "top_pic"){
+
+
+            // 价格
+            if(colums.field_name === "price"){
               colums['align'] = 'center'
               colums['width'] = 60
             }
@@ -1218,37 +1224,24 @@ export class TableOperate{
             }
 
 
-            // 主图
-            if(colums.field_name === "pic"){
-              colums['align'] = 'center'
-              colums['width'] = 120
-              colums['customCell']=(record) => {
-                return {
-                  on: {
-                    click: (e) => {
-                      console.log(record)
-                    },
-                  },
-                };
-              }
-            }
+
 
             // 标题
             if(colums.field_name === "title"){
               colums['align'] = 'left'
-              colums['width'] = 220
+              colums['width'] = 120
             }
             
             // 规格
             if(colums.field_name === "sku"){
-              colums['align'] = 'center'
-              colums['width'] = 40
+              colums['align'] = 'left'
+              colums['width'] = 100
             }
             
             // 规格列表
             if(colums.field_name === "sku_list"){
               colums['align'] = 'center'
-              colums['width'] = 40
+              colums['width'] = 60
             }
             
             // 属性
@@ -1283,6 +1276,40 @@ export class TableOperate{
             
             // 规格地图
             if(colums.field_name === "skumap"){
+              colums['align'] = 'center'
+              colums['width'] = 80
+            }
+
+            // 减库存
+            if(colums.field_name === "reduce_type"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+            }
+
+            // 运费模板
+            if(colums.field_name === "freight_id"){
+              colums['align'] = 'center'
+              colums['width'] = 60
+              colums['customRender']=(text, record, index) => {
+                var res = CopyLog.List.get_freight_id(text.value)
+                return res
+              }
+            }
+
+            // 客服电话
+            if(colums.field_name === "mobile"){
+              colums['align'] = 'center'
+              colums['width'] = 80
+            }
+
+            // 提交方式
+            if(colums.field_name === "commit"){
+              colums['align'] = 'center'
+              colums['width'] = 80
+            }
+
+            // 商品类型
+            if(colums.field_name === "product_type"){
               colums['align'] = 'center'
               colums['width'] = 80
             }

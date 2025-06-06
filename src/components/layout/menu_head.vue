@@ -17,8 +17,8 @@
       </div>
 
         <div type="link" class="font_size_12 cursor" style="float: right; color: dimgray;margin: 6px 10px 0 0;"  @click="Login_out">
-        <LogoutOutlined style="margin: 0 3px;" />
-        退出
+          <LogoutOutlined style="margin: 0 3px;" />
+          退出
         </div>
 
 
@@ -48,32 +48,58 @@ export default defineComponent({
 
   // 接受父组件数据
   props:{
-    headdata:{
+    user_data:{
       type:Object // 数据类型效验
     }
   },
 
   setup(props){
+    
     const API = new utils.A_Patch()// 请求接口
+  
     const router = useRouter(); // 初始化路由方法
+    
     const store = useStore();// 共享数据
+    
     store.dispatch('member/get')
+
     const user_data = computed(()=>{
-      return store.state.member.message.user_data
+
+      if(store.state.member.message.user_data === 'NOT_Login_Power'){
+
+        router.push('/pleaselogin')// 权限提示页面 点击去登录
+
+        return {
+          brand_name:'',
+          id:''
+        }
+
+      }else{
+      
+        return store.state.member.message.user_data
+      
+      }
+    
     })
+
+    
 
     // 退出登录方法
     const Login_out = () => {
 
       axios.get(API.LoginAPI.url.loginout).then((res)=>{
-        console.log(res)
-        if(res.data === "login out True"){
-          router.push('/')  // 前端路由
-        }
-      })
 
+        // console.log(res)
+        
+        if(res.data === "login out True"){
+
+          router.push('/')  // 前端路由
+          
+        }
       
-      console.log('点击退出方法：注销后、进入login页面')
+      })
+      
+      // console.log('点击退出方法：注销后、进入login页面')
 
     }
 

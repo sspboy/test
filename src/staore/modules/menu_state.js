@@ -29,10 +29,12 @@ const getters = {
 
 /* Mutation 同步操作，对state中数据更新*/
 const mutations = {
+
     // 变更导航展开状态
     change:(state)=>{
         state.coll = !state.coll
     },
+    
     // 更新>详情
     detaile:(state, resdata)=>{
         state.message.detaile = resdata;
@@ -149,8 +151,10 @@ const actions = {
 
         }
     },
+
     // 查询菜单详情
     get:({ commit }, data)=>{
+
         try{
 
             let url = API.AdminAPI.menu.detaile + data.m_id
@@ -192,7 +196,7 @@ const actions = {
         try{
 
             let url = API.AdminAPI.menu.edit + m_id
-            console.log(url)
+            // console.log(url)
             axios.put(url, data).then((response)=>{
 
                 commit('update_state', response.data)

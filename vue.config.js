@@ -11,7 +11,11 @@ module.exports = defineConfig({
   devServer: {
     proxy: {
       '/api': {
+
         target: 'http://192.168.2.101:5000', // 你的后端服务地址
+
+        // target: 'http://192.168.3.122:5000',
+        // target: 'http://192.168.100.55:5000',
 
         changeOrigin: true,
         pathRewrite: {
@@ -19,14 +23,15 @@ module.exports = defineConfig({
         },
       },
     },
-
-
+    // target: 'http://192.168.100.34:5000',// 公司内网IP地址
+    // target: 'http://192.168.3.120:5000', // 公司本地后端服务地址
+    // target: 'http://172.17.57.178:5000', // aliyun后端服务地址
     //  ResizeObserver loop completed with undelivered notifications.报错
     client: {
 
       overlay: false
 
- },
+    },
   },
 
 })

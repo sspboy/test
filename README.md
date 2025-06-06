@@ -1,25 +1,7 @@
-# test
+# 胡思乱想
 
-## Project setup
-```
-npm install
-```
+VUE3前台
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+潇洒的第一次修改测试
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-"# test" 
+小改一下

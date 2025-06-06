@@ -13,7 +13,7 @@
                 @finishFailed="handleFinishFailed"
             >
 
-            <h4 style="margin: 5px 0 0 0;padding-right:24px;float:left;"><CopyOutlined style="margin-right: 6px;" />复制记录</h4>
+            <!-- <h4 style="margin: 5px 0 0 0;padding-right:24px;float:left;"><CopyOutlined style="margin-right: 6px;" />复制记录</h4> -->
 
             <a-form-item label="标题" name="title_key">
                 <a-input type="text" size="small" class="font_size_12" placeholder="输入标题关键字" v-model:value="formdata.title_key" style="width: 100px"/>
@@ -71,15 +71,17 @@
                 </a-select>
             </a-form-item>
 
+<<<<<<< HEAD
 <!--            <a-form-item name="range-picker" label="创建日期" v-bind="rangeConfig" >-->
 <!--                <a-range-picker size="small" v-model:value="formdata.select_time" value-format="YYYY-MM-DD" />-->
 <!--            </a-form-item>-->
 
+=======
+>>>>>>> 778e44502c5f20f58d839483faff34c77a6c2db9
             <a-form-item>
                 <a-button type="primary" size="small" style="font-size: 12px;float: right;margin-left: 6px;" @click="resh_condition" ghost>重置</a-button>
                 <a-button type="primary" size="small" style="font-size: 12px;float: right;" html-type="submit">查询</a-button>
             </a-form-item>
-
 
         </a-form>
         </a-col>
@@ -153,18 +155,18 @@ export default defineComponent({
 
             // load options lazily
             setTimeout(() => {
-            targetOption.loading = false;
-            targetOption.children = [
-                {
-                label: `${targetOption.label} Dynamic 1`,
-                value: 'dynamic1',
-                },
-                {
-                label: `${targetOption.label} Dynamic 2`,
-                value: 'dynamic2',
-                },
-            ];
-            options.value = [...options.value];
+                targetOption.loading = false;
+                targetOption.children = [
+                    {
+                    label: `${targetOption.label} Dynamic 1`,
+                    value: 'dynamic1',
+                    },
+                    {
+                    label: `${targetOption.label} Dynamic 2`,
+                    value: 'dynamic2',
+                    },
+                ];
+                options.value = [...options.value];
             }, 1000);
             
     
@@ -265,7 +267,6 @@ export default defineComponent({
 .ant-select-selection-item{font-size: 12px !important;}
 .ant-form-item-label label{font-size: 12px !important;}
 /**下拉表单字体大小设置**/
-.ant-input{border-radius: 4px;padding: 2px 2px 2px 6px;}
 .ant-picker-range{border-radius: 4px !important;}
 .ant-picker-range input{padding: 2px 1px !important;font-size: 12px !important;}
 </style>
