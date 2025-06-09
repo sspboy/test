@@ -182,104 +182,101 @@ export default defineComponent({
 
             // 为空则提示输入查询条件
 
+            setTimeout(()=>{
 
+                const result = []
 
-            // setTimeout(()=>{
+                async function master_get() {
 
-            //     const result = []
-
-            //     async function master_get() {
-
-            //         // 请求商品列表数据
-            //         let data = {
+                    // 请求商品列表数据
+                    let data = {
                         
-            //             "page":1,
+                        "page":1,
                         
-            //             "size":10,
+                        "size":10,
 
-            //             "status":0,         //  0-在线；1-下线；2-删除；
+                        "status":0,         //  0-在线；1-下线；2-删除；
                         
-            //             //"check_status":1,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
+                        //"check_status":1,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
 
-            //             //"product_type":0,   // 0-普通；1-新客商品；3-虚拟；6-玉石闪购；7-云闪购 ；127-其他类型；
+                        //"product_type":0,   // 0-普通；1-新客商品；3-虚拟；6-玉石闪购；7-云闪购 ；127-其他类型；
                         
-            //             // "start_time":"",    // 创建开始时间
-            //             // "end_time":"",      // 创建结束时间
+                        // "start_time":"",    // 创建开始时间
+                        // "end_time":"",      // 创建结束时间
                         
-            //             // "update_start_time":"",// 更新开始时间
-            //             // "update_end_time":"",// 更新结束时间
+                        // "update_start_time":"",// 更新开始时间
+                        // "update_end_time":"",// 更新结束时间
 
-            //             // "name":"",          // 标题模糊查询
-            //             // "product_id":"",    // 商品id个 
-            //             // "use_cursor":"",    // 是否使用游标
+                        // "name":"",          // 标题模糊查询
+                        // "product_id":"",    // 商品id个 
+                        // "use_cursor":"",    // 是否使用游标
                         
-            //             "use_cursor":true,
-            //             // "cursor_id":"",      // 游标id
+                        "use_cursor":true,
+                        // "cursor_id":"",      // 游标id
 
-            //             // "can_combine_product":"", // 是否参加搭配
-            //             // "lookup_option":{
-            //             //     "need_name_affix":"", // 是否需要获取标题前后缀
-            //             //     "need_title_limit":"" // 是否需要获取商品标题长度限制规则
-            //             //     }, // op
-            //             // "need_rectification_info":"", // 是否需要自动整改信息
-            //             // "query_options":{
-            //             //     "exist_audit_reject_suggest":"", // 只查询有驳回建议的商品
-            //             //     "need_audit_reject_suggest":""  // 需要返回审核驳回建议信息
-            //             // }// 查询定制参数
+                        // "can_combine_product":"", // 是否参加搭配
+                        // "lookup_option":{
+                        //     "need_name_affix":"", // 是否需要获取标题前后缀
+                        //     "need_title_limit":"" // 是否需要获取商品标题长度限制规则
+                        //     }, // op
+                        // "need_rectification_info":"", // 是否需要自动整改信息
+                        // "query_options":{
+                        //     "exist_audit_reject_suggest":"", // 只查询有驳回建议的商品
+                        //     "need_audit_reject_suggest":""  // 需要返回审核驳回建议信息
+                        // }// 查询定制参数
 
-            //         }
+                    }
                     
-            //         // 合并参数
-            //         var ob = 0
+                    // 合并参数
+                    var ob = 0
 
-            //         while (ob < 3) {
+                    while (ob < 3) {
 
-            //             // 请求商品接口
-            //             const res = await axios.post(API.AppSrtoreAPI.dou_product.list, data)
+                        // 请求商品接口
+                        const res = await axios.post(API.AppSrtoreAPI.dou_product.list, data)
                         
-            //             console.log(res.data)
+                        console.log(res.data)
 
-            //             const list = res.data.data.data; // 商品列表
+                        const list = res.data.data.data; // 商品列表
                         
-            //             if(list.length >0){
+                        if(list.length >0){
 
-            //                 console.log(list)
+                            console.log(list)
                         
-            //                 for(let i of list){formState.product_result_list.push(i.product_id)}
+                            for(let i of list){formState.product_result_list.push(i.product_id)}
                             
-            //                 ob= ob+3
+                            ob= ob+3
                         
-            //             }else{
+                        }else{
                         
-            //                 ob= ob+3
+                            ob= ob+3
                         
-            //             }
+                        }
 
-            //             var cursor_id = res.data.data.cursor_id
+                        var cursor_id = res.data.data.cursor_id
                         
-            //             console.log(cursor_id)
+                        console.log(cursor_id)
 
-            //             data.cursor_id = cursor_id;// 重置游标id
+                        data.cursor_id = cursor_id;// 重置游标id
 
-            //         }
+                    }
                     
+                }
+
+                master_get().then(()=>{
                     
-            //     }
+                    console.log(formState.product_result_list.length)
 
-            //     master_get().then(()=>{
+                    formState.product_result_list = ref([...new Set(formState.product_result_list)]); // 去重
                     
-            //         console.log(formState.product_result_list.length)
+                    // console.log('数组去重后：：：',formState.product_result_list.length)
 
-            //         formState.product_result_list = ref([...new Set(formState.product_result_list)]); // 去重
-                    
-            //         // console.log('数组去重后：：：',formState.product_result_list.length)
+                    formState.select_loading = false; // 查询按钮loading状态
 
-            //         formState.select_loading = false; // 查询按钮loading状态
-
-            //     })
+                })
 
 
-            // },1000)
+            },1000)
 
         };
 
