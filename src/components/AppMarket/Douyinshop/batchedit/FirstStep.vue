@@ -163,8 +163,6 @@ export default defineComponent({
 
             const submit_obj = B_Fun.verify_first_submit(values) // 验证表单字段是否为空或是否正确
 
-            console.log(submit_obj)
-
             // 验证提交表单是否为空
             if(JSON.stringify(submit_obj) === '{}'){
 
@@ -173,8 +171,17 @@ export default defineComponent({
 
             }else{
                 
-                // 验证表单字段是否为空或是否正确
                 props.data.select_loading = true;// 查询按钮loading状态
+
+                console.log(submit_obj)
+                submit_obj.page = 1;
+                submit_obj.size = 10;
+                submit_obj.status = 0;         //  0-在线；1-下线；2-删除；
+                submit_obj.use_cursor = true;
+
+
+
+
                 
             }
 
@@ -198,7 +205,6 @@ export default defineComponent({
 
                     "use_cursor":true,
 
-                    
                     //"check_status":1,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
 
                     //"product_type":0,   // 0-普通；1-新客商品；3-虚拟；6-玉石闪购；7-云闪购 ；127-其他类型；
@@ -287,6 +293,8 @@ export default defineComponent({
                         let check_status = i.check_status; // 审核状态
                         let create_time = i.create_time; // 创建时间
                         let update_time = i.update_time; // 更新时间
+                        // 符合条件的
+                        
 
                         props.data.product_result_list.push(i.product_id)
                     

@@ -2,18 +2,24 @@ import axios from "axios";// 网络请求方法
 import { message } from 'ant-design-vue';
 
     // 添加响应拦截器
-    axios.interceptors.response.use(function (response) {
-        // 对响应数据做点什么
-        // 接口错误
-        // 权限错误
-        // cookie过期
-        
-        // console.log('响应拦截器')
-        return response;
-    }, function (error) {
-        // 对响应错误做点什么
-        return Promise.reject(error);
-    });
+axios.interceptors.response.use(function (response) {
+    // 对响应数据做点什么
+    // 接口错误
+    // 权限错误
+    // cookie过期
+    
+    // console.log('响应拦截器')
+    // console.log(response)
+    if(response.data == "NOT_Login_Power"){
+        message.error('未登录或登录过期')
+        window.location.href = '/login'
+    }
+
+    return response;
+}, function (error) {
+    // 对响应错误做点什么
+    return Promise.reject(error);
+});
 
 
   export class TOOL{
