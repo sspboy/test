@@ -76,7 +76,15 @@
 
                     <a-button size="small" style="font-size: 12px;" @click="resetForm">重置</a-button>
 
-                    <div style="font-size: 12px;">已选择商品 {{ props.data.product_result_list.length }} 个</div>
+                    <div style="font-size: 12px;padding: 4px 0 0 10px;">
+
+                        已选择商品
+                        
+                        <a-spin :spinning="props.data.select_loading" :indicator="indicator" />
+
+                        <span v-if="!props.data.select_loading">{{ props.data.product_result_list.length }} </span> 个
+
+                    </div>
                 
                 </a-space>
             </a-form-item>
@@ -87,7 +95,9 @@
 
 <script> 
 
-import { defineComponent,reactive,ref,computed } from 'vue';
+import { defineComponent,ref,computed,h} from 'vue';
+import { LoadingOutlined } from '@ant-design/icons-vue';
+
 import axios from 'axios';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as BatchEdit from '@/assets/douyinshop/BatchEditFun';
@@ -172,85 +182,35 @@ export default defineComponent({
             }else{
                 
                 props.data.select_loading = true;// 查询按钮loading状态
+                props.data.product_result_list = [] // 清空结果列表
 
-                console.log(submit_obj)
                 submit_obj.page = 1;
                 submit_obj.size = 10;
-                submit_obj.status = 0;         //  0-在线；1-下线；2-删除；
                 submit_obj.use_cursor = true;
 
+                console.log(submit_obj)
+
+                setTimeout(()=>{
+
+                    loadproductData(submit_obj).then(()=>{
+                        
+                        // console.log(props.data.product_result_list.length)
+
+                        props.data.product_result_list = ref([...new Set(props.data.product_result_list)]); // 去重
+                        
+                        // console.log('数组去重后：：：',formState.product_result_list.length)
+
+                        props.data.select_loading = false; // 查询按钮loading状态
+
+                        // 验证表单字段是否为空或是否正确
+                    })
 
 
+                },1000)
 
-                
             }
 
-
-            // 不为空请求接口
-
-            // 为空则提示输入查询条件
-
-            setTimeout(()=>{
-
-                const result = []
-
-                // 请求商品列表数据
-                let data = {
-                    
-                    "page":1,
-                    
-                    "size":10,
-
-                    "status":0,         //  0-在线；1-下线；2-删除；
-
-                    "use_cursor":true,
-
-                    //"check_status":1,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
-
-                    //"product_type":0,   // 0-普通；1-新客商品；3-虚拟；6-玉石闪购；7-云闪购 ；127-其他类型；
-                    
-                    // "start_time":"",    // 创建开始时间
-
-                    // "end_time":"",      // 创建结束时间
-                    
-                    // "update_start_time":"",// 更新开始时间
-
-                    // "update_end_time":"",// 更新结束时间
-
-                    // "name":"",          // 标题模糊查询
-                    // "product_id":"",    // 商品id个 
-                    // "use_cursor":"",    // 是否使用游标
-                    
-                    // "cursor_id":"",      // 游标id
-
-                    // "can_combine_product":"", // 是否参加搭配
-                    // "lookup_option":{
-                    //     "need_name_affix":"", // 是否需要获取标题前后缀
-                    //     "need_title_limit":"" // 是否需要获取商品标题长度限制规则
-                    //     }, // op
-                    // "need_rectification_info":"", // 是否需要自动整改信息
-                    // "query_options":{
-                    //     "exist_audit_reject_suggest":"", // 只查询有驳回建议的商品
-                    //     "need_audit_reject_suggest":""  // 需要返回审核驳回建议信息
-                    // }// 查询定制参数
-
-                }
-
-                loadproductData(data).then(()=>{
-                    
-                    console.log(props.data.product_result_list.length)
-
-                    props.data.product_result_list = ref([...new Set(props.data.product_result_list)]); // 去重
-                    
-                    // console.log('数组去重后：：：',formState.product_result_list.length)
-
-                    props.data.select_loading = false; // 查询按钮loading状态
-
-                    // 验证表单字段是否为空或是否正确
-                })
-
-
-            },1000)
+            
 
         };
 
@@ -271,21 +231,24 @@ export default defineComponent({
                 // 请求商品接口
                 const res = await axios.post(API.AppSrtoreAPI.dou_product.list, data)
                 
-                console.log(res.data)
+                // console.log(res.data)
 
                 const list = res.data.data.data; // 商品列表
                 
                 if(list.length >0){
 
-                    console.log(list)
+                    // console.log(list)
                 
                     for(let i of list){
                         
                         console.log(i.category_detail)
                         let detaile = i.category_detail;
-                        let first_cid = detaile.first_cid; // 一级分类id
-                        let second_cid = detaile.second_cid; // 二级分类id
-                        let third_cid = detaile.third_cid; // 三级分类id
+
+                        let first_cid = detaile.first_cid;      // 一级分类id
+                        let second_cid = detaile.second_cid;    // 二级分类id
+                        let third_cid = detaile.third_cid;      // 三级分类id
+                        let fourth_cid = detaile.fourth_cid;    // 四级分类id
+
                         let pic_url = i.pic_url; // 商品图片
                         let title = i.title; // 商品标题
                         let product_id = i.product_id; // 商品id
@@ -293,15 +256,22 @@ export default defineComponent({
                         let check_status = i.check_status; // 审核状态
                         let create_time = i.create_time; // 创建时间
                         let update_time = i.update_time; // 更新时间
-                        // 符合条件的
-                        
 
+                        // 条件 有分类要求
+                        if(data.cate_name.length > 0){
+                            let cate_name = data.cate_name;
+                        }else{
+                        // 没有分类要求
+
+                        }
+                        
                         props.data.product_result_list.push(i.product_id)
-                    
+
+
                     
                     }
                     
-                    ob= ob+3 // 重置游标id
+                    ob= ob+1 // 重置游标id
                 
                 }else{
                 
@@ -311,20 +281,26 @@ export default defineComponent({
 
                 var cursor_id = res.data.data.cursor_id
                 
-                console.log(cursor_id)
+                // console.log(cursor_id)
 
                 data.cursor_id = cursor_id;// 重置游标id
 
             }
         }
 
-
-        // 过滤数据方法：
+        // 商品条数loading加载
+        const indicator = h(LoadingOutlined, {
+            style: {
+                fontSize: '12px',
+            },
+            spinning:false
+        });
 
     
         return {
             first_formRef,
             props,
+            indicator,
             resetForm,
             onFinish,
             loadData,

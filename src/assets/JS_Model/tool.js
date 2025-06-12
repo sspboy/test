@@ -12,7 +12,7 @@ axios.interceptors.response.use(function (response) {
     // console.log(response)
     if(response.data == "NOT_Login_Power"){
         message.error('未登录或登录过期')
-        window.location.href = '/login'
+        window.location.href = '/'
     }
 
     return response;

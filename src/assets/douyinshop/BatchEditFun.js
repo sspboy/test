@@ -7,41 +7,57 @@ export class B_Fun {
         const submit_obj = {};
 
         // 分类
-        if(values.cate_name!== null && values.cate_name!== undefined){
+        if(values.cate_name!== null && values.cate_name!== undefined && values.cate_name!== ""){
             submit_obj.cate_name = Object.values(values.cate_name)
+        }else{
+            delete submit_obj.cate_name
         }
 
         // 商品状态信息
-        if(values.status!== null && values.status!== undefined){
-            submit_obj.status = values.status 
+        if(values.status!== null && values.status!== undefined && values.status!== ""){
+            submit_obj.status = values.status
+        }else{
+            delete submit_obj.status;
         }
 
         // 商品审核信息
-        if(values.check_status!== null && values.check_status!== undefined){
+        if(values.check_status!== null && values.check_status!== undefined && values.check_status!== ""){
             submit_obj.check_status = values.check_status
+        }else{
+            delete submit_obj.check_status;
         }
+
         
         // 创建时间
-        if(values.create_time !== null && values.create_time !== undefined){
-            console.log('创建时间',values.create_time[0].format('YYYY-MM-DD HH:mm:ss'),values.create_time[1].format('YYYY-MM-DD HH:mm:ss'))
-            submit_obj.create_time = {
-                start_time:values.create_time[0].format('YYYY-MM-DD HH:mm:ss'),
-                end_time:values.create_time[1].format('YYYY-MM-DD HH:mm:ss')
-            }
+        if(values.create_time !== null && values.create_time !== undefined && values.create_time !== ""){
+            // console.log('创建时间',values.create_time[0].format('YYYY-MM-DD HH:mm:ss'),values.create_time[1].format('YYYY-MM-DD HH:mm:ss'))
+            // submit_obj.start_time = values.create_time[0].format('YYYY-MM-DD HH:mm:ss');
+            // submit_obj.end_time = values.create_time[1].format('YYYY-MM-DD HH:mm:ss');
+            submit_obj.start_time = values.create_time[0].unix();
+            submit_obj.end_time = values.create_time[1].unix();
+            
+        }else{
+            delete submit_obj.start_time
+            delete submit_obj.end_time
         }
 
         // 更新时间
-        if(values.update_time !== null && values.update_time !== undefined){
-            console.log('创建时间',values.update_time[0].format('YYYY-MM-DD HH:mm:ss'),values.update_time[1].format('YYYY-MM-DD HH:mm:ss'))
-            submit_obj.update_time = {
-                start_time:values.update_time[0].format('YYYY-MM-DD HH:mm:ss'),
-                end_time:values.update_time[1].format('YYYY-MM-DD HH:mm:ss') 
-            }
+        if(values.update_time !== null && values.update_time !== undefined && values.update_time !== ""){
+            // console.log('创建时间',values.update_time[0].format('YYYY-MM-DD HH:mm:ss'),values.update_time[1].format('YYYY-MM-DD HH:mm:ss'))
+            // submit_obj.update_start_time = values.update_time[0].format('YYYY-MM-DD HH:mm:ss'),
+            // submit_obj.update_end_time = values.update_time[1].format('YYYY-MM-DD HH:mm:ss')
+            submit_obj.update_start_time = values.update_time[0].unix();
+            submit_obj.update_end_time = values.update_time[1].unix();
+        }else{
+            delete submit_obj.update_start_time
+            delete submit_obj.update_end_time
         }
 
         // 标题关键字
-        if(values.title_key!== null && values.title_key!== undefined){
-            submit_obj.title_key = values.title_key
+        if(values.title_key!== null && values.title_key!== undefined && values.title_key!== ""){
+            submit_obj.name = values.title_key
+        }else{
+            delete submit_obj.name
         }
 
         return submit_obj;
@@ -117,14 +133,46 @@ export class B_Fun {
     }
 
     // 筛选回调商品：类目、
-    filter_product = (values, product_list) => {
+    filter_product = (values, product_detaile) => {
 
         const submit_obj = {};
-        
-        cate_name = []
 
+        // 分类筛选判断
+        var cate_name = values.cate_name;
+
+        var detaile_cate_list = []
+        let first_cid = product_detaile.first_cid           // 一级分类
+        let second_cid = product_detaile.second_cid         // 二级分类
+        let third_cid = product_detaile.third_cid           // 三级分类
+        let fourth_cid = product_detaile.fourth_cid         // 四级分类
+
+        if(first_cid !== 0){
+            detaile_cate_list.push(first_cid)
+        }
+        if(second_cid !== 0){
+            detaile_cate_list.push(second_cid)
+        }
+        if(third_cid !== 0){
+            detaile_cate_list.push(third_cid)
+        }
+        if(fourth_cid !== 0){
+            detaile_cate_list.push(fourth_cid)
+        }
+
+        if(cate_name.length === 0){
+            
+            return true
+
+        }else{
+
+            return false
+
+        }
 
     }
+
+
+
 
 
 
