@@ -66,7 +66,6 @@ export class B_Fun {
     // 验证第二步操作方法数据
     verify_second_submit = (values) => {
 
-        // console.log(values)
         const submit_obj = {};// 提交数据
         const title_obj = {}; // 标题数据
 
@@ -89,7 +88,6 @@ export class B_Fun {
 
         // 目标关键字验证
         if(target_key !== '' && target_key !== undefined){
-
             title_obj.target_key = target_key
         }
 
@@ -133,18 +131,14 @@ export class B_Fun {
     }
 
     // 筛选回调商品：类目、
-    filter_product = (values, product_detaile) => {
+    filter_product = (values, category_detail) => {
 
-        const submit_obj = {};
-
-        // 分类筛选判断
-        var cate_name = values.cate_name;
-
+        var cate_name = values.cate_name;// 分类筛选判断
         var detaile_cate_list = []
-        let first_cid = product_detaile.first_cid           // 一级分类
-        let second_cid = product_detaile.second_cid         // 二级分类
-        let third_cid = product_detaile.third_cid           // 三级分类
-        let fourth_cid = product_detaile.fourth_cid         // 四级分类
+        let first_cid = category_detail.first_cid           // 一级分类
+        let second_cid = category_detail.second_cid         // 二级分类
+        let third_cid = category_detail.third_cid           // 三级分类
+        let fourth_cid = category_detail.fourth_cid         // 四级分类
 
         if(first_cid !== 0){
             detaile_cate_list.push(first_cid)
@@ -159,14 +153,14 @@ export class B_Fun {
             detaile_cate_list.push(fourth_cid)
         }
 
-        if(cate_name.length === 0){
-            
+        if(cate_name == undefined){ // 没有分类选择
             return true
-
         }else{
-
-            return false
-
+            if(cate_name.join() == detaile_cate_list.join()){ // 分类命中
+                return true
+            }else{
+                return false
+            }
         }
 
     }

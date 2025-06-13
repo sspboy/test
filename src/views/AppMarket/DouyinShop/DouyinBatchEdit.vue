@@ -295,7 +295,7 @@ export default {
             {value:1,label:'下线'},
             {value:2,label:'删除'}
         ]),
-        
+
         // 审核下拉选项列表
         check_status_list:ref([
             {value:3,label:'审核通过'},

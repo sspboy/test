@@ -120,7 +120,8 @@ export default defineComponent({
     },
 
     setup(props, ctx) {
-        
+
+        const moment = require('moment');       // 时间戳转换
         const tool = new TOOL.TOOL()            // 工具方法
         const API = new utils.A_Patch()         // 请求接口地址合集
         const B_Fun = new BatchEdit.B_Fun()     // 批量修改方法
@@ -221,7 +222,7 @@ export default defineComponent({
         };
 
         // 查询数据方法
-        const  loadproductData = async(data) => {
+        const loadproductData = async(data) => {
             
             // 合并参数
             var ob = 0
@@ -236,39 +237,37 @@ export default defineComponent({
                 const list = res.data.data.data; // 商品列表
                 
                 if(list.length >0){
-
-                    // console.log(list)
                 
                     for(let i of list){
                         
-                        console.log(i.category_detail)
-                        let detaile = i.category_detail;
+                        // console.log(i.category_detail)
+                        let category_detail = i.category_detail;
 
-                        let first_cid = detaile.first_cid;      // 一级分类id
-                        let second_cid = detaile.second_cid;    // 二级分类id
-                        let third_cid = detaile.third_cid;      // 三级分类id
-                        let fourth_cid = detaile.fourth_cid;    // 四级分类id
+                        let first_cid = category_detail.first_cid;      // 一级分类id
+                        let second_cid = category_detail.second_cid;    // 二级分类id
+                        let third_cid = category_detail.third_cid;      // 三级分类id
+                        let fourth_cid = category_detail.fourth_cid;    // 四级分类id
 
-                        let pic_url = i.pic_url; // 商品图片
-                        let title = i.title; // 商品标题
-                        let product_id = i.product_id; // 商品id
-                        let status = i.status; // 商品状态
-                        let check_status = i.check_status; // 审核状态
-                        let create_time = i.create_time; // 创建时间
-                        let update_time = i.update_time; // 更新时间
+                        let pic_url = i.pic_url;                // 商品图片
+                        let title = i.title;                    // 商品标题
+                        let product_id = i.product_id;          // 商品id
+                        let status = i.status;                  // 商品状态
+                        let check_status = i.check_status;      // 审核状态
+                        let create_time = i.create_time;        // 创建时间
+                        let update_time = i.update_time;        // 更新时间
 
                         // 条件 有分类要求
-                        if(data.cate_name.length > 0){
-                            let cate_name = data.cate_name;
-                        }else{
-                        // 没有分类要求
+                        var _res = B_Fun.filter_product(data, category_detail)
 
+                        if(_res){
+
+                            // let formattedDate = moment.unix(i.create_time).format('YYYY-MM-DD HH:mm:ss');
+                            
+                            // console.log(formattedDate)
+
+                            props.data.product_result_list.push(i.product_id)
                         }
-                        
-                        props.data.product_result_list.push(i.product_id)
 
-
-                    
                     }
                     
                     ob= ob+1 // 重置游标id
