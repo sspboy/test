@@ -15,6 +15,10 @@ axios.interceptors.response.use(function (response) {
         window.location.href = '/'
     }
 
+    if(response.data.sub_code == "isv.invalid_ip"){
+        message.error('IP被限制')
+    }
+
     return response;
 }, function (error) {
     // 对响应错误做点什么

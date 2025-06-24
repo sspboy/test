@@ -2,7 +2,7 @@ const { defineConfig } = require('@vue/cli-service')
 
 module.exports = defineConfig({
 
-  transpileDependencies: true,
+  transpileDependencies: [],
 
   // 关闭eslint
   lintOnSave: false,

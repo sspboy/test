@@ -1,57 +1,62 @@
 <template>
-
-<a-form
-    ref="formRef"
-    name="custom-validation"
-    :model="formState"
-    :wrapper-col="{ span: 24 }"
-    :rules="rules"
-    autocomplete="off"
-    @finish="onFinish"
-    @finishFailed="onFinishFailed"
-    style="width: 280px; margin: 14% auto;"
->
-    <div class="logo"><img src="../assets/logo.png" height="106" width="100"/></div>
-
-     <a-divider style="color: darkgray;font-size: 12px;">Hi~欢迎回来！</a-divider>
-
-    <!--用户名称-->
-  <a-form-item
-      class="font_size_12"
-      name="username"
-      tooltip="y"
+<div class="backall">
+    <a-form
+        ref="formRef"
+        name="custom-validation"
+        :model="formState"
+        :wrapper-col="{ span: 24 }"
+        :rules="rules"
+        autocomplete="off"
+        @finish="onFinish"
+        @finishFailed="onFinishFailed"
+        class="loginbox"
     >
-      <a-input v-model:value="formState.username" type="username" @change="set_username_state" placeholder="输入用户名" class="font_size_12">
-        <template #prefix><UserOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
-      </a-input>
-    </a-form-item>
+        <div class="logo"><img src="../assets/logo.png" height="106" width="100"/></div>
+
+        <a-divider style="color: darkgray;font-size: 12px;">Hi~欢迎回来！</a-divider>
+
+        <!--用户名称-->
+        <a-form-item
+            class="font_size_12"
+            name="username"
+            tooltip="y"
+          >
+          <a-input v-model:value="formState.username" type="username" @change="set_username_state" placeholder="输入用户名" class="font_size_12">
+            <template #prefix><UserOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+          </a-input>
+        </a-form-item>
 
 
-    <!--密码-->
-    <a-form-item
-      name="password"
-      class="font_size_12"
-    >
-       <a-input-password v-model:value="formState.password" type="password" @change="set_username_state" placeholder="输入密码" class="site-form-item-icon font_size_12">
-        <template #prefix><LockOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
-       </a-input-password>
-    </a-form-item>
+        <!--密码-->
+        <a-form-item
+          name="password"
+          class="font_size_12"
+        >
+          <a-input-password v-model:value="formState.password" type="password" @change="set_username_state" placeholder="输入密码" class="site-form-item-icon font_size_12">
+            <template #prefix><LockOutlined style="color: rgba(0, 0, 0, 0.25)" /></template>
+          </a-input-password>
+        </a-form-item>
 
 
-    <!--记住我-->
-    <a-form-item name="remember" :wrapper-col="{span: 24}" >
-      <a-checkbox v-model:checked="formState.remember" style="font-size: 12px;">记住我</a-checkbox>
-<!--      <div class="font_size_12">{{ u_tips }}</div>-->
-    </a-form-item>
+        <!--记住我-->
+        <a-form-item name="remember" :wrapper-col="{span: 24}" style="padding-left: 2px;" >
+          <a-checkbox v-model:checked="formState.remember" style="font-size: 12px;">记住我</a-checkbox>
+          <!--<div class="font_size_12">{{ u_tips }}</div>-->
+        </a-form-item>
 
 
-    <!--提交按钮-->
-    <a-form-item :wrapper-col="{ span: 24 }" class="font_size_12">
-      <a-button type="primary" html-type="submit" style="width: 100%;" class="font_size_12">登录</a-button>
-    </a-form-item>
+        <!--提交按钮-->
+        <a-form-item :wrapper-col="{ span: 24 }" class="font_size_12">
+          <a-button type="primary" html-type="submit" style="width: 100%;" class="font_size_12">登录</a-button>
+        </a-form-item>
 
-  </a-form>
-
+    </a-form>
+</div>
+<div class="g-bg">
+    <div class="g-polygon-1"></div>
+    <div class="g-polygon-2"></div>
+    <div class="g-polygon-3"></div>
+</div>
 </template>
 
 
@@ -217,6 +222,69 @@ export default {
 </script>
 
 <style scoped>
+.backall{position: fixed;z-index: 10000;width: 100%;}
 .logo{width: 100px;height: 100px;background-color: aliceblue; margin: 25px auto;border-radius: 6px;text-align: center;}
+.loginbox{
+  width: 280px;
+  margin: 10% auto;
+  border: 1px rgba(255, 255, 255, 0.5) solid;
+  padding: 18px;
+  border-radius: 6px;
+  background: #fff;
+  backdrop-filter: blur(10px);/*模糊*/
+  background-color: rgba(255, 255, 255, 0.048); /* 背景色半透明 */
+  box-shadow: 
+            1px 0px 2px 1px rgba(230, 230, 230, 0.5), /* 第一个阴影 */
+            -2px -1px 4px 1px rgba(219, 219, 219, 0.3), /* 第二个阴影 */
+            0px 10px 10px 0px rgba(123, 152, 172, 0.3); /* 第二个阴影 */
+}
 
+.g-bg {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+.g-bg > div {
+        position: absolute;
+        opacity: .5;
+}
+.g-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    backdrop-filter: blur(150px);
+    z-index: 1;
+}
+.g-polygon-1 {
+    bottom: 100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 714px;
+    height: 390px;
+    background: linear-gradient(#ebf8f6, #99f1fd);
+    clip-path: polygon(0 10%, 30% 0, 100% 40%, 70% 100%, 20% 90%);
+}
+
+.g-polygon-2 {
+    bottom: 0px;
+    left: 30%;
+    transform: translate(-50%, 0);
+    width: 1000px;
+    height: 450px;
+    background: linear-gradient(-36deg, #E950D1, #f980D9);
+    clip-path: polygon(10% 0, 100% 70%, 100% 100%, 20% 90%);
+}
+
+.g-polygon-3 {
+    bottom: 0px;
+    left: 70%;
+    transform: translate(-50%, 0);
+    width: 1000px;
+    height: 450px;
+    background: rgba(87, 80, 233);
+    clip-path: polygon(80% 0, 100% 70%, 100% 100%, 20% 90%);
+}
 </style>
