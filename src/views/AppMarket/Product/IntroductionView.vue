@@ -1,6 +1,8 @@
 <template>
+
   <!--内容部分 菜单 右侧列表 开始-->
   <a-layout style="height: 100vh;width: 100vw;">
+
     <!--head 导航组件  开始-->
     <menu_head />
     <!--head 导航组件  结束-->
@@ -16,46 +18,91 @@
 
       <a-layout-content class="content_border" >
 
+          <div style="overflow-y:auto;" :style="{ background: '#fff', height: innerHeight + 'px'}">
 
-
-          <div style="overflow-y: scroll;" :style="{ background: '#fff', padding: '0 0 100px 0', height: innerHeight+'px'}">
-
-            <div style="width: 100%;clear: both;">
-              <!-- <a-typography>
-                <h4>商品复制</h4>
-              </a-typography> -->
-            </div>
-            
-              <a-card :style="cardStyle" :body-style="{ padding: 0, overflow: 'hidden' }">
+              <!--卡片1-->
+              <a-card class="cardStyle" :body-style="{ padding: 0, overflow: 'hidden' }">
                   <a-flex justify="space-between">
-                    <img
-                      alt="avatar"
-                      src="../../../assets/keji.jpg"
-                      :style="imgStyle"
-                    />
-                    <a-flex vertical align="flex-end" justify="space-between" :style="{ padding: '32px' }">
+                    
+                    <img alt="avatar" src="../../../assets/keji.jpg" class="imgStyle"/>
+
+                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
                       <a-typography>
-                        <a-typography-title :level="3">
-                          “手动复制 边看边采集 不限制数量 ”
-                        </a-typography-title>
-                        <a-typography-paragraph>
+                        <a-typography-title class="cardTitle">科技改变生活</a-typography-title>
+                        <a-typography-paragraph class="cardText">
                         每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
                         </a-typography-paragraph>
                       </a-typography>
-                      <div>
-                        <a-button type="primary" href="#" size="small" target="_blank" style="font-size: 12px;margin-right: 10px;padding-top: 2px;">下载插件</a-button>
-                        <a-button type="primary" href="#" size="small" target="_blank" style="font-size: 12px;margin-right: 10px;padding-top: 2px;">安装教程</a-button>
-                        <a-button type="primary" href="#" size="small" target="_blank" style="font-size: 12px;margin-right: 10px;padding-top: 2px;">如何使用</a-button>
-                      </div>
-
-
                     </a-flex>
+
                   </a-flex>
               </a-card>
 
-            </div>
+              <!--卡片2-->
+              <a-card class="cardStyle" :body-style="{ padding: 0, overflow: 'hidden' }">
+                  <a-flex justify="space-between">
+                    
+                    <img alt="avatar" src="../../../assets/keji.jpg" class="imgStyle"/>
 
+                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
+                      <a-typography>
+                        <a-typography-title class="cardTitle">科技改变生活</a-typography-title>
+                        <a-typography-paragraph class="cardText">
+                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        </a-typography-paragraph>
+                      </a-typography>
+                    </a-flex>
+
+                  </a-flex>
+              </a-card>
+
+              <!--卡片3-->
+              <a-card class="cardStyle" :body-style="{ padding: 0, overflow: 'hidden' }">
+                  <a-flex justify="space-between">
+                    
+                    <img alt="avatar" src="../../../assets/keji.jpg" class="imgStyle"/>
+
+                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
+                      <a-typography>
+                        <a-typography-title class="cardTitle">科技改变生活</a-typography-title>
+                        <a-typography-paragraph class="cardText">
+                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        </a-typography-paragraph>
+                      </a-typography>
+                    </a-flex>
+
+                  </a-flex>
+              </a-card>
+
+              <!--卡片3-->
+              <a-card class="cardStyle" :body-style="{ padding: 0, overflow: 'hidden' }">
+                  <a-flex justify="space-between">
+                    
+                    <img alt="avatar" src="../../../assets/keji.jpg" class="imgStyle"/>
+
+                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
+                      <a-typography>
+                        <a-typography-title class="cardTitle">科技改变生活</a-typography-title>
+                        <a-typography-paragraph class="cardText">
+                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        </a-typography-paragraph>
+                      </a-typography>
+                    </a-flex>
+
+                  </a-flex>
+              </a-card>
+
+          </div>
       </a-layout-content>
+
+      <!--内容右侧-->
+      <a-layout-sider style="background-color: aliceblue;" width='300px'>
+
+        <div>会员信息</div>
+
+      </a-layout-sider>
+
+
 
       </a-layout>
 
@@ -109,30 +156,19 @@ export default {
         })
 
       })
-        
-      const cardStyle = {
-          width: '620px',
-          float:'left',
-          marginRight: '2%',
-
-        };
-
-      const imgStyle = {
-          display: 'block',
-          width: '273px',
-      };
 
         return{
           PAGEDATA,
           store,
-          cardStyle,
-          imgStyle,
           innerHeight
         }
     },
 }
 </script>
 
-<style>
-
+<style scoped>
+.cardStyle{width: 320px;height: 84px;float: left;margin: 1% 1% 0 0;}
+.imgStyle{display:block;margin: 5px 0 0 5px;height: 72px;width: 72px;border-radius: 6px;}
+.cardTitle{font-size: 14px;margin: 0 0 6px 0;}
+.cardText{font-size: 12px;line-height: 18px;}
 </style>

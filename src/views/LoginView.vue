@@ -52,11 +52,40 @@
 
     </a-form>
 </div>
-<div class="g-bg">
-    <div class="g-polygon-1"></div>
-    <div class="g-polygon-2"></div>
-    <div class="g-polygon-3"></div>
-</div>
+
+<div class="g-bg"></div>
+<css-doodle>
+
+    :doodle {
+      @grid: 1x20 /100vw 100vh;
+    }
+    @place-cell: center;
+    width: @rand(40vmin, 80vmin);
+    height: @rand(40vmin, 80vmin);
+    transform: translate(@rand(-200%, 200%), @rand(-60%, 60%)) scale(@rand(.8, 1.8)) skew(@rand(45deg));
+    clip-path: polygon(
+      @r(0, 30%) @r(0, 50%), 
+      @r(30%, 60%) @r(0%, 30%), 
+      @r(60%, 100%) @r(0%, 50%), 
+      @r(60%, 100%) @r(50%, 100%), 
+      @r(30%, 60%) @r(60%, 100%),
+      @r(0, 30%) @r(60%, 100%)
+    );
+    background: @pick(#f44336, #e91e63, #9c27b0, #673ab7, #3f51b5, #60569e, #e6437d, #ebbf4d, #00bcd4, #03a9f4, #2196f3, #009688, #5ee463, #f8e645, #ffc107, #ff5722, #43f8bf);
+    opacity: @rand(.3, .8);
+    position: relative;
+    top: @rand(-80%, 80%);
+    left: @rand(-80%, 80%);
+    animation: colorChange @rand(6.1s, 16.1s) infinite @rand(-.5s, -2.5s) linear alternate;
+    @keyframes colorChange {
+      100% {
+        left: 0;
+        top: 0;
+        filter: hue-rotate(360deg);
+      }
+    }
+</css-doodle>
+
 </template>
 
 
@@ -65,7 +94,7 @@ import axios from 'axios';
 import * as utils from '@/assets/JS_Model/public_model';
 
 import { useRouter } from "vue-router"; // 导入路由
-import { reactive,ref } from 'vue';
+import { reactive,ref} from 'vue';
 import { UserOutlined,LockOutlined,} from '@ant-design/icons-vue';
 import {useStore} from "vuex";
 
@@ -223,68 +252,27 @@ export default {
 
 <style scoped>
 .backall{position: fixed;z-index: 10000;width: 100%;}
-.logo{width: 100px;height: 100px;background-color: aliceblue; margin: 25px auto;border-radius: 6px;text-align: center;}
+.logo{width: 100px;height: 100px;background-color: aliceblue; margin:25px auto;border-radius:6px;text-align:center;}
 .loginbox{
-  width: 280px;
+  width: 300px;
   margin: 10% auto;
   border: 1px rgba(255, 255, 255, 0.5) solid;
   padding: 18px;
-  border-radius: 6px;
+  border-radius: 46px;
   background: #fff;
   backdrop-filter: blur(10px);/*模糊*/
   background-color: rgba(255, 255, 255, 0.048); /* 背景色半透明 */
-  box-shadow: 
+  box-shadow:
             1px 0px 2px 1px rgba(230, 230, 230, 0.5), /* 第一个阴影 */
             -2px -1px 4px 1px rgba(219, 219, 219, 0.3), /* 第二个阴影 */
-            0px 10px 10px 0px rgba(123, 152, 172, 0.3); /* 第二个阴影 */
-}
+            0px 5px 10px 0px rgba(123, 152, 172, 0.3); /* 第三个阴影 */}
 
 .g-bg {
-    position: relative;
-    width: 100vw;
+    position: fixed;
+    width: 100%;
     height: 100vh;
-}
-.g-bg > div {
-        position: absolute;
-        opacity: .5;
-}
-.g-bg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    backdrop-filter: blur(150px);
-    z-index: 1;
-}
-.g-polygon-1 {
-    bottom: 100px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    width: 714px;
-    height: 390px;
-    background: linear-gradient(#ebf8f6, #99f1fd);
-    clip-path: polygon(0 10%, 30% 0, 100% 40%, 70% 100%, 20% 90%);
+    backdrop-filter: blur(200px);/*模糊*/
+    z-index: 100;
 }
 
-.g-polygon-2 {
-    bottom: 0px;
-    left: 30%;
-    transform: translate(-50%, 0);
-    width: 1000px;
-    height: 450px;
-    background: linear-gradient(-36deg, #E950D1, #f980D9);
-    clip-path: polygon(10% 0, 100% 70%, 100% 100%, 20% 90%);
-}
-
-.g-polygon-3 {
-    bottom: 0px;
-    left: 70%;
-    transform: translate(-50%, 0);
-    width: 1000px;
-    height: 450px;
-    background: rgba(87, 80, 233);
-    clip-path: polygon(80% 0, 100% 70%, 100% 100%, 20% 90%);
-}
 </style>

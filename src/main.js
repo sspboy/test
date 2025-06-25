@@ -4,6 +4,8 @@ import 'ant-design-vue/dist/reset.css';
 import App from './app.vue'
 import router from '/src/rute/index.ts' // 全局路由
 import store from '/src/staore'         // 全局数据状态共享
+import 'css-doodle' // css 特效模块
+
 
 // 页面标题设置---开始
 router.beforeEach((to, from, next) => {
