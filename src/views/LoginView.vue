@@ -266,12 +266,13 @@ export default {
             1px 0px 2px 1px rgba(230, 230, 230, 0.5), /* 第一个阴影 */
             -2px -1px 4px 1px rgba(219, 219, 219, 0.3), /* 第二个阴影 */
             0px 5px 10px 0px rgba(123, 152, 172, 0.3); /* 第三个阴影 */}
-
 .g-bg {
     position: fixed;
     width: 100%;
     height: 100vh;
-    backdrop-filter: blur(200px);/*模糊*/
+    background-color: rgba(255, 255, 255, 0.438); /* 背景色半透明 */
+
+    backdrop-filter: blur(120px);/*模糊*/
     z-index: 100;
 }
 

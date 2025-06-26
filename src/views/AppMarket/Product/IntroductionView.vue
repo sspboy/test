@@ -28,7 +28,7 @@
 
                     <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
                       <a-typography>
-                        <a-typography-title class="cardTitle">科技改变生活</a-typography-title>
+                        <a-typography-title class="cardTitle">想想都好笑</a-typography-title>
                         <a-typography-paragraph class="cardText">
                         每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
                         </a-typography-paragraph>
@@ -46,7 +46,25 @@
 
                     <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
                       <a-typography>
-                        <a-typography-title class="cardTitle">科技改变生活</a-typography-title>
+                        <a-typography-title class="cardTitle">笑笑而过</a-typography-title>
+                        <a-typography-paragraph class="cardText">
+                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        </a-typography-paragraph>
+                      </a-typography>
+                    </a-flex>
+
+                  </a-flex>
+              </a-card>
+
+              <!--卡片3-->
+              <a-card class="cardStyle" :body-style="{ padding: 0, overflow: 'hidden' }">
+                  <a-flex justify="space-between">
+                    
+                    <img alt="avatar" src="../../../assets/keji.jpg" class="imgStyle"/>
+
+                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
+                      <a-typography>
+                        <a-typography-title class="cardTitle">不一样的生活</a-typography-title>
                         <a-typography-paragraph class="cardText">
                         每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
                         </a-typography-paragraph>
@@ -65,26 +83,8 @@
                     <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
                       <a-typography>
                         <a-typography-title class="cardTitle">科技改变生活</a-typography-title>
-                        <a-typography-paragraph class="cardText">
-                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
-                        </a-typography-paragraph>
-                      </a-typography>
-                    </a-flex>
-
-                  </a-flex>
-              </a-card>
-
-              <!--卡片3-->
-              <a-card class="cardStyle" :body-style="{ padding: 0, overflow: 'hidden' }">
-                  <a-flex justify="space-between">
-                    
-                    <img alt="avatar" src="../../../assets/keji.jpg" class="imgStyle"/>
-
-                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
-                      <a-typography>
-                        <a-typography-title class="cardTitle">科技改变生活</a-typography-title>
-                        <a-typography-paragraph class="cardText">
-                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        <a-typography-paragraph class="cardText" style="text-overflow: ellipsis;">
+                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
                         </a-typography-paragraph>
                       </a-typography>
                     </a-flex>
@@ -167,8 +167,8 @@ export default {
 </script>
 
 <style scoped>
-.cardStyle{width: 320px;height: 84px;float: left;margin: 1% 1% 0 0;}
+.cardStyle{width: 24%;height: 84px;float: left;margin: 1% 1% 0 0;}
 .imgStyle{display:block;margin: 5px 0 0 5px;height: 72px;width: 72px;border-radius: 6px;}
 .cardTitle{font-size: 14px;margin: 0 0 6px 0;}
-.cardText{font-size: 12px;line-height: 18px;}
+.cardText{font-size: 12px;line-height: 18px;height: 34px;overflow: hidden;}
 </style>
