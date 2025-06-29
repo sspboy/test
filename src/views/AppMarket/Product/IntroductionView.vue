@@ -112,37 +112,98 @@
             </a-card>
           </a-row>
 
+
+          <!-- Comfyui-AI-list -->
           <a-row :gutter="[12, 12]" style="padding: 14px 0 0 0;">
+
             <a-col :span="4">
-              
               <div class="gutter-box">
-                <a-card class="cardStyle cursor" style="margin: 14px 0 0 0;" :body-style="{ padding: 0, overflow: 'hidden' }">
-                    <a-flex justify="space-between">
-                      
-                      <img alt="avatar" src="../../../assets/6d23.jpg" class="imgStyle"/>
 
-                      <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
-                          <a-typography>
-                          <a-typography-title class="cardTitle">诊断优化</a-typography-title>
-                          <a-typography-paragraph class="cardText">
-                          每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
-                          </a-typography-paragraph>
-                        </a-typography>
-                      </a-flex>
-
-                    </a-flex>
-                </a-card>
-
-              
-              </div>
-            
+              <a-card hoverable>
+                <template #cover>
+                  <img alt="example" src="../../../assets/6d23.jpg" />
+                </template>
+                <a-card-meta title="Europe Street beat">
+                  <template #description>www.instagram.com</template>
+                </a-card-meta>
+              </a-card>
+            </div>
             </a-col>
-            <a-col :span="4"><div class="gutter-box"></div></a-col>
-            <a-col :span="4"><div class="gutter-box"></div></a-col>
-            <a-col :span="4"><div class="gutter-box"></div></a-col>
-            <a-col :span="4"><div class="gutter-box"></div></a-col>
-            <a-col :span="4"><div class="gutter-box"></div></a-col>
-            <a-col :span="4"><div class="gutter-box"></div></a-col>
+
+            <a-col :span="4">
+              <div class="gutter-box">
+              <a-card hoverable>
+                <template #cover>
+                  <img alt="example" src="../../../assets/6d23.jpg" />
+                </template>
+                <a-card-meta title="Europe Street beat">
+                  <template #description>www.instagram.com</template>
+                </a-card-meta>
+              </a-card>
+            </div>
+            </a-col>
+
+                        <a-col :span="4">
+              <div class="gutter-box">
+              <a-card hoverable>
+                <template #cover>
+                  <img alt="example" src="../../../assets/6d23.jpg" />
+                </template>
+                <a-card-meta title="Europe Street beat">
+                  <template #description>www.instagram.com</template>
+                </a-card-meta>
+              </a-card>
+            </div>
+            </a-col>
+                        <a-col :span="4">
+              <div class="gutter-box">
+              <a-card hoverable>
+                <template #cover>
+                  <img alt="example" src="../../../assets/6d23.jpg" />
+                </template>
+                <a-card-meta title="Europe Street beat">
+                  <template #description>www.instagram.com</template>
+                </a-card-meta>
+              </a-card>
+            </div>
+            </a-col>
+                        <a-col :span="4">
+              <div class="gutter-box">
+              <a-card hoverable>
+                <template #cover>
+                  <img alt="example" src="../../../assets/6d23.jpg" />
+                </template>
+                <a-card-meta title="Europe Street beat">
+                  <template #description>www.instagram.com</template>
+                </a-card-meta>
+              </a-card>
+            </div>
+            </a-col>
+            <a-col :span="4">
+              <div class="gutter-box">
+              <a-card hoverable>
+                <template #cover>
+                  <img alt="example" src="../../../assets/6d23.jpg" />
+                </template>
+                <a-card-meta title="Europe Street beat">
+                  <template #description>www.instagram.com</template>
+                </a-card-meta>
+              </a-card>
+            </div>
+            </a-col>
+
+            <a-col :span="4">
+              <!-- <div class="gutter-box">
+                <a-card hoverable>
+                  <template #cover>
+                    <img alt="example" src="../../../assets/6d23.jpg" />
+                  </template>
+                  <a-card-meta title="Europe Street beat">
+                    <template #description>www.instagram.com</template>
+                  </a-card-meta>
+                </a-card>
+              </div> -->
+            </a-col>
 
           </a-row>
 
@@ -272,8 +333,9 @@ export default {
 .imgStyle{display:block;margin: 5px 0 0 5px;height: 72px;width: 72px;border-radius: 6px;}
 .cardTitle{font-size: 12px;margin: 0 0 6px 0;padding:22px 0 0 0;height: 36px;overflow: hidden;}
 .cardText{font-size: 12px;line-height: 18px;height: 20px;overflow: hidden;}
-.gutter-box{height: 320px;background-color: aliceblue;border-radius: 6px;}
+.gutter-box{background-color: aliceblue;border-radius: 6px;}
 .RightMiniBox{margin: 15px 14px 0 0;border:1px solid #e5e5e596;border-radius: 4px;padding:12px;}
+.ListCard{}
 
 
 </style>
