@@ -13,19 +13,29 @@
                 @finishFailed="handleFinishFailed"
             >
 
-            <!-- <h4 style="margin: 5px 0 0 0;padding-right:24px;float:left;"><CopyOutlined style="margin-right: 6px;" />复制记录</h4> -->
+            <h3 class="page_title">
+                <CopyOutlined style="margin-right: 6px;" />
+                {{ page_config.page_title }}
+            </h3>
 
             <a-form-item label="标题" name="title_key">
-                <a-input type="text" size="small" class="font_size_12" placeholder="输入标题关键字" v-model:value="formdata.title_key" style="width: 100px"/>
+                <a-input 
+                type="text" 
+                class="font_size_12" 
+                placeholder="输入标题关键字" 
+                v-model:value="formdata.title_key" 
+                style="width: 100px"
+                size="small"
+                />
             </a-form-item>
 
             <a-form-item label="平台" name="platform">
-                <a-select 
-                    size="small" 
+                <a-select
                     placeholder="选择"
                     ref="select"
                     v-model:value="formdata.platform"
                     style="width: 80px"
+                    size="small"
                 >
                     <a-select-option value="1">淘宝</a-select-option>
                     <a-select-option value="3">阿里</a-select-option>
@@ -36,7 +46,7 @@
 
             <a-form-item label="上传状态" name="state">
                 <a-select 
-                size="small" 
+                size="small"
                 placeholder="选状态"
                 ref="select"
                 v-model:value="formdata.state"
@@ -61,9 +71,9 @@
             <a-form-item label="图片上传" name="pic_upload_res">
                 <a-select 
                 ref="select"
-                size="small" 
                 placeholder="选状态"
                 style="width: 80px;"
+                size="small"
                 v-model:value="formdata.pic_upload_res"
                 >
                 <a-select-option value="1">已上传</a-select-option>
@@ -76,8 +86,8 @@
 <!--            </a-form-item>-->
 
             <a-form-item>
-                <a-button type="primary" size="small" style="font-size: 12px;float: right;margin-left: 6px;" @click="resh_condition" ghost>重置</a-button>
-                <a-button type="primary" size="small" style="font-size: 12px;float: right;" html-type="submit">查询</a-button>
+                <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin-left: 6px;" @click="resh_condition" ghost>重置</a-button>
+                <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;" html-type="submit">查询</a-button>
             </a-form-item>
 
         </a-form>
@@ -113,6 +123,12 @@ export default defineComponent({
 
     setup(props, ctx) {
 
+        // 查询组件信息配置
+        const page_config= reactive({
+            page_title:'页面标题',
+        })
+
+
         // 表单绑定数据
         const formdata = reactive({
             title_key: '',
@@ -121,6 +137,7 @@ export default defineComponent({
             cate_name: '',
             pic_upload_res: [],
             select_time:[]
+
         });
 
         // 重置查询条件方法
@@ -236,6 +253,7 @@ export default defineComponent({
         };
     
     return {
+        page_config,
         props,
         resh_condition,
         formdata,
@@ -252,18 +270,6 @@ export default defineComponent({
 })
   
 </script>
-
-<style>
-
-/**下拉表单字体大小设置**/
-.ant-select{font-size: 12px !important;}
-.custom-select{font-size: 12px !important;}
-.ant-select-item-option-content {font-size: 12px !important;}
-.ant-select-selection-placeholder {font-size: 12px !important;}
-.ant-select-dropdown-menu-item-selected {font-size: 12px !important;}
-.ant-select-selection-item{font-size: 12px !important;}
-.ant-form-item-label label{font-size: 12px !important;}
-/**下拉表单字体大小设置**/
-.ant-picker-range{border-radius: 4px !important;}
-.ant-picker-range input{padding: 2px 1px !important;font-size: 12px !important;}
+<style scoped>
+.page_title{margin: 2px 0 0 14px;padding-right:34px;float:left;}
 </style>

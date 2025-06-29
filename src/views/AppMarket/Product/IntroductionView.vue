@@ -48,7 +48,7 @@
                         <a-typography>
                           <a-typography-title class="cardTitle">网盘素材<RightOutlined /></a-typography-title>
                           <a-typography-paragraph class="cardText">
-                          每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                              每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
                           </a-typography-paragraph>
                         </a-typography>
                       </a-flex>
@@ -99,11 +99,11 @@
                   
                   <img alt="avatar" src="../../../assets/keji.jpg" class="imgStyle"/>
 
-                  <a-flex vertical align="flex-end" justify="space-between" style="padding: 10px 10px 0 10px;">
+                  <a-flex vertical align="flex-start" justify="space-between" style="padding: 10px 10px 0 10px;">
                       <a-typography>
-                      <a-typography-title class="cardTitle">诊断优化</a-typography-title>
+                      <a-typography-title class="cardTitle"></a-typography-title>
                       <a-typography-paragraph class="cardText">
-                      每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                      <!-- 每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息； -->
                       </a-typography-paragraph>
                     </a-typography>
                   </a-flex>
@@ -143,7 +143,7 @@
             </div>
             </a-col>
 
-                        <a-col :span="4">
+            <a-col :span="4">
               <div class="gutter-box">
               <a-card hoverable>
                 <template #cover>
@@ -215,23 +215,22 @@
         <div class="RightMiniBox">
           <h4><MehFilled style="color:dimgray;"/> 会员信息</h4>
           <div class="font_size_12" style="padding: 8px 0 0 0;">
-            <p>头像：用户名称</p>
-            <p>店铺名称：大飒飒</p>
-            <p>所属版本：基础版</p>
+            <a-row :gutter="[12, 12]">
+              <a-col :span="24">头像：用户名称</a-col>
+              <a-col :span="24">店铺名称：大飒飒</a-col>
+              <a-col :span="24">所属版本：基础版</a-col>
+            </a-row>
           </div>
         </div>
 
         <div class="RightMiniBox">
           <h4><QuestionCircleFilled style="color:dimgray;"/> 帮助中心</h4>
           <div class="font_size_12" style="padding: 8px 0 0 0;">
-            <a-row :gutter="[12, 24]">
-              <a-col></a-col>
-              <a-col></a-col>
+            <a-row :gutter="[12, 12]">
+              <a-col :span="24">商品查询查询教程</a-col>
+              <a-col :span="24">商品查询查询教程</a-col>
+              <a-col :span="24">商品查询查询教程</a-col>
             </a-row>
-            <P>商品查询查询教程</P>
-            <P>商品查询查询教程</P>
-            <P>商品查询查询教程</P>
-            <P>商品查询查询教程</P>
           </div>
         </div>
 
@@ -243,12 +242,14 @@
         </div> -->
 
         <div class="RightMiniBox">
-          <h4><InfoCircleFilled style="color:dimgray;"/> 联系我们</h4>
+          <h4> <InfoCircleFilled style="color:dimgray;"/> 联系我们 </h4>
           <div class="font_size_12" style="padding: 8px 0 0 0;">
-            <p>>> 在线留言:点击反馈</p>
-            <p>>> 微信: 微信昵称</p>
-            <p>>> 您也可以详细描述问题，发邮件给我们。</p>
-            <p>电子邮箱: 123@qq.com</p>
+            <a-row :gutter="[12, 12]">
+              <a-col :span="24">在线留言 点击反馈</a-col>
+              <a-col :span="24">微信: 微信昵称</a-col>
+              <a-col :span="24">您也可以详细描述问题，发邮件给我们。</a-col>
+              <a-col :span="24">电子邮箱: 123@qq.com</a-col>
+            </a-row>
           </div>
         </div>
 

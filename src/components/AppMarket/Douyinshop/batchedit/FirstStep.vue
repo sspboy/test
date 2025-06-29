@@ -20,10 +20,10 @@
 
             <a-form-item name="status" label="商品状态" >
                 <a-select 
-                :allowClear="true"
-                v-model:value="props.data.status" 
-                placeholder="选择商品状态"
-                :options="props.data.state_list" 
+                    :allowClear="true"
+                    v-model:value="props.data.status" 
+                    placeholder="选择商品状态"
+                    :options="props.data.state_list" 
                 />
             </a-form-item>
 
