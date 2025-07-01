@@ -8,7 +8,7 @@
 
             <h2 class="page_title">
                 <CopyOutlined style="margin:4px 6px 0 0;" />
-                {{ page_config.page_title }}
+                {{ props.data.title }}
             </h2>
 
             <a-form
@@ -30,32 +30,35 @@
                 />
             </a-form-item>
 
-            <a-form-item name="platform">
+            <a-form-item name="state">
                 <a-select
                     placeholder="商品状态"
                     ref="select"
-                    v-model:value="formdata.platform"
+                    v-model:value="formdata.state"
                     size="small"
+                    allowClear
+
                 >
-                    <a-select-option value="1">线上</a-select-option>
-                    <a-select-option value="3">下线</a-select-option>
+                    <a-select-option value="0">在线</a-select-option>
+                    <a-select-option value="1">下线</a-select-option>
                     <a-select-option value="2">删除</a-select-option>
                 </a-select>
             </a-form-item>
 
-            <a-form-item name="state">
+            <a-form-item name="check_status">
                 <a-select 
                 size="small"
                 placeholder="审核状态"
                 ref="select"
-                v-model:value="formdata.state"
+                v-model:value="formdata.check_status"
+                allowClear
                 >
-                    <a-select-option value="1">审核通过</a-select-option>
+                    <a-select-option value="3">审核通过</a-select-option>
                     <a-select-option value="2">待审核</a-select-option>
-                    <a-select-option value="3">未通过</a-select-option>
-                    <a-select-option value="4">待上架</a-select-option>
-                    <a-select-option value="5">未提交</a-select-option>
-                    <a-select-option value="6">封禁</a-select-option>
+                    <a-select-option value="4">未通过</a-select-option>
+                    <a-select-option value="7">待上架</a-select-option>
+                    <a-select-option value="1">未提交</a-select-option>
+                    <a-select-option value="5">封禁</a-select-option>
                 </a-select>
             </a-form-item>
             
@@ -64,32 +67,35 @@
                     style="width: 180px;"
                     size="small"
                     v-model:value="formdata.cate_name"
-                    :options="options"
+                    :options="formdata.options"
                     :load-data="loadData"
                     placeholder="商品类目"
                     change-on-select
                 />
             </a-form-item> 
 
-            <!-- <a-form-item name="pic_upload_res">
-                <a-select 
-                ref="select"
-                placeholder="选状态"
-                style="width: 80px;"
-                size="small"
-                v-model:value="formdata.pic_upload_res"
-                >
-                <a-select-option value="1">已上传</a-select-option>
-                <a-select-option value="2">未上传</a-select-option>
-                </a-select>
-            </a-form-item> -->
 
-            <a-form-item name="range-picker" v-bind="rangeConfig" >
-               <a-range-picker size="small" v-model:value="formdata.select_time" value-format="YYYY-MM-DD" style="border-radius: 4px;" />
+            <a-form-item name="create_time" v-bind="rangeConfig" >
+               <a-range-picker 
+                size="small" 
+                v-model:value="formdata.create_time" 
+                style="border-radius: 4px;width: 240px;"
+                :placeholder="['创建开始时间', '创建结束时间']"
+                :show-time="{ format: 'HH:mm:ss' }"
+                format="YYYY-MM-DD HH:mm:ss"
+               />
             </a-form-item>
 
-            <a-form-item name="update-time" v-bind="rangeConfig" >
-               <a-range-picker size="small" v-model:value="formdata.update_time" value-format="YYYY-MM-DD" style="border-radius: 4px;" />
+            <a-form-item name="update_time" v-bind="rangeConfig" >
+               <a-range-picker 
+                size="small" 
+                v-model:value="formdata.update_time" 
+                value-format="YYYY-MM-DD" 
+                style="border-radius: 4px;width: 240px;"
+                :placeholder="['更新开始时间', '更新结束时间']"
+                :show-time="{ format: 'HH:mm:ss' }"
+                format="YYYY-MM-DD HH:mm:ss"
+               />
             </a-form-item>
 
         </a-form>
@@ -108,8 +114,11 @@
 
 
 <script>
-import { defineComponent,ref,reactive } from 'vue';
+import { defineComponent,ref,reactive,onMounted } from 'vue';
 import { CopyOutlined} from '@ant-design/icons-vue';
+import * as TOOL from '@/assets/JS_Model/tool';
+import * as utils from '@/assets/JS_Model/public_model';
+import * as BatchEdit from '@/assets/douyinshop/BatchEditFun';
 
 export default defineComponent({
 
@@ -130,6 +139,11 @@ export default defineComponent({
 
     setup(props, ctx) {
 
+        const API = new utils.A_Patch()         // 请求接口地址合集
+        const B_Fun = new BatchEdit.B_Fun()     // 批量修改方法
+
+        const tool = new TOOL.TOOL()            // 工具方法
+
         // 查询组件信息配置
         const page_config= reactive({
             page_title:'页面标题',
@@ -138,12 +152,25 @@ export default defineComponent({
 
         // 表单绑定数据
         const formdata = reactive({
-            title_key: '',  // 标题关键字
-            check_status: [],   // 审核状态
-            state: [],      // 商品状态
-            cate_name: '',  // 商品类目
-            create_time:[],     // 创建时间
-            update_time:[]      // 更新时间
+            // 类目列表转换
+            get_cate_list:(obj)=>{ 
+                var obj_list = []
+                for(let i of obj){
+                    let cate_obj = {}
+                    cate_obj.value = i.id;
+                    cate_obj.label = i.name;
+                    cate_obj.isLeaf = i.is_leaf;
+                    obj_list.push(cate_obj)
+                }
+                return obj_list
+            },
+            title_key: '',          // 标题关键字
+            check_status: undefined,       // 审核状态
+            state: undefined,              // 商品状态
+            cate_name: undefined,   // 商品类目
+            options:ref([]),        // 分类选项
+            create_time:ref(undefined),         // 创建时间
+            update_time:ref(undefined)          // 更新时间
 
         });
 
@@ -157,41 +184,64 @@ export default defineComponent({
             formdata.update_time=[]
         }
 
-        const options = ref([
-            {
-                value: '12',
-                label: 'Zhejiang',
-                isLeaf: false,
-            },
-            {
-                value: '33',
-                label: 'Jiangsu',
-                isLeaf: false,
-            },
-        ]);
-
-        const loadData = selectedOptions => {
-            const targetOption = selectedOptions[selectedOptions.length - 1];
-            targetOption.loading = true;
-
-            // load options lazily
-            setTimeout(() => {
-                targetOption.loading = false;
-                targetOption.children = [
-                    {
-                    label: `${targetOption.label} Dynamic 1`,
-                    value: 'dynamic1',
-                    },
-                    {
-                    label: `${targetOption.label} Dynamic 2`,
-                    value: 'dynamic2',
-                    },
-                ];
-                options.value = [...options.value];
-            }, 1000);
-            
-    
+        // 创建时间选择
+        const onCreateChange = (value, dateString) => {
+            formdata.create_time = dateString;
         };
+
+        // 更新时间选择
+        const onupdateChange = (value, dateString) => {
+            formdata.update_time = dateString;
+        };
+
+        // 分类异步请求子分类
+        const loadData = selectedOptions => {
+
+            const targetOption = selectedOptions[selectedOptions.length - 1];
+
+            var cid = targetOption.value;       // 分类id
+
+            var isLeaf = targetOption.isLeaf;   // 是否叶子类目
+
+            // console.log(targetOption)
+
+            targetOption.loading = true; // load options
+
+            tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":cid}).then(res=>{
+
+                console.log(res.data)
+
+                targetOption.loading = false;
+
+                targetOption.children = formdata.get_cate_list(res.data.data)
+
+                formdata.options = [...formdata.options];
+            })
+
+            console.log(formdata.cate_name)
+                
+        };
+
+        onMounted(() => {
+
+            // 分类信息初始化
+            tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
+
+                let obj_list = res.data.data
+
+                console.log(res)
+
+                formdata.options = formdata.get_cate_list(obj_list) 
+
+            })
+        });
+
+
+
+
+
+
+
 
         const value = ref([]);
 
@@ -207,8 +257,10 @@ export default defineComponent({
 
         // 查询按钮方法
         const handleFinish = values => {
-            
-            console.log(formdata)
+
+            const submit_obj = B_Fun.verify_first_submit(formdata) // 验证表单字段是否为空或是否正确
+
+            console.log(submit_obj)
 
             // console.log(props.data)
 
@@ -272,8 +324,9 @@ export default defineComponent({
         handleFinish,
         handleFinishFailed,
         value,
-        options,
         loadData,
+        onCreateChange,
+        onupdateChange
         }
     }
 

@@ -3,7 +3,7 @@ export class B_Fun {
 
     // 验证第一步查询数据
     verify_first_submit = (values) => {
-
+        console.log(values)
         const submit_obj = {};
 
         // 分类

@@ -17,7 +17,7 @@
 
           <!--条件查询组件 开始 -->
 
-              <Siftcondition :data="PAGEDATA.List_conditions" @sift_callback="sift_select"/>
+              <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
 
           <!--条件查询组件 结束 -->
           
@@ -31,19 +31,84 @@
                 
                 <a-list-item style="padding: 14px;">
 
-
-
                   <a-list-item-meta>
 
                     <template #avatar>
-                      <div class="cursor" style="width: 45px;height: 45px; background-color:white;border:1px silver solid;padding: 2px;border-radius: 5px;">
+                      <div class="cursor ListImg">
                         <img :src="item.img" alt="" style="width: 100%;height: 100%;border-radius: 5px;">
                       </div>
                     </template>
 
                     <template #title>
-                      <a href="#" class="font_size_12">{{ item.name }}</a>
-                      <div style="height: 20px;background-color: aqua;"></div>
+                      <a-row>
+                        <a-col :span="16">
+                          
+                          <div class="title_div_box">
+                            <a-space size="18">
+                              <div class="font_size_12">标题前缀sdasd</div>
+                              <div class="font_size_12"><a href="#" style="color:black;">{{ item.name }}</a></div>
+                              <div class="font_size_12" style="padding-left:24px;">标题后缀</div>
+                            </a-space>
+                          </div>
+
+                          <a-space align="end" style="height: 26px;overflow: hidden;">
+                            <div class="ProductIDStyle cursor">ID 32432532523</div>
+                            <div class="title_text_span">普通商品</div>
+                            <div class="title_text_span">在售</div>
+                            <div class="title_text_span">审核通过</div>
+                            <div class="title_text_span">类目A>类目B>类目C</div>
+                            <div class="title_text_span">销量:1000</div>
+                            <div class="title_text_span">运费模板</div>
+                            <div class="title_text_span">详情描述</div>
+                          </a-space>
+                        </a-col>
+                        
+                        <a-col :span="4">
+                          
+                          <a-row>
+                            <a-col :span="24">
+                              <div class="list_span_one">
+                                <a-space>
+                                  <span class="font_size_12">是否驳回</span>
+                                  <span class="font_size_12">是否核销</span>
+                                </a-space>
+                              </div>
+                            </a-col>
+                            <a-col :span="24">
+                              <div class="list_span_two">
+                                <a-space>
+                                  <span class="font_size_12">是否整改</span>
+                                  <span class="font_size_12">是否可搭配</span>
+                                </a-space>
+                              </div>
+                            </a-col>
+                          </a-row>  
+
+                        </a-col>
+
+                        <a-col :span="4">
+                          
+                          <a-row>
+                            <a-col :span="24">
+                              <div class="list_span_one">
+                                <a-space>
+                                <span class="font_size_12">创建时间：</span>
+                                <span class="font_size_12">{{ moment.unix(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}</span>
+                                </a-space>
+                              </div>
+                            </a-col>
+                            <a-col :span="24">
+                              <div class="list_span_two">
+                                <a-space>
+                                <span class="font_size_12">更新时间：</span>
+                                <span class="font_size_12">{{ moment.unix(item.update_time).format('YYYY-MM-DD HH:mm:ss') }}</span>
+                                </a-space>
+                              </div>
+                            </a-col>
+                          </a-row>  
+
+                        </a-col>
+                      </a-row>
 
                     </template>
 
@@ -153,7 +218,7 @@ export default {
       align:'center',       // 列表内容对齐：loading加载居中设定
 
       List_conditions:reactive({     // 请求条件初始化
-        
+
         "page":1,
         "size":10,
         "status":0,         //  0-在线；1-下线；2-删除；
@@ -180,11 +245,13 @@ export default {
           PAGEDATA.align = 'center';
           PAGEDATA.loading = false;
         }else{
+
           setTimeout(() => {
             PAGEDATA.loading = false;
             // 请求数据不为空
             PAGEDATA.datalist = res_list;
             PAGEDATA.total_number = total;
+
           }, 1000);
 
         }
@@ -194,9 +261,10 @@ export default {
     
 
 
-    // 【查询组件 回调方法】========================================开始
+    // 【翻页-组件 回调方法】========================================开始
     const page_turning = (data)=>{
-      console.log(data)
+      PAGEDATA.justify = 'flex-start';
+      PAGEDATA.align = 'flex-start';
       PAGEDATA.List_conditions.page = data.page;
       PAGEDATA.List_conditions.size = data.page_size;
       loadproductData(PAGEDATA.List_conditions)
@@ -207,46 +275,13 @@ export default {
     // 【查询组件 回调方法】========================================开始
     const sift_select = (data)=>{
       console.log('hehe:这是回调方法')
+      // loadproductData(PAGEDATA.List_conditions)
+
     }
     // 【查询组件 回调方法】========================================结束
 
 
-    const data = [
-      {
-        title: 'Ant Design Title 1',
-      },
-      {
-        title: 'Ant Design Title 2',
-      },
-      {
-        title: 'Ant Design Title 3',
-      },
-      {
-        title: 'Ant Design Title 4',
-      },
-            {
-        title: 'Ant Design Title 5',
-      },
-      {
-        title: 'Ant Design Title 6',
-      },
-      {
-        title: 'Ant Design Title 7',
-      },
-      {
-        title: 'Ant Design Title 8',
-      },
-            {
-        title: 'Ant Design Title 9',
-      },
-      {
-        title: 'Ant Design Title 10',
-      },
-      {
-        title: 'Ant Design Title 11',
-      },
-
-    ];
+    
 
 
 
@@ -254,10 +289,10 @@ export default {
 
 
     return {
+      moment,
       innerHeight,
       PAGEDATA,
       store,
-      data,
       sift_select,
       page_turning
     }
@@ -269,6 +304,10 @@ export default {
 </script>
 
 <style scoped>
-
-
+.ListImg{width: 45px;height: 45px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
+.title_div_box{width: 100%; height: 18px;padding: 3px 0 0 0;overflow: hidden;}
+.ProductIDStyle{height: 19px;border-radius: 4px;font-size: 10px;padding: 3px 0 0 0;color: darkgray;}
+.title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;}
+.list_span_one{height: 20px;padding: 1px 0 0 0;color: darkgray;overflow: hidden;}
+.list_span_two{height: 22px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;}
 </style>
