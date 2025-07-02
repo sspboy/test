@@ -1,144 +1,152 @@
 <template>
   <a-layout style="height: 100vh;width: 100vw;">
+
+
     <!--head 导航组件  开始-->
     <menu_head />
     <!--head 导航组件  结束-->
 
-    <!--内容部分 菜单 右侧列表 开始-->
+
+
+    <!--右侧内容部分 开始-->
     <a-layout>
 
       <!--左侧 菜单组件  开始-->
       <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
-        <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
+        <menu_left :menudata="PAGEDATA.menudata"/><!--局部组件-->
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
+
+      <!--右侧 内容组件  开始-->
       <a-layout-content class="content_border">
-
-          <!--条件查询组件 开始 -->
-
-              <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
-
-          <!--条件查询组件 结束 -->
+  
+        <!--条件查询组件 开始 -->
+        <a-collapse :bordered="false" expand-icon-position="start" collapsible="icon">
           
-          
-          <!--列表组件 开始 -->
-          <a-flex :style="{ height: innerHeight + 'px', overflow: 'auto'}" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
+          <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
 
-            <a-list :data-source="PAGEDATA.datalist" :loading="PAGEDATA.loading" style="width: 100%;">
+        </a-collapse>
+        <!--条件查询组件 结束 -->
+
+
+        <!--列表组件 开始 -->
+        <a-flex :style="{ height: PAGEDATA.innerHeight + 'px', overflow: 'auto'}" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
+        <!-- :style="{ height: innerHeight + 'px', overflow: 'auto'}" -->
+
+          <a-list :data-source="PAGEDATA.datalist" :loading="PAGEDATA.loading" style="width: 100%;">
+            
+            <template #renderItem="{ item }">
               
-              <template #renderItem="{ item }">
-                
-                <a-list-item style="padding: 14px;">
+              <a-list-item style="padding: 14px;">
 
-                  <a-list-item-meta>
+                <a-list-item-meta>
 
-                    <template #avatar>
-                      <div class="cursor ListImg">
-                        <img :src="item.img" alt="" style="width: 100%;height: 100%;border-radius: 5px;">
-                      </div>
-                    </template>
-
-                    <template #title>
-                      <a-row>
-                        <a-col :span="16">
-                          
-                          <div class="title_div_box">
-                            <a-space size="18">
-                              <div class="font_size_12">标题前缀sdasd</div>
-                              <div class="font_size_12"><a href="#" style="color:black;">{{ item.name }}</a></div>
-                              <div class="font_size_12" style="padding-left:24px;">标题后缀</div>
-                            </a-space>
-                          </div>
-
-                          <a-space align="end" style="height: 26px;overflow: hidden;">
-                            <div class="ProductIDStyle cursor">ID 32432532523</div>
-                            <div class="title_text_span">普通商品</div>
-                            <div class="title_text_span">在售</div>
-                            <div class="title_text_span">审核通过</div>
-                            <div class="title_text_span">类目A>类目B>类目C</div>
-                            <div class="title_text_span">销量:1000</div>
-                            <div class="title_text_span">运费模板</div>
-                            <div class="title_text_span">详情描述</div>
-                          </a-space>
-                        </a-col>
-                        
-                        <a-col :span="4">
-                          
-                          <a-row>
-                            <a-col :span="24">
-                              <div class="list_span_one">
-                                <a-space>
-                                  <span class="font_size_12">是否驳回</span>
-                                  <span class="font_size_12">是否核销</span>
-                                </a-space>
-                              </div>
-                            </a-col>
-                            <a-col :span="24">
-                              <div class="list_span_two">
-                                <a-space>
-                                  <span class="font_size_12">是否整改</span>
-                                  <span class="font_size_12">是否可搭配</span>
-                                </a-space>
-                              </div>
-                            </a-col>
-                          </a-row>  
-
-                        </a-col>
-
-                        <a-col :span="4">
-                          
-                          <a-row>
-                            <a-col :span="24">
-                              <div class="list_span_one">
-                                <a-space>
-                                <span class="font_size_12">创建时间：</span>
-                                <span class="font_size_12">{{ moment.unix(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}</span>
-                                </a-space>
-                              </div>
-                            </a-col>
-                            <a-col :span="24">
-                              <div class="list_span_two">
-                                <a-space>
-                                <span class="font_size_12">更新时间：</span>
-                                <span class="font_size_12">{{ moment.unix(item.update_time).format('YYYY-MM-DD HH:mm:ss') }}</span>
-                                </a-space>
-                              </div>
-                            </a-col>
-                          </a-row>  
-
-                        </a-col>
-                      </a-row>
-
-                    </template>
-
-                  </a-list-item-meta>
-
-                  <template #actions>
-                      <a class="font_size_12" href="#">查看</a>
-                      <a class="font_size_12" href="#">删除</a>
+                  <template #avatar>
+                    <div class="cursor ListImg">
+                      <img :src="item.img" alt="" style="width: 100%;height: 100%;border-radius: 5px;">
+                    </div>
                   </template>
 
-                </a-list-item>
+                  <template #title>
+                    <a-row>
+                      <a-col :span="14">
+                        
+                        <div class="title_div_box">
+                            <div><a href="#" style="color:black;">{{ item.name }}</a></div>
+                        </div>
 
-              </template>
+                        <a-space align="end" style="height: 22px;overflow: hidden;font-weight:normal;">
+                          <div class="ProductIDStyle cursor">ID {{ item.product_id }}</div>
+                          <div class="title_text_span">{{ product_type_info(item.product_type) }} </div>
+                          <div class="title_text_span">{{ product_status(item.status) }} </div>
+                          <div class="title_text_span">{{ product_check_status_info(item.check_status) }} </div>
+                          <div class="title_text_span">{{ item.category_detail.first_cname }} > {{ item.category_detail.second_cname }}</div>
+                          <div class="title_text_span">销量: {{ item.sell_num }} </div>
+                          <!-- <div class="title_text_span">运费模板: {{ item.freight_id }}</div> -->
+                          <!-- <div class="title_text_span">详情描述</div> -->
+                        </a-space>
+                      </a-col>
+                      
+                      <a-col :span="6">
+                        
+                        <a-row>
+                          <a-col :span="24">
+                            <div class="list_span_one">
+                              <a-space>
+                                <span class="font_size_12">是否驳回</span>
+                                <span class="font_size_12">是否核销</span>
+                              </a-space>
+                            </div>
+                          </a-col>
+                          <a-col :span="24">
+                            <div class="list_span_two">
+                              <a-space>
+                                <span class="font_size_12">是否整改</span>
+                                <span class="font_size_12">是否可搭配</span>
+                              </a-space>
+                            </div>
+                          </a-col>
+                        </a-row>  
 
-            </a-list>
+                      </a-col>
 
-          </a-flex>
-          <!--列表组件 结束 -->
+                      <a-col :span="4">
+                        
+                        <a-row>
+                          <a-col :span="24">
+                            <div class="list_span_one">
+                              <a-space>
+                              <span class="font_size_12">创建时间：</span>
+                              <span style="font-size: 10px;">{{ moment.unix(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}</span>
+                              </a-space>
+                            </div>
+                          </a-col>
+                          <a-col :span="24">
+                            <div class="list_span_two">
+                              <a-space>
+                              <span class="font_size_12">更新时间：</span>
+                              <span style="font-size: 10px;">{{ moment.unix(item.update_time).format('YYYY-MM-DD HH:mm:ss') }}</span>
+                              </a-space>
+                            </div>
+                          </a-col>
+                        </a-row>  
+
+                      </a-col>
+                    </a-row>
+
+                  </template>
+
+                </a-list-item-meta>
+
+                <template #actions>
+                    <a class="font_size_12" href="#">查看</a>
+                    <a class="font_size_12" href="#">删除</a>
+                </template>
+
+              </a-list-item>
+
+            </template>
+
+          </a-list>
+
+        </a-flex>
+        <!--列表组件 结束 -->
 
 
-          <!--翻页组件：：：发送初始化数据：：监听回传信息  -->
-          <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
+
+        <!--翻页组件 -->
+        <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
+        <!--翻页组件 -->
 
 
       </a-layout-content>
+  
 
 
 
-
-      </a-layout>
+    </a-layout>
+    <!--右侧内容部分 结束-->
 
 
 </a-layout>
@@ -183,12 +191,13 @@ export default {
     const moment = require('moment');       // 时间戳转换
     const tool = new TOOL.TOOL()            // 工具方法
     const API = new utils.A_Patch()         // 请求接口地址合集
-    const innerHeight = ref(window.innerHeight-190); // 初始化列表高度
 
-    // 组件挂之后---请求数据
+
+
+    // 组件挂之后---请求数据===============================开始
     // 定义一个函数来处理窗口大小变化 ==
     const handleResize = () => {
-      innerHeight.value = window.innerHeight-190; // 作为表格自适应高度
+      PAGEDATA.innerHeight = window.innerHeight-190; // 作为表格自适应高度
     };
 
     // 在组件挂载时添加事件监听器
@@ -203,12 +212,15 @@ export default {
     });
     // 【组件挂载】========================================结束
 
+    // 页面初始化数据
     const PAGEDATA = reactive({
-      title:'商品列表',
+
+      title:'商品列表', // 页面标题
+
       menudata:{      // 菜单选中配置
             'key':'78',
             'openKeys':'douyinshop'
-        },
+      },
       colum:[],             // 表头信息
       datalist:[],          // 列表信息
       total_number:0,       // 内容总数
@@ -224,10 +236,16 @@ export default {
         "status":0,         //  0-在线；1-下线；2-删除；
         "check_status":3,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
 
-      })
+      }),
+
+      innerHeight: ref(window.innerHeight-190) // 初始化列表高度
+
     })
 
-    // 请求接口数据
+
+
+
+    // 请求商品列表接口数据
     const loadproductData = async(data) => {
 
         PAGEDATA.loading = true;
@@ -281,6 +299,53 @@ export default {
     // 【查询组件 回调方法】========================================结束
 
 
+    // 商品状态转义  0-在线；1-下线；2-删除；
+    const product_status = (data)=>{
+      if(data == 0){
+        return '在线'
+      }else if(data == 1){
+        return '下线'
+      }else if(data == 2){
+        return '删除'
+      }
+    }
+    // 审核状态转义// 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
+    const product_check_status_info = (data)=>{
+      if(data == 1){
+        return '未提交'
+      }else if(data == 2){
+        return '待审核'
+      }else if(data == 3){
+        return '审核通过'
+      }else if(data == 4){
+        return '审核未通过'
+      }else if(data == 5){
+        return '封禁'
+      }else if(data == 7){
+        return '待上架'
+      }
+    }
+
+
+    // 商品类型转义0-普通；1-新客商品；3-虚拟；6-玉石闪购；7-云闪购 ；127-其他类型；
+    const product_type_info = (data)=>{
+      if(data == 0){
+        return '普通商品'
+      }else if(data == 1){
+        return '新客商品'
+      }else if(data == 3){
+        return '虚拟商品'
+      }else if(data == 6){
+        return '玉石闪购'
+      }else if(data == 7){
+        return '云闪购'
+      }else if(data == 127){
+        return '其他商品'
+      }
+    }
+
+    // 商品类目转义
+
     
 
 
@@ -290,11 +355,13 @@ export default {
 
     return {
       moment,
-      innerHeight,
       PAGEDATA,
       store,
       sift_select,
-      page_turning
+      page_turning,
+      product_status,
+      product_type_info,
+      product_check_status_info
     }
 
   }
@@ -305,9 +372,9 @@ export default {
 
 <style scoped>
 .ListImg{width: 45px;height: 45px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
-.title_div_box{width: 100%; height: 18px;padding: 3px 0 0 0;overflow: hidden;}
+.title_div_box{width: 100%; height: 22px;overflow: hidden;padding: 4px 0 0 0;}
 .ProductIDStyle{height: 19px;border-radius: 4px;font-size: 10px;padding: 3px 0 0 0;color: darkgray;}
-.title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;}
-.list_span_one{height: 20px;padding: 1px 0 0 0;color: darkgray;overflow: hidden;}
-.list_span_two{height: 22px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;}
+.title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;font-weight:normal;}
+.list_span_one{height: 20px;padding: 1px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
+.list_span_two{height: 22px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 </style>

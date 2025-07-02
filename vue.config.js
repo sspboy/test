@@ -13,8 +13,8 @@ module.exports = defineConfig({
       '/api': {
 
         // target: 'http://192.168.2.101:5000', // 家里
-        target: 'http://192.168.100.55:5000', // 公司
-
+        // target: 'http://192.168.100.55:5000', // 公司
+        target: 'http://192.168.3.120:5000', // 公司
         changeOrigin: true,
         pathRewrite: {
           '^/api': '', // 重写路径，去掉 /api 前缀
