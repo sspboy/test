@@ -56,10 +56,17 @@ export class B_Fun {
         }
 
         // 标题关键字
-        if(values.title_key!== null && values.title_key!== undefined && values.title_key!== ""){
+        if(values.title_key!== null && values.title_key !== undefined && values.title_key!== ""){
             submit_obj.name = values.title_key
         }else{
             delete submit_obj.name
+        }
+
+        // 商品类型
+        if(values.product_type !== null && values.product_type !== undefined && values.product_type !== ""){
+            submit_obj.product_type = values.product_type
+        }else{
+            delete submit_obj.product_type
         }
 
         return submit_obj;

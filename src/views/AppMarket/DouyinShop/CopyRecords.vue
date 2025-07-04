@@ -35,7 +35,7 @@
       <a-layout-content class="content_border">
 
           <!--条件查询组件 开始 -->
-          <Siftcondition  @sift_callback="sift_select"/>
+          <!-- <Siftcondition  @sift_callback="sift_select"/> -->
           <!--条件查询组件 结束 -->
 
           <!--表格组件 开始 -->
@@ -276,14 +276,14 @@ export default {
     const CL = new copylog.CopyLog()          // 表格操作方法
 
     const store = useStore();                 // 共享数据
-    
+    console.log(store.state)
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)                 // 初始化loading状态
     const PAGEDATA = reactive({
         title:'复制记录',
         menudata:{      // 菜单选中配置
             'key':'79',
-            'openKeys':'douyinshop'
+            'openKeys':'CopyProduct'
         },
       colum:[],           // 表头信息
       datalist:[],        // 列表信息

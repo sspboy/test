@@ -10,11 +10,11 @@
                 <a-row>
 
                 <a-col :span="20">
-
                     <a-form
                         layout="inline"
                         :model="formdata"
                     >
+                    <h3 style="padding: 3px 20px 0 0;">{{ props.data.title }}</h3>
 
                     <a-form-item name="title_key">
                         <a-input 
@@ -220,18 +220,12 @@ export default defineComponent({
             formdata.status= undefined
             formdata.cate_name= undefined
             formdata.create_time = ref(undefined)
+            formdata.product_type = ref(undefined)
             formdata.update_time = ref(undefined)
+
+            ctx.emit('sift_callback', true)
+
         }
-
-        // 创建时间选择
-        const onCreateChange = (value, dateString) => {
-            formdata.create_time = dateString;
-        };
-
-        // 更新时间选择
-        const onupdateChange = (value, dateString) => {
-            formdata.update_time = dateString;
-        };
 
         // 分类异步请求子分类
         const loadData = selectedOptions => {
@@ -268,7 +262,7 @@ export default defineComponent({
 
                 let obj_list = res.data.data
 
-                console.log(res)
+                // console.log(res)
 
                 formdata.options = formdata.get_cate_list(obj_list) 
 
@@ -276,22 +270,14 @@ export default defineComponent({
 
         });
 
-
-
-
-
-
-
-
-        const value = ref([]);
-
+        // 时间选择器 规则配置
         const rangeConfig = {
             rules: [
-            {
-                type: 'array',
-                required: false,
-                message: '请选择日期',
-            },
+                {
+                    type: 'array',
+                    required: false,
+                    message: '请选择日期',
+                },
             ],
         };
 
@@ -302,51 +288,12 @@ export default defineComponent({
 
             console.log(submit_obj)
 
-            // console.log(props.data)
-
-            // ctx.emit('sift_callback', formdata)// 回调数据到父组件
-
-            var shop_id = formdata.shop_id
-
-            var shop_name = formdata.shop_name
-
-            // 默认查询条件
-            var message = {
-
-                "page":1,
-
-                "page_size":10,
-
-                condition:[{
-
-                    type: "orderby",
-                    condition: [{'column_name': 'create_time', 'value': 'DESC', }]
-
-                }]
+            if(JSON.stringify(submit_obj) === '{}'){
+                tool.Fun_.message('warning','请选择查询条件')
+            }else{
+                console.log('不为为空');
+                ctx.emit('sift_callback', submit_obj)
             }
-
-            // var where_c = {
-            //     type: "where",
-            //     condition: []
-            // }
-
-            // if(shop_id !== ''){
-            //     where_c.condition.push({'column_name':'shop_id','value':shop_id,'operator':'='})
-            // }
-
-            // if(shop_name !== ''){
-            //     where_c.condition.push({'column_name':'shop_name','value':shop_name,'operator':'='})
-            // }
-
-            // if(where_c.condition.length > 0){
-            //     message.condition.push(where_c)
-            // }
-
-            // console.log(message)
-
-
-
-
 
         };
 
@@ -359,10 +306,7 @@ export default defineComponent({
         resh_condition,
         formdata,
         rangeConfig,
-        value,
         loadData,
-        onCreateChange,
-        onupdateChange,
         handleFinish
         }
     }

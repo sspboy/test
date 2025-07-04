@@ -55,7 +55,7 @@ export default {
         title:'上传记录',
         menudata:{      // 菜单选中配置
             'key':'80',
-            'openKeys':'douyinshop'
+            'openKeys':'CopyProduct'
         },
       colum:[],           // 表头信息
       datalist:[],        // 列表信息

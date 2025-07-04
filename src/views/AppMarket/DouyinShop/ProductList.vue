@@ -44,7 +44,11 @@
 
                   <template #avatar>
                     <div class="cursor ListImg">
-                      <img :src="item.img" alt="" style="width: 100%;height: 100%;border-radius: 5px;">
+                      <a-image 
+                      :src="item.img"
+                      alt="" 
+                      fallback="data:image/png;base64,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"
+                      style="width: 100%;height: 100%;border-radius: 5px;" />
                     </div>
                   </template>
 
@@ -53,15 +57,19 @@
                       <a-col :span="14">
                         
                         <div class="title_div_box">
-                            <div><a href="#" style="color:black;">{{ item.name }}</a></div>
+                            <div>
+                              <span class="ProductIDStyle cursor">ID {{ item.product_id }}</span>
+                              <a href="#" style="color:black;">
+                              {{ item.name }}
+                            </a>
+                            </div>
                         </div>
 
-                        <a-space align="end" style="height: 22px;overflow: hidden;font-weight:normal;">
-                          <div class="ProductIDStyle cursor">ID {{ item.product_id }}</div>
+                        <a-space align="end" style="height: 20px;overflow: hidden;font-weight:normal;">
                           <div class="title_text_span">{{ product_type_info(item.product_type) }} </div>
-                          <div class="title_text_span">{{ product_status(item.status) }} </div>
+                          <div class="title_text_span">状态：{{ product_status(item.status) }} </div>
                           <div class="title_text_span">{{ product_check_status_info(item.check_status) }} </div>
-                          <div class="title_text_span">{{ item.category_detail.first_cname }} > {{ item.category_detail.second_cname }}</div>
+                          <div class="title_text_span">{{ product_cate_name_info(item.category_detail) }}</div>
                           <div class="title_text_span">销量: {{ item.sell_num }} </div>
                           <!-- <div class="title_text_span">运费模板: {{ item.freight_id }}</div> -->
                           <!-- <div class="title_text_span">详情描述</div> -->
@@ -262,10 +270,14 @@ export default {
           PAGEDATA.justify = 'center';
           PAGEDATA.align = 'center';
           PAGEDATA.loading = false;
+          PAGEDATA.datalist = res_list;
+          PAGEDATA.total_number = 0
         }else{
 
           setTimeout(() => {
             PAGEDATA.loading = false;
+            PAGEDATA.justify = 'start';
+            PAGEDATA.align = 'start';
             // 请求数据不为空
             PAGEDATA.datalist = res_list;
             PAGEDATA.total_number = total;
@@ -292,8 +304,21 @@ export default {
 
     // 【查询组件 回调方法】========================================开始
     const sift_select = (data)=>{
-      console.log('hehe:这是回调方法')
-      // loadproductData(PAGEDATA.List_conditions)
+      if(data === true){
+        PAGEDATA.List_conditions = {}
+        PAGEDATA.List_conditions.page = 1
+        PAGEDATA.List_conditions.size=10
+        PAGEDATA.List_conditions.state = 0
+        PAGEDATA.List_conditions.check_status = 3
+      }else{
+        data.page = 1
+        data.size = 10
+        PAGEDATA.List_conditions = data
+        console.log('hehe:这是回调方法',PAGEDATA.List_conditions)
+      }
+
+
+      loadproductData(PAGEDATA.List_conditions)
 
     }
     // 【查询组件 回调方法】========================================结束
@@ -345,7 +370,27 @@ export default {
     }
 
     // 商品类目转义
+    const product_cate_name_info = (data) =>{
+      var first_cname = data.first_cname;
+      var second_cname = data.second_cname;
+      var third_cname = data.third_cname;
+      var fourth_cname = data.fourth_cname;
+      var cate_text = '';
+      if(first_cname !== ''){
+        cate_text = cate_text + first_cname + '>' 
+      }
+      if(second_cname !== ''){
+        cate_text = cate_text + second_cname + '>' 
+      }
+      if(third_cname !== ''){
+        cate_text = cate_text + third_cname + '>' 
+      }
+      if(fourth_cname !== ''){
+        cate_text = cate_text + fourth_cname + '>' 
+      } 
+      return cate_text.slice(0,cate_text.length-1)
 
+    }
     
 
 
@@ -361,7 +406,8 @@ export default {
       page_turning,
       product_status,
       product_type_info,
-      product_check_status_info
+      product_check_status_info,
+      product_cate_name_info
     }
 
   }
@@ -373,7 +419,7 @@ export default {
 <style scoped>
 .ListImg{width: 45px;height: 45px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
 .title_div_box{width: 100%; height: 22px;overflow: hidden;padding: 4px 0 0 0;}
-.ProductIDStyle{height: 19px;border-radius: 4px;font-size: 10px;padding: 3px 0 0 0;color: darkgray;}
+.ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
 .title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;font-weight:normal;}
 .list_span_one{height: 20px;padding: 1px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 22px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}

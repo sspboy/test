@@ -49,6 +49,8 @@ div[aria-hidden="true"]{display: none !important;}
 /* 定义滚动条样式 */
 ::-webkit-scrollbar {
   width: 6px; /* 滚动条宽度 */
+  height: 6px;
+  cursor: pointer;
 }
  
 /* 定义滑块样式 */
