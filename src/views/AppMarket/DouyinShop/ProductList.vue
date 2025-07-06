@@ -1,4 +1,8 @@
+
 <template>
+  <edit :data="PAGEDATA"/>
+  <detaile :data="PAGEDATA"/>
+
   <a-layout style="height: 100vh;width: 100vw;">
 
 
@@ -59,17 +63,15 @@
                         <div class="title_div_box">
                             <div>
                               <span class="ProductIDStyle cursor">ID {{ item.product_id }}</span>
-                              <a href="#" style="color:black;">
-                              {{ item.name }}
-                            </a>
+                              <a href="#" style="color:black;" @click="showDetaile">{{ item.name }}</a>
                             </div>
                         </div>
 
-                        <a-space align="end" style="height: 20px;overflow: hidden;font-weight:normal;">
+                        <a-space align="end" :size="20" style="height: 26px;overflow: hidden;font-weight:normal;">
                           <div class="title_text_span">{{ product_type_info(item.product_type) }} </div>
                           <div class="title_text_span">状态：{{ product_status(item.status) }} </div>
-                          <div class="title_text_span">{{ product_check_status_info(item.check_status) }} </div>
-                          <div class="title_text_span">{{ product_cate_name_info(item.category_detail) }}</div>
+                          <div class="title_text_span">审核：{{ product_check_status_info(item.check_status) }} </div>
+                          <div class="title_text_span">类目：{{ product_cate_name_info(item.category_detail) }}</div>
                           <div class="title_text_span">销量: {{ item.sell_num }} </div>
                           <!-- <div class="title_text_span">运费模板: {{ item.freight_id }}</div> -->
                           <!-- <div class="title_text_span">详情描述</div> -->
@@ -128,7 +130,7 @@
                 </a-list-item-meta>
 
                 <template #actions>
-                    <a class="font_size_12" href="#">查看</a>
+                    <a class="font_size_12" href="#" @click="showEdit">编辑</a>
                     <a class="font_size_12" href="#">删除</a>
                 </template>
 
@@ -144,6 +146,12 @@
 
 
         <!--翻页组件 -->
+        <span style="padding: 14px 0 0 0;display: block;float: left;">
+          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><RedoOutlined /> 刷新列表</a-button>
+          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
+          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
+          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><CheckCircleOutlined /> 全选</a-button>
+        </span>
         <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
         <!--翻页组件 -->
 
@@ -168,10 +176,13 @@ import { useStore } from 'vuex'
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
-import { BorderTopOutlined } from '@ant-design/icons-vue';
+import { BorderTopOutlined,DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined } from '@ant-design/icons-vue';
 
 // 筛选条件查询组件
-import Siftcondition from '@/components/AppMarket/Douyinshop/siftcondition.vue';
+import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
+import edit from '@/components/AppMarket/Douyinshop/ProductList/edit.vue';
+import detaile from '@/components/AppMarket/Douyinshop/ProductList/detaile.vue';
+
 import nav_pagination from "@/components/nav_pagination.vue";
 
 // 网络请求工具引用
@@ -184,10 +195,16 @@ export default {
   name: "ProductList",
   // 引用组件
   components: {
+        CheckCircleOutlined,
+        DeleteOutlined,
+        EditOutlined,
+        RedoOutlined,
         menu_left,
         menu_head,
         Siftcondition,
-        nav_pagination
+        nav_pagination,
+        edit,
+        detaile
     },
   // 父组件数据
   props: {},
@@ -229,6 +246,7 @@ export default {
             'key':'78',
             'openKeys':'douyinshop'
       },
+
       colum:[],             // 表头信息
       datalist:[],          // 列表信息
       total_number:0,       // 内容总数
@@ -246,7 +264,10 @@ export default {
 
       }),
 
-      innerHeight: ref(window.innerHeight-190) // 初始化列表高度
+      innerHeight: ref(window.innerHeight-190), // 初始化列表高度
+
+      EditDate:ref(false),// 编辑显示状态
+      DetaileDate:ref(false)// 详情页显示状态
 
     })
 
@@ -392,8 +413,23 @@ export default {
 
     }
     
+    // 编辑方法
+    const showEdit = () => {
+      PAGEDATA.EditDate = true;
+      console.log('编辑商品')
+    };
 
+    // 详情方法
+    const showDetaile = () =>{
+      PAGEDATA.DetaileDate = true;
+      console.log('商品详情')
 
+    }
+
+    // 删除方法
+    const showDelete = () =>{
+
+    }
 
 
 
@@ -407,7 +443,9 @@ export default {
       product_status,
       product_type_info,
       product_check_status_info,
-      product_cate_name_info
+      product_cate_name_info,
+      showEdit,
+      showDetaile
     }
 
   }
@@ -417,7 +455,7 @@ export default {
 </script>
 
 <style scoped>
-.ListImg{width: 45px;height: 45px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
+.ListImg{width: 55px;height: 55px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
 .title_div_box{width: 100%; height: 22px;overflow: hidden;padding: 4px 0 0 0;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
 .title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;font-weight:normal;}

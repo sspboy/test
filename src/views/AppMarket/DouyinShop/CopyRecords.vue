@@ -226,7 +226,7 @@ import Edit_mobile from "@/components/AppMarket/Douyinshop/editmobile.vue";
 // 删除组件
 import Model_del from '@/components/AppMarket/Douyinshop/Modeldel.vue';
 // 筛选条件查询组件
-import Siftcondition from '@/components/AppMarket/Douyinshop/siftcondition.vue';
+import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
 
 // 组件引用=====结束
 

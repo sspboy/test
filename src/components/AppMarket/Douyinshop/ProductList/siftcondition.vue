@@ -124,7 +124,7 @@
 
         <!-- 自定义按钮 -->
         <template #extra >
-            <a-button type="primary" size="small" style="font-size: 14px;float: right;margin:4px 0 0 6px;" ghost>
+            <a-button type="primary" size="small" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost>
                 <EllipsisOutlined />
             </a-button>
         </template>
