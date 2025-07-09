@@ -1,6 +1,6 @@
 <template>
   <div id="components-pagination-demo-mini" class="nav_s">
-    <a-pagination size="small" @change="onChange" :total="props.fandata.total_number" :show-total="total => `总共 ${ total } 条数据`" show-size-changer show-quick-jumper />
+    <a-pagination style="font-size: 12px;" size="small" @change="onChange" :total="props.fandata.total_number" :show-total="total => `总共 ${ total } 条数据`" show-size-changer show-quick-jumper />
   </div>
 </template>
 
@@ -43,5 +43,5 @@ export default defineComponent({
 #components-pagination-demo-mini .ant-pagination:not(:last-child) {
   margin-bottom: 24px;
 }
-.nav_s{margin:18px 0 0 0px; float: right;}
+.nav_s{margin: 18px 0 0 0;float: right;}
 </style>

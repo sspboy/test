@@ -21,7 +21,7 @@ export default {
 </script>
 
 <style>
-html{margin: 0px; padding: 0px;font-size: 12px;}
+html{margin: 0px; padding: 0px;font-size: 12px;overflow: hidden;}
 .cursor{cursor: pointer}
 /* 页面内容区域背景色全局定义 */
 .ant-layout{background-color: #001529;}
@@ -42,7 +42,8 @@ html{margin: 0px; padding: 0px;font-size: 12px;}
 /* 时间选择器 默认字体 设置字体大小 */
 .ant-picker-input input::placeholder {font-size: 12px;}
 .ant-col{font-size: 12px;}
-
+/* 修改 checkbox 标签字体大小 */
+.ant-checkbox + span {font-size: 12px !important;}
 /**model对话框报错设置**/
 div[aria-hidden="true"]{display: none !important;}
 

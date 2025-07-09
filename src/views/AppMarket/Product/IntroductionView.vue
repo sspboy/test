@@ -17,6 +17,8 @@
       <!--左侧 菜单组件  结束-->
 
       <a-layout-content class="content_border" >
+
+
         
           <a-row :gutter="[12, 24]">
 
@@ -93,24 +95,72 @@
             </a-col>
           </a-row>
 
-          <a-row>
-            <a-card class="cardStyle cursor" style="margin: 14px 0 0 0;" :body-style="{ padding: 0, overflow: 'hidden' }">
-                <a-flex justify="space-between">
+
+
+          <a-row :gutter="[24, 0]" class="NumberBox cursor">
+            
+            <a-col :span="24">
+              <div class="ZhenduanTitle">
+                  <a-space style="float: left;padding: 0 0 0 4px;" :size="30">
+                    <h4> <DashboardOutlined /> 每日诊断任务</h4>
+                    <span class="font_size_12" style="padding: 0 0 6px 0;display: block;">任务状态 -- 初始化</span>
+                    <span class="font_size_12" style="padding: 0 0 6px 0;display: block;">诊断结果 -- 不达标</span>
+                    <span class="font_size_12" style="padding: 0 0 6px 0;display: block;">完成时间 -- 2024-01-12 12:12:12</span>
+
+                  </a-space>
+
+                  <a-space style="float: right;" :size="30">
+                    <span class="font_size_12">
+                      <a href="#" style="color: #000;">查看商品诊断中心 >></a>
+                    </span>
+                  </a-space>
                   
-                  <img alt="avatar" src="../../../assets/keji.jpg" class="imgStyle"/>
+              </div>
+            </a-col>
 
-                  <a-flex vertical align="flex-start" justify="space-between" style="padding: 10px 10px 0 10px;">
-                      <a-typography>
-                      <a-typography-title class="cardTitle"></a-typography-title>
-                      <a-typography-paragraph class="cardText">
-                      <!-- 每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息； -->
-                      </a-typography-paragraph>
-                    </a-typography>
-                  </a-flex>
+            <a-col :span="3">
+              <p class="Numbertext">90%</p>
+              <p class="font_size_12" style="text-align: center;">达标率</p>
+            </a-col>
+            
+            <a-col :span="3">
+              <p class="Numbertext">9</p>
+              <p class="font_size_12" style="text-align: center;">达标商品数</p>
+            </a-col>
 
-                </a-flex>
-            </a-card>
+            <a-col :span="3">
+              <p class="Numbertext">9</p>
+              <p class="font_size_12" style="text-align: center;">待优化商品</p>
+            </a-col>
+
+            <a-col :span="3">
+              <p class="Numbertext">9999+</p>
+              <p class="font_size_12" style="text-align: center;">可优化项</p>
+            </a-col>
+
+            <a-col :span="3">
+              <p class="Numbertext">0</p>
+              <p class="font_size_12" style="text-align: center;">待优化项</p>
+            </a-col>
+
+            <a-col :span="3">
+              <p class="Numbertext">9</p>
+              <p class="font_size_12" style="text-align: center;">信息不规范</p>
+            </a-col>
+            <a-col :span="3">
+              <p class="Numbertext">9</p>
+              <p class="font_size_12" style="text-align: center;">关键信息待优化</p>
+            </a-col>
+
+            <a-col :span="3">
+              <p class="Numbertext">9</p>
+              <p class="font_size_12" style="text-align: center;">素材缺失</p>
+            </a-col>
+
           </a-row>
+
+                  
+
 
 
           <!-- Comfyui-AI-list -->
@@ -155,7 +205,7 @@
               </a-card>
             </div>
             </a-col>
-                        <a-col :span="4">
+            <a-col :span="4">
               <div class="gutter-box">
               <a-card hoverable>
                 <template #cover>
@@ -271,7 +321,7 @@
 </template>
 <script>
 import { reactive,ref,computed} from 'vue';
-import{ShopTwoTone,ProfileTwoTone,MedicineBoxTwoTone,CodeTwoTone,QuestionCircleFilled,InfoCircleFilled,MehFilled,RightOutlined} from '@ant-design/icons-vue'
+import{ShopTwoTone,ProfileTwoTone,MedicineBoxTwoTone,CodeTwoTone,QuestionCircleFilled,InfoCircleFilled,MehFilled,RightOutlined,LoadingOutlined,DashboardOutlined} from '@ant-design/icons-vue'
 import { useStore } from 'vuex'
 
 // 组件引用=====开始
@@ -282,6 +332,8 @@ export default {
     name:'introduction',
     // 引用组件
     components: {
+      DashboardOutlined,
+        LoadingOutlined,
         menu_left,
         menu_head,
         ShopTwoTone,
@@ -337,6 +389,7 @@ export default {
 .gutter-box{background-color: aliceblue;border-radius: 6px;}
 .RightMiniBox{margin: 15px 14px 0 0;border:1px solid #e5e5e596;border-radius: 4px;padding:12px;}
 .ListCard{}
-
-
+.NumberBox{margin: 14px 0 0 0 !important; border: 1px solid #e5e5e596;border-radius: 6px;padding: 0 0 4px 0;}
+.Numbertext{margin: 16px 0 6px 0;font-size: 22px;text-align: center;}
+.ZhenduanTitle{height: 20px;margin: 14px 0 6px 0;}
 </style>

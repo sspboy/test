@@ -26,16 +26,14 @@
       <a-layout-content class="content_border">
   
         <!--条件查询组件 开始 -->
-        <a-collapse :bordered="false" expand-icon-position="start" collapsible="icon">
-          
-          <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
 
-        </a-collapse>
+        <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
+
         <!--条件查询组件 结束 -->
 
 
         <!--列表组件 开始 -->
-        <a-flex :style="{ height: PAGEDATA.innerHeight + 'px', overflow: 'auto'}" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
+        <a-flex :style="{height:PAGEDATA.innerHeight + 'px'}" class="FlexBox" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
         <!-- :style="{ height: innerHeight + 'px', overflow: 'auto'}" -->
 
           <a-list :data-source="PAGEDATA.datalist" :loading="PAGEDATA.loading" style="width: 100%;">
@@ -146,15 +144,17 @@
 
 
         <!--翻页组件 -->
-        <span style="padding: 14px 0 0 0;display: block;float: left;">
-          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><RedoOutlined /> 刷新列表</a-button>
-          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
-          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
-          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><CheckCircleOutlined /> 全选</a-button>
-        </span>
-        <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
-        <!--翻页组件 -->
 
+          <span style="padding:14px 0 0 0 ;display: block;float: left;">
+            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><RedoOutlined /> 刷新列表</a-button>
+            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
+            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
+            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 0;" ghost><CheckCircleOutlined /> 全选</a-button>
+          </span>
+
+          <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
+
+        <!--翻页组件 -->
 
       </a-layout-content>
   
@@ -170,24 +170,24 @@
 
 <script>
 
-import {reactive,ref,onMounted,onUnmounted} from 'vue';
+import {reactive,ref,onMounted,onUnmounted,computed} from 'vue';
 import { useStore } from 'vuex'
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
-import { BorderTopOutlined,DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined } from '@ant-design/icons-vue';
+import { BorderTopOutlined,DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined } from '@ant-design/icons-vue';
 
 // 筛选条件查询组件
 import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
 import edit from '@/components/AppMarket/Douyinshop/ProductList/edit.vue';
 import detaile from '@/components/AppMarket/Douyinshop/ProductList/detaile.vue';
-
 import nav_pagination from "@/components/nav_pagination.vue";
 
 // 网络请求工具引用
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
+import * as PL from '@/assets/douyinshop/ProductList';
 
 // 组件引用=====结束
 export default {
@@ -195,6 +195,7 @@ export default {
   name: "ProductList",
   // 引用组件
   components: {
+        SettingOutlined,
         CheckCircleOutlined,
         DeleteOutlined,
         EditOutlined,
@@ -216,18 +217,19 @@ export default {
     const moment = require('moment');       // 时间戳转换
     const tool = new TOOL.TOOL()            // 工具方法
     const API = new utils.A_Patch()         // 请求接口地址合集
+    const Pl = '' // 商品列表方法model引用
 
 
 
     // 组件挂之后---请求数据===============================开始
     // 定义一个函数来处理窗口大小变化 ==
     const handleResize = () => {
-      PAGEDATA.innerHeight = window.innerHeight-190; // 作为表格自适应高度
+      PAGEDATA.innerHeight = window.innerHeight - 200; // 作为表格自适应高度
     };
 
     // 在组件挂载时添加事件监听器
     onMounted(() => {
-        window.addEventListener('resize', handleResize);
+        window.addEventListener('resize', handleResize);// 窗口变换时候
         loadproductData(PAGEDATA.List_conditions)
     });
 
@@ -235,7 +237,10 @@ export default {
     onUnmounted(() => {
       window.removeEventListener('resize', handleResize);
     });
+
     // 【组件挂载】========================================结束
+
+
 
     // 页面初始化数据
     const PAGEDATA = reactive({
@@ -264,12 +269,15 @@ export default {
 
       }),
 
-      innerHeight: ref(window.innerHeight-190), // 初始化列表高度
+      innerHeight: ref(window.innerHeight - 200), // 初始化列表高度
 
       EditDate:ref(false),// 编辑显示状态
-      DetaileDate:ref(false)// 详情页显示状态
+      DetaileDate:ref(false),// 详情页显示状态
+      activeKey:ref(['1']),// 查询折叠id
 
+      
     })
+
 
 
 
@@ -355,6 +363,7 @@ export default {
         return '删除'
       }
     }
+
     // 审核状态转义// 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
     const product_check_status_info = (data)=>{
       if(data == 1){
@@ -431,6 +440,18 @@ export default {
 
     }
 
+    // 是否核销
+
+    // 是否驳回
+
+    // 搭配组合
+
+    // 是否整改
+
+    // 质量分详情查询
+
+    // 图片懒加载
+
 
 
 
@@ -445,7 +466,8 @@ export default {
       product_check_status_info,
       product_cate_name_info,
       showEdit,
-      showDetaile
+      showDetaile,
+
     }
 
   }
@@ -461,4 +483,5 @@ export default {
 .title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;font-weight:normal;}
 .list_span_one{height: 20px;padding: 1px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 22px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
+.FlexBox{overflow:auto; transition:height 0.5s ease;margin:10px 0 0 0;border:1px solid #e5e5e596;border-radius: 6px;}
 </style>

@@ -1,153 +1,187 @@
 <template>
+    <a-collapse :bordered="false" @change="onOpen_sift">
 
-    <a-collapse-panel key="1" :show-arrow="false">
+        <a-collapse-panel key="1" :showArrow="false">
 
-        <!-- 自定义标题 -->
-        <template #header>
+            <!-- 自定义标题 -->
+            <template #header>
 
-            <div @click.stop="showCollapse" style="width: 100%;overflow: hidden;height: 28px;">
+                <div @click.stop="showCollapse" style="width: 100%;overflow: hidden;height: 28px;">
+                    <a-row>
 
-                <a-row>
+                    <a-col :span="20">
+                        <a-form
+                            layout="inline"
+                            :model="formdata"
+                        >
+                        <h3 style="padding: 3px 20px 0 0;">{{ props.data.title }}</h3>
 
-                <a-col :span="20">
-                    <a-form
-                        layout="inline"
-                        :model="formdata"
-                    >
-                    <h3 style="padding: 3px 20px 0 0;">{{ props.data.title }}</h3>
+                        <a-form-item name="title_key">
+                            <a-input 
+                            type="text" 
+                            class="font_size_12"
+                            style="padding: 2px;"
+                            allowClear
+                            placeholder="输入标题关键字" 
+                            v-model:value="formdata.title_key" 
+                            size="small"
 
-                    <a-form-item name="title_key">
-                        <a-input 
+                            />
+                        </a-form-item>
+
+                        <a-form-item name="product_type">
+                            <a-select
+                                placeholder="商品类型"
+                                ref="select"
+                                v-model:value="formdata.product_type"
+                                size="small"
+                                allowClear
+                            >
+                                <a-select-option value="0">普通</a-select-option>
+                                <a-select-option value="1">新客商品</a-select-option>
+                                <a-select-option value="3">虚拟</a-select-option>
+                                <a-select-option value="6">玉石闪购</a-select-option>
+                                <a-select-option value="7">云闪购</a-select-option>
+                                <a-select-option value="127">其他</a-select-option>
+                            </a-select>
+                        </a-form-item>
+
+                        <a-form-item name="status">
+                            <a-select
+                                placeholder="商品状态"
+                                ref="select"
+                                v-model:value="formdata.status"
+                                size="small"
+                                allowClear
+                            >
+                                <a-select-option value="0">在线</a-select-option>
+                                <a-select-option value="1">下线</a-select-option>
+                                <a-select-option value="2">删除</a-select-option>
+                            </a-select>
+                        </a-form-item>
+
+                        <a-form-item name="check_status">
+                            <a-select 
+                            size="small"
+                            placeholder="审核状态"
+                            ref="select"
+                            v-model:value="formdata.check_status"
+                            allowClear
+                            >
+                                <a-select-option value="3">审核通过</a-select-option>
+                                <a-select-option value="2">待审核</a-select-option>
+                                <a-select-option value="4">未通过</a-select-option>
+                                <a-select-option value="7">待上架</a-select-option>
+                                <a-select-option value="1">未提交</a-select-option>
+                                <a-select-option value="5">封禁</a-select-option>
+                            </a-select>
+                        </a-form-item>
+                        
+                        <!-- <a-form-item name="cate_name">
+                            <a-cascader
+                                style="width: 180px;"
+                                size="small"
+                                v-model:value="formdata.cate_name"
+                                :options="formdata.options"
+                                :load-data="loadData"
+                                placeholder="商品类目"
+                                change-on-select
+                            />
+                        </a-form-item>  -->
+
+
+                        <a-form-item name="create_time" v-bind="rangeConfig" >
+                        <a-range-picker 
+                            size="small" 
+                            v-model:value="formdata.create_time" 
+                            style="border-radius: 4px;width: 240px;"
+                            :placeholder="['创建开始时间', '创建结束时间']"
+                            :show-time="{ format: 'HH:mm:ss' }"
+                            format="YYYY-MM-DD HH:mm:ss"
+                        />
+                        </a-form-item>
+
+                        <a-form-item name="update_time" v-bind="rangeConfig" >
+                        <a-range-picker 
+                            size="small" 
+                            v-model:value="formdata.update_time" 
+                            style="border-radius: 4px;width: 240px;"
+                            :placeholder="['更新开始时间', '更新结束时间']"
+                            :show-time="{ format: 'HH:mm:ss' }"
+                            format="YYYY-MM-DD HH:mm:ss"
+                        />
+                        </a-form-item>
+
+                    </a-form>
+                    </a-col>
+                    <a-col :span="4">
+                        <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:4px 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
+                        <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:4px 0 0 0;" @click="handleFinish">查询</a-button>
+                    </a-col>
+                    </a-row>
+                </div>
+            </template>
+
+
+            <!-- 自定义按钮 -->
+            <template #extra>
+                <a-button type="primary" size="small" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost>
+                    <EllipsisOutlined />
+                </a-button>
+            </template>
+
+            <!--自定义下拉区域 开始 -->
+            <div>
+                <a-form layout="inline" :model="formdata">
+
+
+                    <a-form-item name="product_id">
+                        <a-input
                         type="text" 
-                        class="font_size_12" 
-                        placeholder="输入标题关键字" 
-                        v-model:value="formdata.title_key" 
-                        size="small"
+                        class="font_size_12"
                         style="padding: 2px;"
-                        allowClear
-                        />
-                    </a-form-item>
-
-                    <a-form-item name="product_type">
-                        <a-select
-                            placeholder="商品类型"
-                            ref="select"
-                            v-model:value="formdata.product_type"
-                            size="small"
-                            allowClear
-                        >
-                            <a-select-option value="0">普通</a-select-option>
-                            <a-select-option value="1">新客商品</a-select-option>
-                            <a-select-option value="3">虚拟</a-select-option>
-                            <a-select-option value="6">玉石闪购</a-select-option>
-                            <a-select-option value="7">云闪购</a-select-option>
-                            <a-select-option value="127">其他</a-select-option>
-                        </a-select>
-                    </a-form-item>
-
-                    <a-form-item name="status">
-                        <a-select
-                            placeholder="商品状态"
-                            ref="select"
-                            v-model:value="formdata.status"
-                            size="small"
-                            allowClear
-                        >
-                            <a-select-option value="0">在线</a-select-option>
-                            <a-select-option value="1">下线</a-select-option>
-                            <a-select-option value="2">删除</a-select-option>
-                        </a-select>
-                    </a-form-item>
-
-                    <a-form-item name="check_status">
-                        <a-select 
+                        allowClear  
                         size="small"
-                        placeholder="审核状态"
-                        ref="select"
-                        v-model:value="formdata.check_status"
-                        allowClear
-                        >
-                            <a-select-option value="3">审核通过</a-select-option>
-                            <a-select-option value="2">待审核</a-select-option>
-                            <a-select-option value="4">未通过</a-select-option>
-                            <a-select-option value="7">待上架</a-select-option>
-                            <a-select-option value="1">未提交</a-select-option>
-                            <a-select-option value="5">封禁</a-select-option>
-                        </a-select>
-                    </a-form-item>
-                    
-                    <a-form-item name="cate_name">
-                        <a-cascader
-                            style="width: 180px;"
-                            size="small"
-                            v-model:value="formdata.cate_name"
-                            :options="formdata.options"
-                            :load-data="loadData"
-                            placeholder="商品类目"
-                            change-on-select
+                        v-model:value="formdata.product_id" 
+                        placeholder="商品id查询"
                         />
-                    </a-form-item> 
-
-
-                    <a-form-item name="create_time" v-bind="rangeConfig" >
-                    <a-range-picker 
-                        size="small" 
-                        v-model:value="formdata.create_time" 
-                        style="border-radius: 4px;width: 240px;"
-                        :placeholder="['创建开始时间', '创建结束时间']"
-                        :show-time="{ format: 'HH:mm:ss' }"
-                        format="YYYY-MM-DD HH:mm:ss"
-                    />
                     </a-form-item>
-
-                    <a-form-item name="update_time" v-bind="rangeConfig" >
-                    <a-range-picker 
-                        size="small" 
-                        v-model:value="formdata.update_time" 
-                        style="border-radius: 4px;width: 240px;"
-                        :placeholder="['更新开始时间', '更新结束时间']"
-                        :show-time="{ format: 'HH:mm:ss' }"
-                        format="YYYY-MM-DD HH:mm:ss"
-                    />
+                    <a-form-item name="sku_codes">
+                        <a-input
+                        type="text" 
+                        class="font_size_12"
+                        style="padding: 2px;"
+                        allowClear  
+                        size="small"
+                        v-model:value="formdata.sku_codes" 
+                        placeholder="商品编码查询"
+                        />
                     </a-form-item>
-
+                    <a-form-item name="store_id">
+                        <a-input
+                        type="text" 
+                        class="font_size_12"
+                        style="padding: 2px;"
+                        allowClear  
+                        size="small"
+                        v-model:value="formdata.store_id" 
+                        placeholder="小时达门店id"
+                        />
+                    </a-form-item>
+                    <a-form-item name="lookup_option">
+                        <a-checkbox-group v-model:value="formdata.lookup_option">
+                            <a-checkbox value="need_name_affix" name="type">显示标题前后缀</a-checkbox>
+                            <a-checkbox value="need_title_limit" name="type">显示标题长度限制规则</a-checkbox>
+                            <a-checkbox value="exist_audit_reject_suggest" name="type">只查询有驳回建议的商品</a-checkbox>
+                        </a-checkbox-group>
+                    </a-form-item>
                 </a-form>
-                </a-col>
-                <a-col :span="4">
-                    <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:4px 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
-                    <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:4px 0 0 0;" @click="handleFinish">查询</a-button>
-                </a-col>
-            </a-row>
             </div>
-        </template>
+            <!--条件查询组件 结束 -->
 
-
-        <!-- 自定义按钮 -->
-        <template #extra >
-            <a-button type="primary" size="small" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost>
-                <EllipsisOutlined />
-            </a-button>
-        </template>
-
-        <!--自定义下拉区域 开始 -->
-        <!-- <div>
-            <a-form layout="inline" :model="formdata">
-                <a-form-item name="update_time" v-bind="rangeConfig" >
-                    <a-range-picker 
-                        size="small" 
-                        v-model:value="formdata.update_time" 
-                        style="border-radius: 4px;width: 240px;"
-                        :placeholder="['更新开始时间', '更新结束时间']"
-                        :show-time="{ format: 'HH:mm:ss' }"
-                        format="YYYY-MM-DD HH:mm:ss"
-                    />
-                </a-form-item>
-            </a-form>
-        </div> -->
-        <!--条件查询组件 结束 -->
-
-    </a-collapse-panel>
-
+        </a-collapse-panel>
+        
+    </a-collapse>
 </template>
 
 
@@ -209,8 +243,11 @@ export default defineComponent({
             cate_name: undefined,           // 商品类目
             options:ref([]),                // 分类选项
             create_time:ref(undefined),     // 创建时间
-            update_time:ref(undefined)      // 更新时间
-
+            update_time:ref(undefined),     // 更新时间
+            product_id:ref([]),             // id查询
+            sku_codes:ref([]),              // 商家编码查询
+            store_id:ref(undefined),         // 小时达商家门店id
+            lookup_option:ref([])
         });
 
         // 重置查询条件方法
@@ -299,8 +336,21 @@ export default defineComponent({
 
 
         // 展开收起方法
+        const onOpen_sift = (value) =>{
+            console.log(value)
+            if(value.length == 0){      // 收起状态
+                props.data.innerHeight = props.data.innerHeight + 50
+
+            }else{      // 展开状态
+                props.data.innerHeight = props.data.innerHeight - 50
+            }
+
+        }
+
+
     
     return {
+        onOpen_sift,
         page_config,
         props,
         resh_condition,
