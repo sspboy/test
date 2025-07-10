@@ -60,17 +60,53 @@
                         
                         <div class="title_div_box">
                             <div>
-                              <span class="ProductIDStyle cursor">ID {{ item.product_id }}</span>
                               <a href="#" style="color:black;" @click="showDetaile">{{ item.name }}</a>
                             </div>
                         </div>
 
                         <a-space align="end" :size="20" style="height: 26px;overflow: hidden;font-weight:normal;">
+                          <div class="title_text_span ProductIDStyle cursor">
+                            <a-tooltip placement="top">
+                              <template #title>
+                                <span class="font_size_12">{{ item.product_id }}</span>
+                              </template>
+                              商品ID
+                            </a-tooltip>
+                          </div>
                           <div class="title_text_span">{{ product_type_info(item.product_type) }} </div>
-                          <div class="title_text_span">状态：{{ product_status(item.status) }} </div>
-                          <div class="title_text_span">审核：{{ product_check_status_info(item.check_status) }} </div>
-                          <div class="title_text_span">类目：{{ product_cate_name_info(item.category_detail) }}</div>
-                          <div class="title_text_span">销量: {{ item.sell_num }} </div>
+                          <div class="title_text_span">{{ product_status(item.status) }} </div>
+                          <div class="title_text_span">
+                            
+                            {{ product_check_status_info(item.check_status) }}
+
+                                <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
+
+                                  <a-tooltip placement="top">
+                                        <template  #title>
+                                          <span class="font_size_12">
+                                            {{ item.audit_reject_suggestion }}
+                                          </span>
+                                        </template>
+                                        <CloseSquareOutlined style="color:#eb2f96;" /> 驳回建议
+                                      </a-tooltip>
+                                </span>
+                                <span class="font_size_12" v-else>
+                                  <!-- <CheckSquareOutlined style="color:#52c41a;" /> 审核通过  -->
+                                </span>
+
+
+                          </div>
+                          <div class="title_text_span cursor">
+                            <a-tooltip placement="top">
+                              <template  #title>
+                                <span class="font_size_12">
+                                  {{ product_cate_name_info(item.category_detail).full_cate }}
+                                </span>
+                              </template>
+                              {{ product_cate_name_info(item.category_detail).last_cate }}
+                            </a-tooltip>
+                          </div>
+                          <div class="title_text_span">销量{{ item.sell_num }}</div>
                           <!-- <div class="title_text_span">运费模板: {{ item.freight_id }}</div> -->
                           <!-- <div class="title_text_span">详情描述</div> -->
                         </a-space>
@@ -82,16 +118,32 @@
                           <a-col :span="24">
                             <div class="list_span_one">
                               <a-space>
-                                <span class="font_size_12">是否驳回</span>
-                                <span class="font_size_12">是否核销</span>
+                                <div class="font_size_12" v-if="item.need_check_out">
+                                   <CloseSquareOutlined style="color:#eb2f96;" />  需要核销 
+                                </div>
+                                <div class="font_size_12" v-else>
+                                  <CheckSquareOutlined style="color:#52c41a;" /> 无需核销
+                                </div>
                               </a-space>
                             </div>
                           </a-col>
                           <a-col :span="24">
                             <div class="list_span_two">
                               <a-space>
-                                <span class="font_size_12">是否整改</span>
-                                <span class="font_size_12">是否可搭配</span>
+
+                                <div class="font_size_12" v-if="item.can_combine"> 
+                                  <CheckSquareOutlined style="color:#52c41a;" /> 可以搭配 
+                                </div>
+                                <div class="font_size_12 cursor" v-else> 
+                                     <a-tooltip placement="top">
+                                        <template  #title>
+                                          <span class="font_size_12">
+                                            {{ item.can_not_combine_reason }}
+                                          </span>
+                                        </template>
+                                        <CloseSquareOutlined style="color:#eb2f96;" /> 不可搭配 
+                                      </a-tooltip>
+                                </div>
                               </a-space>
                             </div>
                           </a-col>
@@ -176,7 +228,7 @@ import { useStore } from 'vuex'
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
-import { BorderTopOutlined,DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined } from '@ant-design/icons-vue';
+import { BorderTopOutlined,DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined } from '@ant-design/icons-vue';
 
 // 筛选条件查询组件
 import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
@@ -195,6 +247,8 @@ export default {
   name: "ProductList",
   // 引用组件
   components: {
+    CheckSquareOutlined,
+    CloseSquareOutlined,
         SettingOutlined,
         CheckCircleOutlined,
         DeleteOutlined,
@@ -266,6 +320,16 @@ export default {
         "size":10,
         "status":0,         //  0-在线；1-下线；2-删除；
         "check_status":3,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
+        
+        "can_combine_product":true, // 是否可搭配
+        
+        // 查询option
+        "lookup_option":{
+          "need_name_affix":true,       // 是否需要获取标题前后缀
+          "need_title_limit":true,      //是否需要获取商品标题长度限制规则
+        },
+
+        "need_rectification_info":true, // 是否需要自动整改信息
 
       }),
 
@@ -292,7 +356,10 @@ export default {
         var res_data = res.data.data;
         var res_list = res_data.data;
         var total = res_data.total;
-        console.log(res_list)
+        // console.log(res_list)
+        // for(let i of res_list){
+        //   console.log(i.audit_reject_suggestion)
+        // }
         
         // 请求数据为空
         if(res_list.length == 0){
@@ -339,11 +406,28 @@ export default {
         PAGEDATA.List_conditions.size=10
         PAGEDATA.List_conditions.state = 0
         PAGEDATA.List_conditions.check_status = 3
+        PAGEDATA.List_conditions.can_combine_product = true
+        PAGEDATA.List_conditions.lookup_option = {
+          "need_name_affix":true,// 是否需要获取标题前后缀
+          "need_title_limit":true,//是否需要获取商品标题长度限制规则
+        }
+        PAGEDATA.List_conditions.need_rectification_info = true // 是否需要自动整改信息
+
       }else{
+
         data.page = 1
         data.size = 10
+        data.can_combine_product = true // 是否可搭配
+        data.lookup_option = {
+          "need_name_affix":true,// 是否需要获取标题前后缀
+          "need_title_limit":true,//是否需要获取商品标题长度限制规则
+        }
+        data.need_rectification_info = true // 是否需要自动整改信息
+
         PAGEDATA.List_conditions = data
+
         console.log('hehe:这是回调方法',PAGEDATA.List_conditions)
+
       }
 
 
@@ -401,6 +485,7 @@ export default {
 
     // 商品类目转义
     const product_cate_name_info = (data) =>{
+
       var first_cname = data.first_cname;
       var second_cname = data.second_cname;
       var third_cname = data.third_cname;
@@ -417,8 +502,14 @@ export default {
       }
       if(fourth_cname !== ''){
         cate_text = cate_text + fourth_cname + '>' 
-      } 
-      return cate_text.slice(0,cate_text.length-1)
+      }
+
+      var cate_obj = {}
+      var full_cate = cate_text.slice(0,cate_text.length-1);
+      cate_obj.full_cate = full_cate
+      cate_obj.last_cate = full_cate.split('>').slice(-1)[0];
+
+      return cate_obj
 
     }
     
@@ -451,6 +542,8 @@ export default {
     // 质量分详情查询
 
     // 图片懒加载
+
+
 
 
 

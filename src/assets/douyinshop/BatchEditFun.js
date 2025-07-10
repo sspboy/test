@@ -69,6 +69,30 @@ export class B_Fun {
             delete submit_obj.product_type
         }
 
+        if(values.lookup_option.length){
+
+            for(let i of values.lookup_option){
+
+                if(i == 'need_check_out'){// 只显示需要核销的商品
+
+                    submit_obj.need_check_out = true
+
+                }else if(i == 'exist_audit_reject_suggest'){// 只查询有驳回信息的商品
+                    var q_obj = {}
+                    q_obj.exist_audit_reject_suggest = true
+                    q_obj.need_audit_reject_suggest = true
+                    submit_obj.query_options= q_obj
+
+                }
+            }
+        }else{
+            delete submit_obj.lookup_option
+            delete submit_obj.query_options
+        }
+
+
+
+
         return submit_obj;
     }
 
