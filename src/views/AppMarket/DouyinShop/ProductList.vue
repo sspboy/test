@@ -2,6 +2,8 @@
 <template>
   <edit :data="PAGEDATA"/>
   <detaile :data="PAGEDATA"/>
+  <more_select :data="PAGEDATA"/>
+
 
   <a-layout style="height: 100vh;width: 100vw;">
 
@@ -73,11 +75,11 @@
                               商品ID
                             </a-tooltip>
                           </div>
-                          <div class="title_text_span">{{ product_type_info(item.product_type) }} </div>
-                          <div class="title_text_span">{{ product_status(item.status) }} </div>
+                          <div class="title_text_span">{{ Profun.Field_translation.product_type_info(item.product_type) }} </div>
+                          <div class="title_text_span">{{ Profun.Field_translation.product_status(item.status) }} </div>
                           <div class="title_text_span">
                             
-                            {{ product_check_status_info(item.check_status) }}
+                            {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
 
                                 <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
 
@@ -100,10 +102,10 @@
                             <a-tooltip placement="top">
                               <template  #title>
                                 <span class="font_size_12">
-                                  {{ product_cate_name_info(item.category_detail).full_cate }}
+                                  {{ Profun.Field_translation.product_cate_name_info(item.category_detail).full_cate }}
                                 </span>
                               </template>
-                              {{ product_cate_name_info(item.category_detail).last_cate }}
+                              {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
                             </a-tooltip>
                           </div>
                           <div class="title_text_span">销量{{ item.sell_num }}</div>
@@ -130,7 +132,6 @@
                           <a-col :span="24">
                             <div class="list_span_two">
                               <a-space>
-
                                 <div class="font_size_12" v-if="item.can_combine"> 
                                   <CheckSquareOutlined style="color:#52c41a;" /> 可以搭配 
                                 </div>
@@ -196,14 +197,12 @@
 
 
         <!--翻页组件 -->
-
           <span style="padding:14px 0 0 0 ;display: block;float: left;">
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><RedoOutlined /> 刷新列表</a-button>
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 0;" ghost><CheckCircleOutlined /> 全选</a-button>
           </span>
-
           <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
 
         <!--翻页组件 -->
@@ -228,12 +227,14 @@ import { useStore } from 'vuex'
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
-import { BorderTopOutlined,DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined } from '@ant-design/icons-vue';
+import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined } from '@ant-design/icons-vue';
 
 // 筛选条件查询组件
 import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
 import edit from '@/components/AppMarket/Douyinshop/ProductList/edit.vue';
 import detaile from '@/components/AppMarket/Douyinshop/ProductList/detaile.vue';
+import more_select from '@/components/AppMarket/Douyinshop/ProductList/more_select.vue';
+
 import nav_pagination from "@/components/nav_pagination.vue";
 
 // 网络请求工具引用
@@ -247,8 +248,8 @@ export default {
   name: "ProductList",
   // 引用组件
   components: {
-    CheckSquareOutlined,
-    CloseSquareOutlined,
+        CheckSquareOutlined,
+        CloseSquareOutlined,
         SettingOutlined,
         CheckCircleOutlined,
         DeleteOutlined,
@@ -259,7 +260,8 @@ export default {
         Siftcondition,
         nav_pagination,
         edit,
-        detaile
+        detaile,
+        more_select
     },
   // 父组件数据
   props: {},
@@ -271,20 +273,21 @@ export default {
     const moment = require('moment');       // 时间戳转换
     const tool = new TOOL.TOOL()            // 工具方法
     const API = new utils.A_Patch()         // 请求接口地址合集
-    const Pl = '' // 商品列表方法model引用
+    const Profun = new PL.ProductList_fun() // 商品列表方法model引用
+
 
 
 
     // 组件挂之后---请求数据===============================开始
     // 定义一个函数来处理窗口大小变化 ==
     const handleResize = () => {
-      PAGEDATA.innerHeight = window.innerHeight - 200; // 作为表格自适应高度
+      PAGEDATA.innerHeight = window.innerHeight - 180; // 作为表格自适应高度
     };
 
     // 在组件挂载时添加事件监听器
     onMounted(() => {
         window.addEventListener('resize', handleResize);// 窗口变换时候
-        loadproductData(PAGEDATA.List_conditions)
+        loadproductData(FromData.value)
     });
 
     // 在组件卸载时移除事件监听器
@@ -314,7 +317,125 @@ export default {
       justify:'center',     // 列表内容对齐：loading加载居中设定
       align:'center',       // 列表内容对齐：loading加载居中设定
 
-      List_conditions:reactive({     // 请求条件初始化
+      List_conditions:reactive({     // 查询配置
+
+        "page":1,            // 当前页面
+        "size":10,           // 显示数量
+
+        "product_type":0,    // 商品类型
+        "product_type_op":[
+          {
+            "label":"普通商品",
+            "value":0
+          },
+          {
+            "label":"新客商品",
+            "value":1
+          },
+          {
+            "label":"虚拟商品",
+            "value":3
+          },
+          {
+            "label":"玉石闪购",
+            "value":6
+          },
+          {
+            "label":"云闪购",
+            "value":7
+          },
+          {
+            "label":"其他",
+            "value":127
+          },
+        ],
+
+        "status":0,         //  在线状态
+        "status_op":[
+          {
+            "label":"在线",
+            "value":0
+          },
+          {
+            "label":"下线",
+            "value":1
+          },
+          {
+            "label":"删除",
+            "value":2
+          }
+
+        ],
+
+        "check_status":3,   // 审核状态
+        "check_status_op":[
+          {
+            "label":"未提交",
+            "value":1
+          },
+          {
+            "label":"待审核",
+            "value":2
+          },
+          {
+            "label":"审核通过",
+            "value":3
+          },
+          {
+            "label":"审核未通过",
+            "value":4
+          },
+                    {
+            "label":"封禁",
+            "value":5
+          },
+                    {
+            "label":"审核通过待上架",
+            "value":7
+          },
+        ],
+
+        "can_combine_product":true, // 是否可搭配
+        
+        // 查询option
+        "lookup_option":ref({
+          "need_name_affix":true,       // 是否需要获取标题前后缀
+          "need_title_limit":true,      //是否需要获取商品标题长度限制规则
+        }),
+
+
+        "title_key": '',                  // 标题关键字
+
+        "options":ref([]),                // 分类选项
+        "create_time":ref(undefined),     // 创建时间
+        "update_time":ref(undefined),     // 更新时间
+
+
+        "product_id":ref(undefined),      // id查询
+        "sku_codes":ref(undefined),       // 商家编码查询
+        "store_id":ref(undefined),        // 小时达商家门店id
+
+
+        "need_rectification_info":true, // 是否需要自动整改信息
+
+        "need_check_out":ref(false), // 只显示需要核销商品
+        "exist_audit_reject_suggest":ref(false), // 只显示驳回商品
+
+
+        
+
+      }),
+
+      innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
+
+      EditDate:ref(false),              // 编辑显示状态
+      DetaileDate:ref(false),           // 详情页显示状态
+      MoreSelectData:ref(false)// 更多查询
+
+    })
+    
+    // 查询条件初始化====默认配置
+    const FromData = ref({
 
         "page":1,
         "size":10,
@@ -322,29 +443,32 @@ export default {
         "check_status":3,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
         
         "can_combine_product":true, // 是否可搭配
-        
+
         // 查询option
         "lookup_option":{
           "need_name_affix":true,       // 是否需要获取标题前后缀
           "need_title_limit":true,      //是否需要获取商品标题长度限制规则
         },
-
         "need_rectification_info":true, // 是否需要自动整改信息
 
-      }),
-
-      innerHeight: ref(window.innerHeight - 200), // 初始化列表高度
-
-      EditDate:ref(false),// 编辑显示状态
-      DetaileDate:ref(false),// 详情页显示状态
-      activeKey:ref(['1']),// 查询折叠id
-
-      
     })
 
+    // 翻页查询条件
+    const navData=ref({
+        "page":1,
+        "size":10,
+        "status":0,         //  0-在线；1-下线；2-删除；
+        "check_status":3,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
+        
+        "can_combine_product":true, // 是否可搭配
 
-
-
+        // 查询option
+        "lookup_option":{
+          "need_name_affix":true,       // 是否需要获取标题前后缀
+          "need_title_limit":true,      //是否需要获取商品标题长度限制规则
+        },
+        "need_rectification_info":true, // 是否需要自动整改信息
+    })
 
     // 请求商品列表接口数据
     const loadproductData = async(data) => {
@@ -366,10 +490,9 @@ export default {
           PAGEDATA.justify = 'center';
           PAGEDATA.align = 'center';
           PAGEDATA.loading = false;
-          PAGEDATA.datalist = res_list;
+          PAGEDATA.datalist = [];
           PAGEDATA.total_number = 0
         }else{
-
           setTimeout(() => {
             PAGEDATA.loading = false;
             PAGEDATA.justify = 'start';
@@ -377,141 +500,46 @@ export default {
             // 请求数据不为空
             PAGEDATA.datalist = res_list;
             PAGEDATA.total_number = total;
-
           }, 1000);
-
         }
-
     }
 
     
-
 
     // 【翻页-组件 回调方法】========================================开始
     const page_turning = (data)=>{
       PAGEDATA.justify = 'flex-start';
       PAGEDATA.align = 'flex-start';
-      PAGEDATA.List_conditions.page = data.page;
-      PAGEDATA.List_conditions.size = data.page_size;
-      loadproductData(PAGEDATA.List_conditions)
+      navData.value.page = data.page;
+      navData.value.size = data.page_size;
+      loadproductData(navData.value)
     }
     // 【查询组件 回调方法】========================================结束
     
 
     // 【查询组件 回调方法】========================================开始
     const sift_select = (data)=>{
-      if(data === true){
-        PAGEDATA.List_conditions = {}
-        PAGEDATA.List_conditions.page = 1
-        PAGEDATA.List_conditions.size=10
-        PAGEDATA.List_conditions.state = 0
-        PAGEDATA.List_conditions.check_status = 3
-        PAGEDATA.List_conditions.can_combine_product = true
-        PAGEDATA.List_conditions.lookup_option = {
-          "need_name_affix":true,// 是否需要获取标题前后缀
-          "need_title_limit":true,//是否需要获取商品标题长度限制规则
-        }
-        PAGEDATA.List_conditions.need_rectification_info = true // 是否需要自动整改信息
 
+      if(data == true){// 重置刷新列表
+
+        loadproductData(FromData.value)
+      
       }else{
-
         data.page = 1
         data.size = 10
-        data.can_combine_product = true // 是否可搭配
+        data.can_combine_product = true       // 是否可搭配
         data.lookup_option = {
-          "need_name_affix":true,// 是否需要获取标题前后缀
-          "need_title_limit":true,//是否需要获取商品标题长度限制规则
+          "need_name_affix":true,             // 是否需要获取标题前后缀
+          "need_title_limit":true,            //是否需要获取商品标题长度限制规则
         }
-        data.need_rectification_info = true // 是否需要自动整改信息
-
-        PAGEDATA.List_conditions = data
-
-        console.log('hehe:这是回调方法',PAGEDATA.List_conditions)
-
+        data.need_rectification_info = true, // 是否需要自动整改信息
+        navData.value = data // 留存查询条件到翻页使用
+        loadproductData(navData.value)
       }
-
-
-      loadproductData(PAGEDATA.List_conditions)
-
     }
     // 【查询组件 回调方法】========================================结束
 
 
-    // 商品状态转义  0-在线；1-下线；2-删除；
-    const product_status = (data)=>{
-      if(data == 0){
-        return '在线'
-      }else if(data == 1){
-        return '下线'
-      }else if(data == 2){
-        return '删除'
-      }
-    }
-
-    // 审核状态转义// 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
-    const product_check_status_info = (data)=>{
-      if(data == 1){
-        return '未提交'
-      }else if(data == 2){
-        return '待审核'
-      }else if(data == 3){
-        return '审核通过'
-      }else if(data == 4){
-        return '审核未通过'
-      }else if(data == 5){
-        return '封禁'
-      }else if(data == 7){
-        return '待上架'
-      }
-    }
-
-
-    // 商品类型转义0-普通；1-新客商品；3-虚拟；6-玉石闪购；7-云闪购 ；127-其他类型；
-    const product_type_info = (data)=>{
-      if(data == 0){
-        return '普通商品'
-      }else if(data == 1){
-        return '新客商品'
-      }else if(data == 3){
-        return '虚拟商品'
-      }else if(data == 6){
-        return '玉石闪购'
-      }else if(data == 7){
-        return '云闪购'
-      }else if(data == 127){
-        return '其他商品'
-      }
-    }
-
-    // 商品类目转义
-    const product_cate_name_info = (data) =>{
-
-      var first_cname = data.first_cname;
-      var second_cname = data.second_cname;
-      var third_cname = data.third_cname;
-      var fourth_cname = data.fourth_cname;
-      var cate_text = '';
-      if(first_cname !== ''){
-        cate_text = cate_text + first_cname + '>' 
-      }
-      if(second_cname !== ''){
-        cate_text = cate_text + second_cname + '>' 
-      }
-      if(third_cname !== ''){
-        cate_text = cate_text + third_cname + '>' 
-      }
-      if(fourth_cname !== ''){
-        cate_text = cate_text + fourth_cname + '>' 
-      }
-
-      var cate_obj = {}
-      var full_cate = cate_text.slice(0,cate_text.length-1);
-      cate_obj.full_cate = full_cate
-      cate_obj.last_cate = full_cate.split('>').slice(-1)[0];
-
-      return cate_obj
-
-    }
     
     // 编辑方法
     const showEdit = () => {
@@ -549,15 +577,14 @@ export default {
 
 
     return {
+      Profun,
+      FromData,
       moment,
       PAGEDATA,
       store,
       sift_select,
       page_turning,
-      product_status,
-      product_type_info,
-      product_check_status_info,
-      product_cate_name_info,
+
       showEdit,
       showDetaile,
 
@@ -574,7 +601,7 @@ export default {
 .title_div_box{width: 100%; height: 22px;overflow: hidden;padding: 4px 0 0 0;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
 .title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;font-weight:normal;}
-.list_span_one{height: 20px;padding: 1px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
-.list_span_two{height: 22px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
+.list_span_one{height: 24px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
+.list_span_two{height: 28px;padding: 8px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .FlexBox{overflow:auto; transition:height 0.5s ease;margin:10px 0 0 0;border:1px solid #e5e5e596;border-radius: 6px;}
 </style>
