@@ -1,31 +1,128 @@
-import { reactive } from "vue"
+import { reactive,ref } from "vue"
 
 //**商品列表 js方法**//
 export class ProductList_fun {
 
     PageConfig = reactive({
 
-        "page":1,           // 当前页面
-        "size":10,          // 页面内容数量    
-        "status":0,         // 0-在线；1-下线；2-删除；
-        "check_status":3,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
-        
-        "can_combine_product":true, // 是否可搭配
-        
-        // 查询option
-        "lookup_option":{
-          "need_name_affix":true,       // 是否需要获取标题前后缀
-          "need_title_limit":true,      //是否需要获取商品标题长度限制规则
-        },
+        // 默认查询条件
+        "can_combine_product":true,       // 是否可搭配--默认
+        "need_rectification_info":true,   // 是否需要自动整改信息 -- 默认
 
-        "need_rectification_info":true, // 是否需要自动整改信息
+        "lookup_option":ref({             // 查询option--默认
+            "need_name_affix":true,       // 是否需要获取标题前后缀
+            "need_title_limit":true,      //是否需要获取商品标题长度限制规则
+        }),
+
+        "page":1,                         // 当前页面 -- 默认
+        "size":10,                        // 显示数量 -- 默认
+
+
+        // 翻页查询条件
+        "product_type":ref(undefined),    // 商品类型
+        "product_type_op":[
+        {
+            "label":"普通商品",
+            "value":0
+        },
+        {
+            "label":"新客商品",
+            "value":1
+        },
+        {
+            "label":"虚拟商品",
+            "value":3
+        },
+        {
+            "label":"玉石闪购",
+            "value":6
+        },
+        {
+            "label":"云闪购",
+            "value":7
+        },
+        {
+            "label":"其他",
+            "value":127
+        },
+        ],
+
+        "status":ref(undefined),          //  在线状态
+        "status_op":[
+        {
+            "label":"在线",
+            "value":0
+        },
+        {
+            "label":"下线",
+            "value":1
+        },
+        {
+            "label":"删除",
+            "value":2
+        }
+
+        ],
+
+        "check_status":ref(undefined),    // 审核状态
+        "check_status_op":[
+        {
+            "label":"未提交",
+            "value":1
+        },
+        {
+            "label":"待审核",
+            "value":2
+        },
+        {
+            "label":"审核通过",
+            "value":3
+        },
+        {
+            "label":"审核未通过",
+            "value":4
+        },
+                    {
+            "label":"封禁",
+            "value":5
+        },
+                    {
+            "label":"审核通过待上架",
+            "value":7
+        },
+        ],
+
+        "create_time":ref(undefined),     // 创建时间
+        "update_time":ref(undefined),     // 更新时间
+
+        "product_id":ref(undefined),      // id查询最多支持  -- 选填
+        "sku_codes":ref(undefined),       // 商家编码查询    -- 选填
+        "store_id":ref(undefined),        // 小时达商家门店id-- 选填
+
+        "selectGroup":ref([]),            // need_check_out 只显示需要核销商品--exist_audit_reject_suggest 只显示驳回商品
+        "need_check_out":ref(false),                // 只显示需要核销商品 -- 选填
+        "exist_audit_reject_suggest":ref(false),    // 只显示驳回商品 -- 选填
+        
+
 
     })
 
-    // 表单数据验证
+    // 查询【提交表单】数据验证
     FromDataverify = (values) =>{
 
         const submit_obj = {};
+
+        // 获取表单值是否为空
+
+        // 默认值
+        submit_obj.page = 1
+        submit_obj.size = 10
+        submit_obj.can_combine_product = true;      // 是否可搭配
+        submit_obj.lookup_option = {
+          "need_name_affix":true,                   // 是否需要获取标题前后缀
+          "need_title_limit":true,                  //是否需要获取商品标题长度限制规则
+        }
+        submit_obj.need_rectification_info = true;  // 是否需要自动整改信息
 
         // 商品类型
         if(values.product_type !== null && values.product_type !== undefined && values.product_type !== ""){
@@ -85,6 +182,19 @@ export class ProductList_fun {
         }else{
             delete submit_obj.product_id
         }
+
+        // 商品id查询
+        // if(DataObj.product_id){
+        //     return ''
+        // }
+        
+        // 商家编码查询
+        
+        // 门店id查询
+        
+        // 只看核销
+
+        // 只看驳回建议
 
         return submit_obj;
     }

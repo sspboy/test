@@ -2,7 +2,7 @@
 <template>
   <edit :data="PAGEDATA"/>
   <detaile :data="PAGEDATA"/>
-  <more_select :data="PAGEDATA"/>
+  <more_select :data="PAGEDATA" @moer_select_callback="sift_select"/>
 
 
   <a-layout style="height: 100vh;width: 100vw;">
@@ -322,7 +322,7 @@ export default {
         "page":1,            // 当前页面
         "size":10,           // 显示数量
 
-        "product_type":0,    // 商品类型
+        "product_type":ref(undefined),    // 商品类型
         "product_type_op":[
           {
             "label":"普通商品",
@@ -350,7 +350,7 @@ export default {
           },
         ],
 
-        "status":0,         //  在线状态
+        "status":ref(undefined),         //  在线状态
         "status_op":[
           {
             "label":"在线",
@@ -367,7 +367,7 @@ export default {
 
         ],
 
-        "check_status":3,   // 审核状态
+        "check_status":ref(undefined),   // 审核状态
         "check_status_op":[
           {
             "label":"未提交",
@@ -404,7 +404,7 @@ export default {
         }),
 
 
-        "title_key": '',                  // 标题关键字
+        "title_key": undefined,                  // 标题关键字
 
         "options":ref([]),                // 分类选项
         "create_time":ref(undefined),     // 创建时间
@@ -430,7 +430,7 @@ export default {
 
       EditDate:ref(false),              // 编辑显示状态
       DetaileDate:ref(false),           // 详情页显示状态
-      MoreSelectData:ref(false)// 更多查询
+      MoreSelectData:ref(false)         // 更多查询关闭宣誓状态
 
     })
     
@@ -459,7 +459,6 @@ export default {
         "size":10,
         "status":0,         //  0-在线；1-下线；2-删除；
         "check_status":3,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
-        
         "can_combine_product":true, // 是否可搭配
 
         // 查询option
@@ -477,9 +476,11 @@ export default {
 
         // 请求商品接口
         const res = await tool.Http_.post(API.AppSrtoreAPI.dou_product.list, data)
+
         var res_data = res.data.data;
         var res_list = res_data.data;
         var total = res_data.total;
+
         // console.log(res_list)
         // for(let i of res_list){
         //   console.log(i.audit_reject_suggestion)
@@ -508,11 +509,15 @@ export default {
 
     // 【翻页-组件 回调方法】========================================开始
     const page_turning = (data)=>{
+
       PAGEDATA.justify = 'flex-start';
       PAGEDATA.align = 'flex-start';
+
       navData.value.page = data.page;
       navData.value.size = data.page_size;
+
       loadproductData(navData.value)
+
     }
     // 【查询组件 回调方法】========================================结束
     
@@ -520,21 +525,16 @@ export default {
     // 【查询组件 回调方法】========================================开始
     const sift_select = (data)=>{
 
-      if(data == true){// 重置刷新列表
+      if(data == true){   // 重置刷新列表
 
         loadproductData(FromData.value)
       
-      }else{
-        data.page = 1
-        data.size = 10
-        data.can_combine_product = true       // 是否可搭配
-        data.lookup_option = {
-          "need_name_affix":true,             // 是否需要获取标题前后缀
-          "need_title_limit":true,            //是否需要获取商品标题长度限制规则
-        }
-        data.need_rectification_info = true, // 是否需要自动整改信息
-        navData.value = data // 留存查询条件到翻页使用
+      }else{  
+
+        navData.value = data                    // 查询条件到翻页使用
+
         loadproductData(navData.value)
+
       }
     }
     // 【查询组件 回调方法】========================================结束

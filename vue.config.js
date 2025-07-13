@@ -12,7 +12,7 @@ module.exports = defineConfig({
     proxy: {
       '/api': {
 
-        target: 'http://192.168.0.106:5000', // 家里
+        target: 'http://192.168.2.108:5000', // 家里
         // target: 'http://192.168.3.120:5000', // 公司
         changeOrigin: true,
         pathRewrite: {

@@ -19,7 +19,14 @@ axios.interceptors.response.use(function (response) {
         message.error('IP被限制')
     }
 
+    if(response.data.sub_code == "isv.access-token-expired"){
+        message.error('Token请过期重新授权')
+    }
+
+    // console.log(response.data)
+
     return response;
+
 }, function (error) {
     // 对响应错误做点什么
     return Promise.reject(error);

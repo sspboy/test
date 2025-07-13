@@ -63,29 +63,6 @@
                         <a-select-option value="5">封禁</a-select-option>
                     </a-select>
                 </a-form-item>
-                
-                <!-- <a-form-item name="create_time">
-                    <a-range-picker 
-                        size="small" 
-                        v-model:value="props.data.List_conditions.create_time" 
-                        style="border-radius: 4px;width: 200px;"
-                        :placeholder="['创建开始时间', '创建结束时间']"
-                        :show-time="{ format: 'HH:mm:ss' }"
-                        format="YYYY-MM-DD HH:mm:ss"
-                    />
-                </a-form-item>
-
-                <a-form-item name="update_time">
-                    <a-range-picker 
-                        size="small" 
-                        v-model:value="props.data.List_conditions.update_time" 
-                        style="border-radius: 4px;width: 200px;"
-                        :placeholder="['更新开始时间', '更新结束时间']"
-                        :show-time="{ format: 'HH:mm:ss' }"
-                        format="YYYY-MM-DD HH:mm:ss"
-                    />
-                </a-form-item> -->
-
 
             <a-form-item name="product_id">
                 <a-input
@@ -109,13 +86,6 @@
                 size="small"
                 />
             </a-form-item>
-            <!-- <a-form-item name="need_check_out">
-                <a-checkbox v-model:checked="props.data.List_conditions.need_check_out">只看核销</a-checkbox>
-            </a-form-item>
-
-            <a-form-item name="exist_audit_reject_suggest">
-                <a-checkbox v-model:checked="props.data.List_conditions.exist_audit_reject_suggest" >只看驳回</a-checkbox>
-            </a-form-item> -->
             
             <a-form-item>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
@@ -192,10 +162,14 @@ export default defineComponent({
 
         // 查询按钮方法
         const handleFinish = values => {
+            
+            console.log(values)
+
             const submit_obj = ProList.FromDataverify(values) // 验证表单字段是否为空或是否正确
-            console.log(submit_obj)
+
 
             ctx.emit('sift_callback', submit_obj)
+
         };
 
 
