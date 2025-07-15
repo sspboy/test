@@ -51,7 +51,20 @@ axios.interceptors.response.use(function (response) {
                 maxCount: 3,
             })
             message[type](msg)
-        }
+        },
+        // 加载js文件
+        loadScript:(src, opts = {})=>{
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script')
+                script.src = src
+                script.async = true
+                if (opts.crossOrigin) script.crossOrigin = opts.crossOrigin
+                script.onload  = () => resolve(script)
+                script.onerror = () => reject(new Error(`Failed to load ${src}`))
+                document.head.appendChild(script)
+            })
+        },
+
     }
 
 

@@ -1,20 +1,23 @@
 <template>
+    
+    <message_page :data="badgeconfig" />
+
     <a-layout-header class="head">
       
-      <div class="logo_text cursor">
-        <div style="float: left;">
-          <img src="../../assets/logo_36x36.png"/>
-        </div>
+        <div class="logo_text cursor">
+          <div style="float: left;">
+            <img src="../../assets/logo_36x36.png"/>
+          </div>
 
-        <div style="margin: 2px 0 0 18px;float: left;">
-          {{ user_data.brand_name }}
-        </div>
+          <div style="margin: 2px 0 0 18px;float: left;">
+            {{ user_data.brand_name }}
+          </div>
 
-        <div style="float: left; margin: 4px 0 0 10px;" class="font_size_12">
-          ~您的满意是我们最大的追求！
+          <div style="float: left; margin: 4px 0 0 10px;" class="font_size_12">
+            ~您的满意是我们最大的追求！
+          </div>
+        
         </div>
-      
-      </div>
 
         <div type="link" class="font_size_12 cursor" style="float: right; color: dimgray;margin: 6px 10px 0 0;"  @click="Login_out">
           <LogoutOutlined style="margin: 0 3px;" />
@@ -26,22 +29,33 @@
         <MehOutlined style="margin: 0 3px;" />
         {{ user_data.id }}
       </div>
+
+      <div class="font_size_12 cursor" style="float: right; color: dimgray; margin: 6px 10px 0 0;" @click="op_message">
+        <a-badge :dot="badgeconfig.bad"><BellOutlined style="margin: 0 3px;color: #fff;"/></a-badge>
+      </div>
     </a-layout-header>
 </template>
 
 <script>
-import {defineComponent,computed } from 'vue';
+import {defineComponent,computed, reactive,ref } from 'vue';
 import { useStore } from 'vuex'
-import {LogoutOutlined, MehOutlined} from '@ant-design/icons-vue'
-import * as utils from '@/assets/JS_Model/public_model';
+import {LogoutOutlined, MehOutlined,BellOutlined} from '@ant-design/icons-vue'
 import axios from 'axios';
 import { useRouter } from "vue-router"; // 导入路由
+// 组件引用
+import message_page from '@/components/layout/message.vue'
+
+// 方法引用
+import * as utils from '@/assets/JS_Model/public_model';
+
 
 export default defineComponent({
 
   name: "menu_head",
 
   components: {
+    message_page,
+    BellOutlined,
     LogoutOutlined,
     MehOutlined,
   },
@@ -54,6 +68,11 @@ export default defineComponent({
   },
 
   setup(props){
+
+    const badgeconfig = reactive({
+      bad:ref(false), // 小红点是否显示
+      mesPage:ref(false)
+    })
     
     const API = new utils.A_Patch()// 请求接口
   
@@ -103,7 +122,15 @@ export default defineComponent({
 
     }
 
+    // 显示消息
+    const op_message= ()=>{
+      console.log(badgeconfig.mesPage)
+      badgeconfig.mesPage = true
+    }
+
     return{
+      badgeconfig,
+      op_message,
       user_data,
       props,
       Login_out
