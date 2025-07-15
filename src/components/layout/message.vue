@@ -1,6 +1,6 @@
 <template>
 
-    <div ref="myDiv"></div>
+    <div ref="myDiv" id="heheda"></div>
     <a-drawer :width="500" title="消息通知" placement="right" :open="props.data.mesPage" @close="onClose" >
 
 
@@ -40,31 +40,29 @@ export default defineComponent({
         const tool = new TOOL.TOOL()            // 工具方法
         const myDiv = ref(null)
 
-        onBeforeMount(
-            async () => {
+        onBeforeMount(async () => {
                 try {
                     await tool.Fun_.loadScript('http://lf1-fe.ecombdstatic.com/obj/ecom-fe-open-public/component/index.js', {crossOrigin: 'anonymous'})
 
                     console.log('外部 JS 加载完成')
                     console.log(ecopen)
                     console.log(myDiv.value)
-                    ecopen.bixi(myDiv.value, {
-                        "appID":"583",
-                        "shopId":"4463798",
-                        "token":'CgYIASAHKAESXgpc6TJM+rLRpw9X9Q2CPR3CdM5/x7/aWk6MgWR0wGZJzviOjtUuKtsllfLb4Q7u4SxJ+/LyKGcfvAx9YHby8Gyua7fuUTT1XeJTwqu0HINqcalV5OieV6atzzu8Mn0aAA==',
-                        "componentId": 317,
-                    })
+
                 } catch (e) {
                     console.error(e)
                 }
+                
+                const ele = myDiv.value
+                ecopen.bixi(ele, {
+                    "appID":"583",
+                    "shopId":"4463798",
+                    "token":'CgYIASAHKAESXgpc6TJM+rLRpw9X9Q2CPR3CdM5/x7/aWk6MgWR0wGZJzviOjtUuKtsllfLb4Q7u4SxJ+/LyKGcfvAx9YHby8Gyua7fuUTT1XeJTwqu0HINqcalV5OieV6atzzu8Mn0aAA==',
+                    "componentId": 317,
+                })
+        }
+)
 
 
-            // const script = document.createElement('script')
-            // script.src = 'http://lf1-fe.ecombdstatic.com/obj/ecom-fe-open-public/component/index.js'
-            // script.crossOrigin = 'anonymous'        // 如需要 CORS
-            // script.onload = () => { /* 库已可用 */ }
-            // document.head.appendChild(script)
-        })
 
         onMounted(() => {
             // const script = document.createElement('script')
@@ -73,12 +71,11 @@ export default defineComponent({
             // script.onload = () => { /* 库已可用 */ }
             // document.head.appendChild(script)
 
-            const ele = document.getElementById('component123');
 
 
         })
 
-        
+
 
         // 确认按钮
         const handleOk = e => {

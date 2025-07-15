@@ -238,6 +238,7 @@ import more_select from '@/components/AppMarket/Douyinshop/ProductList/more_sele
 import nav_pagination from "@/components/nav_pagination.vue";
 
 // 网络请求工具引用
+import axios from "axios";
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as PL from '@/assets/douyinshop/ProductList';
@@ -475,7 +476,7 @@ export default {
         PAGEDATA.loading = true;
 
         // 请求商品接口
-        const res = await tool.Http_.post(API.AppSrtoreAPI.dou_product.list, data)
+        const res = await axios.post(API.AppSrtoreAPI.dou_product.list, data)
 
         var res_data = res.data.data;
         var res_list = res_data.data;
