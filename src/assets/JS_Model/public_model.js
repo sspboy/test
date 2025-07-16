@@ -145,6 +145,10 @@ export class A_Patch{
             "add":"api/douyin/batchproduct/add",    // 添加
             "list":"api/douyin/batchproduct/list",  // 列表
             "detaile":"api/douyin/batchproduct/detaile/", // 详情
+        },
+        // 店铺工具接口
+        shoptool:{
+            "Mctoken":"api/douyin/order/getMCToken",  // 前端token
         }
 
 
