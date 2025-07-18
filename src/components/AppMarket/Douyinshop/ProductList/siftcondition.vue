@@ -23,6 +23,7 @@
                         v-model:value="props.data.List_conditions.product_type"
                         :options="props.data.List_conditions.product_type_op"
                         size="small"
+                        allowClear
                     >
                         <a-select-option value="0">普通商品</a-select-option>
                         <a-select-option value="1">新客商品</a-select-option>
@@ -40,6 +41,8 @@
                         v-model:value="props.data.List_conditions.status"
                         :options="props.data.List_conditions.status_op"
                         size="small"
+                        allowClear
+
                     >
                         <a-select-option value="0">在线</a-select-option>
                         <a-select-option value="1">下线</a-select-option>
@@ -54,6 +57,7 @@
                     ref="select"
                     v-model:value="props.data.List_conditions.check_status"
                     :options="props.data.List_conditions.check_status_op"
+                    allowClear
                     >
                         <a-select-option value="3">审核通过</a-select-option>
                         <a-select-option value="2">待审核</a-select-option>
@@ -89,7 +93,7 @@
             
             <a-form-item>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
-                    <EllipsisOutlined />
+                <EllipsisOutlined />
                 </a-button>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>

@@ -73,32 +73,52 @@ const API = new utils.A_Patch()// 请求接口
     // 抖音前端token请求
     mc_token = {
 
-        // 刷新前端token：：本地存储、删除、验证过期、重新获取
-        resh_mc_token:async()=>{
+        // 刷新前端token-shop-id：：本地存储、删除、验证过期、重新获取
+        resh_mc_token:async(shop_id)=>{
 
             var Key = 'MCtoken'
             var res = localStorage.getItem(Key)// 请求本地key
+
             // remove_mc_token(Key)
             if(res === null || res === 'undefined'){ // 本地无token:请求新得token缓存到本地数据库
-                await this.mc_token.http_get_mc_token()// 获取新得token，并缓存到本地；
+
+                await this.mc_token.http_get_mc_token(shop_id)// 获取新得token，并缓存到本地；
+
             }else{ // 本地有token：
+                
                 var token_obj = JSON.parse(res)
-                var expired_time = token_obj.expire_time
-                var time_verify_res= this.mc_token.verify_mc_token_expires(expired_time) // 验证时间是否过期
-                if(time_verify_res){// 没有过期
-                }else{// 已经过期
-                    console.log('组件tonken过期')
+
+                if(token_obj[shop_id] !== undefined){ // 店铺对应token存在
+                    var expired_time = token_obj[shop_id].expire_time
+                    var time_verify_res= this.mc_token.verify_mc_token_expires(expired_time) // 验证时间是否过期
+                    if(time_verify_res){// 没有过期
+                    }else{// 已经过期
+                        console.log('组件tonken过期')
+                        this.mc_token.remove_mc_token(Key)      // 清除本地token
+                        await this.mc_token.http_get_mc_token(shop_id) // 获取新得token，并缓存到本地；
+                    }
+                }else{ // 店铺对应token不存在
                     this.mc_token.remove_mc_token(Key)      // 清除本地token
-                    await this.mc_token.http_get_mc_token() // 获取新得token，并缓存到本地；
+                    await this.mc_token.http_get_mc_token(shop_id) // 获取新得token，并缓存到本地；
                 }
+
+
             }
         },
         // 获取新得token，并缓存到本地；
-        http_get_mc_token:()=>{
+        http_get_mc_token:(shop_id)=>{
+
             return new Promise((resolve,reject)=>{
                 axios.get(API.AppSrtoreAPI.shoptool.Mctoken).then((res)=>{
+                    
+                    var o = {}
+
                     var mc_token = res.data.data
-                    localStorage.setItem('MCtoken',JSON.stringify(mc_token))
+                    
+                    o[shop_id] = mc_token // 店铺id到
+
+                    localStorage.setItem('MCtoken',JSON.stringify(o))
+
                     resolve(res)
                 }).catch((err)=>{
                     reject(err)

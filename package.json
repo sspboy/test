@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@ant-design/icons-vue": "^7.0.1",
+    "@open-fxg/bixi-vue3": "^0.1.1",
     "@surely-vue/table": "^4.3.5",
     "@vue/cli": "^4.2.2",
     "@wangeditor/editor": "^5.1.23",

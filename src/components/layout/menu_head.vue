@@ -31,7 +31,9 @@
       </div>
 
       <div class="font_size_12 cursor right_tips">
+
         <div ref="myDiv" id="mytest"></div>
+
       </div>
           
 
@@ -75,9 +77,8 @@ export default defineComponent({
     const tool = new TOOL.TOOL()   // 工具方法
     const API = new utils.A_Patch()// 请求接口
     const router = useRouter();     // 初始化路由方法
-    // store.dispatch('member/get')
-
     const store = useStore();       // 共享数据
+
     const myDiv = ref(null)         // 消息通知容器
     
     onBeforeMount(async () => {
@@ -91,65 +92,14 @@ export default defineComponent({
 
         var s = store.state.member.message.shop.id;//店铺id
 
-        tool.mc_token.resh_mc_token('MCtoken').then((res)=>{
-            
+        tool.mc_token.resh_mc_token(s).then((res)=>{
             var token_obj = JSON.parse(localStorage.getItem('MCtoken'));//前端插件token对象
-            var t = token_obj.token // 前端插件token
-            // console.log(s)
+            var t = token_obj[s].token // 前端插件token
             // 多店铺
             Load_MessagePlus(s,t) // 加载消息组件
-
         })
-
       })
     })
-    console.log(store.state.member)
-
-
-
-    // const user_data = computed(()=>{
-    //   const page_data = ref({
-    //     brand_name:'',  // 品牌名称、店铺名称
-    //     id:'',          // 用户id
-    //   })
-    //   var userDATA = store.state.member.message.user_data // 获取用户数据
-
-    //   // console.log(userDATA)
-
-    //   if(userDATA === 'NOT_Login_Power'){ // 未登录提示
-
-    //     router.push('/pleaselogin')// 权限提示页面 点击去登录
-
-    //     return {brand_name:'', id:''}
-
-    //   }else if(JSON.stringify(userDATA) !== '{}'){ // 用户数据请求成功
-
-      
-    //     page_data.brand_name = userDATA.brand_name
-    //     page_data.id = userDATA.id
-
-    //     // 获取本地缓存前端组件token后：：：>再加载组件
-    //     tool.mc_token.resh_mc_token('MCtoken').then((res)=>{
-    //         var s = userDATA.s_id;//店铺id
-    //         var token_obj = JSON.parse(localStorage.getItem('MCtoken'));//前端插件token对象
-    //         var t = token_obj.token // 前端插件token
-    //         console.log(s)
-    //         // 多店铺
-    //         // var mas_div = document.getElementById('mytest')
-    //         // mas_div.innerHTML = '';
-    //         // myDiv.value = mas_div
-    //         // Load_MessagePlus(s,t) // 加载消息组件
-    //     })
-
-    //     return page_data
-      
-    //   }else{ // 数据未空
-
-    //       return page_data
-    //   }
-
-    // })
-
     
 
     // 退出登录方法
@@ -172,7 +122,7 @@ export default defineComponent({
     }
 
     // 封装================显示消息插件方法
-    const Load_MessagePlus = async (shop_id,token) => {
+    const Load_MessagePlus = async (shop_id, token) => {
 
       try {
           
