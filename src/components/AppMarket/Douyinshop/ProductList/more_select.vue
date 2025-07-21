@@ -13,7 +13,7 @@
 
             <a-row style="height: 80%;">
                 <a-col :span="8">
-                    <div style="padding:0 20px;height: 82%;">
+                    <div style="padding:0 20px;height: 68%;">
                         <a-textarea 
                         v-model:value="List_conditions.product_id" 
                         placeholder="多个商品ID查询 支持100个 逗号隔开" 
@@ -25,7 +25,7 @@
                     </div>
                 </a-col>
                 <a-col :span="8">
-                    <div style="padding:0 20px;height: 82%;">
+                    <div style="padding:0 20px;height: 68%;">
                         <a-textarea 
                             v-model:value="List_conditions.sku_codes" 
                             placeholder="多个商品编码查询 支持50个 逗号隔开" 
@@ -118,15 +118,6 @@
                         :show-time="{ format: 'HH:mm:ss' }"
                         format="YYYY-MM-DD HH:mm:ss"
                         />
-                    </p>
-
-                    <p>
-                        <a-radio-group v-model:value="List_conditions.selectGroup">
-                            <a-radio value="need_check_out" style="font-size: 12px;">只看需要核销的商品</a-radio>
-                            <a-radio value="exist_audit_reject_suggest" style="font-size: 12px;">只看有驳回建议的商品</a-radio>
-                        </a-radio-group>
-                        <!-- <a-checkbox v-model:checked="List_conditions.need_check_out">只看需要核销的商品</a-checkbox>
-                        <a-checkbox v-model:checked="List_conditions.exist_audit_reject_suggest" >只看有驳回建议的商品</a-checkbox> -->
                     </p>
 
                 </a-col>

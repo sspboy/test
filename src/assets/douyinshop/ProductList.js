@@ -195,6 +195,14 @@ export class ProductList_fun {
         // 只看核销
 
         // 只看驳回建议
+        if(values.exist_audit_reject_suggest === true){
+            submit_obj.query_options = {
+                "exist_audit_reject_suggest":true,
+                "need_audit_reject_suggest":true
+            }
+        }else{
+            delete submit_obj.exist_audit_reject_suggest
+        }
 
         return submit_obj;
     }

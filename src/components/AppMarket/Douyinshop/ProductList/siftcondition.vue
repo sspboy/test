@@ -90,7 +90,12 @@
                 size="small"
                 />
             </a-form-item>
-            
+
+            <a-form-item name="exist_audit_reject_suggest">
+                <a-checkbox v-model:checked="props.data.List_conditions.exist_audit_reject_suggest">只看驳回建议商品</a-checkbox>
+            </a-form-item>
+
+
             <a-form-item>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
                 <EllipsisOutlined />
@@ -166,7 +171,6 @@ export default defineComponent({
 
         // 查询按钮方法
         const handleFinish = values => {
-            
             console.log(values)
 
             const submit_obj = ProList.FromDataverify(values) // 验证表单字段是否为空或是否正确

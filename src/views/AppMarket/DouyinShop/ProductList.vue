@@ -61,34 +61,62 @@
                       <a-col :span="14">
                         
                         <div class="title_div_box">
-                            <div>
                               <a href="#" style="color:black;" @click="showDetaile">{{ item.name }}</a>
-                            </div>
                         </div>
 
                         <a-space align="end" :size="20" style="height: 26px;overflow: hidden;font-weight:normal;">
-                          <div class="title_text_span ProductIDStyle cursor">
+                          <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
                             <a-tooltip placement="top">
                               <template #title>
                                 <span class="font_size_12">{{ item.product_id }}</span>
                               </template>
-                              商品ID
+
+                              商品ID- <CopyOutlined />
+
+
                             </a-tooltip>
                           </div>
-                          <div class="title_text_span">{{ Profun.Field_translation.product_type_info(item.product_type) }} </div>
-                          <div class="title_text_span">{{ Profun.Field_translation.product_status(item.status) }} </div>
+
                           <div class="title_text_span">
-                            
+                            {{ Profun.Field_translation.product_type_info(item.product_type) }}
+                          </div>
+
+                          <div class="title_text_span">
+                            <span class="left_box status_0" v-if="item.status == 0"></span>
+                            <span class="left_box status_1" v-if="item.status == 1"></span>
+                            <span class="left_box status_2" v-if="item.status == 2"></span>
+
+                            {{ Profun.Field_translation.product_status(item.status) }}
+                          </div>
+                          
+                          <div class="title_text_span">
+                            <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
+                            <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
+                            <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
+                            <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
+                            <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
+                            <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
+
                             {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
 
                                 <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
 
                                   <a-tooltip placement="top">
+
                                         <template  #title>
                                           <span class="font_size_12">
                                             {{ item.audit_reject_suggestion }}
                                           </span>
+                                          
+                                          <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;background-color: #fff;color:#000;;">
+                                            驳回原因：{{ item.audit_reject_suggestion.reject_reason }}
+                                          </div>
+                                          <div v-if="item.audit_reject_suggestion.name_suggestion !== ''" style="font-size: 12px;background-color: #fff;color:#000;;">
+                                            标题建议：{{ item.audit_reject_suggestion.name_suggestion.after_name }}
+                                          </div>
+
                                         </template>
+
                                         <CloseSquareOutlined style="color:#eb2f96;" /> 驳回建议
                                       </a-tooltip>
                                 </span>
@@ -227,7 +255,7 @@ import { useStore } from 'vuex'
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
-import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined } from '@ant-design/icons-vue';
+import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined,CopyOutlined } from '@ant-design/icons-vue';
 
 // 筛选条件查询组件
 import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
@@ -249,6 +277,7 @@ export default {
   name: "ProductList",
   // 引用组件
   components: {
+        CopyOutlined,
         CheckSquareOutlined,
         CloseSquareOutlined,
         SettingOutlined,
@@ -420,10 +449,8 @@ export default {
         "need_rectification_info":true, // 是否需要自动整改信息
 
         "need_check_out":ref(false), // 只显示需要核销商品
+
         "exist_audit_reject_suggest":ref(false), // 只显示驳回商品
-
-
-        
 
       }),
 
@@ -578,6 +605,7 @@ export default {
 
 
     return {
+      tool,
       Profun,
       FromData,
       moment,
@@ -599,10 +627,22 @@ export default {
 
 <style scoped>
 .ListImg{width: 55px;height: 55px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
-.title_div_box{width: 100%; height: 22px;overflow: hidden;padding: 4px 0 0 0;}
+.title_div_box{width: 100%; height: 26px;overflow: hidden;padding: 4px 0 0 0;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
-.title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;font-weight:normal;}
+.title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 8px;border-radius: 5px;}
 .list_span_one{height: 24px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 28px;padding: 8px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .FlexBox{overflow:auto; transition:height 0.5s ease;margin:10px 0 0 0;border:1px solid #e5e5e596;border-radius: 6px;}
+
+.left_box{border-radius: 4px;display: block;width: 8px;height: 8px;float: left;margin: 6px 4px 0 0;}
+.status_0{background-color: #52c41a;}
+.status_1{background-color: darkgray;}
+.status_2{background-color: #ff0000;}
+.check_status_1{background-color: darkgray;}
+.check_status_2{background-color: #0066FF;}
+.check_status_3{background-color: #52c41a;}
+.check_status_4{background-color: #FF9900;}
+.check_status_5{background-color: #ff0000;}
+.check_status_7{background-color: #66FFFF;}
+
 </style>

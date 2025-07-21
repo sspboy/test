@@ -66,8 +66,30 @@ const API = new utils.A_Patch()// 请求接口
                 document.head.appendChild(script)
             })
         },
-        // 时间戳
-        
+        // 复制内容到剪贴板
+        copyToClipboard:async(text)=> {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                // console.log('已复制（降级方案）');
+                message.success('复制成功')
+
+            } catch (err) {
+                console.error('复制失败:', err);
+            }
+            document.body.removeChild(textarea);
+
+            // try {
+            //     await navigator.clipboard.writeText(text);
+            //     message.success('复制成功')
+            //     console.log('已复制到剪贴板');
+            // } catch (err) {
+            //     console.error('复制失败:', err);
+            // }
+        }        
 
     }
     // 抖音前端token请求
@@ -87,8 +109,12 @@ const API = new utils.A_Patch()// 请求接口
             }else{ // 本地有token：
                 
                 var token_obj = JSON.parse(res)
+                // console.log(token_obj)
+                if(token_obj[shop_id] === undefined || token_obj[shop_id] === null){ // 店铺对应token 不存在
+                    this.mc_token.remove_mc_token(Key)      // 清除本地token
+                    await this.mc_token.http_get_mc_token(shop_id) // 获取新得token，并缓存到本地；
 
-                if(token_obj[shop_id] !== undefined){ // 店铺对应token存在
+                }else{ // 店铺对应token不存在
                     var expired_time = token_obj[shop_id].expire_time
                     var time_verify_res= this.mc_token.verify_mc_token_expires(expired_time) // 验证时间是否过期
                     if(time_verify_res){// 没有过期
@@ -97,9 +123,8 @@ const API = new utils.A_Patch()// 请求接口
                         this.mc_token.remove_mc_token(Key)      // 清除本地token
                         await this.mc_token.http_get_mc_token(shop_id) // 获取新得token，并缓存到本地；
                     }
-                }else{ // 店铺对应token不存在
-                    this.mc_token.remove_mc_token(Key)      // 清除本地token
-                    await this.mc_token.http_get_mc_token(shop_id) // 获取新得token，并缓存到本地；
+
+                    
                 }
 
 
@@ -144,8 +169,7 @@ const API = new utils.A_Patch()// 请求接口
         // 删除本地缓存
         remove_mc_token:(Key)=>{
             localStorage.removeItem(Key)
-        }
-
+        },
 
     }
 
