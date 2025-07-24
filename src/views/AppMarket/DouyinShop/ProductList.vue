@@ -64,7 +64,7 @@
                               <a href="#" style="color:black;" @click="showDetaile">{{ item.name }}</a>
                         </div>
 
-                        <a-space align="end" :size="20" style="height: 26px;overflow: hidden;font-weight:normal;">
+                        <a-space align="end" :size="10" style="height: 26px;overflow: hidden;font-weight:normal;">
                           <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
                             <a-tooltip placement="top">
                               <template #title>
@@ -104,20 +104,15 @@
                                   <a-tooltip placement="top">
 
                                         <template  #title>
-                                          <span class="font_size_12">
-                                            {{ item.audit_reject_suggestion }}
-                                          </span>
                                           
-                                          <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;background-color: #fff;color:#000;;">
+                                          <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
                                             驳回原因：{{ item.audit_reject_suggestion.reject_reason }}
-                                          </div>
-                                          <div v-if="item.audit_reject_suggestion.name_suggestion !== ''" style="font-size: 12px;background-color: #fff;color:#000;;">
-                                            标题建议：{{ item.audit_reject_suggestion.name_suggestion.after_name }}
                                           </div>
 
                                         </template>
 
-                                        <CloseSquareOutlined style="color:#eb2f96;" /> 驳回建议
+                                        <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span @click="showEdit"> 驳回建议</span>
+
                                       </a-tooltip>
                                 </span>
                                 <span class="font_size_12" v-else>
@@ -255,7 +250,7 @@ import { useStore } from 'vuex'
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
-import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined,CopyOutlined } from '@ant-design/icons-vue';
+import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined,CopyOutlined,ExclamationCircleFilled } from '@ant-design/icons-vue';
 
 // 筛选条件查询组件
 import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
@@ -277,6 +272,7 @@ export default {
   name: "ProductList",
   // 引用组件
   components: {
+        ExclamationCircleFilled,
         CopyOutlined,
         CheckSquareOutlined,
         CloseSquareOutlined,
@@ -629,7 +625,7 @@ export default {
 .ListImg{width: 55px;height: 55px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
 .title_div_box{width: 100%; height: 26px;overflow: hidden;padding: 4px 0 0 0;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
-.title_text_span{height: 20px;padding: 2px 0 0 0;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 8px;border-radius: 5px;}
+.title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}
 .list_span_one{height: 24px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 28px;padding: 8px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .FlexBox{overflow:auto; transition:height 0.5s ease;margin:10px 0 0 0;border:1px solid #e5e5e596;border-radius: 6px;}
