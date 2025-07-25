@@ -1,17 +1,17 @@
 
 <template>
-  <edit :data="PAGEDATA"/>
-  <detaile :data="PAGEDATA"/>
-  <more_select :data="PAGEDATA" @moer_select_callback="sift_select"/>
 
+  <!-- 动态渲染异步组件 -->
+  <edit_components v-if="PAGEDATA.EditDate" :data="PAGEDATA"/>
+  <detaile_components v-if="PAGEDATA.DetaileDate" :data="PAGEDATA"/>
+
+  <more_select :data="PAGEDATA" @moer_select_callback="sift_select"/><!--更多筛选组件-->
 
   <a-layout style="height: 100vh;width: 100vw;">
-
 
     <!--head 导航组件  开始-->
     <menu_head />
     <!--head 导航组件  结束-->
-
 
 
     <!--右侧内容部分 开始-->
@@ -61,7 +61,7 @@
                       <a-col :span="14">
                         
                         <div class="title_div_box">
-                              <a href="#" style="color:black;" @click="showDetaile">{{ item.name }}</a>
+                              <a href="#" style="color:black;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
                         </div>
 
                         <a-space align="end" :size="10" style="height: 26px;overflow: hidden;font-weight:normal;">
@@ -204,7 +204,7 @@
                 </a-list-item-meta>
 
                 <template #actions>
-                    <a class="font_size_12" href="#" @click="showEdit">编辑</a>
+                    <a class="font_size_12" href="#" @click="showEdit(item.product_id)">编辑</a>
                     <a class="font_size_12" href="#">删除</a>
                 </template>
 
@@ -244,7 +244,7 @@
 
 <script>
 
-import {reactive,ref,onMounted,onUnmounted,computed} from 'vue';
+import {reactive,ref,onMounted,onUnmounted,computed,defineAsyncComponent,markRaw} from 'vue';
 import { useStore } from 'vuex'
 
 // 组件引用=====开始
@@ -254,10 +254,7 @@ import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOut
 
 // 筛选条件查询组件
 import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
-import edit from '@/components/AppMarket/Douyinshop/ProductList/edit.vue';
-import detaile from '@/components/AppMarket/Douyinshop/ProductList/detaile.vue';
 import more_select from '@/components/AppMarket/Douyinshop/ProductList/more_select.vue';
-
 import nav_pagination from "@/components/nav_pagination.vue";
 
 // 网络请求工具引用
@@ -285,9 +282,9 @@ export default {
         menu_head,
         Siftcondition,
         nav_pagination,
-        edit,
-        detaile,
-        more_select
+        more_select,
+        edit_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/edit.vue')),
+        detaile_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/detaile.vue'))  
     },
   // 父组件数据
   props: {},
@@ -300,9 +297,6 @@ export default {
     const tool = new TOOL.TOOL()            // 工具方法
     const API = new utils.A_Patch()         // 请求接口地址合集
     const Profun = new PL.ProductList_fun() // 商品列表方法model引用
-
-
-
 
     // 组件挂之后---请求数据===============================开始
     // 定义一个函数来处理窗口大小变化 ==
@@ -454,8 +448,8 @@ export default {
 
       EditDate:ref(false),              // 编辑显示状态
       DetaileDate:ref(false),           // 详情页显示状态
-      MoreSelectData:ref(false)         // 更多查询关闭宣誓状态
-
+      MoreSelectData:ref(false),         // 更多查询显示状态
+      product_id:ref(null)
     })
     
     // 查询条件初始化====默认配置
@@ -529,8 +523,6 @@ export default {
         }
     }
 
-    
-
     // 【翻页-组件 回调方法】========================================开始
     const page_turning = (data)=>{
 
@@ -564,40 +556,26 @@ export default {
     // 【查询组件 回调方法】========================================结束
 
 
-    
-    // 编辑方法
-    const showEdit = () => {
+    // 编辑方法加载
+    const showEdit = (pro_id) => {
       PAGEDATA.EditDate = true;
-      console.log('编辑商品')
+      PAGEDATA.product_id = pro_id
     };
 
-    // 详情方法
-    const showDetaile = () =>{
-      PAGEDATA.DetaileDate = true;
-      console.log('商品详情')
 
+
+    // 详情方法加载
+    const showDetaile = (pro_id) =>{
+      PAGEDATA.DetaileDate = true;
+      PAGEDATA.product_id = pro_id
+
+      console.log('商品详情')
     }
 
     // 删除方法
     const showDelete = () =>{
 
     }
-
-    // 是否核销
-
-    // 是否驳回
-
-    // 搭配组合
-
-    // 是否整改
-
-    // 质量分详情查询
-
-    // 图片懒加载
-
-
-
-
 
 
     return {
@@ -609,7 +587,6 @@ export default {
       store,
       sift_select,
       page_turning,
-
       showEdit,
       showDetaile,
 

@@ -31,7 +31,7 @@ export default defineComponent({
 
     setup(props, ctx) {
 
-        console.log(props.data.EditDate)
+        console.log(props.data.product_id)
 
         const handleOk = e => {
             console.log(e);
