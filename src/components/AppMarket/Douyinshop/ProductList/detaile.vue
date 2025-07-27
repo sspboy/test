@@ -116,7 +116,7 @@
 
                 </a-tab-pane>
                 <a-tab-pane key="2" tab="图片视频">
-                    <a-row>
+                    <a-row :gutter="[16,16]">
 
                         <a-col :span="12">
                             <div style="width: 220px;height: 386px;background-color: #333;float: left;margin-right: 30px;border-radius: 6px;">
@@ -179,7 +179,7 @@
 
                 </a-tab-pane>
                 <a-tab-pane key="3" tab="规格库存">
-                    <a-row>
+                    <a-row :gutter="[16,16]">
                         <a-col :span="12">
                             <div>
                                 <h5>规格A</h5>
@@ -237,9 +237,109 @@
                     </a-row>
                     
                 </a-tab-pane>
-                <a-tab-pane key="4" tab="类目属性">类目属性</a-tab-pane>
-                <a-tab-pane key="5" tab="发布规则">发布规则</a-tab-pane>
-                <a-tab-pane key="6" tab="商品诊断">商品诊断</a-tab-pane>
+                <a-tab-pane key="4" tab="类目属性">
+                    <div style="margin-bottom: 20px;">
+                        <h5>商品类目：母婴>孕妇装>连衣裙</h5>
+                    </div>
+                    <h4>商品属性</h4>
+                    <a-row :gutter="[16,16]">
+                        <a-col :span="4">
+                            <div>属性名称</div>
+                            <div>属性值</div>
+                        </a-col>
+                        <a-col :span="4">
+                            <div>属性名称</div>
+                            <div>属性值</div>
+                        </a-col>
+                        <a-col :span="4">
+                            <div>属性名称</div>
+                            <div>属性值</div>
+                        </a-col>
+                        <a-col :span="4">
+                            <div>属性名称</div>
+                            <div>属性值</div>
+                        </a-col>
+                        <a-col :span="4">
+                            <div>属性名称</div>
+                            <div>属性值</div>
+                        </a-col>
+                        <a-col :span="4">
+                            <div>属性名称</div>
+                            <div>属性值</div>
+                        </a-col>
+                    </a-row>
+
+
+                </a-tab-pane>
+                <a-tab-pane key="5" tab="发布规则">
+                    <a-divider orientation="left">履约规则</a-divider>
+
+                    <div>
+                        特殊时间延迟发货规则
+                        现货发货模式规则
+                        阶梯发货模式规则
+                        全款预售发货模式规则
+                        SKU预售发货模式规则
+                        现货+预售发货规则
+                        新预售发货模式规则
+                    </div>
+                    <a-divider orientation="left">商品标题推荐规则</a-divider>
+                    <div>商品标题推荐规则</div>
+                    <a-divider orientation="left">售后服务规则</a-divider>
+                    <div>售后服务规则</div>
+                    <a-divider orientation="left">参考价相关规则</a-divider>
+                    <div>参考价相关规则</div>
+                    <a-divider orientation="left">spu管控规则</a-divider>
+                    <div>spu管控规则</div>
+                    <a-divider orientation="left">商品规格约束</a-divider>
+                    <div>商品规格约束</div>
+                    <a-divider orientation="left">商品尺码模板配置规则</a-divider>
+                    <div>商品尺码模板配置规则</div>
+                    <a-divider orientation="left">商品主图3:4配置规则</a-divider>
+                    <div>商品主图3:4配置规则</div>
+                    <a-divider orientation="left">金价信息</a-divider>
+                    <div>金价信息</div>
+                    <a-divider orientation="left">其他规则</a-divider>
+                    <div>其他规则</div>
+                    <a-divider orientation="left">交易相关的规则</a-divider>
+                    <div>交易相关的规则</div>
+                    <a-divider orientation="left">sku规则</a-divider>
+                    <div>sku规则</div>
+                    <a-divider orientation="left">资质规则</a-divider>
+                    <div>资质规则</div>
+                    <a-divider orientation="left">提取方式规则</a-divider>
+                    <div>提取方式规则</div>
+                </a-tab-pane>
+                <a-tab-pane key="6" tab="商品诊断">
+                    
+                    <div>质量分 <a-rate :value="2" disabled /> 质量等级 L3 </div>
+                    <a-divider orientation="left">可优化问题项</a-divider>
+                    <a-row :gutter="[16,16]">
+                        <a-col :span="4">
+                            <h3>问题字段：：标题</h3>
+                            <p>问题描述：详情页图片较少</p>
+                            <div>问题建议：商品素材缺少，详情页的图片说明较少。促进商品购买的决策性信息过少，影响购买，建议丰富商品信息，上传不少于5张详情图片，将商品优势展示出来</div>
+                        </a-col>
+                            <a-col :span="4">
+                            <h3>问题字段：：标题</h3>
+                            <p>问题描述：详情页图片较少</p>
+                            <div>问题建议：商品素材缺少，详情页的图片说明较少。促进商品购买的决策性信息过少，影响购买，建议丰富商品信息，上传不少于5张详情图片，将商品优势展示出来</div>
+                        </a-col>
+                                                <a-col :span="4">
+                            <h3>问题字段：：标题</h3>
+                            <p>问题描述：详情页图片较少</p>
+                            <div>问题建议：商品素材缺少，详情页的图片说明较少。促进商品购买的决策性信息过少，影响购买，建议丰富商品信息，上传不少于5张详情图片，将商品优势展示出来</div>
+                        </a-col>
+                            <a-col :span="4">
+                            <h3>问题字段：：标题</h3>
+                            <p>问题描述：详情页图片较少</p>
+                            <div>问题建议：商品素材缺少，详情页的图片说明较少。促进商品购买的决策性信息过少，影响购买，建议丰富商品信息，上传不少于5张详情图片，将商品优势展示出来</div>
+                        </a-col>
+                    </a-row>
+
+                    
+
+                </a-tab-pane>
                 <a-tab-pane key="7" tab="卡券">资质</a-tab-pane>
                 <a-tab-pane key="8" tab="组合搭配">组合搭配</a-tab-pane>
                 <a-tab-pane key="9" tab="资质">资质</a-tab-pane>
