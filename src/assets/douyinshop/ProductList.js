@@ -282,6 +282,20 @@ export class ProductList_fun {
             cate_obj.last_cate = full_cate.split('>').slice(-1)[0];
 
             return cate_obj
+        },
+        // 草稿状态
+        product_draft_status_info:(data)=>{
+            if(data == 0){
+                return '无草稿'
+            }else if(data == 1){
+                return '未提审'
+            }else if(data == 2){
+                return '待审核'
+            }else if(data == 3){
+                return '审核通过'
+            }else if(data == 4){
+                return '审核未通过'
+            }
         }
 
 

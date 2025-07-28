@@ -54,6 +54,7 @@
 </div>
 
 <div class="g-bg"></div>
+
 <css-doodle>
 
     :doodle {
@@ -271,7 +272,6 @@ export default {
     width: 100%;
     height: 100vh;
     background-color: rgba(255, 255, 255, 0.438); /* 背景色半透明 */
-
     backdrop-filter: blur(120px);/*模糊*/
     z-index: 100;
 }

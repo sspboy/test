@@ -104,7 +104,7 @@
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
             </a-form-item>
 
-                </a-form>
+            </a-form>
             </a-col>
 
         </a-row>
