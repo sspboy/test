@@ -366,7 +366,7 @@ export class ProductList_fun {
         },
         // 普通商品售后
         product_after_sale_service:(data)=>{
-            console.log('普通商品售后',data)
+            // console.log('普通商品售后',data)
             var obj = JSON.parse(data)
             var res = {
                 "supply_7day_return":"1",

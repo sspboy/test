@@ -282,21 +282,26 @@
                     <a-row :gutter="[16,16]">
 
                         <a-col :span="12">
+
                             <div style="width: 220px;height: 386px;background-color: #333;float: left;margin-right: 30px;border-radius: 6px;">
 
                             </div>
 
                             <div>
-                                <h5>白底图</h5>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px 0 0 0;"/>
-                            </div>
-                            <div>
                                 <h5>商品主图</h5>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px 4px 4px 0;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
+                                <a-image-preview-group>
+                                    <a-space>
+                                        <span v-for="pic in productdata.obj.pic">
+                                        <a-image :src="pic" :width="80" style="border-radius: 6px;"/>
+                                        </span>
+                                    </a-space>
+                                </a-image-preview-group>
+                            </div>
+
+                            <div>
+                                <h5>白底图</h5>
+                                <!-- <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px 0 0 0;"/> -->
+                                <div><a-image :src="productdata.obj.white_back_ground_pic_url"></a-image></div>
                             </div>
 
                             <div>
@@ -323,18 +328,16 @@
                         <a-col :span="12">
                             <div>
                                 <h5>详情描述</h5>
+                                <div v-html="productdata.obj.description" style="height: 800px;overflow-y: scroll;"></div>
+                                <!-- <a-image-preview-group>
+                                    <a-space>
+                                        <span v-for="des in productdata.obj.description">
+                                        <a-image :src="des" :width="80" style="border-radius: 6px;"/>
+                                        </span>
+                                    </a-space>
+                                </a-image-preview-group> -->
                             </div>
-                            <div>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px 4px 4px 0;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                                <a-skeleton-avatar :size="70" active shape="square" style="margin: 4px;"/>
-                            </div>
+
 
                         </a-col>
                     </a-row>
@@ -578,9 +581,14 @@ export default defineComponent({
 
         }).then((responese)=>{
 
-            console.log(responese.data.data.name)
-            console.log(responese.data.data.size_info_template_id)
             setTimeout(()=>{
+                
+                console.log('视频',responese.data.data.material_video_id)
+                console.log('白底图',responese.data.data.white_back_ground_pic_url)
+                console.log('商品主图',responese.data.data.pic)
+                console.log('商品主图3:4',responese.data.data.main_image_three_to_four)
+                console.log('商品主图3:4',responese.data.data.main_pic_3_4)
+                console.log('商品主图3:4',responese.data.data.description)
                 productdata.obj = responese.data.data
             },1000)
             

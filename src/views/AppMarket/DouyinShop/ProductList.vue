@@ -568,8 +568,6 @@ export default {
     const showDetaile = (pro_id) =>{
       PAGEDATA.DetaileDate = true;
       PAGEDATA.product_id = pro_id
-
-      console.log('商品详情')
     }
 
     // 删除方法
