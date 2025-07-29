@@ -1,4 +1,8 @@
 import { reactive,ref } from "vue"
+import * as TOOL from '@/assets/JS_Model/tool';
+import * as utils from '@/assets/JS_Model/public_model';
+const tool = new TOOL.TOOL()            // 工具方法
+const API = new utils.A_Patch()         // 请求接口地址合集
 
 //**商品列表 js方法**//
 export class ProductList_fun {
@@ -211,7 +215,15 @@ export class ProductList_fun {
 
     // 字段转义
     Field_translation = {
-
+        // 短标题
+        short_product_name:(data)=>{
+            // console.log('短标题',data)
+            if(data == ''){
+                return '暂无'
+            }else {
+                return data
+            }
+        },
         // 上架状态
         product_status:(data)=>{
             if(data == 0){
@@ -296,7 +308,144 @@ export class ProductList_fun {
             }else if(data == 4){
                 return '审核未通过'
             }
-        }
+        },
+        // 售卖方式
+        product_sale_type_info:(data)=>{
+            if(data[0] == 0){
+                return '全渠道手售卖'
+            }else if(data[0] == 1){
+                return '仅指定直播间售卖'
+            }
+        },
+        // 减库存方式
+        product_reduce_type:(data)=>{
+            if(data == 1){
+                return '拍下减库存'
+            }else if(data == 2){
+                return '付款减库存'
+            }
+        },
+        // 大件商品售后服务新结构
+        product_after_sale_service_v2:(data)=>{
+            // console.log('售后服务新结构',data)
+
+            var is_large_product = data.is_large_product
+
+            // 是否大件商品
+            if(is_large_product === null){
+
+                return '无大件商品售后'
+
+            }else if(is_large_product !== null){
+
+                // 三包服务承诺配置信息
+                var three_guarantees = data.three_guarantees;
+                // 售后天数
+                var duration = three_guarantees.duration;
+                // 服务类型
+                var service_type = data.service_type;
+
+                if(duration === undefined){
+                    var duration_text = '暂无'
+                }else {
+                    var duration_text = duration + '天'
+                }
+
+                if(service_type == 1){
+                    var service_type_text = '寄修'
+                }else if(service_type == 2){
+                    var service_type_text = '延保'
+                }else if(service_type === undefined){
+                    var service_type_text = '暂无'
+                }
+
+                var res = '服务类型:' + service_type_text + '售后' + duration_text
+
+                return res
+            }
+        },
+        // 普通商品售后
+        product_after_sale_service:(data)=>{
+            console.log('普通商品售后',data)
+            var obj = JSON.parse(data)
+            var res = {
+                "supply_7day_return":"1",
+                "supply_day_return_code":"1",
+                "supply_day_return_copywriting":"7天无理由退货",
+                "supply_day_return_days":"7",
+                "supply_day_return_selector":"7-1"// (n-代号)N只支持7或15；代号【】
+            }
+            var supply_7day_return = obj.supply_7day_return //是否支持7天无理由，0不支持，1支持，2支持(拆封后不支持)
+            var supply_day_return_code = obj.supply_day_return_code;
+            var supply_day_return_days = obj.supply_day_return_days;
+            var supply_day_return_copywriting = obj.supply_day_return_copywriting;
+
+            if(supply_day_return_code === '1'){
+                return '支持'
+            }else if(supply_day_return_code === '0'){
+                return '不支持'
+            }else if(supply_day_return_code === '2'){
+                return supply_day_return_copywriting 
+            }else if(supply_day_return_code === '3'){
+                return supply_day_return_copywriting 
+            }else if(supply_day_return_code === '4'){
+                return supply_day_return_copywriting 
+            }else if(supply_day_return_code === '5'){
+                return supply_day_return_copywriting 
+            }else if(supply_day_return_code === '6'){
+                return supply_day_return_copywriting
+            }else if(supply_day_return_code === '8'){
+                return supply_day_return_copywriting
+            }
+
+        },
+        // 提取方式
+        product_pickup_method:(data)=>{
+            if(data == 0){
+                return '普通商品-使用物流发货'
+            }else if(data == 1){
+                return '虚拟商品-无需物流与电子交易凭证'
+            }else if(data == 2){
+                return '虚拟商品-使用电子交易凭证'
+            }else if(data == 3){
+                return '虚拟商品-充值直连'
+            }
+        },
+        // 重量单位
+        product_weight_unit:(data)=>{
+            if(data == 0){
+                return 'kg'
+            }else if(data == 1){
+                return 'g'
+            }
+        },
+        // 运费模板
+        product_freight_template:(data)=>{
+            console.log('运费模板',data)
+
+
+            if(data == 0){
+                return '包邮'
+            }else{
+                tool.Http_.post(API.AppSrtoreAPI.dou_product.freight,{
+                    template_id:data
+                }).then(res=>{
+                    console.log('运费模板',res)
+                })
+            }
+        },
+        // 尺码模板
+        product_size_template:(data)=>{
+            if(data == 0){
+                return '无尺码模板'
+            }
+        },
+        // 品牌
+        product_brand_info:(data)=>{
+            if(data == 0){
+                return '无品牌'
+            }
+        },
 
 
     }
