@@ -442,7 +442,7 @@ export class ProductList_fun {
         },
         // 品牌
         product_brand_info:(data)=>{
-            if(data == 0){
+            if(data == '596120136'){
                 return '无品牌'
             }
         },

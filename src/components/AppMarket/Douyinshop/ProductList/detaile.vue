@@ -225,11 +225,11 @@
                             <div v-if="productdata.obj.size_info_template_id === undefined">
                                 <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
                             </div>
-                            <div v-if="productdata.obj.size_info_template_id === ''" class="basestyle">
+                            <div v-else-if="productdata.obj.size_info_template_id === null" class="basestyle">
                                 暂无
                             </div>
-                            <div v-if="productdata.obj.size_info_template_id !== undefined || productdata.obj.size_info_template_id !== ''" class="basestyle">
-                                {{ productdata.obj.size_info_template_id }}
+                            <div v-else class="basestyle">
+                                <a href="#">查看</a> {{ productdata.obj.size_info_template_id }}
                             </div>
                         </a-col>
                         <a-col :span="4">
@@ -247,7 +247,7 @@
                             <div v-if="productdata.obj.pickup_method === undefined">
                                 <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
                             </div>
-                            <div v-if="productdata.obj.pickup_method !== undefined">
+                            <div v-if="productdata.obj.pickup_method !== undefined" class="basestyle">
                                 {{ Profun.Field_translation.product_pickup_method(productdata.obj.pickup_method) }}
                             </div>
                         </a-col>
@@ -262,10 +262,16 @@
                         </a-col>
                         <a-col :span="4">
                             <div style="height: 24px;width: 100%;">创建时间</div>
+                            <div v-if="productdata.obj.create_time === undefined">
+                                <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
+                            </div>
                             <div style="height: 24px;width: 100%;">{{ productdata.obj.create_time }}</div>
                         </a-col>
                         <a-col :span="4">
                             <div style="height: 24px;width: 100%;">更新时间</div>
+                            <div v-if="productdata.obj.update_time === undefined">
+                                <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
+                            </div>
                             <div style="height: 24px;width: 100%;">{{ productdata.obj.update_time }}</div>
                         </a-col>
                     </a-row>
@@ -573,7 +579,7 @@ export default defineComponent({
         }).then((responese)=>{
 
             console.log(responese.data.data.name)
-            console.log(responese.data.data)
+            console.log(responese.data.data.size_info_template_id)
             setTimeout(()=>{
                 productdata.obj = responese.data.data
             },1000)
