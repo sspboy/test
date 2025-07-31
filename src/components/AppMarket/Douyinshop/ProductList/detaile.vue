@@ -10,7 +10,9 @@
     <a-layout-content class="content">
 
         <div style="height: 140px;background-color: aliceblue;">
-            
+        <video controls>
+            <source src="https://v9-fxg.douyinvod.com/680b13b3dd4c79d85787466a6dd7b78e/688b4819/video/tos/cn/tos-cn-v-2e5523/okyyhIsEBhAWlAqSQif5CgQl9ijgHzATizd4UU/?a=1215&ch=0&cr=0&dr=0&er=0&lr=default&cd=0%7C0%7C0%7C0&br=3255&bt=3255&cs=0&ds=4&ft=teX5HklEBBkq8ZmoIitU-_vjVQWw&mime_type=video_mp4&qs=0&rc=ZDdkOztkPGRkaDZmNmk2OkBpamw6cm05cnBkeDQzNGY1M0BeYjIuMl80XzUxMy4uNDUxYSNibjFlMmRjal5gLS1kNC9zcw%3D%3D&btag=80000e00010000&dy_q=1753954806&feature_id=2e1813f3872a2105acee44623dff2864&l=2025073117400655912B0CEC7090F3D7C2" type="video/mp4">
+        </video>
             <a-row :gutter="[16,16]">
 
                 <a-col :span="12">
@@ -283,26 +285,58 @@
                         <a-col :span="12">
                             <div style="margin:0 0;">
                                 <h5>商品主图</h5>
-                                <a-image-preview-group>
-                                    <a-space>
-                                        <div v-for="img in productdata.obj.pic">
-                                            <a-image :src="img" :width="80" style="border-radius: 6px;" />
-                                        </div>
-                                    </a-space>
-                                </a-image-preview-group>
-                            </div>
-
-                            <div style="margin:20px 0;">
-                                <h5>白底图</h5>
-                                <a-skeleton-avatar v-if="productdata.obj.white_back_ground_pic_url === null" :size="80" active shape="square" style="margin: 4px 0 0 0;"/>
-                                <div>
-                                    <a-image v-if="productdata.obj.white_back_ground_pic_url !== null" :width="80" :src="productdata.obj.white_back_ground_pic_url"></a-image>
+                                <div v-if="productdata.obj.pic === undefined">
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                </div>
+                                <div v-else-if="productdata.obj.pic !== undefined">
+                                    <a-image-preview-group>
+                                        <a-space>
+                                            <div v-for="img in productdata.obj.pic">
+                                                <a-image :src="img" :width="80" style="border-radius: 6px;margin: 4px;" />
+                                            </div>
+                                        </a-space>
+                                    </a-image-preview-group>
                                 </div>
                             </div>
 
                             <div style="margin:20px 0;">
-                                <h5>3:4长图</h5>
-                                <div v-if="productdata.obj.main_pic_3_4.length > 2">
+                                <div v-if="productdata.obj.white_back_ground_pic_url === undefined">
+                                    <h5>白底图</h5>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px 0 0 0;"/>
+                                </div>
+                                <div v-else-if="productdata.obj.white_back_ground_pic_url === null">
+                                    <h5>白底图-暂无</h5>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px 0 0 0;"/>
+                                </div>
+                                <div v-else-if="productdata.obj.white_back_ground_pic_url !== null">
+                                    <h5>白底图</h5>
+                                    <a-image :width="80" :src="productdata.obj.white_back_ground_pic_url"></a-image>
+                                </div>
+                            </div>
+
+                            <div style="margin:20px 0;">
+                                <div v-if="productdata.obj.main_pic_3_4 === undefined">
+                                    <h5>3:4主图</h5>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px 4px 4px 0;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                </div>
+                                <div v-else-if="productdata.obj.main_pic_3_4.length === 0">
+                                    <h5>3:4主图-暂无</h5>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px 4px 4px 0;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                    <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
+                                </div>
+                                <div v-else-if="productdata.obj.main_pic_3_4.length > 0 ">
+                                    <h5>3:4主图</h5>
                                     <a-image-preview-group>
                                         <a-space>
                                             <div v-for="img in productdata.obj.main_pic_3_4">
@@ -311,17 +345,21 @@
                                         </a-space>
                                     </a-image-preview-group>
                                 </div>
-                                <div v-if="productdata.obj.main_pic_3_4.length === 2">
+                                <div v-else>
+                                </div>
+                            </div>
+
+                            <div style="margin:20px 0;">
+                                <div v-if="productdata.obj.main_image_three_to_four=== undefined">
+                                    <h5>3:4长图</h5>
                                     <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px 4px 4px 0;"/>
                                     <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
                                     <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
                                     <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
                                     <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
                                 </div>
-                            </div>
-                            <div style="margin:20px 0;">
-                                <h5>3:4主图</h5>
-                                <div v-if="productdata.obj.main_image_three_to_four !== '[]'">
+                                <div v-else-if="productdata.obj.main_image_three_to_four.length > 2">
+                                    <h5>3:4长图</h5>
                                     <a-image-preview-group>
                                         <a-space>
                                             <div v-for="img in productdata.obj.main_image_three_to_four.slice(1,-1).split(' ')">
@@ -330,7 +368,8 @@
                                         </a-space>
                                     </a-image-preview-group>
                                 </div>
-                                <div v-if="productdata.obj.main_image_three_to_four === '[]'">
+                                <div v-else-if="productdata.obj.main_image_three_to_four.length === 2">
+                                    <h5>3:4长图-暂无长图</h5>
                                     <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px 4px 4px 0;"/>
                                     <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
                                     <a-skeleton-avatar :size="80" active shape="square" style="margin: 4px;"/>
@@ -341,13 +380,21 @@
                         </a-col>
                         <a-col :span="6">
                             <h5>详情描述</h5>
-                            <div style="width: 340px;height: 500px;background-color: #333;padding: 10px;border-radius:6px;">
+                            <div class="desbox">
                                 <div v-html="productdata.obj.description" style="height: 480px; width: 320px;overflow-y: scroll;"></div>
                             </div>
                         </a-col>
                         <a-col :span="6">                            
                             <h5>商品视频</h5>
-                            <div style="width: 340px;height: 500px;background-color: #333;padding: 10px;border-radius: 6px;">
+                            <div class="desbox">
+                                <!-- <span v-if="productdata.obj.material_video_id === null" style="color: #fff;">暂无视频</span> -->
+                                <span style="color: #fff;">
+                                    {{ productdata.obj.material_video_id }}
+
+                                    <vue3VideoPlay v-bind="video_options" poster='https://p3-sign.douyinpic.com/tos-cn-v-2e5523/osjzkwWh7CdzA4bHQEidyqhBsfgS91liATA2UI~tplv-noop.image?dy_q=1753954806&l=2025073117400655912B0CEC7090F3D7C2&x-expires=1753958425&x-signature=nVUs%2FTAfa%2BfKpqeAqAqBfx0vXK4%3D'/>
+
+                                </span>
+
                             </div>
                         </a-col>
                     </a-row>
@@ -543,6 +590,7 @@ import { message } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as PL from '@/assets/douyinshop/ProductList';
+// 视频组件
 
 export default defineComponent({
 
@@ -551,7 +599,6 @@ export default defineComponent({
     // 引用组件
     components: {
         LoadingOutlined,
-
     },
 
     // 父组件数据
@@ -562,6 +609,28 @@ export default defineComponent({
     },
     
     setup(props, ctx) {
+
+        // 视频播放配置
+        const v_url = 'https://p3-sign.douyinpic.com/tos-cn-v-2e5523/osjzkwWh7CdzA4bHQEidyqhBsfgS91liATA2UI~tplv-noop.image?dy_q=1753954806&l=2025073117400655912B0CEC7090F3D7C2&x-expires=1753958425&x-signature=nVUs%2FTAfa%2BfKpqeAqAqBfx0vXK4%3D'
+        const video_options = reactive({
+            width: '320px', //播放器高度
+            height: '480px', //播放器高度
+            color: "#409eff", //主题色
+            title: '', //视频名称
+            muted: false, //静音
+            webFullScreen: false,
+            speedRate: ["0.75", "1.0", "1.25", "1.5", "2.0"], //播放倍速
+            autoPlay: false, //自动播放
+            loop: false, //循环播放
+            mirror: false, //镜像画面
+            ligthOff: false,  //关灯模式
+            volume: 0.3, //默认音量大小
+            control: true, //是否显示控制
+            controlBtns:['audioTrack', 'quality', 'speedRate', 'volume', 'setting', 'pip', 'pageFullScreen', 'fullScreen'], //显示所有按钮,
+            src: 'https://v9-fxg.douyinvod.com/680b13b3dd4c79d85787466a6dd7b78e/688b4819/video/tos/cn/tos-cn-v-2e5523/okyyhIsEBhAWlAqSQif5CgQl9ijgHzATizd4UU/?a=1215&ch=0&cr=0&dr=0&er=0&lr=default&cd=0%7C0%7C0%7C0&br=3255&bt=3255&cs=0&ds=4&ft=teX5HklEBBkq8ZmoIitU-_vjVQWw&mime_type=video_mp4&qs=0&rc=ZDdkOztkPGRkaDZmNmk2OkBpamw6cm05cnBkeDQzNGY1M0BeYjIuMl80XzUxMy4uNDUxYSNibjFlMmRjal5gLS1kNC9zcw%3D%3D&btag=80000e00010000&dy_q=1753954806&feature_id=2e1813f3872a2105acee44623dff2864&l=2025073117400655912B0CEC7090F3D7C2', //视频源
+            type: 'video/mp4'
+        })
+        
         const indicator = h(LoadingOutlined, {
         style: {
             fontSize: '24px',
@@ -574,7 +643,7 @@ export default defineComponent({
         const Profun = new PL.ProductList_fun() // 商品列表方法model引用
 
         const productdata = reactive({
-            obj:{}
+            obj:ref({})
         })
 
         // 选项卡默认选择
@@ -588,42 +657,41 @@ export default defineComponent({
         onMounted(()=>{
             
             tool.Http_.post(API.AppSrtoreAPI.dou_product.detaile, {
+
                 product_id:props.data.product_id,
                 show_draft:"false"
 
             }).then((responese)=>{
 
-            setTimeout(()=>{
-                
-                console.log('视频',responese.data.data.material_video_id)
-                console.log('白底图',responese.data.data.white_back_ground_pic_url)
-                console.log('商品主图',responese.data.data.pic)
+                setTimeout(()=>{
+                    
+                    console.log('视频',responese.data.data)
 
+                    // console.log('白底图',responese.data.data.white_back_ground_pic_url)
+                    // console.log('商品主图',responese.data.data.pic)
+                    var three_to_four = responese.data.data.main_image_three_to_four
+                    console.log('商品长图3:4',typeof three_to_four,three_to_four.length,three_to_four)
 
-                var three_to_four = responese.data.data.main_image_three_to_four
-
-                console.log('商品长图3:4',typeof three_to_four,three_to_four.length,three_to_four)
-
-                console.log('商品主图3:4',responese.data.data.main_pic_3_4)
-
-                productdata.obj = responese.data.data
-            },1000)
+                    productdata.obj = responese.data.data
+                },1000)
             
             })
+            // 品牌查询
+            const load_get_brand=(b_id)=>{
+            }
+            // 视频查询
+            const load_get_video=(v_id)=>{
+            }
+            // 运费模板查询
+            const load_get_freight=(f_id)=>{
+            }
+            // 尺码模板查询
+            const load_get_size=(s_id)=>{
+
+            }
+
+
         })
-        
-        // 分组渲染页面
-        // 头部信息
-        // 基础信息
-        // 主图视频
-        // 商品规格
-        // 类目属性
-        // 发布规则
-        // 商品诊断
-        // 卡券
-        // 组合搭配
-        // 资质
-        // 关闭清空页面信息
 
         const handleOk = e => {
             console.log(e);
@@ -637,6 +705,8 @@ export default defineComponent({
             activeKey,
             props,
             handleOk,
+            v_url,
+            video_options
         }
     }
     
@@ -646,4 +716,5 @@ export default defineComponent({
 .content{padding: 24px;background: '#fff';}
 .skelestlye{margin: 0;padding: 0;width: 100%;}
 .basestyle{height: 30px;width: 100%;}
+.desbox{width: 340px;height: 500px;background-color: #333;padding: 10px;border-radius:6px;}
 </style>

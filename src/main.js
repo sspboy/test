@@ -5,7 +5,8 @@ import App from './app.vue'
 import router from '/src/rute/index.ts' // 全局路由
 import store from '/src/staore'         // 全局数据状态共享
 import 'css-doodle' // css 特效模块
-
+import vue3videoPlay from 'vue3-video-play' // 引入视频组件
+import 'vue3-video-play/dist/style.css' // 引入视频css
 
 // 页面标题设置---开始
 router.beforeEach((to, from, next) => {
@@ -32,5 +33,6 @@ const app = createApp(App);
 app.use(store)  // 初始化Vuex 数据状态共享
 app.use(Antd)   // 加载ant design UI框架
 app.use(router) // 加载路由
+app.use(vue3videoPlay)
 
 app.mount('#app');
