@@ -452,16 +452,18 @@
 
 
         <a-divider orientation="left" orientation-margin="0px">类目&属性</a-divider>
-        <div style="width: 100%;">
+        <div style="width: 100%;margin: 0 0 40px 0;">
             <a-badge-ribbon placement="start" text="当前类目">
                 <a-card title=" " size="small">
                     <span>书信</span>
                 </a-card>
             </a-badge-ribbon>
-
         </div>
 
-        <div style="padding: 12px 0 0 0;">
+
+        <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
+
+        <div style="width: 100%; padding: 12px 0 0 0;">
 
             <a-tabs v-model:activeKey="activeKey">
                 <a-tab-pane key="1" tab="基础信息" force-render>
@@ -870,6 +872,8 @@
             </a-tabs>
 
         </div>
+
+        
         </div>
     </a-layout-content>
     
