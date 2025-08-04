@@ -131,14 +131,16 @@ export class A_Patch{
         },
         // 抖音商品
         dou_product:{   
-            "list":"api/douyin/product/list",       // 商品列表
-            "detaile":"api/douyin/product/detaile", // 商品详情
-            "delete":"api/douyin/product/del",      // 删除商品
-            "edit":"api/douyin/product/edit",       // 编辑商品
-            "cate":"api/douyin/product/shopcategory", // 获取商品分类
-            "freight":"api/douyin/product/freightid", // 获取运费模板
-            "addrule":"api/douyin/product/getpublishrule",// 商品发布规则
-            "audit":"api/douyin/product/auditlist",// 审批记录 
+            "list":"api/douyin/product/list",                   // 商品列表
+            "detaile":"api/douyin/product/detaile",             // 商品详情
+            "delete":"api/douyin/product/del",                  // 删除商品
+            "edit":"api/douyin/product/edit",                   // 编辑商品
+            "cate":"api/douyin/product/shopcategory",           // 获取商品分类
+            "freight":"api/douyin/product/freightid",           // 获取运费模板
+            "addrule":"api/douyin/product/getpublishrule",      // 商品发布规则
+            "audit":"api/douyin/product/auditlist",             // 商品审核记录&详情 
+            "qualitydetaile":"api/douyin/product/qualitydetaile",// 商品质量分
+
         },
         // 批量修改
         batch:{
