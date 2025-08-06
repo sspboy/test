@@ -10,19 +10,59 @@
     <a-layout-content class="content">
 
         <div style="width: 950px;margin: 0 auto;">   
-
             <!--头图 标题-->
             <div>
                 <a-row>
-                    
-                    <a-col :span="16" style="background-color: aliceblue;border-radius: 6px;">
+                    <a-col :span="7" style="background-color: aliceblue;border-radius: 6px;">
+
+                        <div class="zhenduan">
+
+                            <div v-if="productdata.obj.check_status === undefined" style="text-align: center;padding: 50px 0 0 0">
+                                <a-spin tip="Loading...">
+                                </a-spin>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 1" style="text-align: center;border-radius: 6px;padding:20px 0 0 0;">
+                                <div class="check_ico"><InfoCircleTwoTone /></div>
+                                <p>商品待提交</p>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 2" style="text-align: center;border-radius: 6px;padding:20px 0 0 0;">
+                                <div class="check_ico"><ClockCircleTwoTone /></div>
+                                <p>商品待审核</p>
+                            </div>
+                            
+                            <div v-if="productdata.obj.check_status === 3" style="text-align: center;padding:6px 0 0 0;">
+                                <div class="check_ico"><CheckCircleTwoTone /></div>
+                                <p style="margin: 0;padding: 0;">审核通过 <a href="#" @click="showDrawer">查看优化建议</a></p>
+                                <p style="margin: 0;padding: 0;"><a-rate :value="fen.value" disabled /></p>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 4" style="text-align: center;padding:20px 0 0 0;">
+                                <div class="check_ico"><CloseCircleTwoTone /></div>
+                                <p>审核未通过 <a href="#" @click="showreject">查看驳回原因</a></p>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 5" style="text-align: center;padding:20px 0 0 0;">
+                                <div class="check_ico"><WarningTwoTone /></div>
+                                <p>封禁 <a href="#" @click="showreject">查看驳回原因</a></p>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 7" style="padding: 20px 0 0 0;text-align: center;">
+                                <div class="check_ico"><UpSquareTwoTone /></div>
+                                审核通过待上架
+                            </div>
+                        </div>
+                        <!--提示错误，-->
+                    </a-col>
+
+                    <a-col :span="16" :offset="1" style="background-color: aliceblue;border-radius: 6px;">
                         <div v-if="productdata.obj.name !== undefined" style="width: 100px;height:100px;float: left;margin: 20px;">
                             <a-image :src="productdata.obj.img" alt="" style="width: 100%;height: 100%;border-radius: 6px;" />
                         </div>
                         <div v-if="productdata.obj.name === undefined" style="width: 100px;height: 100px;float: left;margin: 20px;text-align: center;border-radius: 6px;">
                             <a-skeleton-image style="width: 100px;height: 100px;" active />
                         </div>
-
                         <div  style="width: 100%;margin: 30px 0 0 0;">
                             
                             <p v-if="productdata.obj.name !== undefined" style="margin:10px 0 10px 0;padding: 0;">
@@ -97,30 +137,7 @@
                             </p>
 
                         </div>
-
-
                     </a-col>
-
-                    <a-col :span="7" :offset="1" style="background-color: #f60;border-radius: 6px;">
-                        <div class="zhenduan">
-                            <div v-if="productdata.obj.check_status === 1" style="text-align: center;">
-                                <div style="width: 100px;margin: 0 auto;font-size: 44px;text-align: center;"><CheckCircleTwoTone /></div>
-                                <p>审核通过 <a href="#" @click="showDrawer">查看优化建议</a></p>
-                            </div>
-                            <div v-if="productdata.obj.check_status === 3" style="text-align: center;">
-                                <div style="width: 100px;margin: 0 auto;font-size: 44px;text-align: center;"><CheckCircleTwoTone /></div>
-                                <p style="margin: 0;">审核通过 <a href="#" @click="showDrawer">查看优化建议</a></p>
-                                <p style="margin: 0;padding: 0;"><a-rate :value="fen.value" disabled /></p>
-
-                            </div>
-                            <div v-if="productdata.obj.check_status === 4">
-                                审核未通过
-                                <p><a href="#" @click="showreject">查看驳回原因</a></p>
-                            </div>
-                        </div>
-                        <!--提示错误，-->
-                    </a-col>
-
                 </a-row>
             </div>
 
@@ -134,18 +151,18 @@
                     <h5>商品主图</h5>
                     <div v-if="productdata.obj.pic === undefined">
                         <a-space>
-                            <a-skeleton-avatar :size="80" active shape="square"/>
-                            <a-skeleton-avatar :size="80" active shape="square"/>
-                            <a-skeleton-avatar :size="80" active shape="square"/>
-                            <a-skeleton-avatar :size="80" active shape="square"/>
-                            <a-skeleton-avatar :size="80" active shape="square"/>
+                            <a-skeleton-avatar :size="94" active shape="square"/>
+                            <a-skeleton-avatar :size="94" active shape="square"/>
+                            <a-skeleton-avatar :size="94" active shape="square"/>
+                            <a-skeleton-avatar :size="94" active shape="square"/>
+                            <a-skeleton-avatar :size="94" active shape="square"/>
                         </a-space>
                     </div>
                     <div v-else-if="productdata.obj.pic !== undefined">
                         <a-image-preview-group>
                             <a-space>
                                 <div v-for="img in productdata.obj.pic" :key="img.index">
-                                    <a-image :src="img" :width="80" style="border-radius: 6px;" />
+                                    <p class="img_80"><a-image :src="img" :width="80" style="border-radius: 6px;"/></p>
                                 </div>
                             </a-space>
                         </a-image-preview-group>
@@ -154,38 +171,43 @@
 
                 <!--white_back_ground_pic_url-->
                 <div style="height: 120px;float: left;">
-                    <div style="width: 90px;float: left;">
+                    <div style="width: 90px;margin: 0 16px 0 0;float: left;">
                         <div v-if="productdata.obj.white_back_ground_pic_url === undefined">
                             <h5>白底图</h5>
-                            <a-skeleton-avatar :size="80" active shape="square" style="margin: 0 4px 0 0;"/>
+                            <a-skeleton-avatar :size="94" active shape="square" style="margin: 0 4px 0 0;"/>
                         </div>
                         <div v-else-if="productdata.obj.white_back_ground_pic_url === null">
                             <h5>白底图-暂无</h5>
-                            <a-skeleton-avatar :size="80" active shape="square" style="margin: 0 4px 0 0 ;"/>
+                            <a-skeleton-avatar :size="94" active shape="square" style="margin: 0 4px 0 0 ;"/>
                         </div>
                         <div v-else-if="productdata.obj.white_back_ground_pic_url !== null">
                             <h5>白底图</h5>
-                            <a-image :width="80" :src="productdata.obj.white_back_ground_pic_url"></a-image>
+                            <p class="img_80"><a-image :width="80" style="border-radius: 6px;" :src="productdata.obj.white_back_ground_pic_url"/></p>
                         </div>
                     </div>
 
                     <div style="width: 120px;float: left;" v-if="productdata.obj.material_video_id === undefined">
                         <h5>视频-暂无</h5>
-                        <a-skeleton-avatar :size="80" active shape="square" />
+                        <a-skeleton-avatar :size="94" active shape="square" />
                     </div>
                     <div style="width: 120px;float: left;" v-else-if="productdata.obj.material_video_id === null">
                         <h5>视频-暂无</h5>
-                        <a-skeleton-avatar :size="80" active shape="square"/>
+                        <a-skeleton-avatar :size="94" active shape="square"/>
                     </div>
                     <div style="width: 120px;float: left;" v-else>
-                        <img :src="productdata.obj.material_video_id" style="width: 80px;height: 80px;" />
-                        {{ productdata.obj.material_video_id }}
+                        <h5>视频</h5>
+                        <p class="img_80">
+                            <a :href="videoData.url" target="_blank">
+                                <img :src="videoData.img_src" style="width: 80px;height: 80px;"/>
+                            </a>
+                        </p>
                     </div>
                 </div>
                 
                 <div style="height: 120px;float: left;width: 100%;clear: both;">
 
-                    <div style="height: 120px;float: left;margin: 0 10px 0 0 ;">
+                    <div style="height: 120px;float: left;margin: 0 10px 0 0;">
+
                         <div v-if="productdata.obj.main_pic_3_4 === undefined">
                             <h5>3:4主图</h5>
                             <a-space>
@@ -210,9 +232,9 @@
                         <div v-else-if="productdata.obj.main_pic_3_4.length > 0 ">
                             <h5>3:4主图</h5>
                             <a-image-preview-group>
-                                <a-space>
+                                <a-space :size="6">
                                     <div v-for="img in productdata.obj.main_pic_3_4" :key="img.index">
-                                        <a-image :src="img" :width="80" style="border-radius: 6px;" />
+                                        <p class="img_107"><a-image :src="img" :width="78" style="border-radius: 6px;" /></p>
                                     </div>
                                 </a-space>
                             </a-image-preview-group>
@@ -235,9 +257,9 @@
                         <div v-else-if="productdata.obj.main_image_three_to_four.length > 2">
                             <h5>3:4长图</h5>
                             <a-image-preview-group>
-                                <a-space>
+                                <a-space :size="6">
                                     <div v-for="img in productdata.obj.main_image_three_to_four.slice(1,-1).split(' ')" :key="img.index">
-                                        <a-image :src="img" :width="80" style="border-radius: 6px;" />
+                                        <div class="img_107"><a-image :src="img" :width="78" style="border-radius: 6px;" /></div>
                                     </div>
                                 </a-space>
                             </a-image-preview-group>
@@ -448,7 +470,6 @@
                                     style="font-size:12px;"
                                     bordered
                                     >
-
                                         <template #bodyCell="{ column, text }">
                                             <template v-if="column.dataIndex === 'price'">
                                                 <span >￥ {{ text }}</span>
@@ -483,10 +504,6 @@
     </a-layout-content>
     
 
-
-
-
-
     </a-modal>
 
     <!--质量分 可优化 抽屉-->
@@ -495,13 +512,22 @@
         class="custom-class"
         root-class-name="root-class-name"
         :root-style="{ color: 'blue' }"
-        style="color: red"
+        size="large"
+        style="color: #666"
         title="质量分可优化建议"
         placement="right"
     >
-        质量{{ fen.value }}分： <a-rate :value="fen.value" disabled /> 
-        <p>质量建议</p>
-        <p>质量建议</p>
+        <div v-if="fen.field_problem_list !== undefined">
+
+            <p style="margin: 0 0 30px 0 ;">质量{{ fen.value }}分： <a-rate :value="fen.value" disabled /></p>
+
+            <div v-for="(item,index) in fen.field_problem_list" :key="index" style="font-size: 12px;border: 1px silver solid; border-radius: 6px;padding: 14px;margin:10px 0;">
+                <p style="padding: 6px 0 0 0;font-weight: bold;font-size: 14px;">{{ item.field_name }} - {{ item.problem_name }}</p>
+                <p style="line-height: 26px;">{{ item.suggestion }}</p>
+            </div>
+
+        </div>
+
     </a-drawer>
 
 
@@ -511,19 +537,55 @@
         class="custom-class"
         root-class-name="root-class-name"
         :root-style="{ color: 'blue' }"
-        style="color: red"
+        size="large"
         title="驳回原因"
         placement="right"
     >
-        <p>原因描述</p>
-        <p>原因描述</p>
-        <p>原因描述</p>
+        <div v-if="reject_info.records_list !== undefined">
+
+            <div v-for="(item,index) in reject_info.records_list" :key="index">
+                
+                <div class="rejectinfo">
+
+                    <p style="font-size: 14px;">驳回字段：{{ item.title }}-{{ item.type }}</p>
+
+                    <div v-for="(val,index) in item.reject_reason_list" :key="index">
+
+                            <div v-if="item.type == 'description_pic'">
+                                <p style="font-size: 12px;">{{ val.reason_text }}</p>
+                                <span v-for="(img,index) in val.reject_img_list" :key="index">
+                                    <a-image :src="img.url" width="100px" height="100px"></a-image>
+                                </span>
+                            </div>
+
+                            <div v-else-if="item.type == 'name'">
+                                <p v-html="val.reason_text" style="font-size: 12px;" ></p>
+                            </div>
+                            
+                            <div v-else-if="item.type == 'product_pic'">
+                                <p v-html="val.reason_text" style="font-size: 12px;"></p>
+                                <span v-for="(img,index) in val.reject_img_list" :key="index">
+                                    <a-image :src="img.url" width="100px" height="100px"></a-image>
+                                </span>
+                            </div>
+
+                            <div v-else>
+                                <p style="font-size: 12px;">{{ val.reason_text }}</p>
+                            </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    
     </a-drawer>
 
 </template>
 <script>
 import { defineComponent,ref,reactive,onMounted,h } from 'vue';
-import {LoadingOutlined,CheckCircleTwoTone} from '@ant-design/icons-vue';
+import {LoadingOutlined,CheckCircleTwoTone,InfoCircleTwoTone,UpSquareTwoTone,WarningTwoTone,ClockCircleTwoTone,CloseCircleTwoTone} from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
 // 网络请求工具引用
@@ -540,6 +602,11 @@ export default defineComponent({
     components: {
         LoadingOutlined,
         CheckCircleTwoTone,
+        InfoCircleTwoTone,
+        UpSquareTwoTone,
+        WarningTwoTone,
+        ClockCircleTwoTone,
+        CloseCircleTwoTone
     },
 
     // 父组件数据
@@ -550,29 +617,6 @@ export default defineComponent({
     },
     
     setup(props, ctx) {
-
-        // 视频播放配置
-        const v_url = ref('https://v6-fxg.douyinvod.com/542fa61d96beba06566b7778ac7d5bd8/688c2755/video/tos/cn/tos-cn-v-2e5523/okyyhIsEBhAWlAqSQif5CgQl9ijgHzATizd4UU/?a=1215&ch=0&cr=0&dr=0&er=0&lr=default&cd=0%7C0%7C0%7C0&br=3255&bt=3255&cs=0&ds=4&ft=teX5HklEBBkq8ZmoESEW-_vjVQWw&mime_type=video_mp4&qs=0&rc=ZDdkOztkPGRkaDZmNmk2OkBpamw6cm05cnBkeDQzNGY1M0BeYjIuMl80XzUxMy4uNDUxYSNibjFlMmRjal5gLS1kNC9zcw%3D%3D&btag=80000e00010000&dy_q=1754011954&feature_id=2e1813f3872a2105acee44623dff2864&l=202508010932340DECD301A163E82D722F');
-        const v_url2 = ref('https://cloud.video.taobao.com/play/u/2219764638267/p/2/e/6/t/1/518487784753.mp4');
-
-        const video_options = reactive({
-            width: '320px',     //播放器高度
-            height: '480px',    //播放器高度
-            color: "#409eff",   //主题色
-            title: '',          //视频名称
-            muted: false,       //静音
-            webFullScreen: false,
-            speedRate: ["0.75", "1.0", "1.25", "1.5", "2.0"], //播放倍速
-            autoPlay: false, //自动播放
-            loop: false, //循环播放
-            mirror: false, //镜像画面
-            ligthOff: false,  //关灯模式
-            volume: 0.3, //默认音量大小
-            control: true, //是否显示控制
-            controlBtns:['audioTrack', 'quality', 'speedRate', 'volume', 'setting', 'pip', 'pageFullScreen', 'fullScreen'], //显示所有按钮,
-            src: v_url2, //视频源
-        })
-
 
         const tool = new TOOL.TOOL()            // 工具方法
         const API = new utils.A_Patch()         // 请求接口地址合集
@@ -586,7 +630,6 @@ export default defineComponent({
         // 质量分
         const fen =reactive({
             value: ref(0), // 默认分值
-            text: ref('正在加载评分...'), // 提示语
             field_problem_list:ref(undefined), // 可优化项目
             open:ref(false)
         })
@@ -597,8 +640,6 @@ export default defineComponent({
 
         // 审核驳回
         const reject_info = reactive({
-            value: ref(0), // 默认分值
-            text: ref('正在加载评分...'), // 提示语
             records_list:ref(undefined), // 驳回原因列表 
             open:ref(false)
         })
@@ -606,6 +647,17 @@ export default defineComponent({
         const showreject = () => {
             reject_info.open = true;
         };
+
+        // 商品视频
+        const videoData = reactive({
+            img_src:ref(undefined), // 封面地址
+            url:ref(undefined),     // 视频播放地址
+            // 新开页面
+            play:()=>{
+                window.open(videoData.url,"_blank")
+                console.log(videoData.url)
+            }
+        })
         
         // 库存列表
         const columns = ref([])
@@ -629,20 +681,13 @@ export default defineComponent({
 
                 setTimeout(()=>{
 
-                    // console.log('视频',responese.data.data.material_video_id)
-
-                    // console.log('规格图片',responese.data.data.spec_pics)                   // 规格图片
-                    // console.log('商品sku详情',responese.data.data.spec_prices)              // spec_prices
-                    // console.log('规格信息，规格项和规格值',responese.data.data.specs)         // 规格信息，规格项和规格值
-                    // console.log('规格id',responese.data.data.spec_id)                       // 规格id
-                    // sell_properties
-                    // console.log('sell_properties',responese.data.data.spec_prices[0].sell_properties)       // sell_properties
-
-                    // 质量分
+                    console.log('运费模板id',responese.data.data.freight_id)
 
                     // 品牌
-                    // 视频
-                    // 运费
+                    
+                    load_get_video(responese.data.data.material_video_id)// 视频
+
+                    load_get_freight(responese.data.data.freight_id)// 运费模板
                     // 尺码
 
                     // 规格库存-表头、内容
@@ -659,20 +704,20 @@ export default defineComponent({
             // 审核结果：被驳回的原因 audit
             tool.Http_.post(API.AppSrtoreAPI.dou_product.audit, {
                 product_id:props.data.product_id,
-                publish_status:1, //0-审核中 1-审核通过 2-审核拒绝
+                publish_status:2, //0-审核中 1-审核通过 2-审核拒绝
                 page:0,
                 size:10
             }).then((res)=>{
-                console.log('审核记录',res.data.data)
+                console.log(res)
+                if(res.data.data.total > 0){reject_info.records_list = res.data.data.records[0].audit_reason_details}
             })
 
             // 质量分(审核通过才又质量分)
             tool.Http_.post(API.AppSrtoreAPI.dou_product.qualitydetaile, {
                 product_id:props.data.product_id,
             }).then((res)=>{
+                fen.value = res.data.data.quality_score.score
                 fen.field_problem_list = [...res.data.data.field_problem]
-                console.log('质量分',fen.field_problem_list)
-
             })
 
             // 品牌查询
@@ -683,9 +728,27 @@ export default defineComponent({
             }
             // 视频查询
             const load_get_video=(v_id)=>{
+                if(v_id !== undefined && v_id !== null){
+                    tool.Http_.post(API.AppSrtoreAPI.material.videolist, {
+                        vid_list:[v_id]
+                    }).then((res)=>{
+                        console.log('视频',res.data.data)
+                        videoData.img_src = res.data.data.success_map[v_id].VideoCoverUrl
+                        videoData.url = res.data.data.success_map[v_id].MainUrl
+                    })
+                }
             }
+
             // 运费模板查询
             const load_get_freight=(f_id)=>{
+                if(f_id !== undefined && f_id !== null){
+                    tool.Http_.post(API.AppSrtoreAPI.freight.detaile, {
+                        freight_id:f_id
+                    }).then((res)=>{
+                        console.log('运费模板',res.data.data)
+                    })
+                }
+
             }
             // 尺码模板查询
             const load_get_size=(s_id)=>{
@@ -760,8 +823,7 @@ export default defineComponent({
             reject_info,
             showreject,
             showDrawer,
-            v_url,
-            video_options,
+            videoData,
             columns,
             data
         }
@@ -772,11 +834,16 @@ export default defineComponent({
 <style scoped>
 .content{padding: 0;margin: 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 88vh;}
 .head_title_img{height: 140px;width: 100%;}
-.zhenduan{width: 100%;margin-top:6px;}
+.zhenduan{width: 100%;height:140px;}
 .top_img_box{height: 304px; width: 100%;}
 .img_loading_3_4{width: 80px;height: 107px;background-color: #f2f2f2;text-align: center;border-radius: 6px;}
 .skelestlye{margin: 0;padding: 0;width: 100%;}
 .basestyle{height: 30px;width: 100%;}
 .desbox{width: 770px;background-color: #333;padding: 10px;border-radius:6px;margin: 0 auto;}
 .specbox{display: block;float: left;margin:0 10px 10px 0;}
+.check_ico{width: 100px;margin: 0 auto;font-size: 44px;text-align: center;}
+.rejectinfo{padding:20px 10px 10px 20px;margin: 0 0 20px 0;border: 1px #f2f2f2 solid;border-radius: 6px;}
+.img_80{border-radius: 6px;border: 1px #f2f2f2 solid;padding: 6px;height: 94px;width: 94px;}
+.img_107{height: 114px;width: 88px;border-radius: 6px;border: 1px #f2f2f2 solid;padding: 4px;}
+
 </style>

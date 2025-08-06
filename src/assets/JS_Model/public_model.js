@@ -123,7 +123,8 @@ export class A_Patch{
             "detaile":"api/douyin/material/getmaterialdetaile",
             "delete":"api/douyin/material/",
             "edit":"api/douyin/material/",
-            "add":"api/douyin/material/add"
+            "add":"api/douyin/material/add",
+            "videolist":"api/douyin/material/batchgetvideodetaile"
         },
         // 上传商品图片
         upload:{
@@ -136,11 +137,26 @@ export class A_Patch{
             "delete":"api/douyin/product/del",                  // 删除商品
             "edit":"api/douyin/product/edit",                   // 编辑商品
             "cate":"api/douyin/product/shopcategory",           // 获取商品分类
-            "freight":"api/douyin/product/freightid",           // 获取运费模板
             "addrule":"api/douyin/product/getpublishrule",      // 商品发布规则
             "audit":"api/douyin/product/auditlist",             // 商品审核记录&详情 
             "qualitydetaile":"api/douyin/product/qualitydetaile",// 商品质量分
-
+            "brand":"api/douyin/product/brandlist",             // 商品品牌
+        },
+        // 运费模板
+        freight:{
+            "list":"api/douyin/product/freightlist",             // 运费模板列表
+            "detaile":"api/douyin/product/freightdetaile",       // 运费模板详情
+            "add":"api/douyin/product/createfreight",               // 运费模板添加
+            "edit":"api/douyin/product/updatefreight",             // 运费模板编辑
+            "delete":"api/douyin/product/delfreight",         // 运费模板删除
+        },
+        // 尺码模板
+        size:{
+            "list":"api/douyin/Component/list",             // 尺码模板列表
+            "detaile":"api/douyin/product/sizedetaile",     // 尺码模板详情
+            "add":"api/douyin/Component/add",               // 尺码模板添加
+            "edit":"api/douyin/Component/edit",             // 尺码模板编辑
+            "delete":"api/douyin/Component/delete",         // 尺码模板删除
         },
         // 批量修改
         batch:{
