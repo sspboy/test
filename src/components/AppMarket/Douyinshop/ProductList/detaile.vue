@@ -1,3 +1,4 @@
+<!-- 商品详情 组件 -->
 <template>
     <a-modal
       v-model:open="props.data.DetaileDate"
@@ -503,7 +504,6 @@
         </div>
     </a-layout-content>
     
-
     </a-modal>
 
     <!--质量分 可优化 抽屉-->
@@ -559,18 +559,23 @@
                             </div>
 
                             <div v-else-if="item.type == 'name'">
-                                <p v-html="val.reason_text" style="font-size: 12px;" ></p>
+                                <p v-html="val.reason_text" style="font-size: 12px;line-height: 28px;" ></p>
                             </div>
                             
                             <div v-else-if="item.type == 'product_pic'">
-                                <p v-html="val.reason_text" style="font-size: 12px;"></p>
+                                <p v-html="val.reason_text" style="font-size: 12px;line-height: 28px;"></p>
+
                                 <span v-for="(img,index) in val.reject_img_list" :key="index">
                                     <a-image :src="img.url" width="100px" height="100px"></a-image>
                                 </span>
                             </div>
 
+                            <div v-else-if="item.type == 'product_format'">
+                                <p v-html="val.reason_text" style="font-size: 12px;line-height: 28px;"></p>
+                            </div>
+
                             <div v-else>
-                                <p style="font-size: 12px;">{{ val.reason_text }}</p>
+                                <p style="font-size: 12px;line-height: 28px;">{{ val.reason_text }}</p>
                             </div>
 
                     </div>
@@ -584,7 +589,7 @@
 
 </template>
 <script>
-import { defineComponent,ref,reactive,onMounted,h } from 'vue';
+import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,h } from 'vue';
 import {LoadingOutlined,CheckCircleTwoTone,InfoCircleTwoTone,UpSquareTwoTone,WarningTwoTone,ClockCircleTwoTone,CloseCircleTwoTone} from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 
@@ -597,6 +602,7 @@ import * as PL from '@/assets/douyinshop/ProductList';
 export default defineComponent({
 
     name: "detaile",  // 筛选条件查询组件
+    
 
     // 引用组件
     components: {
@@ -606,7 +612,11 @@ export default defineComponent({
         UpSquareTwoTone,
         WarningTwoTone,
         ClockCircleTwoTone,
-        CloseCircleTwoTone
+        CloseCircleTwoTone,
+        template_detaile_components:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/templatedetaile.vue')),
+        feight_detaile_components:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/productDetaile/feightdetaile.vue')),
+
+
     },
 
     // 父组件数据
@@ -658,14 +668,23 @@ export default defineComponent({
                 console.log(videoData.url)
             }
         })
+
+        // 运费详情
+        const feight_detaile = reactive({
+            open:ref(false),
+            data:ref({})
+        })
+
+        // 尺码详情
+        const size_detaile = reactive({
+            open:ref(false),
+            data:ref({})
+        })
+
         
         // 库存列表
         const columns = ref([])
         const data = ref([])
-
-
-        // 获取商品id
-        // console.log(props.data.product_id)
 
 
         // 请求商品详情信息
@@ -681,14 +700,12 @@ export default defineComponent({
 
                 setTimeout(()=>{
 
-                    console.log('运费模板id',responese.data.data.freight_id)
+                    // console.log('运费模板id',responese.data.data.freight_id)
+                    load_get_brand(responese.data.data.standard_brand_id)   // 品牌
+                    load_get_video(responese.data.data.material_video_id)   // 视频
+                    load_get_freight(responese.data.data.freight_id)        // 运费模板
+                    load_get_size(responese.data.data.size_info_template_id)// 尺码
 
-                    // 品牌
-                    
-                    load_get_video(responese.data.data.material_video_id)// 视频
-
-                    load_get_freight(responese.data.data.freight_id)// 运费模板
-                    // 尺码
 
                     // 规格库存-表头、内容
                     const spec_res_obj = load_spec(responese.data.data)
@@ -722,9 +739,15 @@ export default defineComponent({
 
             // 品牌查询
             const load_get_brand=(b_id)=>{
-                // 无品牌
-                // 有品牌
+                console.log('品牌id',b_id)
 
+                if(b_id !== undefined && b_id !== null){
+                    tool.Http_.post(API.AppSrtoreAPI.dou_product.brand, {
+                        brand_ids:[b_id]
+                    }).then((res)=>{
+                        console.log('品牌',res.data.data)
+                    })
+                }
             }
             // 视频查询
             const load_get_video=(v_id)=>{
@@ -745,14 +768,23 @@ export default defineComponent({
                     tool.Http_.post(API.AppSrtoreAPI.freight.detaile, {
                         freight_id:f_id
                     }).then((res)=>{
-                        console.log('运费模板',res.data.data)
+                        console.log('运费模板',res)
                     })
                 }
 
             }
             // 尺码模板查询
             const load_get_size=(s_id)=>{
-
+                if(s_id !== undefined && s_id !== null){
+                    tool.Http_.post(API.AppSrtoreAPI.size.list, {
+                        template_type:"size_info",
+                        page_num:0,
+                        page_size:10,
+                        template_id:s_id
+                    }).then((res)=>{
+                        console.log('尺码模板',res)
+                    })
+                }
             }
             // 规格转移-规格图片、规格、库存列表
             const load_spec=(data)=>{

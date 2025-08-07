@@ -104,7 +104,7 @@ export class A_Patch{
 
     // 应用市场
     AppSrtoreAPI={
-        
+
         // 复制记录
         copyrecords:{
             "list":"api/douyin/copylog/list",
@@ -146,17 +146,16 @@ export class A_Patch{
         freight:{
             "list":"api/douyin/product/freightlist",             // 运费模板列表
             "detaile":"api/douyin/product/freightdetaile",       // 运费模板详情
-            "add":"api/douyin/product/createfreight",               // 运费模板添加
-            "edit":"api/douyin/product/updatefreight",             // 运费模板编辑
-            "delete":"api/douyin/product/delfreight",         // 运费模板删除
+            "add":"api/douyin/product/createfreight",            // 运费模板添加
+            "edit":"api/douyin/product/updatefreight",           // 运费模板编辑
+            "delete":"api/douyin/product/delfreight",            // 运费模板删除
         },
         // 尺码模板
         size:{
-            "list":"api/douyin/Component/list",             // 尺码模板列表
-            "detaile":"api/douyin/product/sizedetaile",     // 尺码模板详情
-            "add":"api/douyin/Component/add",               // 尺码模板添加
-            "edit":"api/douyin/Component/edit",             // 尺码模板编辑
-            "delete":"api/douyin/Component/delete",         // 尺码模板删除
+            "list":"api/douyin/component/list",             // 尺码模板列表&详情
+            "add":"api/douyin/component/add",               // 尺码模板添加
+            "edit":"api/douyin/component/edit",             // 尺码模板编辑
+            "delete":"api/douyin/component/delete",         // 尺码模板删除
         },
         // 批量修改
         batch:{
@@ -169,12 +168,7 @@ export class A_Patch{
             "Mctoken":"api/douyin/order/getMCToken",  // 前端token
             "MessagePlus_SDK":"http://lf1-fe.ecombdstatic.com/obj/ecom-fe-open-public/component/index.js" // 消息组件SDK地址
         }
-
-
-
-
     }
-
 }
 
 
