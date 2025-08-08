@@ -1,7 +1,7 @@
 <!-- 尺码模板详情查看 组件 -->
  <template>
     <a-drawer
-        v-model:open="fen.open"
+        v-model:open="props.data.open"
         class="custom-class"
         root-class-name="root-class-name"
         :root-style="{ color: 'blue' }"
@@ -12,6 +12,7 @@
     >
 
     <div>尺码模板详情</div>
+    {{ props.data.data }}
 
     </a-drawer>
 </template>
@@ -39,9 +40,10 @@ export default defineComponent({
     },
     
     setup(props, ctx) {
-    
-        return{
+        console.log(props.data)
 
+        return{
+            props
         }
     }
     })

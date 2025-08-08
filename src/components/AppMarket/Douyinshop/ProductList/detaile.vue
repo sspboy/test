@@ -1,5 +1,6 @@
 <!-- 商品详情 组件 -->
 <template>
+    <template_detaile_components v-if="size_detaile.open" :data="size_detaile"/>
     <a-modal
       v-model:open="props.data.DetaileDate"
       title="商品详情"
@@ -384,7 +385,8 @@
                                     包邮
                                 </div>
                                 <div v-if="productdata.obj.freight_id !== 0 && productdata.obj.freight_id !== undefined" class="basestyle">
-                                <a href="#">查看</a> {{ productdata.obj.freight_id }}
+                                <a href="#">查看 </a> {{ productdata.obj.freight_id }}
+
                                 </div>
 
                             </a-col>
@@ -396,8 +398,11 @@
                                 <div v-else-if="productdata.obj.size_info_template_id === null" class="basestyle">
                                     暂无
                                 </div>
-                                <div v-else class="basestyle">
-                                    <a href="#">查看</a> {{ productdata.obj.size_info_template_id }}
+                                <div v-else-if="productdata.obj.size_info_template_id === 'None'" class="basestyle">
+                                    暂无
+                                </div>
+                                <div v-else-if="size_detaile.data !== undefined" class="basestyle">
+                                    <a href="#" @click="showSize">查看 {{ size_detaile.data.component_template_info_list[0].template_name }} </a>
                                 </div>
                             </a-col>
                             <a-col :span="4">
@@ -613,7 +618,9 @@ export default defineComponent({
         WarningTwoTone,
         ClockCircleTwoTone,
         CloseCircleTwoTone,
+        // 尺码模板
         template_detaile_components:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/templatedetaile.vue')),
+        // 运费模板
         feight_detaile_components:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/productDetaile/feightdetaile.vue')),
 
 
@@ -678,8 +685,13 @@ export default defineComponent({
         // 尺码详情
         const size_detaile = reactive({
             open:ref(false),
-            data:ref({})
+            data:ref(undefined)
         })
+        // 尺码模板显示
+        const showSize = ()=>{
+            size_detaile.open = true
+        }
+
 
         
         // 库存列表
@@ -775,14 +787,19 @@ export default defineComponent({
             }
             // 尺码模板查询
             const load_get_size=(s_id)=>{
-                if(s_id !== undefined && s_id !== null){
+
+                if(s_id !== undefined && s_id !== null && s_id !== 'None'){
+
+
                     tool.Http_.post(API.AppSrtoreAPI.size.list, {
                         template_type:"size_info",
                         page_num:0,
                         page_size:10,
                         template_id:s_id
                     }).then((res)=>{
-                        console.log('尺码模板',res)
+                        size_detaile.data = res.data.data
+
+                        // console.log('尺码模板',res)
                     })
                 }
             }
@@ -856,6 +873,8 @@ export default defineComponent({
             showreject,
             showDrawer,
             videoData,
+            size_detaile,
+            showSize,
             columns,
             data
         }
