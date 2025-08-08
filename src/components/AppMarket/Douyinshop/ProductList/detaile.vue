@@ -402,7 +402,8 @@
                                     暂无
                                 </div>
                                 <div v-else-if="size_detaile.data !== undefined" class="basestyle">
-                                    <a href="#" @click="showSize">查看 {{ size_detaile.data.component_template_info_list[0].template_name }} </a>
+                                    <a href="#" @click="size_detaile.play">查看 {{ size_detaile.data.component_template_info_list[0].template_name }} </a>
+
                                 </div>
                             </a-col>
                             <a-col :span="4">
@@ -685,13 +686,11 @@ export default defineComponent({
         // 尺码详情
         const size_detaile = reactive({
             open:ref(false),
-            data:ref(undefined)
+            data:ref(undefined),
+            play:()=>{
+                size_detaile.open = true
+            }
         })
-        // 尺码模板显示
-        const showSize = ()=>{
-            size_detaile.open = true
-        }
-
 
         
         // 库存列表
@@ -789,8 +788,6 @@ export default defineComponent({
             const load_get_size=(s_id)=>{
 
                 if(s_id !== undefined && s_id !== null && s_id !== 'None'){
-
-
                     tool.Http_.post(API.AppSrtoreAPI.size.list, {
                         template_type:"size_info",
                         page_num:0,
@@ -798,11 +795,11 @@ export default defineComponent({
                         template_id:s_id
                     }).then((res)=>{
                         size_detaile.data = res.data.data
-
-                        // console.log('尺码模板',res)
                     })
                 }
             }
+
+
             // 规格转移-规格图片、规格、库存列表
             const load_spec=(data)=>{
 
@@ -874,12 +871,10 @@ export default defineComponent({
             showDrawer,
             videoData,
             size_detaile,
-            showSize,
             columns,
             data
         }
     }
-    
 })
 </script>
 <style scoped>

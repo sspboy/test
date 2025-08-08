@@ -12,7 +12,6 @@
     >
 
     <div>尺码模板详情</div>
-    {{ props.data.data }}
 
     </a-drawer>
 </template>
@@ -40,7 +39,40 @@ export default defineComponent({
     },
     
     setup(props, ctx) {
-        console.log(props.data)
+        // 尺码表格
+        
+        const columns = ref([])
+        const data = ref([])
+
+
+        console.log(props.data.data.component_template_info_list)
+        
+        if(props.data.data !== undefined){
+
+            const t_obj = props.data.data.component_template_info_list[0]
+            const component_data = JSON.parse(t_obj.component_data)
+
+            const component_front_data = JSON.parse(t_obj.component_front_data)
+            const configTable = component_front_data.configTable
+
+            var t_name = t_obj.template_name
+            console.log('模板名称',t_name)
+
+            console.log(component_data)
+            var title = component_data.title
+            console.log(title)
+
+            var sub_title = component_data.sub_title
+            console.log(sub_title)
+
+
+            for(let i of configTable){
+                console.log(i)
+            }
+
+
+        }
+        
 
         return{
             props
