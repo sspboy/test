@@ -1,6 +1,10 @@
 <!-- 商品详情 组件 -->
 <template>
+    <!--尺码模板-->
     <template_detaile_components v-if="size_detaile.open" :data="size_detaile"/>
+    <!--运费模板-->
+    <feight_detaile_components v-if="feight_detaile.open" :data="feight_detaile"/>
+
     <a-modal
       v-model:open="props.data.DetaileDate"
       title="商品详情"
@@ -385,11 +389,12 @@
                                     包邮
                                 </div>
                                 <div v-if="productdata.obj.freight_id !== 0 && productdata.obj.freight_id !== undefined" class="basestyle">
-                                <a href="#">查看 </a> {{ productdata.obj.freight_id }}
+                                <a href="#" @click="feight_detaile.play">查看 </a> {{ productdata.obj.freight_id }}
+
 
                                 </div>
-
                             </a-col>
+
                             <a-col :span="4">
                                 <div style="height: 24px;width: 100%;">尺码模板ID</div>
                                 <div v-if="productdata.obj.size_info_template_id === undefined">
@@ -402,20 +407,23 @@
                                     暂无
                                 </div>
                                 <div v-else-if="size_detaile.data !== undefined" class="basestyle">
-                                    <a href="#" @click="size_detaile.play">查看 {{ size_detaile.data.component_template_info_list[0].template_name }} </a>
+                                    <a href="#" @click="size_detaile.play">{{ size_detaile.data.component_template_info_list[0].template_name }}</a>
 
                                 </div>
                             </a-col>
+
                             <a-col :span="4">
                                 <div style="height: 24px;width: 100%;">品牌</div>
                                 <div v-if="productdata.obj.standard_brand_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
                                 </div>
                                 <div v-if="productdata.obj.standard_brand_id === 596120136" class="basestyle">无品牌</div>
+
                                 <div v-if="productdata.obj.standard_brand_id !== 596120136 && productdata.obj.standard_brand_id !== undefined" class="basestyle">
-                                <a href="#">查看</a> {{ productdata.obj.standard_brand_id }}
+                                {{ brand_detaile.data }}
                                 </div>
                             </a-col>
+
                             <a-col :span="4">
                                 <div style="height: 24px;width: 100%;">提取方式</div>
                                 <div v-if="productdata.obj.pickup_method === undefined">
@@ -425,6 +433,7 @@
                                     {{ Profun.Field_translation.product_pickup_method(productdata.obj.pickup_method) }}
                                 </div>
                             </a-col>
+
                             <a-col :span="4">
                                 <div style="height: 24px;width: 100%;">重量 </div>
                                 <div v-if="productdata.obj.weight_value === undefined">
@@ -434,6 +443,7 @@
                                     {{ productdata.obj.weight_value }} {{ Profun.Field_translation.product_weight_unit(productdata.obj.weight_unit) }}
                                 </div>
                             </a-col>
+
                             <a-col :span="4">
                                 <div style="height: 24px;width: 100%;">创建时间</div>
                                 <div v-if="productdata.obj.create_time === undefined">
@@ -441,6 +451,7 @@
                                 </div>
                                 <div style="height: 24px;width: 100%;">{{ productdata.obj.create_time }}</div>
                             </a-col>
+
                             <a-col :span="4">
                                 <div style="height: 24px;width: 100%;">更新时间</div>
                                 <div v-if="productdata.obj.update_time === undefined">
@@ -448,6 +459,7 @@
                                 </div>
                                 <div style="height: 24px;width: 100%;">{{ productdata.obj.update_time }}</div>
                             </a-col>
+
                 </a-row>
             </div>
 
@@ -509,7 +521,7 @@
 
         </div>
     </a-layout-content>
-    
+
     </a-modal>
 
     <!--质量分 可优化 抽屉-->
@@ -589,8 +601,8 @@
                 </div>
 
             </div>
+            
         </div>
-    
     </a-drawer>
 
 </template>
@@ -651,6 +663,7 @@ export default defineComponent({
             field_problem_list:ref(undefined), // 可优化项目
             open:ref(false)
         })
+
         // 查看质量分可优化建议
         const showDrawer = () => {
             fen.open = true;
@@ -680,7 +693,10 @@ export default defineComponent({
         // 运费详情
         const feight_detaile = reactive({
             open:ref(false),
-            data:ref({})
+            data:ref(undefined),
+            play:()=>{
+                feight_detaile.open = true
+            }
         })
 
         // 尺码详情
@@ -691,6 +707,16 @@ export default defineComponent({
                 size_detaile.open = true
             }
         })
+
+        // 品牌详情
+        const brand_detaile = reactive({
+            open:ref(false),
+            data:ref(undefined),
+            play:()=>{
+                brand_detaile.open = true
+            }
+        })
+
 
         
         // 库存列表
@@ -756,6 +782,10 @@ export default defineComponent({
                     tool.Http_.post(API.AppSrtoreAPI.dou_product.brand, {
                         brand_ids:[b_id]
                     }).then((res)=>{
+                        var name_cn = res.data.data.brand_list[0].name_cn;
+                        var name_en = res.data.data.brand_list[0].name_en;;
+
+                        brand_detaile.data = name_cn + '-' + name_en
                         console.log('品牌',res.data.data)
                     })
                 }
@@ -779,10 +809,9 @@ export default defineComponent({
                     tool.Http_.post(API.AppSrtoreAPI.freight.detaile, {
                         freight_id:f_id
                     }).then((res)=>{
-                        console.log('运费模板',res)
+                        feight_detaile.data = res.data.data
                     })
                 }
-
             }
             // 尺码模板查询
             const load_get_size=(s_id)=>{
@@ -848,6 +877,7 @@ export default defineComponent({
                 res_obj.data = data_list
                 return res_obj
             }
+
             // 类目、属性列表
             const load_cate_format=(f_id)=>{
 
@@ -871,6 +901,8 @@ export default defineComponent({
             showDrawer,
             videoData,
             size_detaile,
+            feight_detaile,
+            brand_detaile,
             columns,
             data
         }

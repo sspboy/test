@@ -3,11 +3,17 @@
     <div>
         <a-drawer
             title="运费详情"
+            v-model:open="props.data.open"
+            root-class-name="root-class-name"
+            :root-style="{ color: 'blue' }"
+            size="large"
+            style="color: #666"
             width="50%"
-            :after-close="afterClose"
+            placement="right"
         >
             <div>
-                <p>运费：{{ props.data.feight }}</p>
+                <p>运费：{{ props.data.data }}</p>
+
             </div>
         </a-drawer>
     </div>
@@ -32,8 +38,12 @@ export default defineComponent({
     },
     
     setup(props, ctx) {
+
+        console.log(props.data.data)
+
     
         return{
+            props,
             visible:ref(false),
         }
     }

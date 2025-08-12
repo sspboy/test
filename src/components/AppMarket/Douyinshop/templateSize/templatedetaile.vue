@@ -10,9 +10,20 @@
         title="尺码模板详情"
         placement="right"
     >
+        <a-table 
+            :columns="columns" 
+            :data-source="data" 
+            :pagination="false" 
+            bordered>
 
-    <div>尺码模板详情</div>
-
+            <template #bodyCell="{ column, text }">
+            <template v-if="column.dataIndex === 'name'">
+                <a>{{ text }}</a>
+            </template>
+            </template>
+            <template #title>{{ table_name }}</template>
+        </a-table>
+        
     </a-drawer>
 </template>
 
@@ -40,42 +51,61 @@ export default defineComponent({
     
     setup(props, ctx) {
         // 尺码表格
-        
-        const columns = ref([])
+        const table_name = ref('')
+
+        const columns = ref([
+            {
+                title: '尺码',
+                dataIndex: 'size'
+            }
+        ])
+
         const data = ref([])
 
-
-        console.log(props.data.data.component_template_info_list)
+        // console.log(props.data.data.component_template_info_list)
         
         if(props.data.data !== undefined){
 
             const t_obj = props.data.data.component_template_info_list[0]
-            const component_data = JSON.parse(t_obj.component_data)
+            const component_data = JSON.parse(t_obj.component_data) // 模板数据
 
             const component_front_data = JSON.parse(t_obj.component_front_data)
             const configTable = component_front_data.configTable
 
             var t_name = t_obj.template_name
-            console.log('模板名称',t_name)
+            table_name.value = t_name
 
-            console.log(component_data)
-            var title = component_data.title
-            console.log(title)
-
+            var title = component_data.title // 标题
             var sub_title = component_data.sub_title
-            console.log(sub_title)
+            var sizeconfig = component_data.config
 
 
-            for(let i of configTable){
-                console.log(i)
+            // 表头数据
+            var selected_specs = component_data.selected_specs
+            for(let i of selected_specs){
+                let o = {}
+                o.title = i
+                o.dataIndex =i
+                columns.value.push(o)
             }
 
+            Object.entries(sizeconfig).forEach((entry, index) => {
+                const [key, value] = entry;
+                let c = {}
+                c.size = key
+                for(let y in value){c[y] = value[y]}
+                data.value.push(c)
+            });
 
         }
         
 
         return{
-            props
+            props,
+            table_name,
+            columns,
+            data
+
         }
     }
     })
