@@ -156,6 +156,14 @@ const routes = [
         }
     },
     {
+        path: '/sizetemplate',
+        name: 'sizetemplate',
+        component: () => import('../views/AppMarket/DouyinShop/SizeTemplate.vue'),    // 尺码模板
+        meta:{
+            title:'尺码模板',
+        }
+    },
+    {
         path: '/batchedit',
         name: 'batchedit',
         component: () => import('../views/AppMarket/DouyinShop/DouyinBatchEdit.vue'),    // 视图文件

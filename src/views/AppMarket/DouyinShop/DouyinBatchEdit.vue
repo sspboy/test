@@ -150,7 +150,6 @@
                     <div class="bor_l" :style="{height:'80vh'}">
 
                         <a-list
-                            class="demo-loadmore-list"
                             :loading="initLoading"
                             item-layout="horizontal"
                             :data-source="list"
@@ -197,6 +196,7 @@
                         </template>
 
                         </a-list>
+
                     </div>
 
                 </a-col>

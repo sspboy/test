@@ -65,7 +65,7 @@ export default defineComponent({
     const state = reactive({
       key:[],
       rootSubmenuKeys: [],  // 一级菜单
-      openKeys:[],                  // 选中的一级菜单
+      openKeys:[],          // 选中的一级菜单
       selectedKeys: [],
     });
 
@@ -78,7 +78,7 @@ export default defineComponent({
       state.openKeys = [props.menudata.openKeys]
     }
 
-    const items = reactive([])
+    const items = ref([])
 
     // 组件挂在之前---请求数据
     onBeforeMount(()=>{
@@ -105,8 +105,7 @@ export default defineComponent({
 
     // 菜单点击事件===>路由
     const handleClick = e => {
-      // console.log(e)
-      // console.log(e.keyPath)
+      console.log(e)
       let se_obj = e.keyPath
       let name = e.item.id
 

@@ -394,7 +394,7 @@
 
                                 </div>
                             </a-col>
-
+                            
                             <a-col :span="4">
                                 <div style="height: 24px;width: 100%;">尺码模板ID</div>
                                 <div v-if="productdata.obj.size_info_template_id === undefined">
@@ -459,57 +459,59 @@
                                 </div>
                                 <div style="height: 24px;width: 100%;">{{ productdata.obj.update_time }}</div>
                             </a-col>
-
                 </a-row>
             </div>
 
             <a-divider orientation="left" orientation-margin="0px">规格库存</a-divider>
 
-            <div style="width: 100%;">
+            <div style="width: 100%;margin:0 0 50px 0;">
                 <a-row :gutter="[16,16]">
+                    <a-col :span="24">
 
-                            <a-col :span="24">
-                                <div v-for="(item,index) in productdata.obj.specs" :key="index" style="margin: 0 0 10px 0;clear:both;">
-                                    <a-badge-ribbon placement="start" :text="item.name">
-                                        <a-card title=" " size="small">
-                                            <span class="font_size_12 specbox" v-for="(val,index) in item.values" :key="index">
-                                                <img :src="val.pic" width="20px"/>
-                                                {{ val.name }}
-                                            </span>
-                                        </a-card>
-                                    </a-badge-ribbon>
-                                </div>
+                        <div v-for="(item,index) in productdata.obj.specs" :key="index" style="width: 100%;margin: 0 0 10px 0;clear:both;">
 
-                                <div>
-                                    <a-table 
-                                    :columns="columns" 
-                                    :data-source="data" 
-                                    size="small" 
-                                    :pagination="false"
-                                    style="font-size:12px;"
-                                    bordered
-                                    >
-                                        <template #bodyCell="{ column, text }">
-                                            <template v-if="column.dataIndex === 'price'">
-                                                <span >￥ {{ text }}</span>
-                                            </template>
-                                        </template>
-                                    </a-table>
-                                </div>
+                            <p>{{ item.name }}</p>
 
-                            </a-col>
+                            <div class="font_size_12 specbox" v-for="(val,index) in item.values" :key="index" style="text-align: center;margin:0 10px 10px 0;border: 1px solid #e8e8e8;border-radius: 6px;padding:5px;">
+                                <span v-for="(val2,index2) in productdata.obj.spec_pics" :key="index2" >
+                                    <a-image v-if="val2.spec_detail_id == val.id" :width="30" :height="30" style="margin: 0 5px 0 0;" :src="API.AppSrtoreAPI.meiuri + val2.pic"/>
+                                </span>
+                                <span>{{ val.name }}</span>
 
-                        </a-row>
+                            </div>
 
+                        </div>
+
+                    </a-col>
+                    <a-col>
+                        <a-table 
+                            :columns="columns" 
+                            :data-source="data" 
+                            size="small" 
+                            :pagination="false"
+                            style="font-size:12px;"
+                            bordered
+                            >
+                                <template #bodyCell="{ column, text }">
+                                    <template v-if="column.dataIndex === 'price'">
+                                        <span >￥ {{ text }}</span>
+                                    </template>
+                                </template>
+                            </a-table>
+                    </a-col>
+                </a-row>
             </div>
 
             <a-divider orientation="left" orientation-margin="0px">类目&属性</a-divider>
-            <div style="width: 100%;margin: 0 0 40px 0;">
-                <a-badge-ribbon placement="start" text="当前类目">
-                    <a-card title=" " size="small">
-                        <span>书信</span>
-                    </a-card>
-                </a-badge-ribbon>
+            <div style="width: 100%;margin:0 0 50px 0;">
+                <h5>商品类目：{{ cate_name }}</h5>
+
+                <a-row :gutter="[0,16]" style="margin: 20px 0 0 0;" v-if="productdata.obj.product_format_new !== undefined">
+
+                  <a-col :span="6" v-for="(item,index) in JSON.parse(productdata.obj.product_format_new)" :key="index">
+                    {{ item[0].PropertyName }}：{{ item[0].Name }}
+                </a-col>
+                </a-row>
             </div>
 
             <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
@@ -717,6 +719,10 @@ export default defineComponent({
             }
         })
 
+        // 类目
+        const cate_name = ref(undefined)
+
+
 
         
         // 库存列表
@@ -742,7 +748,8 @@ export default defineComponent({
                     load_get_video(responese.data.data.material_video_id)   // 视频
                     load_get_freight(responese.data.data.freight_id)        // 运费模板
                     load_get_size(responese.data.data.size_info_template_id)// 尺码
-
+                    load_cate_format(responese.data.data) // 类目&属性
+                    console.log('资质',responese.data.data.quality_list)
 
                     // 规格库存-表头、内容
                     const spec_res_obj = load_spec(responese.data.data)
@@ -762,7 +769,6 @@ export default defineComponent({
                 page:0,
                 size:10
             }).then((res)=>{
-                console.log(res)
                 if(res.data.data.total > 0){reject_info.records_list = res.data.data.records[0].audit_reason_details}
             })
 
@@ -776,20 +782,18 @@ export default defineComponent({
 
             // 品牌查询
             const load_get_brand=(b_id)=>{
-                console.log('品牌id',b_id)
-
+                // console.log('品牌id',b_id)
                 if(b_id !== undefined && b_id !== null){
                     tool.Http_.post(API.AppSrtoreAPI.dou_product.brand, {
                         brand_ids:[b_id]
                     }).then((res)=>{
                         var name_cn = res.data.data.brand_list[0].name_cn;
                         var name_en = res.data.data.brand_list[0].name_en;;
-
                         brand_detaile.data = name_cn + '-' + name_en
-                        console.log('品牌',res.data.data)
                     })
                 }
             }
+
             // 视频查询
             const load_get_video=(v_id)=>{
                 if(v_id !== undefined && v_id !== null){
@@ -813,6 +817,7 @@ export default defineComponent({
                     })
                 }
             }
+
             // 尺码模板查询
             const load_get_size=(s_id)=>{
 
@@ -878,10 +883,28 @@ export default defineComponent({
                 return res_obj
             }
 
-            // 类目、属性列表
-            const load_cate_format=(f_id)=>{
+            // 类目
+            const load_cate_format=(data)=>{
+
+                var category_detail = data.category_detail;
+                console.log(category_detail)
+                let first_cname = category_detail.first_cname;
+                let second_cname = category_detail.second_cname;
+                let third_cname = category_detail.third_cname;
+                let fourth_cname = category_detail.fourth_cname;
+                let arr = [first_cname,second_cname,third_cname,fourth_cname] 
+                let res_list = arr.filter(Boolean);
+                
+                var cate_test = ''
+                for(let i of res_list){
+                    cate_test = cate_test + i + '>'
+                }
+
+                cate_name.value = cate_test
 
             }
+
+
 
         })
 
@@ -891,6 +914,7 @@ export default defineComponent({
 
 
         return{
+            API,
             Profun,
             productdata,
             props,
@@ -903,6 +927,7 @@ export default defineComponent({
             size_detaile,
             feight_detaile,
             brand_detaile,
+            cate_name,
             columns,
             data
         }

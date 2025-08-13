@@ -105,6 +105,9 @@ export class A_Patch{
     // 应用市场
     AppSrtoreAPI={
 
+        // 素材请求地址前缀
+        meiuri:'https://p3-aio.ecombdimg.com/obj/',
+
         // 复制记录
         copyrecords:{
             "list":"api/douyin/copylog/list",
