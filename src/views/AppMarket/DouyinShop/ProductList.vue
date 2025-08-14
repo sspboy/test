@@ -204,8 +204,8 @@
                 </a-list-item-meta>
 
                 <template #actions>
-                    <a class="font_size_12" href="#" @click="showEdit(item.product_id)">编辑</a>
-                    <a class="font_size_12" href="#">删除</a>
+                    <a class="font_size_12" @click="showEdit(item.product_id)">编辑</a>
+                    <a class="font_size_12" @click="deldata.play(item.product_id)">删除</a>
                 </template>
 
               </a-list-item>
@@ -231,15 +231,19 @@
         <!--翻页组件 -->
 
       </a-layout-content>
-  
-
-
 
     </a-layout>
     <!--右侧内容部分 结束-->
 
 
 </a-layout>
+
+
+<!--确认删除-->
+<a-modal v-model:open="deldata.open" title="确认删除" :confirm-loading="deldata.del_loading" @ok="deldata.confirm_fun">
+  <p>确认删除选中商品吗？</p>
+</a-modal>
+
 </template>
 
 <script>
@@ -499,11 +503,6 @@ export default {
         var res_list = res_data.data;
         var total = res_data.total;
 
-        // console.log(res_list)
-        // for(let i of res_list){
-        //   console.log(i.audit_reject_suggestion)
-        // }
-        
         // 请求数据为空
         if(res_list.length == 0){
           PAGEDATA.justify = 'center';
@@ -571,9 +570,42 @@ export default {
     }
 
     // 删除方法
-    const showDelete = () =>{
+    const deldata = reactive({
+      product_id:ref(undefined),
+      open:ref(false),
+      // 弹出删除确认框
 
-    }
+      play:(product_id)=>{
+        deldata.open = true;
+        deldata.product_id = product_id;
+      },
+      // 删除loading状态
+      del_loading:ref(false),
+
+      // 删除确认方法
+      confirm_fun:()=>{
+
+        console.log(deldata.product_id)
+        deldata.del_loading = true;        // 删除loading状态
+
+        // 删除接口
+        axios.post(API.AppSrtoreAPI.dou_product.delete,{
+          product_id:deldata.product_id
+
+        }).then(res=>{
+
+          deldata.del_loading = false;        // 删除loading状态
+          deldata.open = false;
+          deldata.product_id = undefined;
+          tool.Fun_.message('success','删除成功');
+
+          // 刷新列表
+          loadproductData(navData.value)
+          // if(res.data.code == 200){}
+        })
+
+      }
+    })
 
 
     return {
@@ -587,6 +619,7 @@ export default {
       page_turning,
       showEdit,
       showDetaile,
+      deldata,
 
     }
 
