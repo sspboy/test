@@ -4,7 +4,7 @@
 
     <!-- 自定义标题 -->
 
-    <div style="width: 100%;height: 28px;padding: 0 0 0 4px;">
+    <div style="width: 100%;height: 28px;padding: 0 0 0 0;">
         <a-row>
 
             <a-col :span="24">
@@ -14,7 +14,7 @@
                     :model="props.data.List_conditions"
                     @finish="handleFinish"
                 >
-                <h3 style="padding: 3px 20px 0 0;">{{ props.data.title }}</h3>
+                <!-- <h3 style="padding: 3px 20px 0 0;">{{ props.data.title }}</h3> -->
 
                 <a-form-item name="product_type" style="width: 90px;">
                     <a-select

@@ -19,52 +19,52 @@
       <!--右侧 内容组件  开始-->
       <a-layout-content class="content_border">
         
-        <a-list
-            class="demo-loadmore-list"
-            :loading="initLoading"
-            item-layout="horizontal"
-            :data-source="list"
-        >
-    
+        <div style="height: 40px;">
+            <a-row>
 
-        <template #loadMore>
-
-            <div :style="{ textAlign: 'center', marginTop: '12px', height: '32px', lineHeight: '32px' }">
-                <a-button @click="onLoadMore" size="small" style="font-size: 12px;" :loading="loading">加载更多</a-button>
-            </div>
-            
-        </template>
-
+                <a-col :span="4">
+                    <a-button type="primary" size="small" style="font-size: 12px;">
+                        <PlusOutlined />
+                        新建运费模板
+                    </a-button>
+                </a-col>
+                <a-col offset="12" :span="8">
+                    <a-space-compact block size="small">
+                        <a-input size="small" placeholder="请输入模板名称" />
+                        <a-button type="primary" size="small" style="font-size: 12px;">查询</a-button>
+                    </a-space-compact>
+                </a-col>
+            </a-row>
+        </div>
         
-        <template #renderItem="{ item }">
+        <a-list
+            :grid="{ gutter: 0, column: 4 }"
+            size="default"
+            :loading="initLoading"
+            :data-source="list"
+            :split="false"
+        >
 
-            <a-list-item>
+            <template #renderItem="{ item }">
+                <a-card size="small" style="margin:0px 10px 10px 0;font-size: 12px;">
 
-                <a-skeleton :title="true" :paragraph="false" :loading="!!item.loading" active>
+                    <template #title>
+                        <span class="font_size_12">{{ item.template_name }}</span>
+                    </template>
 
-                    <a-list-item-meta>
 
-                        <template  #title>
-                            {{ item.create_time }}
-                            <span class="font_size_12" style="font-weight:normal;">
-                                提交 {{ item.number }} 个 修改商品
-                            </span>
+                        Card content
+                    <template #actions>
+                        <EyeOutlined />
+                        <edit-outlined />
+                        <DeleteOutlined />
+                    </template>
+                </a-card>
+            </template>
 
-                        </template>
-
-                    </a-list-item-meta>
-
-                </a-skeleton>
-
-                
-                <template v-if="item.id !== undefined" #actions>
-                    <a href="#" key="list-loadmore-more" class="font_size_12">查看</a>
-                    <a href="#" class="font_size_12">删除</a>
-                </template>
-
-            </a-list-item>
-            
-        </template>
+            <template #loadMore>
+                <a-button @click="onLoadMore" size="small" style="font-size: 12px;" :loading="loading">加载更多</a-button>
+            </template>
 
         </a-list>
                         
@@ -79,6 +79,8 @@
 </template>
 <script>
 import { defineComponent,ref,reactive,onMounted,h } from 'vue';
+import { PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
+
 import { useStore } from 'vuex'
 
 // 组件引用=====开始
@@ -93,6 +95,11 @@ export default {
 
 
     components:{
+        EyeOutlined,
+        PlusOutlined,
+        DeleteOutlined,
+        EditOutlined,
+        EllipsisOutlined,
         menu_left,
         menu_head,
     },
@@ -103,7 +110,7 @@ export default {
             title:'运费模板',
 
             menudata:{      // 菜单选中配置
-                'key':'93', // 当前菜单key
+                'key':'94', // 当前菜单key
                 'openKeys':'douyinshop' // 一级菜单
             },
         })
@@ -113,8 +120,91 @@ export default {
         const store = useStore();// 共享数据
         const innerHeight = ref(window.innerHeight-100);// 初始化表格高度
         
-        const initLoading = ref(true);
-        const list = ref([]);
+        const initLoading = ref(false);
+        const list = ref([
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            },
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            },
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            },
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            },
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            },
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            },
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            },
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            },
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            },
+            {
+                'id':1,
+                'template_name':'尺码模板名称',
+                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
+                'shareable':false, // 是否能共享
+                'create_time':'2023-08-01 10:00:00',
+                'update_time':'2023-08-01 10:00:00',
+            }
+    
+    ]);
+
         const loading = ref(false);
 
         const drawer = ref(false);

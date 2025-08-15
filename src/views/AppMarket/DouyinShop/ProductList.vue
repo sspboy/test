@@ -106,12 +106,12 @@
                                         <template  #title>
                                           
                                           <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
-                                            驳回原因：{{ item.audit_reject_suggestion.reject_reason }}
+                                            驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
                                           </div>
 
                                         </template>
 
-                                        <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span @click="showEdit"> 驳回建议</span>
+                                        <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
 
                                       </a-tooltip>
                                 </span>

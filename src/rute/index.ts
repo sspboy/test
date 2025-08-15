@@ -163,6 +163,15 @@ const routes = [
             title:'尺码模板',
         }
     },
+    // 运费模板
+    {
+        path: '/feighttemplate',
+        name: 'feighttemplate',
+        component: () => import('../views/AppMarket/DouyinShop/FeightTemplate.vue'),    // 视图文件
+        meta:{
+            title:'运费模板',
+        }
+    },
     {
         path: '/batchedit',
         name: 'batchedit',
