@@ -51,9 +51,10 @@
                     <template #title>
                         <span class="font_size_12">{{ item.template_name }}</span>
                     </template>
-
-
-                        Card content
+                    <span v-if="item.image !== undefined">
+                        <a-image :src="item.image.url" style="width: 110px;height: 100%;" />
+                    </span>
+                    
                     <template #actions>
                         <EyeOutlined />
                         <edit-outlined />
@@ -78,7 +79,7 @@
 
 </template>
 <script>
-import { defineComponent,ref,reactive,onMounted,h } from 'vue';
+import { defineComponent,ref,reactive,onMounted,h,nextTick } from 'vue';
 import { useStore } from 'vuex'
 import { PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
 
@@ -111,14 +112,27 @@ export default {
                 'key':'93', // 当前菜单key
                 'openKeys':'douyinshop' // 一级菜单
             },
+
+            datalist:[],          // 列表信息
+            total_number:0,       // 内容总数
+
         })
+
         const tool = new TOOL.TOOL()            // 工具方法
+
         const API = new utils.A_Patch()         // 请求接口地址合集
 
         const store = useStore();// 共享数据
+
         const innerHeight = ref(window.innerHeight-100);// 初始化表格高度
         
-        const initLoading = ref(false);
+        const initLoading = ref(true); // 初始化加载状态
+
+        const count = ref(0); // 分页
+
+        const total_num = ref(0); // 数据总条数
+
+        const data = ref([]); // 初始化数据对象
 
         const list = ref([
             {
@@ -210,17 +224,30 @@ export default {
 
         onMounted(() => {
 
-          // tool.Http_.post(API.AppSrtoreAPI.batch.list, first_Data).then(res=>{
-              
-          //     // console.log('批量列表',res)
-              
-          //     initLoading.value = false;
-              
-          //     data.value = res.data.data;
+            // 初始化数据
+            const first_Data = {
+                "page_num":count.value,
+                "page_size":10,
+            }
 
-          //     list.value = res.data.data;
+            tool.Http_.post(API.AppSrtoreAPI.size.list, first_Data).then(res=>{
 
-          // })
+                var datarespone = res.data.data;// 数据对象
+                var total_num = datarespone.total_num; // 数据总条数
+                var component_template_info_list = datarespone.component_template_info_list; // 列表数据
+                for(let i = 0; i < component_template_info_list.length; i++){
+                    console.log('尺码列表数据',component_template_info_list[i])
+                }
+
+
+              
+                initLoading.value = false;
+              
+              data.value = component_template_info_list;
+
+              list.value = component_template_info_list;
+
+          })
 
         })
 
@@ -242,12 +269,10 @@ export default {
 
             const get_more_data = {
                 "page":count.value,
-                "page_size":3, 
-                "condition":[{"type": "orderby", "condition": [{"column_name": "create_time", "value": "desc"}]}]
-
+                "page_size":10, 
             }
 
-            tool.Http_.post(API.AppSrtoreAPI.batch.list, get_more_data).then(res=>{
+            tool.Http_.post(API.AppSrtoreAPI.size.list, get_more_data).then(res=>{
                 
                 // console.log(res)
 
@@ -261,7 +286,7 @@ export default {
                 
                 }else{ // 请求数据不为空
 
-                    const newData = data.value.concat(res.data.data);
+                    const newData = data.value.concat(res.data.data.component_template_info_list);
 
                     data.value = newData;
 

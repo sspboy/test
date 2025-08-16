@@ -483,13 +483,14 @@
                         </div>
 
                     </a-col>
-                    <a-col>
+                    <a-col :span="24">
+
                         <a-table 
                             :columns="columns" 
                             :data-source="data" 
                             size="small" 
                             :pagination="false"
-                            style="font-size:12px;"
+                            style="font-size:12px;width: 100%;"
                             bordered
                             >
                                 <template #bodyCell="{ column, text }">

@@ -226,6 +226,7 @@
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 0;" ghost><CheckCircleOutlined /> 全选</a-button>
           </span>
+          
           <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
 
         <!--翻页组件 -->
