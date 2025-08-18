@@ -23,7 +23,8 @@
             <a-row>
 
                 <a-col :span="4">
-                    <a-button type="primary" size="small">
+                    <a-button type="primary" size="small" @click="size_add.play">
+
                         <PlusOutlined />
                         新建尺码模板
                     </a-button>
@@ -36,50 +37,94 @@
                 </a-col>
             </a-row>
         </div>
-        
-        <a-list
-            :grid="{ gutter: 0, column: 4 }"
-            size="default"
-            :loading="initLoading"
-            :data-source="list"
-            :split="false"
-        >
 
-            <template #renderItem="{ item }">
-                <a-card size="small" style="margin:0px 10px 10px 0;font-size: 12px;">
+        <div :style="{height:PAGEDATA.innerHeight + 'px'}" class="content_list">
 
-                    <template #title>
-                        <span class="font_size_12">{{ item.template_name }}</span>
-                    </template>
-                    <span v-if="item.image !== undefined">
-                        <a-image :src="item.image.url" style="width: 110px;height: 100%;" />
-                    </span>
-                    
-                    <template #actions>
-                        <EyeOutlined />
-                        <edit-outlined />
-                        <DeleteOutlined />
-                    </template>
-                </a-card>
-            </template>
+            <a-list
+                :grid="{ gutter: 0, column: 4 }"
+                size="default"
+                :loading="initLoading"
+                :data-source="list"
+                :split="false"
+            >
 
-            <template #loadMore>
-                <a-button @click="onLoadMore" size="small" style="font-size: 12px;" :loading="loading">加载更多</a-button>
-            </template>
+                <template #renderItem="{ item }">
 
-        </a-list>
-                        
+                    <a-card size="small" style="margin:0px 10px 10px 0;font-size: 12px;">
 
-      </a-layout-content>
+                        <template #title>
+                            <span class="font_size_12">{{ item.template_name }}</span>
+                        </template>
+                        <!-- <span v-if="item.image !== undefined">
+                            <a-image :src="item.image.url" style="width: 110px;height: 80px;" />
+                        </span>
+                         -->
+                        <template #actions>
+                            <EyeOutlined @click="size_detail.play(item)"/>
+                            <edit-outlined @click="size_update.play(item)"/>
+                            <DeleteOutlined @click="size_delete.play()"/>
+                        </template>
+                    </a-card>
+                </template>
 
+                <template #loadMore>
+                    <div style="height: 50px;padding: 20px 0 0 0;width: 100%;text-align: center;">
+
+                        <a-button @click="onLoadMore" size="small" style="font-size: 12px;margin: 0 auto;" :loading="loading">加载更多</a-button>
+                    </div>
+                </template>
+
+            </a-list>
+
+        </div>
+      
+    </a-layout-content>
     </a-layout>
 </a-layout>
 
+<!-- 新建尺码模板 -->
+<a-drawer
+    v-model:open="size_add.open"
+    class="custom-class"
+    root-class-name="root-class-name"
+    :root-style="{ color: 'blue' }"
+    title="新建"
+    placement="right"
+  >
+    <p>新建尺码模板</p>
+</a-drawer>
+<!-- 详情尺码模板 -->
+<a-drawer
+    v-model:open="size_detail.open"
+    class="custom-class"
+    root-class-name="root-class-name"
+    :root-style="{ color: 'blue' }"
+    title="详情"
+    placement="right"
+  >
+    <p>尺码模板详情</p>
+</a-drawer>
+<!-- 尺码模板更新 -->
+<a-drawer
+    v-model:open="size_update.open"
+    class="custom-class"
+    root-class-name="root-class-name"
+    :root-style="{ color: 'blue' }"
+    title="编辑"
+    placement="right"
+  >
+    <p>尺码模板更新</p>
+</a-drawer>
+
+<!--尺码模板删除-->
+<a-modal v-model:open="size_delete.open" title="确认删除" :confirm-loading="size_delete.confirmLoading" @ok="size_delete.handleOk">
+    <p>是否确认删除？删除后数据将无法恢复。</p>
+</a-modal>
 
 
 </template>
 <script>
-import { defineComponent,ref,reactive,onMounted,h,nextTick } from 'vue';
+import { defineComponent,ref,reactive,onMounted,h,nextTick,onUnmounted } from 'vue';
 import { useStore } from 'vuex'
 import { PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
 
@@ -115,7 +160,7 @@ export default {
 
             datalist:[],          // 列表信息
             total_number:0,       // 内容总数
-
+            innerHeight:ref(window.innerHeight-150),
         })
 
         const tool = new TOOL.TOOL()            // 工具方法
@@ -123,8 +168,6 @@ export default {
         const API = new utils.A_Patch()         // 请求接口地址合集
 
         const store = useStore();// 共享数据
-
-        const innerHeight = ref(window.innerHeight-100);// 初始化表格高度
         
         const initLoading = ref(true); // 初始化加载状态
 
@@ -134,99 +177,17 @@ export default {
 
         const data = ref([]); // 初始化数据对象
 
-        const list = ref([
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            }
-    
-    ]);
+        const list = ref([]);
 
         const loading = ref(false);
 
-        const drawer = ref(false);
-
         onMounted(() => {
+
+            window.addEventListener('resize', handleResize);// 窗口变换时候
 
             // 初始化数据
             const first_Data = {
-                "page_num":count.value,
+                "page_num": count.value,
                 "page_size":10,
             }
 
@@ -235,35 +196,35 @@ export default {
                 var datarespone = res.data.data;// 数据对象
                 var total_num = datarespone.total_num; // 数据总条数
                 var component_template_info_list = datarespone.component_template_info_list; // 列表数据
-                for(let i = 0; i < component_template_info_list.length; i++){
-                    console.log('尺码列表数据',component_template_info_list[i])
-                }
 
-
-              
                 initLoading.value = false;
               
-              data.value = component_template_info_list;
+                data.value = component_template_info_list;
 
-              list.value = component_template_info_list;
+                list.value = component_template_info_list;
 
           })
 
         })
 
 
+        // 组件挂之后---请求数据===============================开始
+        // 定义一个函数来处理窗口大小变化 ==
+        const handleResize = () => {
+        PAGEDATA.innerHeight = window.innerHeight - 150; // 作为表格自适应高度
+        };
+
+        // 在组件卸载时移除事件监听器
+        onUnmounted(() => {
+        window.removeEventListener('resize', handleResize);
+        });
+
+        // 【组件挂载】========================================结束
+
         // 加载更多数据
         const onLoadMore = () => {
 
             loading.value = true;
-
-            list.value = data.value.concat(
-                [...new Array(1)].map(() => ({
-                    loading: true,
-                    name: {},
-                    picture: {},
-                })),
-            );
 
             count.value = count.value + 1;
 
@@ -306,16 +267,56 @@ export default {
 
         };
 
-        // 新建
+        // 新建运费详情
+        const size_add = reactive({
+            open:ref(false),
+            data:ref(undefined),
+            play:()=>{
+                size_add.open = true
+            }
+        })
+
+        // 查看详情
+        const size_detail = reactive({
+            open:ref(false),
+            data:ref(undefined),
+            play:()=>{
+                size_detail.open = true
+            }
+        })
+
 
         // 更新
+        const size_update = reactive({
+            open:ref(false),
+            data:ref(undefined),
+            play:()=>{
+                size_update.open = true
+            }
+        })
 
         // 删除
+        const size_delete = reactive({
+            open:ref(false),
+            data:ref(undefined),
+            confirmLoading:ref(false),
+            play:()=>{
+                size_delete.open = true
+            },
+            handleOk:()=>{
+                size_delete.confirmLoading = true
+            }
+
+        })
 
 
 
         return{
           PAGEDATA,
+          size_add,
+          size_detail,
+            size_update,
+            size_delete,
           store,
           innerHeight,
           initLoading,
@@ -331,5 +332,5 @@ export default {
 </script>
 
 <style scoped>
-
+.content_list{overflow-x: hidden;overflow-y: scroll;}
 </style>

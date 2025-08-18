@@ -36,38 +36,42 @@
                 </a-col>
             </a-row>
         </div>
-        
-        <a-list
-            :grid="{ gutter: 0, column: 4 }"
-            size="default"
-            :loading="initLoading"
-            :data-source="list"
-            :split="false"
-        >
-
-            <template #renderItem="{ item }">
-                <a-card size="small" style="margin:0px 10px 10px 0;font-size: 12px;">
-
-                    <template #title>
-                        <span class="font_size_12">{{ item.template_name }}</span>
-                    </template>
 
 
-                        Card content
-                    <template #actions>
-                        <EyeOutlined />
-                        <edit-outlined />
-                        <DeleteOutlined />
-                    </template>
-                </a-card>
-            </template>
+        <div :style="{height:PAGEDATA.innerHeight + 'px'}" class="content_list">
 
-            <template #loadMore>
-                <a-button @click="onLoadMore" size="small" style="font-size: 12px;" :loading="loading">加载更多</a-button>
-            </template>
+            <a-list
+                :grid="{ gutter: 0, column: 4 }"
+                size="default"
+                :loading="initLoading"
+                :data-source="list"
+                :split="false"
+            >
 
-        </a-list>
+                <template #renderItem="{ item }">
+
+                    <a-card size="small" style="margin:0px 10px 10px 0;font-size: 12px;">
+
+                        <template #title>
+                            <span class="font_size_12">{{ item.template.template_name }}</span>
+                        </template>
+                        <template #actions>
+                            <EyeOutlined />
+                            <edit-outlined />
+                            <DeleteOutlined />
+                        </template>
+                    </a-card>
+                </template>
+
+                <template #loadMore>
+                    <div style="height: 50px;padding: 20px 0 0 0;width: 100%;text-align: center;">
+                        <a-button @click="onLoadMore" size="small" style="font-size: 12px;" :loading="loading">加载更多</a-button>
+                    </div>
+                </template>
+
+            </a-list>
                         
+        </div>
 
       </a-layout-content>
 
@@ -78,7 +82,7 @@
 
 </template>
 <script>
-import { defineComponent,ref,reactive,onMounted,h } from 'vue';
+import { defineComponent,ref,reactive,onMounted,h,nextTick,onUnmounted } from 'vue';
 import { PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
 
 import { useStore } from 'vuex'
@@ -113,115 +117,56 @@ export default {
                 'key':'94', // 当前菜单key
                 'openKeys':'douyinshop' // 一级菜单
             },
+
+            innerHeight:ref(window.innerHeight-150),// 初始化表格高度
+
         })
         const tool = new TOOL.TOOL()            // 工具方法
         const API = new utils.A_Patch()         // 请求接口地址合集
 
         const store = useStore();// 共享数据
-        const innerHeight = ref(window.innerHeight-100);// 初始化表格高度
         
-        const initLoading = ref(false);
-        const list = ref([
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            },
-            {
-                'id':1,
-                'template_name':'尺码模板名称',
-                'image_url':'https://img1.baidu.com/it/u=3422522222,2222222222&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500', // 图片地址
-                'shareable':false, // 是否能共享
-                'create_time':'2023-08-01 10:00:00',
-                'update_time':'2023-08-01 10:00:00',
-            }
-    
-    ]);
+        const initLoading = ref(true);
+
+        const count = ref(0); // 分页
+        const total_num = ref(0); // 数据总条数
+        const data = ref([]); // 初始化数据对象
+        const list = ref([]);
 
         const loading = ref(false);
+        // 组件挂之后---请求数据===============================开始
+        // 定义一个函数来处理窗口大小变化 ==
+        const handleResize = () => {
+            PAGEDATA.innerHeight = window.innerHeight - 150; // 作为表格自适应高度
+        };
 
-        const drawer = ref(false);
+        // 在组件卸载时移除事件监听器
+        onUnmounted(() => {
+            window.removeEventListener('resize', handleResize);
+        });
 
+        // 【组件挂载】========================================结束
         onMounted(() => {
 
-          // tool.Http_.post(API.AppSrtoreAPI.batch.list, first_Data).then(res=>{
-              
-          //     // console.log('批量列表',res)
-              
-          //     initLoading.value = false;
-              
-          //     data.value = res.data.data;
+            const first_Data = {
+                "page":count.value,
+                "page_size":10, 
+            }
 
-          //     list.value = res.data.data;
+          tool.Http_.post(API.AppSrtoreAPI.freight.list, first_Data).then(res=>{
+              
+            var datarespone = res.data.data;// 数据对象
+            var total_num = datarespone.Count; // 数据总条数
+            var List = datarespone.List; // 列表数据
 
-          // })
+            initLoading.value = false;
+            console.log('运费模板',List)
+
+            data.value = List;
+
+            list.value = List;
+
+          })
 
         })
 
@@ -231,27 +176,15 @@ export default {
 
             loading.value = true;
 
-            list.value = data.value.concat(
-                [...new Array(1)].map(() => ({
-                    loading: true,
-                    name: {},
-                    picture: {},
-                })),
-            );
-
             count.value = count.value + 1;
 
             const get_more_data = {
                 "page":count.value,
-                "page_size":3, 
-                "condition":[{"type": "orderby", "condition": [{"column_name": "create_time", "value": "desc"}]}]
-
+                "page_size":10, 
             }
 
-            tool.Http_.post(API.AppSrtoreAPI.batch.list, get_more_data).then(res=>{
+            tool.Http_.post(API.AppSrtoreAPI.freight.list, get_more_data).then(res=>{
                 
-                // console.log(res)
-
                 if(res.data.data == "None"){ // 请求数据为空
 
                     list.value = data.value;
@@ -262,7 +195,7 @@ export default {
                 
                 }else{ // 请求数据不为空
 
-                    const newData = data.value.concat(res.data.data);
+                    const newData = data.value.concat(res.data.data.List);
 
                     data.value = newData;
 
@@ -307,5 +240,6 @@ export default {
 </script>
 
 <style scoped>
+.content_list{overflow-x: hidden;overflow-y: scroll;}
 
 </style>
