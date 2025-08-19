@@ -24,7 +24,6 @@
 
                 <a-col :span="4">
                     <a-button type="primary" size="small" @click="size_add.play">
-
                         <PlusOutlined />
                         新建尺码模板
                     </a-button>
@@ -91,8 +90,13 @@
     title="新建"
     placement="right"
   >
-    <p>新建尺码模板</p>
+    <p>clothing(服装)、undies(内衣)、shoes(鞋靴类)、children_clothing(童装),戒指，手镯</p>
+    <p>模板名称: 请输入模板名称</p>
+    <p>模板子类型: clothing(服装)、undies(内衣)、shoes(鞋靴类)、children_clothing(童装)</p>
+
 </a-drawer>
+
+
 <!-- 详情尺码模板 -->
 <a-drawer
     v-model:open="size_detail.open"
@@ -188,7 +192,7 @@ export default {
             // 初始化数据
             const first_Data = {
                 "page_num": count.value,
-                "page_size":10,
+                "page_size":12,
             }
 
             tool.Http_.post(API.AppSrtoreAPI.size.list, first_Data).then(res=>{
@@ -216,7 +220,7 @@ export default {
 
         // 在组件卸载时移除事件监听器
         onUnmounted(() => {
-        window.removeEventListener('resize', handleResize);
+            window.removeEventListener('resize', handleResize);
         });
 
         // 【组件挂载】========================================结束
@@ -230,7 +234,7 @@ export default {
 
             const get_more_data = {
                 "page":count.value,
-                "page_size":10, 
+                "page_size":12, 
             }
 
             tool.Http_.post(API.AppSrtoreAPI.size.list, get_more_data).then(res=>{
@@ -267,12 +271,16 @@ export default {
 
         };
 
-        // 新建运费详情
+        // 新建尺码详情
         const size_add = reactive({
             open:ref(false),
             data:ref(undefined),
             play:()=>{
                 size_add.open = true
+            },
+            add:()=>{
+                var url ="https://fxg.jinritemai.com/ffa/g/size-chart/manage"
+                window.open(url)
             }
         })
 
@@ -306,7 +314,6 @@ export default {
             handleOk:()=>{
                 size_delete.confirmLoading = true
             }
-
         })
 
 

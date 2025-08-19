@@ -23,7 +23,7 @@
             <a-row>
 
                 <a-col :span="4">
-                    <a-button type="primary" size="small" style="font-size: 12px;">
+                    <a-button type="primary" size="small" style="font-size: 12px;" @click="feight_add.play">
                         <PlusOutlined />
                         新建运费模板
                     </a-button>
@@ -56,9 +56,9 @@
                             <span class="font_size_12">{{ item.template.template_name }}</span>
                         </template>
                         <template #actions>
-                            <EyeOutlined />
-                            <edit-outlined />
-                            <DeleteOutlined />
+                            <EyeOutlined @click="feight_detail.play(item)"/>
+                            <edit-outlined @click="feight_update.play(item)"/>
+                            <DeleteOutlined @click="feight_delete.play()"/>
                         </template>
                     </a-card>
                 </template>
@@ -78,6 +78,44 @@
     </a-layout>
 </a-layout>
 
+<!-- 新建运费模板 -->
+<a-drawer
+    v-model:open="feight_add.open"
+    class="custom-class"
+    root-class-name="root-class-name"
+    :root-style="{ color: 'blue' }"
+    title="新建"
+    placement="right"
+  >
+    <p>运费尺码模板</p>
+</a-drawer>
+<!-- 详情运费模板 -->
+<a-drawer
+    v-model:open="feight_detail.open"
+    class="custom-class"
+    root-class-name="root-class-name"
+    :root-style="{ color: 'blue' }"
+    title="详情"
+    placement="right"
+  >
+    <p>运费模板详情</p>
+</a-drawer>
+<!-- 运费模板更新 -->
+<a-drawer
+    v-model:open="feight_update.open"
+    class="custom-class"
+    root-class-name="root-class-name"
+    :root-style="{ color: 'blue' }"
+    title="编辑"
+    placement="right"
+  >
+    <p>运费模板更新</p>
+</a-drawer>
+
+<!--尺码模板删除-->
+<a-modal v-model:open="feight_delete.open" title="确认删除" :confirm-loading="feight_delete.confirmLoading" @ok="feight_delete.handleOk">
+    <p>是否确认删除？删除后数据将无法恢复。</p>
+</a-modal>
 
 
 </template>
@@ -150,7 +188,7 @@ export default {
 
             const first_Data = {
                 "page":count.value,
-                "page_size":10, 
+                "size":12, 
             }
 
           tool.Http_.post(API.AppSrtoreAPI.freight.list, first_Data).then(res=>{
@@ -180,7 +218,7 @@ export default {
 
             const get_more_data = {
                 "page":count.value,
-                "page_size":10, 
+                "size":12, 
             }
 
             tool.Http_.post(API.AppSrtoreAPI.freight.list, get_more_data).then(res=>{
@@ -208,20 +246,50 @@ export default {
                     loading.value = false;
 
                 }
-                
-
             })
-
-
         };
 
-        // 新建
+        // 新建运费详情
+        const feight_add = reactive({
+            url:"https://fxg.jinritemai.com/ffa/morder/logistics/freight-edit",
+            open:ref(false),
+            data:ref(undefined),
+            play:()=>{
+                window.open(feight_add.url)
+
+            }
+        })
+
+        // 查看详情
+        const feight_detail = reactive({
+            open:ref(false),
+            data:ref(undefined),
+            play:()=>{
+                feight_detail.open = true
+            }
+        })
 
         // 更新
+        const feight_update = reactive({
+            open:ref(false),
+            data:ref(undefined),
+            play:()=>{
+                feight_update.open = true
+            }
+        })
 
         // 删除
-
-
+        const feight_delete = reactive({
+            open:ref(false),
+            data:ref(undefined),
+            confirmLoading:ref(false),
+            play:()=>{
+                feight_delete.open = true
+            },
+            handleOk:()=>{
+                feight_delete.confirmLoading = true
+            }
+        })
 
         return{
           PAGEDATA,
@@ -230,8 +298,11 @@ export default {
           initLoading,
           loading,
           list,
-          onLoadMore
-
+          onLoadMore,
+          feight_update,
+          feight_delete,
+          feight_add,
+          feight_detail,
         }
     }
 

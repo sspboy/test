@@ -66,7 +66,7 @@
 
                 <!--头图-->
                 <template  v-if="column.dataIndex === 'pic'">
-                    <img class="cursor" :src="JSON.parse(record.pic)[0].size220x220ImageURI" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.pic(record)"/>
+                    <a-image class="cursor" :src="JSON.parse(record.pic)[0].size220x220ImageURI" style="width: 30px; height: 30px;border-radius: 5px;" v-on:click="CL.Edit.pic(record)"/>
                 </template>
 
                 <!--白底图-->
