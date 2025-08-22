@@ -36,13 +36,81 @@
 
         <!--列表组件 开始 -->
         <a-flex :style="{height:PAGEDATA.innerHeight + 'px'}" class="FlexBox" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
-        <!-- :style="{ height: innerHeight + 'px', overflow: 'auto'}" -->
 
-          <a-list :data-source="PAGEDATA.datalist" :loading="PAGEDATA.loading" style="width: 100%;">
+          <a-list 
+            :data-source="PAGEDATA.datalist" 
+            :loading="PAGEDATA.loading" 
+            style="width: 100%;"
+            :grid="{ gutter: 0, column: 6 }"
+            size="default"
+            :split="false">
             
             <template #renderItem="{ item }">
+
+              <a-card hoverable style="margin:0px 10px 10px 0;font-size: 12px;" :body-style="{ padding: '6px 6px 16px 6px' }">
+
+
+                <template #cover>
+                  <img
+                    alt="example"
+                    :src="item.img"
+                  />
+                </template>
+                <template #actions>
+                  <setting-outlined key="setting" />
+                  <edit-outlined key="edit" />
+                  <ellipsis-outlined key="ellipsis" />
+                </template>
+                <a-card-meta class="font_size_12" >
+
+                  <template #title>
+                    <span class="font_size_12">{{ item.name }}</span>
+                  </template>
+                  <template #description >                        
+                    <a-space align="end" :size="10" style="height: 26px;overflow: hidden;font-weight:normal;">
+
+                      <div class="title_text_span">
+                        <span class="left_box status_0" v-if="item.status == 0"></span>
+                        <span class="left_box status_1" v-if="item.status == 1"></span>
+                        <span class="left_box status_2" v-if="item.status == 2"></span>
+                        {{ Profun.Field_translation.product_status(item.status) }}
+                      </div>
+                      <div class="title_text_span">
+                            <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
+                            <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
+                            <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
+                            <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
+                            <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
+                            <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
+
+                            {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
+
+                                <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
+
+                                  <a-tooltip placement="top">
+
+                                        <template  #title>
+                                          
+                                          <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
+                                            驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
+                                          </div>
+
+                                        </template>
+
+                                        <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
+
+                                      </a-tooltip>
+                                </span>
+                                <span class="font_size_12" v-else></span>
+                      </div>
+
+                    </a-space>
+                  </template>
+                </a-card-meta>
+              </a-card>
+            
               
-              <a-list-item style="padding: 14px;">
+              <!-- <a-list-item style="padding: 14px;">
 
                 <a-list-item-meta>
 
@@ -116,7 +184,6 @@
                                       </a-tooltip>
                                 </span>
                                 <span class="font_size_12" v-else>
-                                  <!-- <CheckSquareOutlined style="color:#52c41a;" /> 审核通过  -->
                                 </span>
 
 
@@ -132,8 +199,7 @@
                             </a-tooltip>
                           </div>
                           <div class="title_text_span">销量{{ item.sell_num }}</div>
-                          <!-- <div class="title_text_span">运费模板: {{ item.freight_id }}</div> -->
-                          <!-- <div class="title_text_span">详情描述</div> -->
+
                         </a-space>
                       </a-col>
                       
@@ -208,7 +274,7 @@
                     <a class="font_size_12" @click="deldata.play(item.product_id)">删除</a>
                 </template>
 
-              </a-list-item>
+              </a-list-item> -->
 
             </template>
 
@@ -216,8 +282,6 @@
 
         </a-flex>
         <!--列表组件 结束 -->
-
-
 
         <!--翻页组件 -->
           <span style="padding:14px 0 0 0 ;display: block;float: left;">
@@ -637,7 +701,7 @@ export default {
 .title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}
 .list_span_one{height: 24px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 28px;padding: 8px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
-.FlexBox{overflow:auto; transition:height 0.5s ease;margin:10px 0 0 0;border:1px solid #e5e5e596;border-radius: 6px;}
+.FlexBox{overflow:auto; transition:height 0.5s ease;margin:10px 0 0 0;}
 
 .left_box{border-radius: 4px;display: block;width: 8px;height: 8px;float: left;margin: 6px 4px 0 0;}
 .status_0{background-color: #52c41a;}
@@ -649,5 +713,5 @@ export default {
 .check_status_4{background-color: #FF9900;}
 .check_status_5{background-color: #ff0000;}
 .check_status_7{background-color: #66FFFF;}
-
+.ant-card .ant-card-body {padding: 0px}
 </style>
