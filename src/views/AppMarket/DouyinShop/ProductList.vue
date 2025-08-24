@@ -41,14 +41,13 @@
             :data-source="PAGEDATA.datalist" 
             :loading="PAGEDATA.loading" 
             style="width: 100%;"
-            :grid="{ gutter: 0, column: 6 }"
+            :grid="{ gutter: [0,0], column: 6 }"
             size="default"
             :split="false">
             
             <template #renderItem="{ item }">
 
-              <a-card hoverable style="margin:0px 10px 10px 0;font-size: 12px;" :body-style="{ padding: '6px 6px 16px 6px' }">
-
+              <a-card hoverable style="margin:0 30px 30px 0;font-size: 12px;" :body-style="{ padding: '6px 6px 16px 6px' }">
 
                 <template #cover>
                   <img
