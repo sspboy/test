@@ -37,37 +37,39 @@
         <!--列表组件 开始 -->
         <a-flex :style="{height:PAGEDATA.innerHeight + 'px'}" class="FlexBox" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
 
-          <a-list 
+          <!--表格 浏览方式 -->
+          <a-list
+            v-if="PAGEDATA.ListConfig == 'List'"
             :data-source="PAGEDATA.datalist" 
             :loading="PAGEDATA.loading" 
             style="width: 100%;"
-            :grid="{ gutter: [0,0], column: 6 }"
+            :grid="{ gutter: [0,0], column: 5 }"
             size="default"
             :split="false">
-            
+            <a-checkbox-group v-model:value="PAGEDATA.check_value_list" >
+
             <template #renderItem="{ item }">
 
-              <a-card hoverable style="margin:0 30px 30px 0;font-size: 12px;" :body-style="{ padding: '6px 6px 16px 6px' }">
+              <a-card hoverable style="margin:0 30px 20px 0;font-size: 12px;" :body-style="{ padding: '6px 6px 12px 6px' }">
 
                 <template #cover>
                   <img
                     alt="example"
                     :src="item.img"
+                    @click="showDetaile(item.product_id)"
                   />
                 </template>
+                
                 <template #actions>
-                  <setting-outlined key="setting" />
-                  <edit-outlined key="edit" />
-                  <ellipsis-outlined key="ellipsis" />
+                  <CopyOutlined @click="tool.Fun_.copyToClipboard(item.product_id)"/>
+                  <EyeOutlined @click="showDetaile(item.product_id)"/>
+                  <edit-outlined key="edit" @click="showEdit(item.product_id)"/>
+                  <DeleteOutlined @click="deldata.play(item.product_id)"/>
                 </template>
-                <a-card-meta class="font_size_12" >
-
-                  <template #title>
-                    <span class="font_size_12">{{ item.name }}</span>
-                  </template>
-                  <template #description >                        
-                    <a-space align="end" :size="10" style="height: 26px;overflow: hidden;font-weight:normal;">
-
+                <div>{{ item.name }}</div>
+                <a-card-meta class="font_size_12"> >
+                  <template #description >
+                    <a-space align="end" :size="10" style="overflow: hidden;font-weight:normal;">
                       <div class="title_text_span">
                         <span class="left_box status_0" v-if="item.status == 0"></span>
                         <span class="left_box status_1" v-if="item.status == 1"></span>
@@ -102,92 +104,7 @@
                                 </span>
                                 <span class="font_size_12" v-else></span>
                       </div>
-
-                    </a-space>
-                  </template>
-                </a-card-meta>
-              </a-card>
-            
-              
-              <!-- <a-list-item style="padding: 14px;">
-
-                <a-list-item-meta>
-
-                  <template #avatar>
-                    <div class="cursor ListImg">
-                      <a-image 
-                      :src="item.img"
-                      alt="" 
-                      fallback="data:image/png;base64,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"
-                      style="width: 100%;height: 100%;border-radius: 5px;" />
-                    </div>
-                  </template>
-
-                  <template #title>
-                    <a-row>
-                      <a-col :span="14">
-                        
-                        <div class="title_div_box">
-                              <a href="#" style="color:black;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
-                        </div>
-
-                        <a-space align="end" :size="10" style="height: 26px;overflow: hidden;font-weight:normal;">
-                          <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
-                            <a-tooltip placement="top">
-                              <template #title>
-                                <span class="font_size_12">{{ item.product_id }}</span>
-                              </template>
-
-                              商品ID- <CopyOutlined />
-
-
-                            </a-tooltip>
-                          </div>
-
-                          <div class="title_text_span">
-                            {{ Profun.Field_translation.product_type_info(item.product_type) }}
-                          </div>
-
-                          <div class="title_text_span">
-                            <span class="left_box status_0" v-if="item.status == 0"></span>
-                            <span class="left_box status_1" v-if="item.status == 1"></span>
-                            <span class="left_box status_2" v-if="item.status == 2"></span>
-
-                            {{ Profun.Field_translation.product_status(item.status) }}
-                          </div>
-                          
-                          <div class="title_text_span">
-                            <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
-                            <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
-                            <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
-                            <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
-                            <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
-                            <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
-
-                            {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
-
-                                <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
-
-                                  <a-tooltip placement="top">
-
-                                        <template  #title>
-                                          
-                                          <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
-                                            驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
-                                          </div>
-
-                                        </template>
-
-                                        <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
-
-                                      </a-tooltip>
-                                </span>
-                                <span class="font_size_12" v-else>
-                                </span>
-
-
-                          </div>
-                          <div class="title_text_span cursor">
+                      <div class="title_text_span cursor">
                             <a-tooltip placement="top">
                               <template  #title>
                                 <span class="font_size_12">
@@ -196,84 +113,163 @@
                               </template>
                               {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
                             </a-tooltip>
+                      </div>
+                    </a-space>
+                  </template>
+                </a-card-meta>
+              </a-card>
+
+            </template>
+            </a-checkbox-group>
+          </a-list>
+          <!--列表 浏览方式 -->
+          <a-list
+            v-else-if="PAGEDATA.ListConfig == 'Table'"
+            :data-source="PAGEDATA.datalist" 
+            :loading="PAGEDATA.loading" 
+            style="width: 100%;"
+            size="default"
+            :split="true">            
+
+            <template #renderItem="{ item }">
+
+              <a-list-item style="padding:14px 0;">
+                  <a-list-item-meta>
+                    <template #avatar>
+                      <div class="cursor ListImg">
+                        <a-image 
+                        :src="item.img"
+                        alt="" 
+                        style="width: 100%;height: 100%;border-radius: 5px;" />
+                      </div>
+                    </template>
+
+                    <template #title>
+                      <a-row>
+                        <a-col :span="18">
+                          
+                          <div class="title_div_box">
+                                <!-- <a-checkbox :value="item.product_id"></a-checkbox> -->
+                                <a href="#" style="color:black;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
                           </div>
-                          <div class="title_text_span">销量{{ item.sell_num }}</div>
 
-                        </a-space>
-                      </a-col>
-                      
-                      <a-col :span="6">
-                        
-                        <a-row>
-                          <a-col :span="24">
-                            <div class="list_span_one">
-                              <a-space>
-                                <div class="font_size_12" v-if="item.need_check_out">
-                                   <CloseSquareOutlined style="color:#eb2f96;" />  需要核销 
-                                </div>
-                                <div class="font_size_12" v-else>
-                                  <CheckSquareOutlined style="color:#52c41a;" /> 无需核销
-                                </div>
-                              </a-space>
+                          <a-space align="end" :size="10" style="height: 26px;overflow: hidden;font-weight:normal;">
+                            <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
+                              <a-tooltip placement="top">
+                                <template #title>
+                                  <span class="font_size_12">{{ item.product_id }}</span>
+                                </template>
+
+                                商品ID- <CopyOutlined />
+
+
+                              </a-tooltip>
                             </div>
-                          </a-col>
-                          <a-col :span="24">
-                            <div class="list_span_two">
-                              <a-space>
-                                <div class="font_size_12" v-if="item.can_combine"> 
-                                  <CheckSquareOutlined style="color:#52c41a;" /> 可以搭配 
-                                </div>
-                                <div class="font_size_12 cursor" v-else> 
-                                     <a-tooltip placement="top">
-                                        <template  #title>
-                                          <span class="font_size_12">
-                                            {{ item.can_not_combine_reason }}
-                                          </span>
-                                        </template>
-                                        <CloseSquareOutlined style="color:#eb2f96;" /> 不可搭配 
-                                      </a-tooltip>
-                                </div>
-                              </a-space>
+
+                            <div class="title_text_span">
+                              {{ Profun.Field_translation.product_type_info(item.product_type) }}
                             </div>
-                          </a-col>
-                        </a-row>  
 
-                      </a-col>
+                            <div class="title_text_span">
+                              <span class="left_box status_0" v-if="item.status == 0"></span>
+                              <span class="left_box status_1" v-if="item.status == 1"></span>
+                              <span class="left_box status_2" v-if="item.status == 2"></span>
 
-                      <a-col :span="4">
-                        
-                        <a-row>
-                          <a-col :span="24">
-                            <div class="list_span_one">
-                              <a-space>
-                              <span class="font_size_12">创建时间：</span>
-                              <span style="font-size: 10px;">{{ moment.unix(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}</span>
-                              </a-space>
+                              {{ Profun.Field_translation.product_status(item.status) }}
                             </div>
-                          </a-col>
-                          <a-col :span="24">
-                            <div class="list_span_two">
-                              <a-space>
-                              <span class="font_size_12">更新时间：</span>
-                              <span style="font-size: 10px;">{{ moment.unix(item.update_time).format('YYYY-MM-DD HH:mm:ss') }}</span>
-                              </a-space>
+                            
+                            <div class="title_text_span">
+                              <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
+                              <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
+                              <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
+                              <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
+                              <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
+                              <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
+
+                              {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
+
+                                  <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
+
+                                    <a-tooltip placement="top">
+
+                                          <template  #title>
+                                            
+                                            <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
+                                              驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
+                                            </div>
+
+                                          </template>
+
+                                          <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
+
+                                        </a-tooltip>
+                                  </span>
+                                  <span class="font_size_12" v-else>
+                                  </span>
+
+
                             </div>
-                          </a-col>
-                        </a-row>  
+                            <div class="title_text_span cursor">
+                              <a-tooltip placement="top">
+                                <template  #title>
+                                  <span class="font_size_12">
+                                    {{ Profun.Field_translation.product_cate_name_info(item.category_detail).full_cate }}
+                                  </span>
+                                </template>
+                                {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
+                              </a-tooltip>
+                            </div>
+                            <div class="title_text_span">销量{{ item.sell_num }}</div>
 
-                      </a-col>
-                    </a-row>
+                          </a-space>
 
+                          <div>
+                          <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
+                                  <div class="font_size_12" v-if="item.need_check_out">
+                                    <CloseSquareOutlined style="color:#eb2f96;" />  需要核销 
+                                  </div>
+                                  <div class="font_size_12" v-else>
+                                    <CheckSquareOutlined style="color:#52c41a;" /> 无需核销
+                                  </div>
+                                  <div class="font_size_12" v-if="item.can_combine"> 
+                                    <CheckSquareOutlined style="color:#52c41a;" /> 可以搭配 
+                                  </div>
+                                  <div class="font_size_12 cursor" v-else> 
+                                      <a-tooltip placement="top">
+                                          <template  #title>
+                                            <span class="font_size_12">
+                                              {{ item.can_not_combine_reason }}
+                                            </span>
+                                          </template>
+                                          <CloseSquareOutlined style="color:#eb2f96;" /> 不可搭配 
+                                        </a-tooltip>
+                                  </div>
+                                  <div class="list_span_one">
+                                    <a-space>
+                                    <span class="font_size_12">
+                                      创建时间：{{ moment.unix(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}
+                                    </span>
+                                    <span class="font_size_12">
+                                      更新时间：{{ moment.unix(item.update_time).format('YYYY-MM-DD HH:mm:ss') }}
+                                    </span>
+                                    </a-space>
+                                  </div>
+                          </a-space>
+                          </div>
+                        </a-col>
+                      </a-row>
+
+                    </template>
+
+                  </a-list-item-meta>
+
+                  <template #actions>
+                      <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看</a>
+                      <a class="font_size_12" @click="showEdit(item.product_id)"><edit-outlined /> 编辑</a>
+                      <a class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除</a>
                   </template>
 
-                </a-list-item-meta>
-
-                <template #actions>
-                    <a class="font_size_12" @click="showEdit(item.product_id)">编辑</a>
-                    <a class="font_size_12" @click="deldata.play(item.product_id)">删除</a>
-                </template>
-
-              </a-list-item> -->
+              </a-list-item>
 
             </template>
 
@@ -281,13 +277,13 @@
 
         </a-flex>
         <!--列表组件 结束 -->
-
         <!--翻页组件 -->
           <span style="padding:14px 0 0 0 ;display: block;float: left;">
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><RedoOutlined /> 刷新列表</a-button>
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
-            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 0;" ghost><CheckCircleOutlined /> 全选</a-button>
+            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 0;" ghost @click="check_list"><CheckCircleOutlined /> 全选</a-button>
+
           </span>
           
           <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
@@ -318,7 +314,8 @@ import { useStore } from 'vuex'
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
-import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined,CopyOutlined,ExclamationCircleFilled } from '@ant-design/icons-vue';
+import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined,CopyOutlined,ExclamationCircleFilled,EyeOutlined } from '@ant-design/icons-vue';
+
 
 // 筛选条件查询组件
 import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
@@ -337,6 +334,7 @@ export default {
   name: "ProductList",
   // 引用组件
   components: {
+        EyeOutlined,
         ExclamationCircleFilled,
         CopyOutlined,
         CheckSquareOutlined,
@@ -390,7 +388,7 @@ export default {
     // 页面初始化数据
     const PAGEDATA = reactive({
 
-      title:'商品列表', // 页面标题
+      title:'商品管理', // 页面标题
 
       menudata:{      // 菜单选中配置
             'key':'78',
@@ -400,6 +398,8 @@ export default {
       colum:[],             // 表头信息
       datalist:[],          // 列表信息
       total_number:0,       // 内容总数
+      ListConfig:ref('Table'), // 列表试图配置List-列表 Table-表格
+      check_value_list:ref([]), // 复选框选中值
 
       loading:true,         // 列表load状态
       justify:'center',     // 列表内容对齐：loading加载居中设定
@@ -591,7 +591,6 @@ export default {
 
       PAGEDATA.justify = 'flex-start';
       PAGEDATA.align = 'flex-start';
-
       navData.value.page = data.page;
       navData.value.size = data.page_size;
 
@@ -671,6 +670,20 @@ export default {
       }
     })
 
+    // 复选框选中值
+    const check_list = ()=>{
+      console.log(PAGEDATA.check_value_list)
+    }
+    // 全选
+    const check_all = ()=>{
+      console.log(PAGEDATA.check_value_list)
+      if(PAGEDATA.check_value_list.length == PAGEDATA.datalist.length){
+        PAGEDATA.check_value_list = []
+      }else{
+        PAGEDATA.check_value_list = PAGEDATA.datalist.map(item=>item.product_id)
+      }
+    }
+
 
     return {
       tool,
@@ -684,6 +697,7 @@ export default {
       showEdit,
       showDetaile,
       deldata,
+      check_list
 
     }
 
@@ -694,13 +708,14 @@ export default {
 </script>
 
 <style scoped>
-.ListImg{width: 55px;height: 55px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
+.ListImg{width: 100px;height: 100px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
 .title_div_box{width: 100%; height: 26px;overflow: hidden;padding: 4px 0 0 0;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
 .title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}
 .list_span_one{height: 24px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 28px;padding: 8px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .FlexBox{overflow:auto; transition:height 0.5s ease;margin:10px 0 0 0;}
+
 
 .left_box{border-radius: 4px;display: block;width: 8px;height: 8px;float: left;margin: 6px 4px 0 0;}
 .status_0{background-color: #52c41a;}

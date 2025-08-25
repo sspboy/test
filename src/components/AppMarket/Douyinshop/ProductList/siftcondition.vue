@@ -100,6 +100,12 @@
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
                 <EllipsisOutlined />
                 </a-button>
+                <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" ghost @click="ontable_look">
+                    <UnorderedListOutlined />
+                </a-button>
+                <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" ghost @click="onList_look">
+                    <TableOutlined />
+                </a-button>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
             </a-form-item>
@@ -124,7 +130,7 @@
 
 <script>
 import { defineComponent,ref,reactive,onMounted } from 'vue';
-import { CopyOutlined,EllipsisOutlined} from '@ant-design/icons-vue';
+import { CopyOutlined,EllipsisOutlined,UnorderedListOutlined,TableOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as PL from '@/assets/douyinshop/ProductList';
@@ -134,10 +140,10 @@ export default defineComponent({
     name: "Siftcondition",  // 筛选条件查询组件
     // 引用组件
     components: {
-
+        TableOutlined,
+        UnorderedListOutlined,
         CopyOutlined,
         EllipsisOutlined
-
     },
 
     // 父组件数据
@@ -187,7 +193,14 @@ export default defineComponent({
             props.data.MoreSelectData = !props.data.MoreSelectData.value;
 
         }
-
+        // 列表浏览
+        const onList_look = () =>{
+            props.data.ListConfig = 'List';
+        }
+        // 表格流浪
+        const ontable_look = () =>{
+            props.data.ListConfig = 'Table';
+        }
 
     
     return {
@@ -196,7 +209,10 @@ export default defineComponent({
         props,
         resh_condition,
         handleFinish,
-        onOpen_select
+        onOpen_select,
+        onList_look,
+        ontable_look
+
         }
     }
 
