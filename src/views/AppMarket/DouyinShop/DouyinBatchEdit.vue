@@ -411,9 +411,6 @@ export default {
         tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
 
             let obj_list = res.data.data
-
-            console.log(res)
-
             formState.options = formState.get_cate_list(obj_list) 
 
         })

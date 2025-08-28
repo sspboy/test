@@ -452,3 +452,8 @@ export class ProductList_fun {
 
 
 }
+
+//**批量编辑 js方法**//
+export class BatchEdit_fun {
+    
+}

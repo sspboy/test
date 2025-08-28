@@ -3,8 +3,9 @@
 
 
     <!-- 自定义标题 -->
-
+                
     <div style="width: 100%;height: 28px;padding: 0 0 0 0;">
+                        
         <a-row>
 
             <a-col :span="24">
@@ -100,20 +101,14 @@
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
                 <EllipsisOutlined />
                 </a-button>
-                <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" ghost @click="ontable_look">
-                    <UnorderedListOutlined />
-                </a-button>
-                <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" ghost @click="onList_look">
-                    <TableOutlined />
-                </a-button>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
             </a-form-item>
-
-            </a-form>
+                </a-form>
             </a-col>
 
         </a-row>
+
     </div>
 
 
@@ -193,14 +188,7 @@ export default defineComponent({
             props.data.MoreSelectData = !props.data.MoreSelectData.value;
 
         }
-        // 列表浏览
-        const onList_look = () =>{
-            props.data.ListConfig = 'List';
-        }
-        // 表格流浪
-        const ontable_look = () =>{
-            props.data.ListConfig = 'Table';
-        }
+
 
     
     return {
@@ -210,8 +198,6 @@ export default defineComponent({
         resh_condition,
         handleFinish,
         onOpen_select,
-        onList_look,
-        ontable_look
 
         }
     }

@@ -10,7 +10,6 @@
       title="商品详情"
       width="100%"
       wrap-class-name="full-modal"
-      @ok="handleOk"
     >
     
     <a-layout-content class="content">
@@ -525,6 +524,12 @@
         </div>
     </a-layout-content>
 
+
+    <!-- 自定义 footer，只放一个按钮 -->
+    <template #footer>
+      <a-button type="default" @click="close">关闭</a-button>
+
+    </template>
     </a-modal>
 
     <!--质量分 可优化 抽屉-->
@@ -657,13 +662,13 @@ export default defineComponent({
         
         // 商品详情
         const productdata = reactive({
-            obj:ref({})
+            obj:ref({}),
         })
 
         // 质量分
         const fen =reactive({
-            value: ref(0), // 默认分值
-            field_problem_list:ref(undefined), // 可优化项目
+            value: ref(0),                      // 默认分值
+            field_problem_list:ref(undefined),  // 可优化项目
             open:ref(false)
         })
 
@@ -677,6 +682,7 @@ export default defineComponent({
             records_list:ref(undefined), // 驳回原因列表 
             open:ref(false)
         })
+
         // 查看审核驳回
         const showreject = () => {
             reject_info.open = true;
@@ -750,7 +756,7 @@ export default defineComponent({
                     load_get_freight(responese.data.data.freight_id)        // 运费模板
                     load_get_size(responese.data.data.size_info_template_id)// 尺码
                     load_cate_format(responese.data.data) // 类目&属性
-                    console.log('资质',responese.data.data.quality_list)
+                    // console.log('资质',responese.data.data.quality_list)
 
                     // 规格库存-表头、内容
                     const spec_res_obj = load_spec(responese.data.data)
@@ -909,8 +915,9 @@ export default defineComponent({
 
         })
 
-        const handleOk = e => {
-            console.log(e);
+        // 关闭弹窗
+        const close = e => {
+            props.data.DetaileDate = false;
         };
 
 
@@ -919,7 +926,7 @@ export default defineComponent({
             Profun,
             productdata,
             props,
-            handleOk,
+            close,
             fen,
             reject_info,
             showreject,

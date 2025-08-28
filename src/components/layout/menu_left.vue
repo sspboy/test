@@ -105,10 +105,8 @@ export default defineComponent({
 
     // 菜单点击事件===>路由
     const handleClick = e => {
-      console.log(e)
       let se_obj = e.keyPath
       let name = e.item.id
-
       if(name != undefined){
         router.push('/' +  name);
         state.openKeys = [se_obj[0]]

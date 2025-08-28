@@ -55,9 +55,8 @@
                             <span class="font_size_12">{{ item.template_name }}</span>
                         </template>
                         <!-- <span v-if="item.image !== undefined">
-                            <a-image :src="item.image.url" style="width: 110px;height: 80px;" />
-                        </span>
-                         -->
+                            <a-image :src="item.image.url" width="80" />
+                        </span> -->
                         <template #actions>
                             <EyeOutlined @click="size_detail.play(item)"/>
                             <edit-outlined @click="size_update.play(item)"/>
@@ -86,13 +85,51 @@
     v-model:open="size_add.open"
     class="custom-class"
     root-class-name="root-class-name"
-    :root-style="{ color: 'blue' }"
     title="新建"
     placement="right"
+    width="800"
   >
-    <p>clothing(服装)、undies(内衣)、shoes(鞋靴类)、children_clothing(童装),戒指，手镯</p>
-    <p>模板名称: 请输入模板名称</p>
-    <p>模板子类型: clothing(服装)、undies(内衣)、shoes(鞋靴类)、children_clothing(童装)</p>
+    <div>
+
+        <p>模板名称: 请输入模板名称</p>
+        <p>尺码标题: 请输入模板名称</p>
+        <p>标题注释: 请输入模板名称</p>
+
+        <a-radio-group 
+            v-model:value="size_add.add_value" 
+            size="middle"
+            @change="size_add.change"
+        >
+            <a-radio-button value="clothing" class="font_size_12">服装</a-radio-button>
+            <a-radio-button value="undies" class="font_size_12">内衣</a-radio-button>
+            <a-radio-button value="shoes" class="font_size_12">鞋靴类</a-radio-button>
+            <a-radio-button value="children_clothing" class="font_size_12">童装</a-radio-button>
+            <a-radio-button value="rings" class="font_size_12">戒指</a-radio-button>
+            <a-radio-button value="bracelets" class="font_size_12">手镯</a-radio-button>
+        </a-radio-group>
+    </div>
+    <div style="height: 34px;margin: 20px 0 0 0;">
+        <a-checkbox-group 
+            v-model:value="size_add.op_value" 
+            name="checkboxgroup" 
+            :options="size_add[size_add.op_name]" 
+        />
+    </div>
+    <p>
+        <a-table :columns="size_add.columns" :data-source="size_add.data" :pagination="false" size="small" bordered>
+            <template #bodyCell="{ column, text }">
+            <template v-if="column.dataIndex === 'name'">
+                <a>{{ text }}</a>
+            </template>
+            </template>
+        </a-table>
+    </p>
+    <div>
+        <a-space>
+            <a-button type="primary" size="small">保存</a-button>
+            <a-button size="small">取消</a-button>
+        </a-space>
+    </div>
 
 </a-drawer>
 
@@ -102,11 +139,13 @@
     v-model:open="size_detail.open"
     class="custom-class"
     root-class-name="root-class-name"
-    :root-style="{ color: 'blue' }"
     title="详情"
     placement="right"
   >
-    <p>尺码模板详情</p>
+    <p>模板名称：{{ size_detail.data.template_name }}</p>
+    <p>模板子类型：{{ PAGEDATA.chuan_type_name(size_detail.data.template_sub_type) }}</p>
+    <a-image :src="size_detail.data.image.url" width="80" />
+
 </a-drawer>
 <!-- 尺码模板更新 -->
 <a-drawer
@@ -165,6 +204,24 @@ export default {
             datalist:[],          // 列表信息
             total_number:0,       // 内容总数
             innerHeight:ref(window.innerHeight-150),
+
+            // 模板类型转移
+            chuan_type_name:(type_str)=>{
+                if(type_str == 'clothing'){
+                    return '服装'
+                }else if(type_str == 'undies'){
+                    return '内衣'
+                }else if(type_str == 'shoes'){
+                    return '鞋靴'
+                }else if(type_str == 'children_clothing'){
+                    return '童装'       
+                }else if(type_str == 'rings'){
+                    return '戒指'
+                }else if(type_str == 'bracelets'){
+                    return '手镯'
+                }
+            },
+
         })
 
         const tool = new TOOL.TOOL()            // 工具方法
@@ -207,10 +264,11 @@ export default {
 
                 list.value = component_template_info_list;
 
+                console.log(component_template_info_list)
+
           })
 
         })
-
 
         // 组件挂之后---请求数据===============================开始
         // 定义一个函数来处理窗口大小变化 ==
@@ -222,7 +280,6 @@ export default {
         onUnmounted(() => {
             window.removeEventListener('resize', handleResize);
         });
-
         // 【组件挂载】========================================结束
 
         // 加载更多数据
@@ -275,12 +332,70 @@ export default {
         const size_add = reactive({
             open:ref(false),
             data:ref(undefined),
+            // 新建模板类型选择
+            add_value:ref('clothing'),
+            // 模板选项
+            template_type:{
+                'clothing':'服装',
+                'undies':'内衣',
+                'shoes':'鞋靴类',
+                'children_clothing':'童装',
+            },
+
+            op_value:ref([]),// 选中的尺码值
+
+            op_name:ref('clothing'),
+
+            clothing:['身高(cm)', '体重(cm)', '胸围(cm)', '肩宽(cm)', '腰围(cm)', '臀围(cm)', '袖长(cm)'],
+
+            undies:['下胸围(cm)', '胸围差(cm)', '杯罩'],
+
+            shoes:['脚长(cm)', '脚宽(cm)', '靴筒高(cm)', '靴筒围(cm)', '鞋跟高(cm)'],
+
+            children_clothing:['身高(cm)', '体重(斤)', '胸围(cm)'],
+
+            rings:['戒指内周长(mm)', '戒指内直径(mm)'],
+
+            bracelets:['手掌最宽长度(mm)', '手掌最宽周长(mm)'],
+
+            columns:ref([{
+                title: 'Name',
+                dataIndex: 'name',
+                }, {
+                title: 'Cash Assets',
+                className: 'column-money',
+                dataIndex: 'money',
+                }, {
+                title: 'Address',
+                dataIndex: 'address',
+            }]),
+            data:ref([{
+                key: '1',
+                name: 'John Brown',
+                money: '￥300,000.00',
+                address: 'New York No. 1 Lake Park',
+                }, {
+                key: '2',
+                name: 'Jim Green',
+                money: '￥1,256,000.00',
+                address: 'London No. 1 Lake Park',
+                }, {
+                key: '3',
+                name: 'Joe Black',
+                money: '￥120,000.00',
+                address: 'Sidney No. 1 Lake Park',
+            }]),
+
             play:()=>{
                 size_add.open = true
             },
             add:()=>{
                 var url ="https://fxg.jinritemai.com/ffa/g/size-chart/manage"
                 window.open(url)
+            },
+            change:()=>{
+                size_add.op_name = size_add.add_value
+                console.log(size_add.add_value)
             }
         })
 
@@ -288,8 +403,9 @@ export default {
         const size_detail = reactive({
             open:ref(false),
             data:ref(undefined),
-            play:()=>{
+            play:(item)=>{
                 size_detail.open = true
+                size_detail.data = item
             }
         })
 

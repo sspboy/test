@@ -1,5 +1,7 @@
 
+
 <template>
+  <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
 
   <!-- 动态渲染异步组件 -->
   <edit_components v-if="PAGEDATA.EditDate" :data="PAGEDATA"/>
@@ -37,94 +39,8 @@
         <!--列表组件 开始 -->
         <a-flex :style="{height:PAGEDATA.innerHeight + 'px'}" class="FlexBox" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
 
-          <!--表格 浏览方式 -->
-          <a-list
-            v-if="PAGEDATA.ListConfig == 'List'"
-            :data-source="PAGEDATA.datalist" 
-            :loading="PAGEDATA.loading" 
-            style="width: 100%;"
-            :grid="{ gutter: [0,0], column: 5 }"
-            size="default"
-            :split="false">
-            <a-checkbox-group v-model:value="PAGEDATA.check_value_list" >
-
-            <template #renderItem="{ item }">
-
-              <a-card hoverable style="margin:0 30px 20px 0;font-size: 12px;" :body-style="{ padding: '6px 6px 12px 6px' }">
-
-                <template #cover>
-                  <img
-                    alt="example"
-                    :src="item.img"
-                    @click="showDetaile(item.product_id)"
-                  />
-                </template>
-                
-                <template #actions>
-                  <CopyOutlined @click="tool.Fun_.copyToClipboard(item.product_id)"/>
-                  <EyeOutlined @click="showDetaile(item.product_id)"/>
-                  <edit-outlined key="edit" @click="showEdit(item.product_id)"/>
-                  <DeleteOutlined @click="deldata.play(item.product_id)"/>
-                </template>
-                <div>{{ item.name }}</div>
-                <a-card-meta class="font_size_12"> >
-                  <template #description >
-                    <a-space align="end" :size="10" style="overflow: hidden;font-weight:normal;">
-                      <div class="title_text_span">
-                        <span class="left_box status_0" v-if="item.status == 0"></span>
-                        <span class="left_box status_1" v-if="item.status == 1"></span>
-                        <span class="left_box status_2" v-if="item.status == 2"></span>
-                        {{ Profun.Field_translation.product_status(item.status) }}
-                      </div>
-                      <div class="title_text_span">
-                            <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
-                            <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
-                            <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
-                            <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
-                            <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
-                            <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
-
-                            {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
-
-                                <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
-
-                                  <a-tooltip placement="top">
-
-                                        <template  #title>
-                                          
-                                          <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
-                                            驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
-                                          </div>
-
-                                        </template>
-
-                                        <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
-
-                                      </a-tooltip>
-                                </span>
-                                <span class="font_size_12" v-else></span>
-                      </div>
-                      <div class="title_text_span cursor">
-                            <a-tooltip placement="top">
-                              <template  #title>
-                                <span class="font_size_12">
-                                  {{ Profun.Field_translation.product_cate_name_info(item.category_detail).full_cate }}
-                                </span>
-                              </template>
-                              {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
-                            </a-tooltip>
-                      </div>
-                    </a-space>
-                  </template>
-                </a-card-meta>
-              </a-card>
-
-            </template>
-            </a-checkbox-group>
-          </a-list>
           <!--列表 浏览方式 -->
           <a-list
-            v-else-if="PAGEDATA.ListConfig == 'Table'"
             :data-source="PAGEDATA.datalist" 
             :loading="PAGEDATA.loading" 
             style="width: 100%;"
@@ -149,11 +65,11 @@
                         <a-col :span="18">
                           
                           <div class="title_div_box">
-                                <!-- <a-checkbox :value="item.product_id"></a-checkbox> -->
+                                <a-checkbox :value="item.product_id"></a-checkbox>
                                 <a href="#" style="color:black;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
                           </div>
 
-                          <a-space align="end" :size="10" style="height: 26px;overflow: hidden;font-weight:normal;">
+                          <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
                             <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
                               <a-tooltip placement="top">
                                 <template #title>
@@ -266,7 +182,8 @@
                   <template #actions>
                       <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看</a>
                       <a class="font_size_12" @click="showEdit(item.product_id)"><edit-outlined /> 编辑</a>
-                      <a class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除</a>
+                      <a style="margin:0 30px 0 0;" class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除</a>
+
                   </template>
 
               </a-list-item>
@@ -277,6 +194,8 @@
 
         </a-flex>
         <!--列表组件 结束 -->
+
+
         <!--翻页组件 -->
           <span style="padding:14px 0 0 0 ;display: block;float: left;">
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><RedoOutlined /> 刷新列表</a-button>
@@ -303,6 +222,7 @@
 <a-modal v-model:open="deldata.open" title="确认删除" :confirm-loading="deldata.del_loading" @ok="deldata.confirm_fun">
   <p>确认删除选中商品吗？</p>
 </a-modal>
+          </a-checkbox-group>
 
 </template>
 
@@ -383,8 +303,6 @@ export default {
 
     // 【组件挂载】========================================结束
 
-
-
     // 页面初始化数据
     const PAGEDATA = reactive({
 
@@ -398,14 +316,14 @@ export default {
       colum:[],             // 表头信息
       datalist:[],          // 列表信息
       total_number:0,       // 内容总数
-      ListConfig:ref('Table'), // 列表试图配置List-列表 Table-表格
+
       check_value_list:ref([]), // 复选框选中值
 
       loading:true,         // 列表load状态
       justify:'center',     // 列表内容对齐：loading加载居中设定
       align:'center',       // 列表内容对齐：loading加载居中设定
 
-      List_conditions:reactive({     // 查询配置
+      List_conditions:reactive({     // 默认查询配置
 
         "page":1,            // 当前页面
         "size":10,           // 显示数量
@@ -518,6 +436,7 @@ export default {
       DetaileDate:ref(false),           // 详情页显示状态
       MoreSelectData:ref(false),         // 更多查询显示状态
       product_id:ref(null)
+
     })
     
     // 查询条件初始化====默认配置
@@ -617,14 +536,11 @@ export default {
     }
     // 【查询组件 回调方法】========================================结束
 
-
     // 编辑方法加载
     const showEdit = (pro_id) => {
       PAGEDATA.EditDate = true;
       PAGEDATA.product_id = pro_id
     };
-
-
 
     // 详情方法加载
     const showDetaile = (pro_id) =>{
@@ -637,18 +553,17 @@ export default {
       product_id:ref(undefined),
       open:ref(false),
       // 弹出删除确认框
-
       play:(product_id)=>{
         deldata.open = true;
         deldata.product_id = product_id;
       },
+
       // 删除loading状态
       del_loading:ref(false),
 
       // 删除确认方法
       confirm_fun:()=>{
 
-        console.log(deldata.product_id)
         deldata.del_loading = true;        // 删除loading状态
 
         // 删除接口
@@ -670,19 +585,45 @@ export default {
       }
     })
 
-    // 复选框选中值
+    // 【全选】复选框选中值
     const check_list = ()=>{
-      console.log(PAGEDATA.check_value_list)
-    }
-    // 全选
-    const check_all = ()=>{
-      console.log(PAGEDATA.check_value_list)
-      if(PAGEDATA.check_value_list.length == PAGEDATA.datalist.length){
-        PAGEDATA.check_value_list = []
+
+      var list_number = PAGEDATA.datalist.length;// 列表数据数量
+
+      if(list_number == 0){
+        tool.Fun_.message('warning','当前列表无数据可选中');
+        return false;
       }else{
-        PAGEDATA.check_value_list = PAGEDATA.datalist.map(item=>item.product_id)
+        // 列表数据id集合
+        var id_list = []
+        for (var i=0;i<PAGEDATA.datalist.length;i++){
+          id_list.push(PAGEDATA.datalist[i].product_id)
+        }
+        // 已全选
+        if(PAGEDATA.check_value_list.length == id_list.length){
+          PAGEDATA.check_value_list = []
+          return false;
+        }else if(PAGEDATA.check_value_list.length < id_list.length){ // 未全选
+          PAGEDATA.check_value_list = id_list
+          return false;
+        }
+
+
       }
+      
+
+
+
+      PAGEDATA.check_value_list = id_list
     }
+
+
+    // 【批量修改】
+
+    // 【批量删除】
+
+
+
 
 
     return {
@@ -709,12 +650,12 @@ export default {
 
 <style scoped>
 .ListImg{width: 100px;height: 100px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
-.title_div_box{width: 100%; height: 26px;overflow: hidden;padding: 4px 0 0 0;}
+.title_div_box{width: 100%; height: 26px;overflow: hidden;padding: 4px 0 0 0;font-size: 14px;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
 .title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}
 .list_span_one{height: 24px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 28px;padding: 8px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
-.FlexBox{overflow:auto; transition:height 0.5s ease;margin:10px 0 0 0;}
+.FlexBox{overflow:auto; transition:height 0.5s ease;margin:4px 0 0 0;}
 
 
 .left_box{border-radius: 4px;display: block;width: 8px;height: 8px;float: left;margin: 6px 4px 0 0;}
@@ -728,4 +669,5 @@ export default {
 .check_status_5{background-color: #ff0000;}
 .check_status_7{background-color: #66FFFF;}
 .ant-card .ant-card-body {padding: 0px}
+
 </style>
