@@ -1,5 +1,6 @@
 <!-- 尺码模板 -->
  <template>
+<templateAdd v-if="PAGEDATA.add_open" :data="PAGEDATA" />
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
@@ -23,7 +24,7 @@
             <a-row>
 
                 <a-col :span="4">
-                    <a-button type="primary" size="small" @click="size_add.play">
+                    <a-button type="primary" size="small" @click="PAGEDATA.ADDtemplate">
                         <PlusOutlined />
                         新建尺码模板
                     </a-button>
@@ -80,59 +81,6 @@
     </a-layout>
 </a-layout>
 
-<!-- 新建尺码模板 -->
-<a-drawer
-    v-model:open="size_add.open"
-    class="custom-class"
-    root-class-name="root-class-name"
-    title="新建"
-    placement="right"
-    width="800"
-  >
-    <div>
-
-        <p>模板名称: 请输入模板名称</p>
-        <p>尺码标题: 请输入模板名称</p>
-        <p>标题注释: 请输入模板名称</p>
-
-        <a-radio-group 
-            v-model:value="size_add.add_value" 
-            size="middle"
-            @change="size_add.change"
-        >
-            <a-radio-button value="clothing" class="font_size_12">服装</a-radio-button>
-            <a-radio-button value="undies" class="font_size_12">内衣</a-radio-button>
-            <a-radio-button value="shoes" class="font_size_12">鞋靴类</a-radio-button>
-            <a-radio-button value="children_clothing" class="font_size_12">童装</a-radio-button>
-            <a-radio-button value="rings" class="font_size_12">戒指</a-radio-button>
-            <a-radio-button value="bracelets" class="font_size_12">手镯</a-radio-button>
-        </a-radio-group>
-    </div>
-    <div style="height: 34px;margin: 20px 0 0 0;">
-        <a-checkbox-group 
-            v-model:value="size_add.op_value" 
-            name="checkboxgroup" 
-            :options="size_add[size_add.op_name]" 
-        />
-    </div>
-    <p>
-        <a-table :columns="size_add.columns" :data-source="size_add.data" :pagination="false" size="small" bordered>
-            <template #bodyCell="{ column, text }">
-            <template v-if="column.dataIndex === 'name'">
-                <a>{{ text }}</a>
-            </template>
-            </template>
-        </a-table>
-    </p>
-    <div>
-        <a-space>
-            <a-button type="primary" size="small">保存</a-button>
-            <a-button size="small">取消</a-button>
-        </a-space>
-    </div>
-
-</a-drawer>
-
 
 <!-- 详情尺码模板 -->
 <a-drawer
@@ -167,7 +115,7 @@
 
 </template>
 <script>
-import { defineComponent,ref,reactive,onMounted,h,nextTick,onUnmounted } from 'vue';
+import { defineComponent,ref,reactive,onMounted,h,nextTick,onUnmounted,defineAsyncComponent } from 'vue';
 import { useStore } from 'vuex'
 import { PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
 
@@ -189,7 +137,10 @@ export default {
         EllipsisOutlined,
         menu_left,
         menu_head,
+        templateAdd: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/templateAdd.vue')),
+        // edit_template:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/templateEdit.vue')),
     },
+
     setup(props) {
 
         const PAGEDATA = reactive({
@@ -204,6 +155,11 @@ export default {
             datalist:[],          // 列表信息
             total_number:0,       // 内容总数
             innerHeight:ref(window.innerHeight-150),
+
+            add_open:ref(false),// 添加模板弹窗状态
+            ADDtemplate:() =>{// 弹出新建模板
+                PAGEDATA.add_open = true;
+            },
 
             // 模板类型转移
             chuan_type_name:(type_str)=>{
@@ -321,83 +277,10 @@ export default {
                     loading.value = false;
 
                 }
-                
-
             })
 
 
         };
-
-        // 新建尺码详情
-        const size_add = reactive({
-            open:ref(false),
-            data:ref(undefined),
-            // 新建模板类型选择
-            add_value:ref('clothing'),
-            // 模板选项
-            template_type:{
-                'clothing':'服装',
-                'undies':'内衣',
-                'shoes':'鞋靴类',
-                'children_clothing':'童装',
-            },
-
-            op_value:ref([]),// 选中的尺码值
-
-            op_name:ref('clothing'),
-
-            clothing:['身高(cm)', '体重(cm)', '胸围(cm)', '肩宽(cm)', '腰围(cm)', '臀围(cm)', '袖长(cm)'],
-
-            undies:['下胸围(cm)', '胸围差(cm)', '杯罩'],
-
-            shoes:['脚长(cm)', '脚宽(cm)', '靴筒高(cm)', '靴筒围(cm)', '鞋跟高(cm)'],
-
-            children_clothing:['身高(cm)', '体重(斤)', '胸围(cm)'],
-
-            rings:['戒指内周长(mm)', '戒指内直径(mm)'],
-
-            bracelets:['手掌最宽长度(mm)', '手掌最宽周长(mm)'],
-
-            columns:ref([{
-                title: 'Name',
-                dataIndex: 'name',
-                }, {
-                title: 'Cash Assets',
-                className: 'column-money',
-                dataIndex: 'money',
-                }, {
-                title: 'Address',
-                dataIndex: 'address',
-            }]),
-            data:ref([{
-                key: '1',
-                name: 'John Brown',
-                money: '￥300,000.00',
-                address: 'New York No. 1 Lake Park',
-                }, {
-                key: '2',
-                name: 'Jim Green',
-                money: '￥1,256,000.00',
-                address: 'London No. 1 Lake Park',
-                }, {
-                key: '3',
-                name: 'Joe Black',
-                money: '￥120,000.00',
-                address: 'Sidney No. 1 Lake Park',
-            }]),
-
-            play:()=>{
-                size_add.open = true
-            },
-            add:()=>{
-                var url ="https://fxg.jinritemai.com/ffa/g/size-chart/manage"
-                window.open(url)
-            },
-            change:()=>{
-                size_add.op_name = size_add.add_value
-                console.log(size_add.add_value)
-            }
-        })
 
         // 查看详情
         const size_detail = reactive({
@@ -408,6 +291,7 @@ export default {
                 size_detail.data = item
             }
         })
+
 
 
         // 更新
@@ -436,7 +320,6 @@ export default {
 
         return{
           PAGEDATA,
-          size_add,
           size_detail,
             size_update,
             size_delete,
