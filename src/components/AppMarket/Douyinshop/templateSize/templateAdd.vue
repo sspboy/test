@@ -32,17 +32,17 @@
             v-model:value="size_add.op_value" 
             name="checkboxgroup" 
             :options="size_add[size_add.op_name].columns_list" 
-            @click="size_add.checked_columns"
+            @change="size_add.checked_columns"
         />
     </div>
     <p>
         <a-table :columns="size_add.columns" :data-source="size_add.data" :pagination="false" size="small" class="font_size_12" bordered>
-            <template #bodyCell="{ column, record,text }">
+            <template #bodyCell="{ column, record, text }">
                 <template v-if="column.dataIndex === 'op'">
                     <a-space>
-                    <a class="font_size_12" href="#" @click="console.log('上移')">上移</a>
-                    <a class="font_size_12" href="#" @click="console.log('下移')">下移</a>
-                    <a class="font_size_12" href="#" @click="console.log(record)">删除</a>
+                    <a class="font_size_12" href="#" @click="size_add.up_colums(record)">上移</a>
+                    <a class="font_size_12" href="#" @click="size_add.next_colums(record)">下移</a>
+                    <a class="font_size_12" href="#" @click="size_add.remove_colum(record.key)">删除</a>
                     </a-space>
                 </template>
                 <template v-else>
@@ -50,7 +50,7 @@
                 </template>
             </template>
             <template #footer>
-                <a>添加一行</a>
+                <a @click="size_add.add_colums">添加一行</a>
             </template>
         </a-table>
     </p>
@@ -133,7 +133,7 @@ setup(props,ctx) {
         // 切换表头方法
         check_colums:(type_name)=>{
             
-            var r = size_add[type_name].columns_list
+            var r = size_add.op_value
             var d = size_add[type_name].index_list
 
             var list = [
@@ -360,7 +360,7 @@ setup(props,ctx) {
                 "title": "尺码",
                 "dataIndex": "size",
                 "align": "center",
-                "width": 80
+                "width": 80,
             },
             {
                 "title": "身高(cm)",
@@ -458,11 +458,47 @@ setup(props,ctx) {
             size_add.op_name = size_add.add_value;      // 表头多选项目切换
             size_add.op_value = size_add[size_add.add_value].columns_list
             size_add.check_colums(size_add.add_value)   // 表格切换
-        },
-        checked_columns:(e)=>{
-            console.log(e.target.value)
-            console.log(size_add.columns)
 
+        },
+        // 点击选择字段：
+        checked_columns:(e)=>{
+            size_add.check_colums(size_add.add_value)
+        },
+        // 添加行
+        add_colums:()=>{
+
+            const key_number = size_add.data.length;
+            var index_list = size_add[size_add.op_name].index_list
+            var new_data = {}
+            for(let i of index_list){
+                new_data[i] = undefined
+            }
+            new_data.key = key_number+1
+            new_data.size = undefined
+
+            console.log(size_add[size_add.op_name])
+            console.log(size_add.data)
+            size_add.data.push(new_data)
+
+            // Object.keys(obj).forEach(k => obj[k] = null);
+        },
+        // 删除行
+        remove_colum:(key)=>{
+            const result = size_add.data.filter(o => o.key !== key);
+            size_add.data = result
+        },
+        // 上移行
+        up_colums:(o)=>{
+            console.log(o.key)
+            var up_c = o.key - 1;
+            console.log(size_add[up_c])
+            if(size_add[up_c] !== undefined){
+                
+            }
+        },
+        // 下移行
+        next_colums:(o)=>{
+            console.log(o.key)
         }
     })
 
