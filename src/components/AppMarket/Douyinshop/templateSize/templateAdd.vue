@@ -37,6 +37,7 @@
     </div>
     <p>
         <a-table :columns="size_add.columns" :data-source="size_add.data" :pagination="false" size="small" class="font_size_12" bordered>
+            
             <template #bodyCell="{ column, record, text }">
                 <template v-if="column.dataIndex === 'op'">
                     <a-space>
@@ -46,17 +47,17 @@
                     </a-space>
                 </template>
                 <template v-else>
-                    <a-input :value="text"></a-input>
+                    <a-input v-model:value="record[column.dataIndex]"></a-input>
                 </template>
             </template>
             <template #footer>
-                <a @click="size_add.add_colums">添加一行</a>
+                <a-button type="link" @click="size_add.add_colums">添加一行</a-button>
             </template>
         </a-table>
     </p>
     <div>
         <a-space>
-            <a-button type="primary" size="small">保存</a-button>
+            <a-button type="primary" size="small" @click="size_add.submit">保存</a-button>
             <a-button size="small">取消</a-button>
         </a-space>
     </div>
@@ -64,7 +65,7 @@
 </template>
 <script>
 import { defineComponent,ref,reactive,onMounted,h } from 'vue';
-import { useStore } from 'vuex'
+import * as TOOL from '@/assets/JS_Model/tool';
 // 组件引用=====开始
 export default defineComponent({
     name:'templateAdd',
@@ -76,6 +77,7 @@ export default defineComponent({
   
     },
 setup(props,ctx) {
+    const tool = new TOOL.TOOL()            // 工具方法
 
     // 新建尺码详情
     const size_add = reactive({
@@ -467,20 +469,21 @@ setup(props,ctx) {
         // 添加行
         add_colums:()=>{
 
-            const key_number = size_add.data.length;
-            var index_list = size_add[size_add.op_name].index_list
-            var new_data = {}
-            for(let i of index_list){
-                new_data[i] = undefined
+            // 超过10行提示模板内容过多
+            if(size_add.data.length>10){
+                tool.Fun_.message('info','模板内容过多！')
+            }else{
+                const key_number = size_add.data.length;
+                var index_list = size_add[size_add.op_name].index_list
+                var new_data = {}
+                for(let i of index_list){
+                    new_data[i] = undefined
+                }
+                new_data.key = String(key_number + 1 + '')
+                new_data.size = undefined
+                size_add.data.push(new_data)
             }
-            new_data.key = key_number+1
-            new_data.size = undefined
 
-            console.log(size_add[size_add.op_name])
-            console.log(size_add.data)
-            size_add.data.push(new_data)
-
-            // Object.keys(obj).forEach(k => obj[k] = null);
         },
         // 删除行
         remove_colum:(key)=>{
@@ -490,16 +493,52 @@ setup(props,ctx) {
         // 上移行
         up_colums:(o)=>{
             console.log(o.key)
-            var up_c = o.key - 1;
-            console.log(size_add[up_c])
-            if(size_add[up_c] !== undefined){
-                
+            var up_c = o.key - 2; // 上游数据
+            console.log(up_c)
+            if(size_add.data[up_c] !== undefined && up_c > -1){
+                console.log(size_add.data)
+                size_add.data[up_c].key = o.key + '';
+                o.key = o.key- 1 + ''
+                size_add.data.sort((a, b) => a.key - b.key);
             }
         },
         // 下移行
         next_colums:(o)=>{
-            console.log(o.key)
+            var up_c = Number(o.key) + 1; // 下游数据
+            if(up_c <= size_add.data.length){
+                o.key = up_c + '';
+                size_add.data[up_c-1].key = o.key-1+'';
+                size_add.data.sort((a, b) => a.key - b.key);
+            }
+        },
+        // 保存
+        submit:()=>{
+            var v_res = size_add.verifyData();
+            console.log('验证结果',v_res)
+
+            // 验证数据是否为空
+            // 为空：提示填写完整数据
+            // 不为空上传
+        },
+        // 验证数据不能为空数据
+        verifyData:()=>{
+            if(size_add.data.length==0){
+                return false
+            }else{
+                for(let i of size_add.data){
+                    Object.keys(i).forEach(k => {
+                        var res = tool.Fun_.isEmpty(i[k])
+                        if(res){
+                            return false
+                        }else{
+                            return true
+
+                        }
+                    }); 
+                }
+            }
         }
+
     })
 
     return{

@@ -46,6 +46,15 @@ const API = new utils.A_Patch()// 请求接口
                 [[]]
             );
         },
+        // 验证值是否为空
+        isEmpty:(value) =>{
+            return (
+                value == null ||
+                (typeof value === "string" && value.trim() === "") ||
+                (Array.isArray(value) && value.length === 0) ||
+                (typeof value === "object" && Object.keys(value).length === 0)
+            );
+        },
         // 提示信息
         message:(type,msg)=>{
             message.config({
@@ -81,14 +90,6 @@ const API = new utils.A_Patch()// 请求接口
                 console.error('复制失败:', err);
             }
             document.body.removeChild(textarea);
-
-            // try {
-            //     await navigator.clipboard.writeText(text);
-            //     message.success('复制成功')
-            //     console.log('已复制到剪贴板');
-            // } catch (err) {
-            //     console.error('复制失败:', err);
-            // }
         }        
 
     }
