@@ -9,15 +9,22 @@
     width="800"
   >
     <div>
-
-        <p><a-input placeholder="模板名称" size="small"></a-input></p>
-        <p><a-input placeholder="尺码标题" size="small"></a-input></p>
-        <p><a-input placeholder="标题注释" size="small"></a-input></p>
-
+        <a-form>
+            <a-form-item label="模板名称" v-bind="validateInfos.template_name">
+                <a-input placeholder="模板名称" style="font-size:12px;padding: 2px;" name="template_name" v-model:value="moderef.template_name" size="small"></a-input>
+            </a-form-item>
+            <a-form-item label="尺码标题" v-bind="validateInfos.title">
+                <a-input placeholder="尺码标题" style="font-size:12px;padding: 2px;" name="title" v-model:value="moderef.title" size="small"></a-input>
+            </a-form-item>
+            <a-form-item label="标题注释" v-bind="validateInfos.desc">
+                <a-input placeholder="标题注释" style="font-size:12px;padding: 2px;" name="desc" v-model:value="moderef.desc" size="small"></a-input>
+            </a-form-item>
+        </a-form>
         <a-radio-group 
-            v-model:value="size_add.add_value" 
+            v-model:value="size_add.template_sub_type" 
             size="middle"
             @change="size_add.change"
+            style="margin: 10px 0 0 0;"
         >
             <a-radio-button value="clothing" class="font_size_12">服装</a-radio-button>
             <a-radio-button value="undies" class="font_size_12">内衣</a-radio-button>
@@ -37,7 +44,6 @@
     </div>
     <p>
         <a-table :columns="size_add.columns" :data-source="size_add.data" :pagination="false" size="small" class="font_size_12" bordered>
-            
             <template #bodyCell="{ column, record, text }">
                 <template v-if="column.dataIndex === 'op'">
                     <a-space>
@@ -64,7 +70,8 @@
 </a-drawer>
 </template>
 <script>
-import { defineComponent,ref,reactive,onMounted,h } from 'vue';
+import { defineComponent,ref,reactive,toRaw,h } from 'vue';
+import { Form } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 // 组件引用=====开始
 export default defineComponent({
@@ -77,26 +84,53 @@ export default defineComponent({
   
     },
 setup(props,ctx) {
-    const tool = new TOOL.TOOL()            // 工具方法
+
+    const tool = new TOOL.TOOL();// 工具方法
+    const useForm = Form.useForm;
+    const moderef = reactive({
+        title:undefined,// 标题
+        desc:undefined,// 描述
+        template_name:undefined,//子模板名称
+    })
+
+    const rulesRef = reactive({
+        template_name: [
+            {
+            required: true,
+            message: 'Please input name',
+            },
+        ],
+        title: [
+            {
+            required: true,
+            message: 'Please select region',
+            },
+        ],
+        desc: [
+            {
+            required: true,
+            message: 'Please select type',
+            },
+        ],
+    });
+    const { resetFields, validate, validateInfos } = useForm(moderef, rulesRef, {
+        onValidate: (...args) => console.log(...args),
+    });
+
+
 
     // 新建尺码详情
     const size_add = reactive({
 
-        open:ref(false),
-        data:ref(undefined),
+        open:ref(false), // 是否弹出状态
+        data:ref(undefined), // 数据列表
+
+        template_type:ref('size_info'),// 模板类型：尺码模板
+        template_name:ref(undefined),// 模板名称
+        shareable:ref(false),// 是否设置为公有模板
 
         // 新建模板类型选择
-        add_value:ref('clothing'),
-
-        // 模板选项
-        template_type:{
-            'clothing':'服装',
-            'undies':'内衣',
-            'shoes':'鞋靴类',
-            'children_clothing':'童装',
-            'rings':'戒指',
-            'bracelets':'手镯'
-        },
+        template_sub_type:ref('clothing'), // 模板子类型
 
         op_value:ref(['身高(cm)', '体重(cm)', '胸围(cm)', '肩宽(cm)', '腰围(cm)', '臀围(cm)', '袖长(cm)']),// 选中的尺码值
 
@@ -455,17 +489,20 @@ setup(props,ctx) {
             var url ="https://fxg.jinritemai.com/ffa/g/size-chart/manage"
             window.open(url)
         },
+
         change:()=>{
             
-            size_add.op_name = size_add.add_value;      // 表头多选项目切换
-            size_add.op_value = size_add[size_add.add_value].columns_list
-            size_add.check_colums(size_add.add_value)   // 表格切换
+            size_add.op_name = size_add.template_sub_type;      // 表头多选项目切换
+            size_add.op_value = size_add[size_add.template_sub_type].columns_list
+            size_add.check_colums(size_add.template_sub_type)   // 表格切换
 
         },
+
         // 点击选择字段：
         checked_columns:(e)=>{
-            size_add.check_colums(size_add.add_value)
+            size_add.check_colums(size_add.template_sub_type)
         },
+
         // 添加行
         add_colums:()=>{
 
@@ -513,29 +550,71 @@ setup(props,ctx) {
         },
         // 保存
         submit:()=>{
-            var v_res = size_add.verifyData();
-            console.log('验证结果',v_res)
 
-            // 验证数据是否为空
-            // 为空：提示填写完整数据
-            // 不为空上传
+            // 表格结果验证
+            var v_res = size_add.verifyData();
+            // 提示表格不能有空数据
+            if(v_res !== true){
+                tool.Fun_.message('info','模板表格不能有空数据')
+                return ''
+            }
+
+            validate().then(() => {
+                // 模板基础信息验证成功
+                console.log(toRaw(moderef));
+                var c_o = toRaw(moderef)
+                var n_o = {
+                    template_type:"size_info",
+                    template_name:c_o.template_name,
+                    template_sub_type:size_add.template_sub_type,
+                    shareable:false
+                }
+                // n_o.template_name = c_o.template_name
+
+                console.log(size_add.op_value);
+
+                Object.keys(size_add.data).forEach(k => {
+                    console.log(size_add.data[k])
+                    var i_obj = size_add.data[k]
+                    var x_obj= {}
+                    x_obj.size = i_obj.size;
+            
+                })
+
+
+
+
+                var component_front_data = {
+                    title:'',
+                    desc:'',
+                    tempName:'',
+                    configTable:[
+                        {"size":"XS","specMap":{"身高（cm）":"1","体重（斤）":"2","胸围（cm）":"3"}},
+                        {"size":"M","specMap":{"身高（cm）":"10","体重（斤）":"10","胸围（cm）":"10"}}
+                    ],
+                    selectedSpecs:size_add.op_value,
+                    specOptions:size_add.op_value,
+                        
+                    selectedSize:["XS","M"]
+                }
+
+            }).catch(err => {
+                console.log('error', err);
+            });
         },
         // 验证数据不能为空数据
         verifyData:()=>{
             if(size_add.data.length==0){
                 return false
             }else{
+                var res_text = true
                 for(let i of size_add.data){
                     Object.keys(i).forEach(k => {
                         var res = tool.Fun_.isEmpty(i[k])
-                        if(res){
-                            return false
-                        }else{
-                            return true
-
-                        }
+                        if(res){res_text = false}
                     }); 
                 }
+                return res_text
             }
         }
 
@@ -544,6 +623,8 @@ setup(props,ctx) {
     return{
         props,
         size_add,
+        moderef,
+        validateInfos
     }
 }
 })
