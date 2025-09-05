@@ -1,6 +1,6 @@
 <!-- 尺码模板 -->
  <template>
-<templateAdd v-if="PAGEDATA.add_open" :data="PAGEDATA" />
+<templateAdd v-if="PAGEDATA.add_open" :data="PAGEDATA" v-on:add_callback="load_page"/>
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
@@ -31,8 +31,8 @@
                 </a-col>
                 <a-col offset="12" :span="8">
                     <a-space-compact block size="small">
-                        <a-input size="small" placeholder="请输入模板名称" />
-                        <a-button type="primary" size="small" style="font-size: 12px;">查询</a-button>
+                        <a-input size="small" placeholder="请输入模板ID" v-model:value="PAGEDATA.seach_id"/>
+                        <a-button type="primary" size="small" style="font-size: 12px;" @click="seacher_template">查询</a-button>
                     </a-space-compact>
                 </a-col>
             </a-row>
@@ -55,13 +55,14 @@
                         <template #title>
                             <span class="font_size_12">{{ item.template_name }}</span>
                         </template>
+                        {{ item.template_id }}
                         <!-- <span v-if="item.image !== undefined">
                             <a-image :src="item.image.url" width="80" />
                         </span> -->
                         <template #actions>
                             <EyeOutlined @click="size_detail.play(item)"/>
                             <edit-outlined @click="size_update.play(item)"/>
-                            <DeleteOutlined @click="size_delete.play()"/>
+                            <DeleteOutlined @click="size_delete.play(item.template_id)"/>
                         </template>
                     </a-card>
                 </template>
@@ -178,6 +179,9 @@ export default {
                 }
             },
 
+            // 搜索id
+            seach_id:ref(undefined)
+
         })
 
         const tool = new TOOL.TOOL()            // 工具方法
@@ -202,8 +206,29 @@ export default {
 
             window.addEventListener('resize', handleResize);// 窗口变换时候
 
-            // 初始化数据
+            load_page() // 初始化列表数据
+            
+            console.log(count.value)
+
+        })
+
+        // 组件挂之后---请求数据===============================开始
+        // 定义一个函数来处理窗口大小变化 ==
+        const handleResize = () => {
+            PAGEDATA.innerHeight = window.innerHeight - 150; // 作为表格自适应高度
+        };
+
+        // 在组件卸载时移除事件监听器
+        onUnmounted(() => {
+            window.removeEventListener('resize', handleResize);
+        });
+        // 【组件挂载】========================================结束
+
+        // 初始化列表数据
+        const load_page = ()=>{
+
             const first_Data = {
+                "template_type":"size_info",
                 "page_num": count.value,
                 "page_size":12,
             }
@@ -220,23 +245,8 @@ export default {
 
                 list.value = component_template_info_list;
 
-                console.log(component_template_info_list)
-
           })
-
-        })
-
-        // 组件挂之后---请求数据===============================开始
-        // 定义一个函数来处理窗口大小变化 ==
-        const handleResize = () => {
-        PAGEDATA.innerHeight = window.innerHeight - 150; // 作为表格自适应高度
-        };
-
-        // 在组件卸载时移除事件监听器
-        onUnmounted(() => {
-            window.removeEventListener('resize', handleResize);
-        });
-        // 【组件挂载】========================================结束
+        }
 
         // 加载更多数据
         const onLoadMore = () => {
@@ -246,14 +256,17 @@ export default {
             count.value = count.value + 1;
 
             const get_more_data = {
-                "page":count.value,
+                "template_type":"size_info",
+                "page_num":count.value,
                 "page_size":12, 
             }
 
             tool.Http_.post(API.AppSrtoreAPI.size.list, get_more_data).then(res=>{
-                
-                // console.log(res)
 
+                console.log(get_more_data)
+
+                Object.keys(res.data.data.component_template_info_list).forEach(k => console.log(res.data.data.component_template_info_list[k].template_id))
+                
                 if(res.data.data == "None"){ // 请求数据为空
 
                     list.value = data.value;
@@ -282,6 +295,37 @@ export default {
 
         };
 
+        // 用id查询模板列表：通过id查询
+        const seacher_template=()=>{
+
+            initLoading.value = true;
+
+            console.log(PAGEDATA.seach_id)
+
+            const seach_Data = {
+                "template_type":"size_info",
+                "template_id":PAGEDATA.seach_id,
+                "page_num": 0,
+                "page_size":12,
+            }
+
+            tool.Http_.post(API.AppSrtoreAPI.size.list, seach_Data).then(res=>{
+
+                var datarespone = res.data.data;// 数据对象
+
+                console.log(datarespone)
+
+                var component_template_info_list = datarespone.component_template_info_list; // 列表数据
+
+                initLoading.value = false;
+
+                list.value = component_template_info_list;
+
+            })
+
+        }
+
+
         // 查看详情
         const size_detail = reactive({
             open:ref(false),
@@ -308,11 +352,21 @@ export default {
             open:ref(false),
             data:ref(undefined),
             confirmLoading:ref(false),
-            play:()=>{
+            template_id:ref(undefined),
+            play:(t_id)=>{
                 size_delete.open = true
+                size_delete.template_id = t_id
             },
             handleOk:()=>{
                 size_delete.confirmLoading = true
+                console.log(size_delete.template_id)
+                console.log('请求接口')
+                setTimeout(() => {
+                    size_delete.confirmLoading = false;
+                    size_delete.open = false;
+
+                }, 2000);
+
             }
         })
 
@@ -328,7 +382,9 @@ export default {
           initLoading,
           loading,
           list,
-          onLoadMore
+          onLoadMore,
+          load_page,
+          seacher_template
 
         }
     }

@@ -73,6 +73,8 @@
 import { defineComponent,ref,reactive,toRaw,h } from 'vue';
 import { Form } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
+import * as utils from '@/assets/JS_Model/public_model';
+
 // 组件引用=====开始
 export default defineComponent({
     name:'templateAdd',
@@ -86,6 +88,8 @@ export default defineComponent({
 setup(props,ctx) {
 
     const tool = new TOOL.TOOL();// 工具方法
+    const API = new utils.A_Patch()         // 请求接口地址合集
+
     const useForm = Form.useForm;
     const moderef = reactive({
         title:undefined,// 标题
@@ -442,10 +446,10 @@ setup(props,ctx) {
                         Height: '160', // 身高(cm)
                         Weight: '50',//体重(cm)
                         Chest_circumference: '34',// 胸围(cm)
-                        Shoulder_width:'22',// '肩宽(cm)'
-                        Waist_circumference:'22',// '腰围(cm)'
-                        Hip_circumference:'22', // '臀围(cm)'
-                        Sleeve_length:'22'// '袖长(cm)'
+                        Shoulder_width:'34',// '肩宽(cm)'
+                        Waist_circumference:'34',// '腰围(cm)'
+                        Hip_circumference:'34', // '臀围(cm)'
+                        Sleeve_length:'34'// '袖长(cm)'
                     },
                     {
                         key: '2',
@@ -453,10 +457,10 @@ setup(props,ctx) {
                         Height: '160', // 身高(cm)
                         Weight: '50',//体重(cm)
                         Chest_circumference: '34',// 胸围(cm)
-                        Shoulder_width:'22',// '肩宽(cm)'
-                        Waist_circumference:'22',// '腰围(cm)'
-                        Hip_circumference:'22', // '臀围(cm)'
-                        Sleeve_length:'22'// '袖长(cm)'
+                        Shoulder_width:'34',// '肩宽(cm)'
+                        Waist_circumference:'34',// '腰围(cm)'
+                        Hip_circumference:'34', // '臀围(cm)'
+                        Sleeve_length:'34'// '袖长(cm)'
                     },
                     {
                         key: '3',
@@ -464,10 +468,10 @@ setup(props,ctx) {
                         Height: '160', // 身高(cm)
                         Weight: '50',//体重(cm)
                         Chest_circumference: '34',// 胸围(cm)
-                        Shoulder_width:'22',// '肩宽(cm)'
-                        Waist_circumference:'22',// '腰围(cm)'
-                        Hip_circumference:'22', // '臀围(cm)'
-                        Sleeve_length:'22'// '袖长(cm)'
+                        Shoulder_width:'34',// '肩宽(cm)'
+                        Waist_circumference:'34',// '腰围(cm)'
+                        Hip_circumference:'34', // '臀围(cm)'
+                        Sleeve_length:'34'// '袖长(cm)'
                     },
                     {
                         key: '4',
@@ -475,10 +479,10 @@ setup(props,ctx) {
                         Height: '160', // 身高(cm)
                         Weight: '50',//体重(cm)
                         Chest_circumference: '34',// 胸围(cm)
-                        Shoulder_width:'22',// '肩宽(cm)'
-                        Waist_circumference:'22',// '腰围(cm)'
-                        Hip_circumference:'22', // '臀围(cm)'
-                        Sleeve_length:'22'// '袖长(cm)'
+                        Shoulder_width:'34',// '肩宽(cm)'
+                        Waist_circumference:'34',// '腰围(cm)'
+                        Hip_circumference:'34', // '臀围(cm)'
+                        Sleeve_length:'34'// '袖长(cm)'
                     },
             ]),
 
@@ -553,52 +557,84 @@ setup(props,ctx) {
 
             // 表格结果验证
             var v_res = size_add.verifyData();
+
             // 提示表格不能有空数据
             if(v_res !== true){
                 tool.Fun_.message('info','模板表格不能有空数据')
                 return ''
             }
 
-            validate().then(() => {
+            validate().then(() => { // 验证成功后执行
+
                 // 模板基础信息验证成功
                 console.log(toRaw(moderef));
                 var c_o = toRaw(moderef)
+
                 var n_o = {
                     template_type:"size_info",
                     template_name:c_o.template_name,
                     template_sub_type:size_add.template_sub_type,
-                    shareable:false
+                    component_front_data:{
+                        title:c_o.title,
+                        desc:c_o.desc,
+                        tempName:"tempName",
+                        configTable:[],
+                        selectedSpecs:size_add.op_value,// 选中参数
+                        specOptions:size_add.op_value, // 选中参数
+                        selectedSize:[], // 尺码列表
+                    },
+                    shareable:false, // 是否公用or私有
                 }
+
                 // n_o.template_name = c_o.template_name
 
-                console.log(size_add.op_value);
 
                 Object.keys(size_add.data).forEach(k => {
                     console.log(size_add.data[k])
                     var i_obj = size_add.data[k]
                     var x_obj= {}
+                    
+                    // 拼接specMap
+                    var value_list = []
+                    Object.keys(i_obj).forEach(y => {
+                        if(y !== 'key' & y !== 'size'){value_list.push(i_obj[y])}    
+                    })
+
                     x_obj.size = i_obj.size;
-            
+                    n_o.component_front_data.selectedSize.push(i_obj.size)
+
+                    // 合并key value
+                    const specMap = Object.fromEntries(
+                        size_add.op_value.map((key, index) => [key, value_list[index]])
+                    );
+                    x_obj.specMap = specMap;
+                    n_o.component_front_data.configTable.push(x_obj)
                 })
 
 
+                console.log(n_o);
+
+                // 上传数据
+                tool.Http_.post(API.AppSrtoreAPI.size.add,n_o).then((res)=>{
+                    console.log(res.data)
+                    var code = res.data.code; // 返回码
+                    var sub_msg = res.data.sub_msg; // 
+                    if(code == 10000){ // 成功
+
+                        tool.Fun_.message('success', '创建成功！')
+
+                        props.data.add_open = false;// 关闭弹窗
+
+                        ctx.emit('add_callback')   // 回调刷新表格
+
+                    }else{ // 失败
+                        tool.Fun_.message('error','创建失败！' + sub_msg)
+                    }
 
 
-                var component_front_data = {
-                    title:'',
-                    desc:'',
-                    tempName:'',
-                    configTable:[
-                        {"size":"XS","specMap":{"身高（cm）":"1","体重（斤）":"2","胸围（cm）":"3"}},
-                        {"size":"M","specMap":{"身高（cm）":"10","体重（斤）":"10","胸围（cm）":"10"}}
-                    ],
-                    selectedSpecs:size_add.op_value,
-                    specOptions:size_add.op_value,
-                        
-                    selectedSize:["XS","M"]
-                }
+                })
 
-            }).catch(err => {
+            }).catch(err => {// 表单验证
                 console.log('error', err);
             });
         },
@@ -616,8 +652,15 @@ setup(props,ctx) {
                 }
                 return res_text
             }
-        }
+        },
+        // 上传成功-处理
+        up_success:(res)=>{
 
+        },
+        // 上传失败-处理
+        up_failure:(res)=>{
+
+        }
     })
 
     return{
