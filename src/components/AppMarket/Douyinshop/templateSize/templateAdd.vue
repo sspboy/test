@@ -11,13 +11,33 @@
     <div>
         <a-form>
             <a-form-item label="模板名称" v-bind="validateInfos.template_name">
-                <a-input placeholder="模板名称" style="font-size:12px;padding: 2px;" name="template_name" v-model:value="moderef.template_name" size="small"></a-input>
+                <a-input placeholder="模板名称" 
+                style="font-size:12px;padding: 2px;" 
+                name="template_name" 
+                v-model:value="moderef.template_name" 
+                size="small"
+                autoComplete="off"
+                ></a-input>
             </a-form-item>
             <a-form-item label="尺码标题" v-bind="validateInfos.title">
-                <a-input placeholder="尺码标题" style="font-size:12px;padding: 2px;" name="title" v-model:value="moderef.title" size="small"></a-input>
+                <a-input 
+                placeholder="尺码标题" 
+                style="font-size:12px;padding: 2px;" 
+                name="title" 
+                v-model:value="moderef.title" 
+                size="small"
+                autoComplete="off"
+                ></a-input>
             </a-form-item>
             <a-form-item label="标题注释" v-bind="validateInfos.desc">
-                <a-input placeholder="标题注释" style="font-size:12px;padding: 2px;" name="desc" v-model:value="moderef.desc" size="small"></a-input>
+                <a-input 
+                    placeholder="标题注释" 
+                    style="font-size:12px;padding: 2px;" 
+                    name="desc" 
+                    v-model:value="moderef.desc" 
+                    size="small" 
+                    autoComplete="off"
+                ></a-input>
             </a-form-item>
         </a-form>
         <a-radio-group 
@@ -97,26 +117,14 @@ setup(props,ctx) {
         template_name:undefined,//子模板名称
     })
 
+    // 输入表单规则
     const rulesRef = reactive({
-        template_name: [
-            {
-            required: true,
-            message: 'Please input name',
-            },
-        ],
-        title: [
-            {
-            required: true,
-            message: 'Please select region',
-            },
-        ],
-        desc: [
-            {
-            required: true,
-            message: 'Please select type',
-            },
-        ],
+        template_name: [{required: true,message: '请输入模板名称',},],
+        title: [{required: true,message: '请输入标题',},],
+        desc: [{required: true,message: '请输入模板描述',},],
     });
+
+    // 表单验证赋值
     const { resetFields, validate, validateInfos } = useForm(moderef, rulesRef, {
         onValidate: (...args) => console.log(...args),
     });
@@ -126,8 +134,8 @@ setup(props,ctx) {
     // 新建尺码详情
     const size_add = reactive({
 
-        open:ref(false), // 是否弹出状态
-        data:ref(undefined), // 数据列表
+        open:ref(false),// 是否弹出状态
+        data:ref(undefined),// 数据列表
 
         template_type:ref('size_info'),// 模板类型：尺码模板
         template_name:ref(undefined),// 模板名称

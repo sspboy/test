@@ -1,6 +1,8 @@
 <!-- 尺码模板 -->
  <template>
 <templateAdd v-if="PAGEDATA.add_open" :data="PAGEDATA" v-on:add_callback="load_page"/>
+<templateEdit v-if="PAGEDATA.edit_open" :data="PAGEDATA" v-on:add_callback="load_page"/>
+
 <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
@@ -31,7 +33,12 @@
                 </a-col>
                 <a-col offset="12" :span="8">
                     <a-space-compact block size="small">
-                        <a-input size="small" placeholder="请输入模板ID" v-model:value="PAGEDATA.seach_id"/>
+                        <a-input 
+                        size="small" 
+                        placeholder="请输入模板ID" 
+                        v-model:value="PAGEDATA.seach_id"
+                        allowClear
+                        />
                         <a-button type="primary" size="small" style="font-size: 12px;" @click="seacher_template">查询</a-button>
                     </a-space-compact>
                 </a-col>
@@ -55,13 +62,17 @@
                         <template #title>
                             <span class="font_size_12">{{ item.template_name }}</span>
                         </template>
-                        {{ item.template_id }}
+                        
+                        ID: {{ item.template_id }}
+
+                        模板类型：{{ PAGEDATA.chuan_type_name(item.template_sub_type) }}
+
                         <!-- <span v-if="item.image !== undefined">
                             <a-image :src="item.image.url" width="80" />
                         </span> -->
                         <template #actions>
                             <EyeOutlined @click="size_detail.play(item)"/>
-                            <edit-outlined @click="size_update.play(item)"/>
+                            <edit-outlined @click="PAGEDATA.edit_template(item)"/>
                             <DeleteOutlined @click="size_delete.play(item.template_id)"/>
                         </template>
                     </a-card>
@@ -96,17 +107,6 @@
     <a-image :src="size_detail.data.image.url" width="80" />
 
 </a-drawer>
-<!-- 尺码模板更新 -->
-<a-drawer
-    v-model:open="size_update.open"
-    class="custom-class"
-    root-class-name="root-class-name"
-    :root-style="{ color: 'blue' }"
-    title="编辑"
-    placement="right"
-  >
-    <p>尺码模板更新</p>
-</a-drawer>
 
 <!--尺码模板删除-->
 <a-modal v-model:open="size_delete.open" title="确认删除" :confirm-loading="size_delete.confirmLoading" @ok="size_delete.handleOk">
@@ -139,7 +139,7 @@ export default {
         menu_left,
         menu_head,
         templateAdd: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/templateAdd.vue')),
-        // edit_template:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/templateEdit.vue')),
+        templateEdit:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/templateEdit.vue')),
     },
 
     setup(props) {
@@ -160,6 +160,13 @@ export default {
             add_open:ref(false),// 添加模板弹窗状态
             ADDtemplate:() =>{// 弹出新建模板
                 PAGEDATA.add_open = true;
+            },
+
+            edit_open:ref(false),
+            template_info:ref(undefined),
+            edit_template:(item)=>{
+                PAGEDATA.edit_open = true;
+                PAGEDATA.template_info = item;
             },
 
             // 模板类型转移
@@ -336,17 +343,6 @@ export default {
             }
         })
 
-
-
-        // 更新
-        const size_update = reactive({
-            open:ref(false),
-            data:ref(undefined),
-            play:()=>{
-                size_update.open = true
-            }
-        })
-
         // 删除
         const size_delete = reactive({
             open:ref(false),
@@ -375,7 +371,6 @@ export default {
         return{
           PAGEDATA,
           size_detail,
-            size_update,
             size_delete,
           store,
           innerHeight,
