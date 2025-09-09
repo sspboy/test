@@ -45,16 +45,18 @@
             size="middle"
             @change="size_add.change"
             style="margin: 10px 0 0 0;"
+            option-type="button"
+            :options="size_add.optionsWithDisabled"
         >
-            <a-radio-button value="clothing" class="font_size_12">服装</a-radio-button>
+            <!-- <a-radio-button value="clothing" class="font_size_12">服装</a-radio-button>
             <a-radio-button value="undies" class="font_size_12">内衣</a-radio-button>
             <a-radio-button value="shoes" class="font_size_12">鞋靴类</a-radio-button>
             <a-radio-button value="children_clothing" class="font_size_12">童装</a-radio-button>
             <a-radio-button value="rings" class="font_size_12">戒指</a-radio-button>
-            <a-radio-button value="bracelets" class="font_size_12">手镯</a-radio-button>
+            <a-radio-button value="bracelets" class="font_size_12">手镯</a-radio-button> -->
         </a-radio-group>
     </div>
-    <div style="height: 34px;margin: 20px 0 0 0;">
+    <div style="margin: 10px 0 10px 0;">
         <a-checkbox-group 
             v-model:value="size_add.op_value" 
             name="checkboxgroup" 
@@ -84,7 +86,7 @@
     <div>
         <a-space>
             <a-button type="primary" size="small" @click="size_add.submit">保存</a-button>
-            <a-button size="small">取消</a-button>
+            <a-button size="small" @click="props.data.edit_open = false">取消</a-button>
         </a-space>
     </div>
 </a-drawer>
@@ -111,7 +113,10 @@ setup(props,ctx) {
     console.log(props.data.template_info)
     const template_info = props.data.template_info;
     const component_front_data = JSON.parse(template_info.component_front_data);
-    const selectedSpecs = component_front_data.selectedSpecs// 模板可选字段
+    const selectedSpecs = component_front_data.selectedSpecs// 模板选中字段
+    const specOptions = component_front_data.specOptions // 模板可选字段
+    const configTable = component_front_data.configTable// 表格数据
+    console.log(template_info.template_sub_type)
     console.log(component_front_data)
     // 绑定编辑模板数据===结束
 
@@ -152,27 +157,51 @@ setup(props,ctx) {
 
         op_value:ref(selectedSpecs),// 选中的尺码值
 
-        op_name:ref('clothing'),
+        op_name:ref(template_info.template_sub_type),
+
+        optionsWithDisabled: [
+            {
+                label: '服装',
+                value: 'clothing',
+            },
+            {
+                label: '内衣',
+                value: 'undies',
+            },
+            {
+                label: '鞋靴',
+                value: 'shoes',
+            },
+            {
+                label: '童装',
+                value: 'children_clothing',
+            },
+            {
+                label: '戒指',
+                value: 'rings',
+            },
+            {
+                label: '手镯',
+                value: 'bracelets',
+                disabled: true,
+            },
+        ],
 
         clothing:{
             columns_list:['身高(cm)', '体重(cm)', '胸围(cm)', '肩宽(cm)', '腰围(cm)', '臀围(cm)', '袖长(cm)'],
         },
 
         undies:{
-            columns_list:['下胸围(cm)', '胸围差(cm)', '杯罩'],
-        },
+            columns_list:['下胸围(cm)', '胸围差(cm)', '杯罩'],},
 
         shoes:{
-            columns_list:['脚长(cm)', '脚宽(cm)', '靴筒高(cm)', '靴筒围(cm)', '鞋跟高(cm)'],
-        },
+            columns_list:['脚长(cm)', '脚宽(cm)', '靴筒高(cm)', '靴筒围(cm)', '鞋跟高(cm)'],},
 
         children_clothing:{
-            columns_list:['身高(cm)', '体重(斤)', '胸围(cm)'],
-        },
+            columns_list:['身高(cm)', '体重(斤)', '胸围(cm)'],},
         
         rings:{
-           columns_list:['戒指内周长(mm)', '戒指内直径(mm)'],
-        },
+           columns_list:['戒指内周长(mm)', '戒指内直径(mm)'],},
 
         bracelets:{
             columns_list:['手掌最宽长度(mm)', '手掌最宽周长(mm)'],
@@ -182,7 +211,6 @@ setup(props,ctx) {
         check_colums:(type_name)=>{
             
             var r = size_add.op_value
-            var d = size_add[type_name].index_list
 
             var list = [
                 {
@@ -386,19 +414,30 @@ setup(props,ctx) {
             
             // 初始化模板数据开始
             size_add.columns = list
-            if(type_name == 'clothing'){
-                size_add.data = clothingData
-            }else if(type_name == 'undies'){
-                size_add.data = undiesData
-            }else if(type_name == 'shoes'){
-                size_add.data = shoesData
-            }else if(type_name == 'children_clothing'){
-                size_add.data = children_clothingData
-            }else if(type_name == 'rings'){
-                size_add.data = ringsData
-            }else if(type_name == 'bracelets'){
-                size_add.data = bracelets
-            }
+
+            // if(type_name == 'clothing'){
+            //     size_add.data = clothingData
+            // }else if(type_name == 'undies'){
+            //     size_add.data = undiesData
+            // }else if(type_name == 'shoes'){
+            //     size_add.data = shoesData
+            // }else if(type_name == 'children_clothing'){
+            //     size_add.data = children_clothingData
+            // }else if(type_name == 'rings'){
+            //     size_add.data = ringsData
+            // }else if(type_name == 'bracelets'){
+            //     size_add.data = bracelets
+            // }
+            size_add.data = []
+            Object.keys(configTable).forEach(k=>{
+                let o = {}
+                let item = configTable[k]
+                console.log(item)
+                o.key = k
+                o.size = item.size;
+                var res = {...o,...item.specMap}
+                size_add.data.push(res)
+            })
 
         },
         // 表头数据
@@ -448,48 +487,48 @@ setup(props,ctx) {
         // 模板数据
         data:ref([
                     {
-                        key: '1',
-                        size: 'S',// 尺码
-                        Height: '160', // 身高(cm)
-                        Weight: '50',//体重(cm)
-                        Chest_circumference: '34',// 胸围(cm)
-                        Shoulder_width:'34',// '肩宽(cm)'
-                        Waist_circumference:'34',// '腰围(cm)'
-                        Hip_circumference:'34', // '臀围(cm)'
-                        Sleeve_length:'34'// '袖长(cm)'
+                        'key': '1',
+                        'size': 'S',// 尺码
+                        '身高(cm)': '160', // 身高(cm)
+                        '体重(cm)': '50',//体重(cm)
+                        '胸围(cm)': '34',// 胸围(cm)
+                        '肩宽(cm)':'34',// '肩宽(cm)'
+                        '腰围(cm)':'34',// '腰围(cm)'
+                        '臀围(cm)':'34', // '臀围(cm)'
+                        '袖长(cm)':'34'// '袖长(cm)'
                     },
                     {
-                        key: '2',
-                        size: 'M',// 尺码
-                        Height: '160', // 身高(cm)
-                        Weight: '50',//体重(cm)
-                        Chest_circumference: '34',// 胸围(cm)
-                        Shoulder_width:'34',// '肩宽(cm)'
-                        Waist_circumference:'34',// '腰围(cm)'
-                        Hip_circumference:'34', // '臀围(cm)'
-                        Sleeve_length:'34'// '袖长(cm)'
+                        'key': '2',
+                        'size': 'M',// 尺码
+                        '身高(cm)': '160', // 身高(cm)
+                        '体重(cm)': '50',//体重(cm)
+                        '胸围(cm)': '34',// 胸围(cm)
+                        '肩宽(cm)':'34',// '肩宽(cm)'
+                        '腰围(cm)':'34',// '腰围(cm)'
+                        '臀围(cm)':'34', // '臀围(cm)'
+                        '袖长(cm)':'34'// '袖长(cm)'
                     },
                     {
-                        key: '3',
-                        size: 'L',// 尺码
-                        Height: '160', // 身高(cm)
-                        Weight: '50',//体重(cm)
-                        Chest_circumference: '34',// 胸围(cm)
-                        Shoulder_width:'34',// '肩宽(cm)'
-                        Waist_circumference:'34',// '腰围(cm)'
-                        Hip_circumference:'34', // '臀围(cm)'
-                        Sleeve_length:'34'// '袖长(cm)'
+                        'key': '3',
+                        'size': 'L',// 尺码
+                        '身高(cm)': '160', // 身高(cm)
+                        '体重(cm)': '50',//体重(cm)
+                        '胸围(cm)': '34',// 胸围(cm)
+                        '肩宽(cm)':'34',// '肩宽(cm)'
+                        '腰围(cm)':'34',// '腰围(cm)'
+                        '臀围(cm)':'34', // '臀围(cm)'
+                        '袖长(cm)':'34'// '袖长(cm)'
                     },
                     {
-                        key: '4',
-                        size: 'XL',// 尺码
-                        Height: '160', // 身高(cm)
-                        Weight: '50',//体重(cm)
-                        Chest_circumference: '34',// 胸围(cm)
-                        Shoulder_width:'34',// '肩宽(cm)'
-                        Waist_circumference:'34',// '腰围(cm)'
-                        Hip_circumference:'34', // '臀围(cm)'
-                        Sleeve_length:'34'// '袖长(cm)'
+                        'key': '4',
+                        'size': 'XL',// 尺码
+                        '身高(cm)': '160', // 身高(cm)
+                        '体重(cm)': '50',//体重(cm)
+                        '胸围(cm)': '34',// 胸围(cm)
+                        '肩宽(cm)':'34',// '肩宽(cm)'
+                        '腰围(cm)':'34',// '腰围(cm)'
+                        '臀围(cm)':'34', // '臀围(cm)'
+                        '袖长(cm)':'34'// '袖长(cm)'
                     },
             ]),
 
@@ -522,7 +561,7 @@ setup(props,ctx) {
                 tool.Fun_.message('info','模板内容过多！')
             }else{
                 const key_number = size_add.data.length;
-                var index_list = size_add[size_add.op_name].index_list
+                var index_list = size_add[size_add.op_name].columns_list
                 var new_data = {}
                 for(let i of index_list){
                     new_data[i] = undefined
@@ -618,9 +657,6 @@ setup(props,ctx) {
                     n_o.component_front_data.configTable.push(x_obj)
                 })
 
-
-                console.log(n_o);
-
                 // 上传数据
                 tool.Http_.post(API.AppSrtoreAPI.size.add,n_o).then((res)=>{
                     console.log(res.data)
@@ -667,8 +703,29 @@ setup(props,ctx) {
         // 上传失败-处理
         up_failure:(res)=>{
 
+        },
+        // 改变多选状态
+        checked_op_disabled:(type)=>{
+            Object.keys(size_add.optionsWithDisabled).forEach(k=>{
+                if(size_add.optionsWithDisabled[k].value !== type){
+                    size_add.optionsWithDisabled[k].disabled= true;
+                }
+            })
         }
     })
+    
+    // 加载可选项
+    size_add[template_info.template_sub_type].columns_list = specOptions
+    size_add.op_value = selectedSpecs    // 选中项目
+    size_add.check_colums(size_add.template_sub_type) // 渲染表头
+    size_add.checked_op_disabled(size_add.template_sub_type) // 禁用未选择的模板类型
+
+    // 加载列表：表格
+    console.log(component_front_data.configTable)
+
+
+
+
 
     return{
         props,
