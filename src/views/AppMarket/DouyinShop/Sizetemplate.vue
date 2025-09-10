@@ -1,7 +1,7 @@
 <!-- 尺码模板 -->
  <template>
 <templateAdd v-if="PAGEDATA.add_open" :data="PAGEDATA" v-on:add_callback="load_page"/>
-<templateEdit v-if="PAGEDATA.edit_open" :data="PAGEDATA" v-on:add_callback="load_page"/>
+<templateEdit v-if="PAGEDATA.edit_open" :data="PAGEDATA" v-on:edit_callback="load_page"/>
 
 <a-layout style="height: 100vh;width: 100vw;">
 

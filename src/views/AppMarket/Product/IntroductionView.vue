@@ -19,156 +19,231 @@
       <a-layout-content class="content_border" >
 
 
-        
-          <a-row :gutter="[12, 24]">
+        <!--功能导航-->
+        <a-row :gutter="[12, 24]">
 
-            <a-col :span="6">
+          <a-col :span="6">
 
-                  <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }">
-
-                    <a-flex justify="space-between">
-                      
-                      <ProfileTwoTone class="icoStyle"/>
-                      <a-flex vertical align="flex-end" justify="space-between" style="padding:0 10px;">
-                        <a-typography>
-                          <a-typography-title class="cardTitle">商品管理 <RightOutlined /></a-typography-title>
-                          <a-typography-paragraph class="cardText">
-                          每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
-                          </a-typography-paragraph>
-                        </a-typography>
-                      </a-flex>
-                    </a-flex>
-                </a-card>
-            </a-col>
-
-            <a-col :span="6">
-                  <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }">
-                    <a-flex justify="space-between">
-                      
-                      <ShopTwoTone class="icoStyle"/>
-                      <a-flex vertical align="flex-end" justify="space-between" style="padding: 0 10px 0 10px;">
-                        <a-typography>
-                          <a-typography-title class="cardTitle">网盘素材<RightOutlined /></a-typography-title>
-                          <a-typography-paragraph class="cardText">
-                              每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
-                          </a-typography-paragraph>
-                        </a-typography>
-                      </a-flex>
-                    </a-flex>
-                </a-card>
-            </a-col>
-
-            <a-col :span="6">
-                  <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }">
-                    <a-flex justify="space-between">
-                      
-                      <MedicineBoxTwoTone class="icoStyle"/>
-
-                      <a-flex vertical align="flex-end" justify="space-between" style="padding: 0 10px 0 10px;">
-                        <a-typography>
-                          <a-typography-title class="cardTitle">诊断优化<RightOutlined /></a-typography-title>
-                          <a-typography-paragraph class="cardText">
-                          每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
-                          </a-typography-paragraph>
-                        </a-typography>
-                      </a-flex>
-                    </a-flex>
-                </a-card>
-            </a-col>
-
-            <a-col :span="6">
                 <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }">
-                    <a-flex justify="space-between">
-                      
-                      <CodeTwoTone class="icoStyle"/>
 
-                      <a-flex vertical align="flex-end" justify="space-between" style="padding: 0 10px 0 10px;">
-                        <a-typography>
-                          <a-typography-title class="cardTitle">批量操作<RightOutlined /></a-typography-title>
-                          <a-typography-paragraph class="cardText">
-                          每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
-                          </a-typography-paragraph>
-                        </a-typography>
-                      </a-flex>
+                  <a-flex justify="space-between">
+                    
+                    <ProfileTwoTone class="icoStyle"/>
+                    <a-flex vertical align="flex-end" justify="space-between" style="padding:0 10px;">
+                      <a-typography>
+                        <a-typography-title class="cardTitle">商品管理 <RightOutlined /></a-typography-title>
+                        <a-typography-paragraph class="cardText">
+                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        </a-typography-paragraph>
+                      </a-typography>
                     </a-flex>
-                </a-card>
-            </a-col>
-          </a-row>
+                  </a-flex>
+              </a-card>
+          </a-col>
+
+          <a-col :span="6">
+                <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }">
+                  <a-flex justify="space-between">
+                    
+                    <ShopTwoTone class="icoStyle"/>
+                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 0 10px 0 10px;">
+                      <a-typography>
+                        <a-typography-title class="cardTitle">网盘素材<RightOutlined /></a-typography-title>
+                        <a-typography-paragraph class="cardText">
+                            每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        </a-typography-paragraph>
+                      </a-typography>
+                    </a-flex>
+                  </a-flex>
+              </a-card>
+          </a-col>
+
+          <a-col :span="6">
+                <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }">
+                  <a-flex justify="space-between">
+                    
+                    <MedicineBoxTwoTone class="icoStyle"/>
+
+                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 0 10px 0 10px;">
+                      <a-typography>
+                        <a-typography-title class="cardTitle">诊断优化<RightOutlined /></a-typography-title>
+                        <a-typography-paragraph class="cardText">
+                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        </a-typography-paragraph>
+                      </a-typography>
+                    </a-flex>
+                  </a-flex>
+              </a-card>
+          </a-col>
+
+          <a-col :span="6">
+              <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }">
+                  <a-flex justify="space-between">
+                    
+                    <CodeTwoTone class="icoStyle"/>
+
+                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 0 10px 0 10px;">
+                      <a-typography>
+                        <a-typography-title class="cardTitle">批量操作<RightOutlined /></a-typography-title>
+                        <a-typography-paragraph class="cardText">
+                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        </a-typography-paragraph>
+                      </a-typography>
+                    </a-flex>
+                  </a-flex>
+              </a-card>
+          </a-col>
+        </a-row>
 
 
 
-          <a-row :gutter="[24, 0]" class="NumberBox cursor">
-            
-            <a-col :span="24">
-              <div class="ZhenduanTitle">
-                  <a-space style="float: left;padding: 0 0 0 4px;" :size="30">
-                    <h4> <DashboardOutlined /> 每日诊断任务</h4>
-                    <span class="font_size_12" style="padding: 0 0 6px 0;display: block;">任务状态 -- 初始化</span>
-                    <span class="font_size_12" style="padding: 0 0 6px 0;display: block;">诊断结果 -- 不达标</span>
-                    <span class="font_size_12" style="padding: 0 0 6px 0;display: block;">完成时间 -- 2024-01-12 12:12:12</span>
 
-                  </a-space>
+        <!--商品诊断任务-->
+        <a-row :gutter="[24, 0]" class="NumberBox cursor">
+          
+          <a-col :span="24">
+            <div class="ZhenduanTitle">
+                <a-space style="float: left;padding: 0 0 0 4px;" :size="30">
+                  <h4> <DashboardOutlined /> 每日诊断任务</h4>
+                  <span class="font_size_12" style="padding: 0 0 6px 0;display: block;">任务状态 -- {{ Functionde.transfer_status() }}</span>
+                  <span class="font_size_12" style="padding: 0 0 6px 0;display: block;">诊断结果 -- {{ Functionde.transfer_standard() }}</span>
+                  <span class="font_size_12" style="padding: 0 0 6px 0;display: block;">完成时间 -- {{ QualityTask.task_finish_time }}</span>
+                </a-space>
 
-                  <a-space style="float: right;" :size="30">
-                    <span class="font_size_12">
-                      <a href="#" style="color: #000;">查看商品诊断中心 >></a>
-                    </span>
-                  </a-space>
-                  
-              </div>
-            </a-col>
+                <a-space style="float: right;" :size="30">
+                  <span class="font_size_12">
+                    <a href="#" style="color: #000;">查看商品诊断中心 >></a>
+                  </span>
+                </a-space>
+            </div>
+          </a-col>
 
-            <a-col :span="3">
-              <p class="Numbertext">90%</p>
-              <p class="font_size_12" style="text-align: center;">达标率</p>
-            </a-col>
-            
-            <a-col :span="3">
-              <p class="Numbertext">9</p>
-              <p class="font_size_12" style="text-align: center;">达标商品数</p>
-            </a-col>
+          <a-col :span="3">
+            <p class="Numbertext">{{ QualityTask.standard_rate }}%</p>
+            <p class="font_size_12" style="text-align: center;">达标率</p>
+          </a-col>
+          
+          <a-col :span="3">
+            <p class="Numbertext">{{ QualityTask.meet_standard_num }}</p>
+            <p class="font_size_12" style="text-align: center;">达标商品数</p>
+          </a-col>
 
-            <a-col :span="3">
-              <p class="Numbertext">9</p>
-              <p class="font_size_12" style="text-align: center;">待优化商品</p>
-            </a-col>
+          <a-col :span="3">
+            <p class="Numbertext">{{ QualityTask.product_num_to_improve_total }}</p>
+            <p class="font_size_12" style="text-align: center;">待优化商品</p>
+          </a-col>
 
-            <a-col :span="3">
-              <p class="Numbertext">9999+</p>
-              <p class="font_size_12" style="text-align: center;">可优化项</p>
-            </a-col>
+          <a-col :span="3">
+            <p class="Numbertext">{{ QualityTask.problem_num_total }}</p>
+            <p class="font_size_12" style="text-align: center;">可优化项</p>
+          </a-col>
 
-            <a-col :span="3">
-              <p class="Numbertext">0</p>
-              <p class="font_size_12" style="text-align: center;">待优化项</p>
-            </a-col>
+          <a-col :span="3">
+            <p class="Numbertext">{{ QualityTask.problem_num_to_improve }}</p>
+            <p class="font_size_12" style="text-align: center;">待优化项</p>
+          </a-col>
 
-            <a-col :span="3">
-              <p class="Numbertext">9</p>
-              <p class="font_size_12" style="text-align: center;">信息不规范</p>
-            </a-col>
-            <a-col :span="3">
-              <p class="Numbertext">9</p>
-              <p class="font_size_12" style="text-align: center;">关键信息待优化</p>
-            </a-col>
+          <a-col :span="3">
+            <p class="Numbertext">{{ Functionde.one_transfer() }}</p>
+            <p class="font_size_12" style="text-align: center;">信息不规范</p>
+          </a-col>
+          <a-col :span="3">
+            <p class="Numbertext">{{ Functionde.two_transfer() }}</p>
+            <p class="font_size_12" style="text-align: center;">关键信息待优化</p>
+          </a-col>
 
-            <a-col :span="3">
-              <p class="Numbertext">9</p>
-              <p class="font_size_12" style="text-align: center;">素材缺失</p>
-            </a-col>
+          <a-col :span="3">
+            <p class="Numbertext">{{ Functionde.thr_transfer() }}</p>
+            <p class="font_size_12" style="text-align: center;">素材缺失</p>
+          </a-col>
 
-          </a-row>
+        </a-row>
 
-                  
-
+                
 
 
-          <!-- Comfyui-AI-list -->
-          <a-row :gutter="[12, 12]" style="padding: 14px 0 0 0;">
 
-            <a-col :span="4">
-              <div class="gutter-box">
+        <!-- Comfyui-AI-list -->
+        <a-row :gutter="[12, 12]" style="padding: 14px 0 0 0;">
 
+          <a-col :span="4">
+            <div class="gutter-box">
+
+            <a-card hoverable>
+              <template #cover>
+                <img alt="example" src="../../../assets/6d23.jpg" />
+              </template>
+              <a-card-meta title="Europe Street beat">
+                <template #description>www.instagram.com</template>
+              </a-card-meta>
+            </a-card>
+          </div>
+          </a-col>
+
+          <a-col :span="4">
+            <div class="gutter-box">
+            <a-card hoverable>
+              <template #cover>
+                <img alt="example" src="../../../assets/6d23.jpg" />
+              </template>
+              <a-card-meta title="Europe Street beat">
+                <template #description>www.instagram.com</template>
+              </a-card-meta>
+            </a-card>
+          </div>
+          </a-col>
+
+          <a-col :span="4">
+            <div class="gutter-box">
+            <a-card hoverable>
+              <template #cover>
+                <img alt="example" src="../../../assets/6d23.jpg" />
+              </template>
+              <a-card-meta title="Europe Street beat">
+                <template #description>www.instagram.com</template>
+              </a-card-meta>
+            </a-card>
+          </div>
+          </a-col>
+          <a-col :span="4">
+            <div class="gutter-box">
+            <a-card hoverable>
+              <template #cover>
+                <img alt="example" src="../../../assets/6d23.jpg" />
+              </template>
+              <a-card-meta title="Europe Street beat">
+                <template #description>www.instagram.com</template>
+              </a-card-meta>
+            </a-card>
+          </div>
+          </a-col>
+                      <a-col :span="4">
+            <div class="gutter-box">
+            <a-card hoverable>
+              <template #cover>
+                <img alt="example" src="../../../assets/6d23.jpg" />
+              </template>
+              <a-card-meta title="Europe Street beat">
+                <template #description>www.instagram.com</template>
+              </a-card-meta>
+            </a-card>
+          </div>
+          </a-col>
+          <a-col :span="4">
+            <div class="gutter-box">
+            <a-card hoverable>
+              <template #cover>
+                <img alt="example" src="../../../assets/6d23.jpg" />
+              </template>
+              <a-card-meta title="Europe Street beat">
+                <template #description>www.instagram.com</template>
+              </a-card-meta>
+            </a-card>
+          </div>
+          </a-col>
+
+          <a-col :span="4">
+            <!-- <div class="gutter-box">
               <a-card hoverable>
                 <template #cover>
                   <img alt="example" src="../../../assets/6d23.jpg" />
@@ -177,89 +252,14 @@
                   <template #description>www.instagram.com</template>
                 </a-card-meta>
               </a-card>
-            </div>
-            </a-col>
+            </div> -->
+          </a-col>
 
-            <a-col :span="4">
-              <div class="gutter-box">
-              <a-card hoverable>
-                <template #cover>
-                  <img alt="example" src="../../../assets/6d23.jpg" />
-                </template>
-                <a-card-meta title="Europe Street beat">
-                  <template #description>www.instagram.com</template>
-                </a-card-meta>
-              </a-card>
-            </div>
-            </a-col>
-
-            <a-col :span="4">
-              <div class="gutter-box">
-              <a-card hoverable>
-                <template #cover>
-                  <img alt="example" src="../../../assets/6d23.jpg" />
-                </template>
-                <a-card-meta title="Europe Street beat">
-                  <template #description>www.instagram.com</template>
-                </a-card-meta>
-              </a-card>
-            </div>
-            </a-col>
-            <a-col :span="4">
-              <div class="gutter-box">
-              <a-card hoverable>
-                <template #cover>
-                  <img alt="example" src="../../../assets/6d23.jpg" />
-                </template>
-                <a-card-meta title="Europe Street beat">
-                  <template #description>www.instagram.com</template>
-                </a-card-meta>
-              </a-card>
-            </div>
-            </a-col>
-                        <a-col :span="4">
-              <div class="gutter-box">
-              <a-card hoverable>
-                <template #cover>
-                  <img alt="example" src="../../../assets/6d23.jpg" />
-                </template>
-                <a-card-meta title="Europe Street beat">
-                  <template #description>www.instagram.com</template>
-                </a-card-meta>
-              </a-card>
-            </div>
-            </a-col>
-            <a-col :span="4">
-              <div class="gutter-box">
-              <a-card hoverable>
-                <template #cover>
-                  <img alt="example" src="../../../assets/6d23.jpg" />
-                </template>
-                <a-card-meta title="Europe Street beat">
-                  <template #description>www.instagram.com</template>
-                </a-card-meta>
-              </a-card>
-            </div>
-            </a-col>
-
-            <a-col :span="4">
-              <!-- <div class="gutter-box">
-                <a-card hoverable>
-                  <template #cover>
-                    <img alt="example" src="../../../assets/6d23.jpg" />
-                  </template>
-                  <a-card-meta title="Europe Street beat">
-                    <template #description>www.instagram.com</template>
-                  </a-card-meta>
-                </a-card>
-              </div> -->
-            </a-col>
-
-          </a-row>
+        </a-row>
 
       </a-layout-content>
 
-      <!--内容右侧-->
+      <!--内容右侧 开始-->
       <a-layout-sider style="background-color: #fff;margin: 6px 0 0 0;" width='300px'>
 
         <div class="RightMiniBox">
@@ -304,6 +304,7 @@
         </div>
 
       </a-layout-sider>
+      <!--内容右侧 结束-->
 
 
 
@@ -370,10 +371,94 @@ export default {
 
       })
 
+      // 诊断任务
+      const QualityTask = reactive({
+        "is_standard": "true",        // 是否达标
+        "meet_standard_num": "1",     // 达标商品数
+        "problem_num_to_improve": "10", // 待优化项数量
+        "problem_num_total": "10",    // 可优化项总数
+        "problem_type_distribution": [ // 问题类型分布
+          {
+            "num": "2",
+            "type_key": "1",
+            "type_name": "商品信息不规范"
+          }
+        ],
+        "product_num_finished": "10", //已经诊断过的商品数
+        "product_num_to_improve_total": "10", // 待优化商品数
+        "product_num_total": "10", // 总共需要诊断的商品数
+        "standard_rate": "10", // 达标率，百分比
+        "task_finish_time": "2021-09-07 01:21:46", // 任务完成时间
+        "task_id": "15293", // 任务id
+        "task_status": "2", // 任务状态0-初始化，1-进行中，2-已完成
+      })
+
+      const Functionde = {
+        // 任务状态转义
+        "transfer_status":()=>{
+          if(QualityTask.task_status == '0'){
+            return '初始化'
+          }else if(QualityTask.task_status  == '1'){
+            return '进行中'
+          }else if(QualityTask.task_status  == '2'){
+            return '已完成'
+          }
+        },
+        // 任务结果转义
+        "transfer_standard":()=>{
+          if(QualityTask.is_standard == 'true'){
+            return '已达标'
+          }else if(QualityTask.is_standard  == 'false'){
+            return '未达标'
+          }
+        },
+        // 信息不规范转义
+        one_transfer:()=>{
+          for(let i of QualityTask.problem_type_distribution){
+            if(i.type_key == '1'){
+              return i.num
+            }else{
+              return '0'
+            }
+          }
+        },
+        // 关键信息待优化转义
+        two_transfer:()=>{
+          for(let i of QualityTask.problem_type_distribution){
+            if(i.type_key == '2'){
+              return i.num
+            }else{
+              return '0'
+            }
+          }
+        },
+        // 素材缺失转义
+        thr_transfer:()=>{
+          for(let i of QualityTask.problem_type_distribution){
+            if(i.type_key == '3'){
+              return i.num
+            }else{
+              return '0'
+            }
+          }
+        }
+
+      }
+
+      // 会员信息
+
+
+      // 帮助中心
+
+      // 联系我们
+
+
         return{
           PAGEDATA,
           store,
-          innerHeight
+          innerHeight,
+          QualityTask,
+          Functionde
         }
     },
 }

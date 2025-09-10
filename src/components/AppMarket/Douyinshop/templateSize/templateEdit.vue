@@ -112,12 +112,13 @@ setup(props,ctx) {
     // 绑定编辑模板数据===开始
     console.log(props.data.template_info)
     const template_info = props.data.template_info;
+    const Template_id = template_info.template_id;
     const component_front_data = JSON.parse(template_info.component_front_data);
     const selectedSpecs = component_front_data.selectedSpecs// 模板选中字段
     const specOptions = component_front_data.specOptions // 模板可选字段
     const configTable = component_front_data.configTable// 表格数据
-    console.log(template_info.template_sub_type)
-    console.log(component_front_data)
+    console.log(Template_id)
+
     // 绑定编辑模板数据===结束
 
     const tool = new TOOL.TOOL();// 工具方法
@@ -428,14 +429,16 @@ setup(props,ctx) {
             // }else if(type_name == 'bracelets'){
             //     size_add.data = bracelets
             // }
+
             size_add.data = []
             Object.keys(configTable).forEach(k=>{
                 let o = {}
                 let item = configTable[k]
-                console.log(item)
-                o.key = k
+                o.key = Number.parseInt(k) + 1
                 o.size = item.size;
                 var res = {...o,...item.specMap}
+                console.log(res)
+
                 size_add.data.push(res)
             })
 
@@ -485,52 +488,7 @@ setup(props,ctx) {
         ]),
 
         // 模板数据
-        data:ref([
-                    {
-                        'key': '1',
-                        'size': 'S',// 尺码
-                        '身高(cm)': '160', // 身高(cm)
-                        '体重(cm)': '50',//体重(cm)
-                        '胸围(cm)': '34',// 胸围(cm)
-                        '肩宽(cm)':'34',// '肩宽(cm)'
-                        '腰围(cm)':'34',// '腰围(cm)'
-                        '臀围(cm)':'34', // '臀围(cm)'
-                        '袖长(cm)':'34'// '袖长(cm)'
-                    },
-                    {
-                        'key': '2',
-                        'size': 'M',// 尺码
-                        '身高(cm)': '160', // 身高(cm)
-                        '体重(cm)': '50',//体重(cm)
-                        '胸围(cm)': '34',// 胸围(cm)
-                        '肩宽(cm)':'34',// '肩宽(cm)'
-                        '腰围(cm)':'34',// '腰围(cm)'
-                        '臀围(cm)':'34', // '臀围(cm)'
-                        '袖长(cm)':'34'// '袖长(cm)'
-                    },
-                    {
-                        'key': '3',
-                        'size': 'L',// 尺码
-                        '身高(cm)': '160', // 身高(cm)
-                        '体重(cm)': '50',//体重(cm)
-                        '胸围(cm)': '34',// 胸围(cm)
-                        '肩宽(cm)':'34',// '肩宽(cm)'
-                        '腰围(cm)':'34',// '腰围(cm)'
-                        '臀围(cm)':'34', // '臀围(cm)'
-                        '袖长(cm)':'34'// '袖长(cm)'
-                    },
-                    {
-                        'key': '4',
-                        'size': 'XL',// 尺码
-                        '身高(cm)': '160', // 身高(cm)
-                        '体重(cm)': '50',//体重(cm)
-                        '胸围(cm)': '34',// 胸围(cm)
-                        '肩宽(cm)':'34',// '肩宽(cm)'
-                        '腰围(cm)':'34',// '腰围(cm)'
-                        '臀围(cm)':'34', // '臀围(cm)'
-                        '袖长(cm)':'34'// '袖长(cm)'
-                    },
-            ]),
+        data:ref([]),
 
         play:()=>{
             size_add.open = true
@@ -579,13 +537,12 @@ setup(props,ctx) {
         },
         // 上移行
         up_colums:(o)=>{
-            console.log(o.key)
+            console.log(o)
             var up_c = o.key - 2; // 上游数据
-            console.log(up_c)
             if(size_add.data[up_c] !== undefined && up_c > -1){
                 console.log(size_add.data)
-                size_add.data[up_c].key = o.key + '';
-                o.key = o.key- 1 + ''
+                size_add.data[up_c].key = o.key;
+                o.key = o.key- 1
                 size_add.data.sort((a, b) => a.key - b.key);
             }
         },
@@ -593,8 +550,8 @@ setup(props,ctx) {
         next_colums:(o)=>{
             var up_c = Number(o.key) + 1; // 下游数据
             if(up_c <= size_add.data.length){
-                o.key = up_c + '';
-                size_add.data[up_c-1].key = o.key-1+'';
+                o.key = up_c;
+                size_add.data[up_c-1].key = o.key-1;
                 size_add.data.sort((a, b) => a.key - b.key);
             }
         },
@@ -613,14 +570,12 @@ setup(props,ctx) {
             validate().then(() => { // 验证成功后执行
 
                 // 模板基础信息验证成功
-                console.log(toRaw(moderef));
                 var c_o = toRaw(moderef)
 
                 var n_o = {
-                    template_type:"size_info",
+                    template_id:Template_id,// 模板id
                     template_name:c_o.template_name,
-                    template_sub_type:size_add.template_sub_type,
-                    component_front_data:{
+                    component_data:{
                         title:c_o.title,
                         desc:c_o.desc,
                         tempName:"tempName",
@@ -636,42 +591,41 @@ setup(props,ctx) {
 
 
                 Object.keys(size_add.data).forEach(k => {
-                    console.log(size_add.data[k])
                     var i_obj = size_add.data[k]
                     var x_obj= {}
                     
                     // 拼接specMap
-                    var value_list = []
+                    var value_obj = {}
                     Object.keys(i_obj).forEach(y => {
-                        if(y !== 'key' & y !== 'size'){value_list.push(i_obj[y])}    
+                        if(y !== 'key' && y !== 'size'){
+                            value_obj[y] = i_obj[y]
+                        }    
                     })
 
                     x_obj.size = i_obj.size;
-                    n_o.component_front_data.selectedSize.push(i_obj.size)
+                    n_o.component_data.selectedSize.push(i_obj.size)
 
                     // 合并key value
-                    const specMap = Object.fromEntries(
-                        size_add.op_value.map((key, index) => [key, value_list[index]])
-                    );
-                    x_obj.specMap = specMap;
-                    n_o.component_front_data.configTable.push(x_obj)
+                    x_obj.specMap = value_obj;
+                    n_o.component_data.configTable.push(x_obj)
                 })
 
                 // 上传数据
-                tool.Http_.post(API.AppSrtoreAPI.size.add,n_o).then((res)=>{
-                    console.log(res.data)
+                tool.Http_.post(API.AppSrtoreAPI.size.edit, n_o).then((res)=>{
                     var code = res.data.code; // 返回码
                     var sub_msg = res.data.sub_msg; // 
                     if(code == 10000){ // 成功
 
-                        tool.Fun_.message('success', '创建成功！')
+                        tool.Fun_.message('success', '编辑成功！')
 
-                        props.data.add_open = false;// 关闭弹窗
+                        props.data.edit_open = false;// 关闭弹窗
 
-                        ctx.emit('add_callback')   // 回调刷新表格
+                        ctx.emit('edit_callback')   // 回调刷新表格
 
                     }else{ // 失败
+
                         tool.Fun_.message('error','创建失败！' + sub_msg)
+
                     }
 
 
@@ -681,6 +635,7 @@ setup(props,ctx) {
                 console.log('error', err);
             });
         },
+
         // 验证数据不能为空数据
         verifyData:()=>{
             if(size_add.data.length==0){
@@ -720,8 +675,6 @@ setup(props,ctx) {
     size_add.check_colums(size_add.template_sub_type) // 渲染表头
     size_add.checked_op_disabled(size_add.template_sub_type) // 禁用未选择的模板类型
 
-    // 加载列表：表格
-    console.log(component_front_data.configTable)
 
 
 

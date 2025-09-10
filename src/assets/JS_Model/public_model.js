@@ -143,6 +143,8 @@ export class A_Patch{
             "addrule":"api/douyin/product/getpublishrule",      // 商品发布规则
             "audit":"api/douyin/product/auditlist",             // 商品审核记录&详情 
             "qualitydetaile":"api/douyin/product/qualitydetaile",// 商品质量分
+            "qualitytask":"api/douyin/product/qualitytask",     // 店铺诊断任务
+            "qualitylist":"api/douyin/product/qualitylist",// 质量分列表
             "brand":"api/douyin/product/brandlist",             // 商品品牌
         },
         // 运费模板

@@ -140,6 +140,14 @@ const routes = [
         }
     },
     {
+        path: '/quality',
+        name: 'quality',
+        component: () => import('../views/AppMarket/DouyinShop/Quality.vue'),    // 视图文件
+        meta:{
+            title:'诊断中心',
+        }
+    },
+    {
         path: '/copyrecords',
         name: 'copyrecords',
         component: () => import('../views/AppMarket/DouyinShop/CopyRecords.vue'),    // 视图文件
