@@ -26,9 +26,8 @@
                         {{ item.text }}
                     <template #actions>
                     <a key="list-loadmore-edit">查看</a>
-                    <a key="list-loadmore-more">more</a>
+                    <a key="list-loadmore-more">更多</a>
                     </template>
-
                     </a-list-item>
                 </template>
             </a-list>

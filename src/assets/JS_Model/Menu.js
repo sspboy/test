@@ -1,6 +1,8 @@
 /** 导航菜单类 **/
 import {h} from "vue";
-import {CodeOutlined, SettingOutlined,
+import {
+    CodeOutlined, 
+    SettingOutlined,
   UserOutlined,
   MenuOutlined,
   BarsOutlined,
@@ -18,7 +20,14 @@ export class Menu {
         // 一级菜单
         fristlive:(data)=>{
 
-            var menu_list = []
+            var menu_list = [
+                {
+                    key: 'home',
+                    icon: () => h(HomeOutlined),
+                    label: '首页',
+                    title: '首页'
+                },
+            ]
             
             for (var i=0;i<data.length;i++){
 
@@ -57,7 +66,7 @@ export class Menu {
                 menu_list.push(menu_detaile_obj)
 
           }
-
+          console.log(menu_list)
           return menu_list
         },
 
