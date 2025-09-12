@@ -20,7 +20,7 @@
 
 
         <!--功能导航-->
-        <a-row :gutter="[12, 24]">
+        <a-row :gutter="[12, 12]">
 
           <a-col :span="6">
 
@@ -100,15 +100,20 @@
 
 
         <!--商品诊断任务-->
-        <a-row :gutter="[24, 0]" class="NumberBox cursor">
+        <a-row :gutter="[12, 0]" class="NumberBox cursor">
           
           <a-col :span="24">
 
             <div class="ZhenduanTitle">
-              
-                <a-space style="float: left;" :size="30">
+                <a-space style="float: left;" :size="10">
 
-                 <div><DashboardOutlined /> 诊断任务</div>
+                  <div class="font_size_12 task_sty" style="width:100px;margin: 4px 0 0 20px;">
+                    <a-skeleton active :paragraph="{ rows: 1 }" :title="false" :loading="QualityTask.load_vife">
+                    <span style="display: block;height: 26px;line-height: 18px;">
+                      <a href="#" @click="router.push('/quality');"> <DashboardOutlined /> 诊断中心>> </a>
+                    </span>
+                    </a-skeleton>
+                  </div>
 
                   <div class="font_size_12 task_sty">
                     <a-skeleton active :paragraph="{ rows: 1 }" :title="false" :loading="QualityTask.load_vife">
@@ -124,15 +129,16 @@
 
                   <div class="font_size_12 task_sty" style="width: 180px;">
                      <a-skeleton active :paragraph="{ rows: 1 }" :title="false" :loading="QualityTask.load_vife">
-                        <span style="display: block;height: 26px;line-height: 18px;"> 完成时间 -- {{ QualityTask.task_finish_time }}</span>
+                        <span style="display: block;height: 26px;line-height: 18px;">完成时间 --{{ QualityTask.task_finish_time }}</span>
                     </a-skeleton>
                   </div>
-                </a-space>
 
-                <a-space style="float: right;" :size="30">
-                  <div class="font_size_12 task_sty" style="width: 80px;">
-                    <a href="#" @click="router.push('/quality');">诊断中心 >></a>
+                  <div class="font_size_12 task_sty" style="width: 180px;">
+                     <a-skeleton active :paragraph="{ rows: 1 }" :title="false" :loading="QualityTask.load_vife">
+                        <span style="display: block;height: 26px;line-height: 18px;">任务id --{{ QualityTask.task_id }}</span>
+                    </a-skeleton>
                   </div>
+
                 </a-space>
             </div>
           </a-col>
@@ -147,7 +153,7 @@
               </span>
               
             </p>
-            <p class="font_size_12" style="text-align: center;">达标率</p>
+            <p class="font_size_12 task_text_bottom">达标率</p>
           </a-col>
           
           <a-col :span="3">
@@ -159,7 +165,7 @@
                 {{ QualityTask.meet_standard_num }}
                 </span>
             </p>
-            <p class="font_size_12" style="text-align: center;">达标商品数</p>
+            <p class="font_size_12 task_text_bottom">达标商品数</p>
           </a-col>
 
           <a-col :span="3">
@@ -171,7 +177,7 @@
               {{ QualityTask.product_num_to_improve_total }}
               </span>
             </p>
-            <p class="font_size_12" style="text-align: center;">待优化商品</p>
+            <p class="font_size_12 task_text_bottom">待优化商品</p>
           </a-col>
 
           <a-col :span="3">
@@ -183,7 +189,7 @@
                 {{ QualityTask.problem_num_total }}
               </span>
             </p>
-            <p class="font_size_12" style="text-align: center;">可优化项</p>
+            <p class="font_size_12 task_text_bottom">可优化项</p>
           </a-col>
 
           <a-col :span="3">
@@ -196,7 +202,7 @@
               {{ QualityTask.problem_num_to_improve }}
               </span>
             </p>
-            <p class="font_size_12" style="text-align: center;">待优化项</p>
+            <p class="font_size_12 task_text_bottom">待优化项</p>
           </a-col>
 
           <a-col :span="3">
@@ -207,7 +213,7 @@
               {{ QualityTask.is_not_standardized }}
               </span>
               </p>
-            <p class="font_size_12" style="text-align: center;">信息不规范</p>
+            <p class="font_size_12 task_text_bottom">信息不规范</p>
           </a-col>
           <a-col :span="3">
             <p class="Numbertext">
@@ -218,7 +224,7 @@
               {{ QualityTask.key_information }}
               </span>
             </p>
-            <p class="font_size_12" style="text-align: center;">关键信息待优化</p>
+            <p class="font_size_12 task_text_bottom">关键信息待优化</p>
           </a-col>
 
           <a-col :span="3">
@@ -230,7 +236,7 @@
               {{ QualityTask.missing_materials }}
               </span>
             </p>
-            <p class="font_size_12" style="text-align: center;">素材缺失</p>
+            <p class="font_size_12 task_text_bottom">素材缺失</p>
           </a-col>
 
         </a-row>
@@ -380,8 +386,6 @@
       </a-layout-sider>
       <!--内容右侧 结束-->
       </a-layout>
-
-
 </a-layout>
 
 
@@ -435,13 +439,12 @@ export default {
 
         return reactive({
 
-          title:'产品介绍',
+          title:'应用首页',
           
           menudata:{       // 菜单选中配置
-            'key':'1',
+            'key':'86',
             'openKeys':'home',
           },
-
           colum:[],           // 表头信息
           datalist:[],        // 列表信息
           total_number:0,     // 内容总数
@@ -452,24 +455,24 @@ export default {
 
       // 诊断任务
       const QualityTask = reactive({
-        "load_vife":true,
-        "is_standard": undefined,             // 是否达标
-        "meet_standard_num": undefined,       // 达标商品数
-        "problem_num_to_improve": undefined,  // 待优化项数量
-        "problem_num_total": undefined,       // 可优化项总数
-        "problem_type_distribution": [],      // 问题类型分布
-        "is_not_standardized":undefined,// 信息不规范
-        "key_information":undefined,// 关键信息待优化
-        "missing_materials":undefined,// 素材缺失
-        "product_num_finished": undefined,    //已经诊断过的商品数
-        "product_num_to_improve_total": undefined, // 待优化商品数
-        "product_num_total": undefined,      // 总共需要诊断的商品数
-        "standard_rate": undefined,          // 达标率，百分比
-        "task_finish_time": undefined, // 任务完成时间
-        "task_id":undefined,             // 任务id
-        "task_status": undefined,             // 任务状态0-初始化，1-进行中，2-已完成
+        load_vife:true,
+        is_standard: undefined,             // 是否达标
+        meet_standard_num: undefined,       // 达标商品数
+        problem_num_to_improve: undefined,  // 待优化项数量
+        problem_num_total: undefined,       // 可优化项总数
+        problem_type_distribution: [],      // 问题类型分布
+        is_not_standardized:undefined,// 信息不规范
+        key_information:undefined,// 关键信息待优化
+        missing_materials:undefined,// 素材缺失
+        product_num_finished: undefined,    //已经诊断过的商品数
+        product_num_to_improve_total: undefined, // 待优化商品数
+        product_num_total: undefined,      // 总共需要诊断的商品数
+        standard_rate: undefined,          // 达标率，百分比
+        task_finish_time: undefined, // 任务完成时间
+        task_id:undefined,             // 任务id
+        task_status: undefined,             // 任务状态0-初始化，1-进行中，2-已完成
         // 任务状态转义
-        "transfer_status":()=>{
+        transfer_status:()=>{
           if(QualityTask.task_status == '0'){
             return '初始化'
           }else if(QualityTask.task_status  == '1'){
@@ -479,7 +482,7 @@ export default {
           }
         },
         // 任务结果转义
-        "transfer_standard":()=>{
+        transfer_standard:()=>{
           if(QualityTask.is_standard){
             return '已达标'
           }else{
@@ -517,14 +520,19 @@ export default {
           }
         },
       })
+
       // 问题转义
       const Functionde = {
         
         // 加载数据
         LoadPageDATA:()=>{
           tool.Http_.post(API.AppSrtoreAPI.dou_product.qualitytask,{
+
                 "brief_only":false
+
           }).then(res => {
+            console.log(QualityTask)
+
             QualityTask.is_standard = res.data.data.is_standard;
             QualityTask.meet_standard_num = res.data.data.meet_standard_num;
             QualityTask.problem_num_to_improve = res.data.data.problem_num_to_improve;
@@ -542,13 +550,13 @@ export default {
             QualityTask.two_transfer();
             QualityTask.thr_transfer();
 
-            console.log(QualityTask)
         })
         }
 
       }
-
-      Functionde.LoadPageDATA()
+      setTimeout(() => {
+        Functionde.LoadPageDATA() // 加载诊断数据信息
+      }, 1000);
 
       // 会员信息
 
@@ -580,8 +588,9 @@ export default {
 .RightMiniBox{margin: 15px 14px 0 0;border:1px solid #e5e5e596;border-radius: 4px;padding:12px;}
 .ListCard{}
 .NumberBox{margin: 14px 0 0 0 !important; border: 1px solid #e5e5e596;border-radius: 6px;padding: 0 0 4px 0;}
-.Numbertext{margin: 4px 0 6px 0;font-size: 22px;text-align: center;height: 52px;}
-.ZhenduanTitle{height: 40px;margin: 16px 0 6px 0;}
-.task_sty{width: 140px;margin: 6px 0 0 0;}
+.Numbertext{margin: 4px 0 6px 0;font-size: 22px;text-align: center;height: 42px;}
+.ZhenduanTitle{height: 30px;margin: 16px 0 6px 0;}
+.task_text_bottom{text-align: center;margin: 0 0 20px 0;}
+.task_sty{width: 140px;margin: 6px 0 0 0;height: 30px;}
 .task_num{height: 56px;display: block;padding: 12px 0 0 0;}
 </style>

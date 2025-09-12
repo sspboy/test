@@ -20,14 +20,7 @@ export class Menu {
         // 一级菜单
         fristlive:(data)=>{
 
-            var menu_list = [
-                {
-                    key: 'home',
-                    icon: () => h(HomeOutlined),
-                    label: '首页',
-                    title: '首页'
-                },
-            ]
+            var menu_list = []
             
             for (var i=0;i<data.length;i++){
 
