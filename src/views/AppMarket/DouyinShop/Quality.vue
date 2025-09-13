@@ -21,8 +21,12 @@
             <div>
                 <a-row>
                     <a-col :span="12">
-                        <a-radio-group v-model:value="conditionData.data_type" button-style="solid" class="font_size_12">
-                            <a-radio-button value="all">全部</a-radio-button>
+                        <a-radio-group 
+                            v-model:value="conditionData.data_type" 
+                            button-style="solid" 
+                            class="font_size_12"
+                            @change="Tabchange"
+                            >
                             <a-radio-button value="0">待诊断</a-radio-button>
                             <a-radio-button value="1">待优化</a-radio-button>
                             <a-radio-button value="2">已修改审核中</a-radio-button>
@@ -78,10 +82,9 @@
                 <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
                 <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
                 <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 0;" ghost ><CheckCircleOutlined /> 全选</a-button>
-
             </span>
             
-            <nav_pagination :fandata="PAGEDATA"/>
+            <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
 
             <!--翻页组件 -->
         </a-layout-content>
@@ -167,7 +170,9 @@ export default {
 
     // 筛选条件数据
     const conditionData = reactive({
-        data_type:"all",
+
+        data_type:"0", // 查询tab状态
+
         // 默认查询条件
         default:{
             order_by:"desc",// 排序方式
@@ -217,15 +222,30 @@ export default {
         }
     }
 
+    // 【翻页-组件 回调方法】========================================开始
+    const page_turning = (data)=>{
+        console.log(data)
+        PAGEDATA.justify = 'flex-start';
+        PAGEDATA.align = 'flex-start';
+        conditionData.default.page = data.page;
+        conditionData.default.page_size = data.page_size;
+        conditionData.default.diagnose_status = [conditionData.data_type];
+        loadproductData(conditionData.default)
+    }
+    // 【查询组件 回调方法】========================================结束
 
-
+    // tab切换状态方法
+    const Tabchange=()=>{
+        console.log(conditionData.data_type)
+    }
 
 
        return{
             PAGEDATA,
             conditionData,
           store,
-          nav_pagination
+          page_turning,
+          Tabchange
 
        }
    }

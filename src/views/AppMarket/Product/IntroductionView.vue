@@ -96,18 +96,11 @@
           </a-col>
         </a-row>
 
-
-
-
-        <!--商品诊断任务-->
-        <a-row :gutter="[12, 0]" class="NumberBox cursor">
-          
+        <a-row>
           <a-col :span="24">
-
             <div class="ZhenduanTitle">
                 <a-space style="float: left;" :size="10">
-
-                  <div class="font_size_12 task_sty" style="width:100px;margin: 4px 0 0 20px;">
+                  <div class="font_size_12 task_sty" style="width:100px;margin: 4px 0 0 4px;font-weight: bold;">
                     <a-skeleton active :paragraph="{ rows: 1 }" :title="false" :loading="QualityTask.load_vife">
                     <span style="display: block;height: 26px;line-height: 18px;">
                       <a href="#" @click="router.push('/quality');"> <DashboardOutlined /> 诊断中心>> </a>
@@ -142,7 +135,11 @@
                 </a-space>
             </div>
           </a-col>
+        </a-row>
 
+        <!--商品诊断任务-->
+        <a-row :gutter="[12, 0]" class="NumberBox cursor">
+          
           <a-col :span="3">
             <p class="Numbertext">    
               <span v-if="QualityTask.standard_rate == undefined">
@@ -215,6 +212,7 @@
               </p>
             <p class="font_size_12 task_text_bottom">信息不规范</p>
           </a-col>
+
           <a-col :span="3">
             <p class="Numbertext">
               <span v-if="QualityTask.key_information == undefined">
@@ -526,11 +524,14 @@ export default {
         
         // 加载数据
         LoadPageDATA:()=>{
+
           tool.Http_.post(API.AppSrtoreAPI.dou_product.qualitytask,{
 
                 "brief_only":false
 
-          }).then(res => {
+          }).then((res) => {
+
+            console.log(res)
             console.log(QualityTask)
 
             QualityTask.is_standard = res.data.data.is_standard;
@@ -587,10 +588,10 @@ export default {
 .gutter-box{background-color: aliceblue;border-radius: 6px;}
 .RightMiniBox{margin: 15px 14px 0 0;border:1px solid #e5e5e596;border-radius: 4px;padding:12px;}
 .ListCard{}
-.NumberBox{margin: 14px 0 0 0 !important; border: 1px solid #e5e5e596;border-radius: 6px;padding: 0 0 4px 0;}
+.NumberBox{margin: 4px 0 0 0 !important; border: 1px solid #e5e5e596;border-radius: 6px;padding: 14px 0 4px 0;}
 .Numbertext{margin: 4px 0 6px 0;font-size: 22px;text-align: center;height: 42px;}
-.ZhenduanTitle{height: 30px;margin: 16px 0 6px 0;}
+.ZhenduanTitle{height: 30px;margin: 16px 0 0 0;}
 .task_text_bottom{text-align: center;margin: 0 0 20px 0;}
-.task_sty{width: 140px;margin: 6px 0 0 0;height: 30px;}
+.task_sty{width: 140px;margin: 6px 0 0 0;height: 26px;}
 .task_num{height: 56px;display: block;padding: 12px 0 0 0;}
 </style>
