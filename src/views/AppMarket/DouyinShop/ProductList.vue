@@ -4,6 +4,7 @@
   <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
 
   <!-- 动态渲染异步组件 -->
+  <add_components v-if="PAGEDATA.AddDate" :data="PAGEDATA"/>
   <edit_components v-if="PAGEDATA.EditDate" :data="PAGEDATA"/>
   <detaile_components v-if="PAGEDATA.DetaileDate" :data="PAGEDATA"/>
 
@@ -63,7 +64,6 @@
                     <template #title>
                       <a-row>
                         <a-col :span="18">
-                          
                           <div class="title_div_box">
                                 <a-checkbox :value="item.product_id"></a-checkbox>
                                 <a href="#" style="color:black;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
@@ -269,6 +269,7 @@ export default {
         Siftcondition,
         nav_pagination,
         more_select,
+        add_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add.vue')),
         edit_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/edit.vue')),
         detaile_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/detaile.vue'))  
     },
@@ -432,6 +433,7 @@ export default {
 
       innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
 
+      AddDate:ref(false),              // 编辑显示状态
       EditDate:ref(false),              // 编辑显示状态
       DetaileDate:ref(false),           // 详情页显示状态
       MoreSelectData:ref(false),         // 更多查询显示状态

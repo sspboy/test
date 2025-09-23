@@ -27,24 +27,24 @@
                             class="font_size_12"
                             @change="Tabchange"
                             >
-                            <a-radio-button value="0">待诊断</a-radio-button>
-                            <a-radio-button value="1">待优化</a-radio-button>
-                            <a-radio-button value="2">已修改审核中</a-radio-button>
-                            <a-radio-button value="3">已优化</a-radio-button>
+                            <a-radio-button value="0" class="font_size_12">待诊断</a-radio-button>
+                            <a-radio-button value="1" class="font_size_12">待优化</a-radio-button>
+                            <a-radio-button value="2" class="font_size_12">已修改审核中</a-radio-button>
+                            <a-radio-button value="3" class="font_size_12">已优化</a-radio-button>
                         </a-radio-group>
 
 
                     </a-col>
-                    <a-col :span="10">
+                    <a-col :offset="8" :span="4">
+                        <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;margin:0 0 0 6px;float: right;">查询</a-button>
                         <a-input 
                             placeholder="商品id查询"
                             type="text" 
                             class="font_size_12"
-                            style="padding: 2px;width: 140px;"
+                            style="padding: 2px;width: 140px;float: right;"
                             allowClear  
                             size="small"
                         ></a-input>
-                        <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;margin:0 0 0 6px;">查询</a-button>
                     </a-col>
                 </a-row>
             </div>
@@ -59,17 +59,64 @@
                 style="width: 100%;"
                 :split="true"
                 >
-                <template #renderItem="{ item }">
-                    <a-list-item>
-                        
-                        {{ item.product_id }}
 
-                        {{ item.product_name }}
+                <template #renderItem="{ item }">
+                    
+                    <a-list-item style="padding:14px 0;">
+                        <a-list-item-meta>
+
+                            <template #title>
+
+                                <!--商品id-->
+                                
+                                <!-- {{ item.product_id }} -->
+                                
+                                <!--商品标题-->
+                                <div>
+
+                                    <!--是否达标-->
+                                    <a-tag v-if="item.meet_standard == 1" color="green" class="font_size_12" style="margin: 0 10px 0 0;">
+                                        已达标
+                                    </a-tag>
+                                    <a-tag v-else-if="item.meet_standard !== 1" color="red" class="font_size_12" style="margin: 0 10px 0 0;">
+                                        未达标
+                                    </a-tag>
+
+                                    <a href="#"> {{ item.product_name }} </a>
+
+                                    <a-rate v-model:value="item.quality_score.score" disabled style="margin: 0 0 0 10px;"/>
+
+                                </div>
+
+                                <!--可优化问题项 list-->
+                                <div style="margin: 10px 0 0 0;" class="font_size_12">
+                                    诊断问题：
+                                    <span v-for="i in item.field_problem" class="cursor">
+                                            <a-tag>
+                                                <a-tooltip>
+                                                        {{ i.field_name }} - {{ i.problem_name }}
+                                                    <template #title>
+                                                        <div v-html="i.suggestion" class="font_size_12"></div>
+                                                    </template>
+                                                </a-tooltip>
+                                            </a-tag>
+                                    </span>
+                                </div>
+
+
+                            <!--待优化问题数-->
+                            <!-- {{ item.problem_num_to_improve }} -->
+
+                                    
+                            </template>
+                        </a-list-item-meta>
+
                         <template #actions>
-                        <a key="list-loadmore-edit">查看</a>
-                        <a key="list-loadmore-more">更多</a>
+                            <a key="list-loadmore-edit" class="font_size_12">查看详情</a>
                         </template>
+
                     </a-list-item>
+
                 </template>
             </a-list>
         </a-flex>
@@ -171,7 +218,7 @@ export default {
     // 筛选条件数据
     const conditionData = reactive({
 
-        data_type:"0", // 查询tab状态
+        data_type:"1", // 查询tab状态
 
         // 默认查询条件
         default:{
@@ -191,7 +238,6 @@ export default {
         // 请求商品接口
         const res = await axios.post(API.AppSrtoreAPI.dou_product.qualitylist, data)
 
-        console.log(res)
         var code = res.data.code;               // 请求返回是否成
         var res_data = res.data.data;           // 返回数据集
         var res_list = res_data.quality_list;   // 列表数据
@@ -218,13 +264,11 @@ export default {
                 PAGEDATA.total_number = total;
           }, 1000);
 
-          console.log('11')
         }
     }
 
     // 【翻页-组件 回调方法】========================================开始
     const page_turning = (data)=>{
-        console.log(data)
         PAGEDATA.justify = 'flex-start';
         PAGEDATA.align = 'flex-start';
         conditionData.default.page = data.page;
@@ -236,7 +280,10 @@ export default {
 
     // tab切换状态方法
     const Tabchange=()=>{
-        console.log(conditionData.data_type)
+        conditionData.default.page = 1;
+        conditionData.default.page_size = 10;
+        conditionData.default.diagnose_status = [Number(conditionData.data_type)];
+        loadproductData(conditionData.default)
     }
 
 
