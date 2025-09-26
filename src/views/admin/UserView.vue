@@ -22,19 +22,17 @@
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
-
-
       <a-layout-content class="content_border">
 
           <div style="height: 42px;">
             <!--条件查询组件 开始 -->
             <a-row type="flex">
-              <a-col :span="5" :order="1">
+              <a-col :span="3" :order="1">
                   <!--导航收起按钮-->
-                  <a-button type="primary" size="small" style="font-size: 12px; margin-right: 16px;" @click="() => { store.commit('menu/change') }">
+                  <!-- <a-button type="primary" size="small" style="font-size: 12px; margin-right: 16px;" @click="() => { store.commit('menu/change') }">
                     <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
-                  </a-button>
+                  </a-button> -->
                   <!-- {{ PAGEDATA.title }} -->
                   <a-button type="primary" size="small" style="font-size:12px;" @click="Add_Fun">
                   <template #icon><PlusOutlined /></template>
@@ -42,6 +40,8 @@
                 </a-button>
               </a-col>
               <a-col :span="12" :order="2">
+                <a-input placeholder="输入用户id查询" size="small" style="font-size:12px;width: 140px;margin: 0 10px 0 0;padding: 2px;" v-model:value="serch_id"></a-input>
+                <a-button type="primary" size="small" style="font-size:12px;" @click="Select_user">查询</a-button>
               </a-col>
               <a-col :span="6" :order="3"></a-col>
             </a-row>
@@ -143,6 +143,9 @@ export default {
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 内容总数
+      List_conditions:{
+        page:1
+      }
     })
 
     // 【新建】页面数据
@@ -238,6 +241,7 @@ export default {
 
     }
 
+    // 查询列表
     const Get_list = (message) =>{
 
       // 请求接口地址赋值
@@ -298,6 +302,39 @@ export default {
       DELDATA.open = true;
     }
 
+    // id搜索用户信息
+    const serch_id = ref(undefined)
+
+    const Select_user=()=>{
+      
+      var s_value = serch_id.value
+      
+      if(s_value !== undefined && s_value !== ''){
+        
+        loading.value = true    // 开启loading状态
+
+        let message = {}
+
+        message.page = TO.message.page;
+        message.page_size = TO.message.page_size;
+        // 刷新页面查询条件
+        message.condition = [{
+          type:"where",
+          condition:[{'column_name':'id','value': s_value, 'operator':'='}]
+        },
+        {
+            type: "orderby",
+            condition: [{'column_name': 'create_time', 'value': 'DESC',}]
+          }]
+
+        // 请求列表
+        Get_list(message)
+
+      }else{
+        // 输入值不对
+      }
+    }
+
 
     return {
       store,
@@ -311,6 +348,8 @@ export default {
       DELDATA,
       Del_Fun,
       receive,
+      Select_user,
+      serch_id
     };
 
 

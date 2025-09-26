@@ -1,5 +1,8 @@
 <!-- 商品详情 组件 -->
+
 <template>
+     <a-float-button @click="handlebottomClick" />
+
     <!--尺码模板-->
     <template_detaile_components v-if="size_detaile.open" :data="size_detaile"/>
     <!--运费模板-->
@@ -11,7 +14,9 @@
       width="100%"
       wrap-class-name="full-modal"
     >
-    
+
+
+
     <a-layout-content class="content">
 
         <div style="width: 950px;margin: 0 auto;">   
@@ -920,6 +925,11 @@ export default defineComponent({
             props.data.DetaileDate = false;
         };
 
+        // 漂浮按钮
+        const handlebottomClick = () =>{
+            console.log('click')
+        }
+
 
         return{
             API,
@@ -937,7 +947,8 @@ export default defineComponent({
             brand_detaile,
             cate_name,
             columns,
-            data
+            data,
+            handlebottomClick
         }
     }
 })

@@ -434,9 +434,9 @@ export default {
       innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
 
       AddDate:ref(false),              // 编辑显示状态
-      EditDate:ref(false),              // 编辑显示状态
-      DetaileDate:ref(false),           // 详情页显示状态
-      MoreSelectData:ref(false),         // 更多查询显示状态
+      EditDate:ref(false),             // 编辑显示状态
+      DetaileDate:ref(false),          // 详情页显示状态
+      MoreSelectData:ref(false),       // 更多查询显示状态
       product_id:ref(null)
 
     })
@@ -445,7 +445,9 @@ export default {
     const FromData = ref({
 
         "page":1,
+
         "size":10,
+
         // "status":0,         //  0-在线；1-下线；2-删除；
         // "check_status":3,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
         
@@ -456,16 +458,17 @@ export default {
           "need_name_affix":true,       // 是否需要获取标题前后缀
           "need_title_limit":true,      //是否需要获取商品标题长度限制规则
         },
+        
         "need_rectification_info":true, // 是否需要自动整改信息
 
     })
 
     // 翻页查询条件
     const navData=ref({
+
         "page":1,
         "size":10,
-        "status":0,         //  0-在线；1-下线；2-删除；
-        "check_status":3,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
+
         "can_combine_product":true, // 是否可搭配
 
         // 查询option
@@ -473,6 +476,7 @@ export default {
           "need_name_affix":true,       // 是否需要获取标题前后缀
           "need_title_limit":true,      //是否需要获取商品标题长度限制规则
         },
+
         "need_rectification_info":true, // 是否需要自动整改信息
     })
 
@@ -511,8 +515,11 @@ export default {
     const page_turning = (data)=>{
 
       PAGEDATA.justify = 'flex-start';
+    
       PAGEDATA.align = 'flex-start';
+
       navData.value.page = data.page;
+    
       navData.value.size = data.page_size;
 
       loadproductData(navData.value)
@@ -523,20 +530,34 @@ export default {
 
     // 【查询组件 回调方法】========================================开始
     const sift_select = (data)=>{
+      
+      PAGEDATA.List_conditions.page = 1 // 初始化翻页
 
       if(data == true){   // 重置刷新列表
 
-        loadproductData(FromData.value)
+        navData.value = FromData.value;
+
+        loadproductData(FromData.value);
       
-      }else{  
+      }else if(data == 'suggest'){ // 只看驳回
+        navData.value.query_options = {
+                "exist_audit_reject_suggest":true,
+                "need_audit_reject_suggest":true
+        }
+        
+        console.log(navData.value)
 
-        navData.value = data                    // 查询条件到翻页使用
+        loadproductData(navData.value);
+      }else{ // 查询按钮
 
-        loadproductData(navData.value)
+        navData.value = data;// 查询条件到翻页使用
+
+        loadproductData(navData.value);
 
       }
     }
     // 【查询组件 回调方法】========================================结束
+
 
     // 编辑方法加载
     const showEdit = (pro_id) => {

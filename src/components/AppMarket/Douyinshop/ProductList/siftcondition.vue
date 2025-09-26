@@ -96,15 +96,10 @@
                 />
             </a-form-item>
 
-            <!-- <a-form-item name="exist_audit_reject_suggest">
-                <a-checkbox v-model:checked="props.data.List_conditions.exist_audit_reject_suggest">只看驳回建议商品</a-checkbox>
-            </a-form-item> -->
-
-
             <a-form-item>
-                <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
+                <!-- <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
                 <EllipsisOutlined />
-                </a-button>
+                </a-button> -->
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
                 <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
 
@@ -113,17 +108,17 @@
                 </a-form>
             </a-col>
             <a-col :span="4">
+                <div style="padding: 4px 0 0 0;">
                 <a-space>
-                <a-button type="primary" class="font_size_12" size="small" ghost>只看驳回商品</a-button>
-                <a-button type="primary" class="font_size_12" size="small" ghost>ID查询</a-button>
-                <a-button type="primary" class="font_size_12" size="small" ghost>商家编码查询</a-button>
+                    <a-button type="primary" class="font_size_12" size="small" @click="handleverify_exist_audit_reject_suggest" ghost>只看驳回商品</a-button>
+                    <a-button type="primary" class="font_size_12" size="small" ghost>多ID查询</a-button>
+                    <a-button type="primary" class="font_size_12" size="small" ghost>商家编码查询</a-button>
                 </a-space>
+                </div>
             </a-col>
         </a-row>
 
     </div>
-
-
 
     <!-- <a-button type="primary" size="small" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost>
         <EllipsisOutlined />
@@ -172,26 +167,21 @@ export default defineComponent({
             page_title:'页面标题',
         })
 
-
         const formRef = ref();
 
         // 重置查询条件方法
         const resh_condition= () =>{
 
             formRef.value.resetFields();   // 关键：重置为初始值
+            
             ctx.emit('sift_callback', true)
 
         }
 
         // 查询按钮方法
         const handleFinish = values => {
-            console.log(values)
-
             const submit_obj = ProList.FromDataverify(values) // 验证表单字段是否为空或是否正确
-
-
             ctx.emit('sift_callback', submit_obj)
-
         };
 
 
@@ -207,6 +197,11 @@ export default defineComponent({
             props.data.AddDate = true;
         }
 
+        // 只看驳回商品
+        const handleverify_exist_audit_reject_suggest = () =>{
+            ctx.emit('sift_callback','suggest')
+        }
+
     return {
         formRef,
         page_config,
@@ -214,7 +209,8 @@ export default defineComponent({
         resh_condition,
         handleFinish,
         onOpen_select,
-        show_add
+        show_add,
+        handleverify_exist_audit_reject_suggest
         }
     }
 

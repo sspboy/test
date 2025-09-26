@@ -1,6 +1,15 @@
 <template>
   <div id="components-pagination-demo-mini" class="nav_s">
-    <a-pagination style="font-size: 12px;" size="small" @change="onChange" :total="props.fandata.total_number" :show-total="total => `总共 ${ total } 条数据`" show-size-changer show-quick-jumper />
+    <a-pagination 
+      style="font-size: 12px;" 
+      size="small" 
+      @change="onChange"
+      v-model:current="props.fandata.List_conditions.page"
+      :total="props.fandata.total_number" 
+      :show-total="total => `总共 ${ total } 条数据`" 
+      show-size-changer 
+      show-quick-jumper 
+    />
   </div>
 </template>
 

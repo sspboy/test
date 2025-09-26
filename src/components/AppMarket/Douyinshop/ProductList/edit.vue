@@ -7,9 +7,11 @@
       wrap-class-name="full-modal"
       @ok="handleOk"
     >
-      <p>各种编辑表单</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
+      <a-layout-content class="content">
+            <div style="width: 950px;margin: 0 auto;">
+              <p>编辑表单</p>
+            </div>
+      </a-layout-content>
     </a-modal>
 </template>
 <script>

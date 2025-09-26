@@ -211,7 +211,9 @@ export default {
             // 列表信息
             datalist:[],
             total_number:0,     // 内容总数
-
+            List_conditions:ref({
+                page:1
+            })
         })
 
 

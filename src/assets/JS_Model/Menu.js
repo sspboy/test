@@ -59,7 +59,7 @@ export class Menu {
                 menu_list.push(menu_detaile_obj)
 
           }
-          console.log(menu_list)
+        //   console.log(menu_list)
           return menu_list
         },
 

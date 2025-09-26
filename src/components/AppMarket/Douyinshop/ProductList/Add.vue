@@ -9,10 +9,7 @@
     >
         <a-layout-content class="content">
             <div style="width: 950px;margin: 0 auto;">
-
-                      <p>商品名称</p>
-
-
+                <p>商品名称</p>
             </div>
         </a-layout-content>
 

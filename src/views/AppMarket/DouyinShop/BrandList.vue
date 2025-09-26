@@ -106,6 +106,9 @@ export default {
                 'key':'93', // 当前菜单key
                 'openKeys':'douyinshop' // 一级菜单
             },
+            List_conditions:ref({
+                page:1
+            })
         })
         const tool = new TOOL.TOOL()            // 工具方法
         const API = new utils.A_Patch()         // 请求接口地址合集

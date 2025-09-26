@@ -157,7 +157,9 @@ export default {
             },
 
             innerHeight:ref(window.innerHeight-150),// 初始化表格高度
-
+            List_conditions:ref({
+                page:1
+            })
         })
         const tool = new TOOL.TOOL()            // 工具方法
         const API = new utils.A_Patch()         // 请求接口地址合集
