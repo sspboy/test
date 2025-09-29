@@ -74,6 +74,9 @@ export default defineComponent({
       colum:[],           // 表头信息
       datalist:[],        // 列表信息
       total_number:0,     // 总页数
+      List_conditions:ref({
+        page:1
+      })
     })
 
     const Add_fun = () => {
