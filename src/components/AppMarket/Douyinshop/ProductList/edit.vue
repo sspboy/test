@@ -8,8 +8,26 @@
       @ok="handleOk"
     >
       <a-layout-content class="content">
+
             <div style="width: 950px;margin: 0 auto;">
+              <a-tabs v-model:activeKey="activeKey">
+                <a-tab-pane key="1" tab="主图&视频">
+                  Content of Tab Pane 1
+                </a-tab-pane>
+                <a-tab-pane key="2" tab="基础信息" force-render>
+                  Content of Tab Pane 2
+                </a-tab-pane>
+                <a-tab-pane key="3" tab="规格&库存">Content of Tab Pane 3</a-tab-pane>
+                <a-tab-pane key="4" tab="分类&属性">Content of Tab Pane 3</a-tab-pane>
+                <a-tab-pane key="5" tab="规格&库存">Content of Tab Pane 3</a-tab-pane>
+                <a-tab-pane key="6" tab="限购设置">Content of Tab Pane 3</a-tab-pane>
+                <a-tab-pane key="7" tab="描述详情">Content of Tab Pane 3</a-tab-pane>
+              </a-tabs>
+              
               <p>编辑表单</p>
+              
+
+
             </div>
       </a-layout-content>
     </a-modal>
@@ -40,10 +58,12 @@ export default defineComponent({
             console.log(e);
         };
 
+        const activeKey = ref('1');
 
         return{
             props,
             handleOk,
+            activeKey,
         }
     }
 })

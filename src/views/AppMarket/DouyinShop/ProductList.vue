@@ -202,7 +202,6 @@
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
             <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 0;" ghost @click="check_list"><CheckCircleOutlined /> 全选</a-button>
-
           </span>
           
           <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>

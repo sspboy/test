@@ -1,6 +1,7 @@
 <!-- 商品详情 组件 -->
 
 <template>
+
      <a-float-button @click="handlebottomClick" />
 
     <!--尺码模板-->
@@ -19,7 +20,8 @@
 
     <a-layout-content class="content">
 
-        <div style="width: 950px;margin: 0 auto;">   
+        <div style="width: 950px;margin: 0 auto;">
+               
             <!--头图 标题-->
             <div>
                 <a-row>

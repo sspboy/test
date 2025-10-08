@@ -12,8 +12,8 @@ module.exports = defineConfig({
     proxy: {
       '/api': {
         // target: 'http://172.17.57.178:5000', // aliyun后端服务地址
-        // target: 'http://192.168.31.214:5000', // 家里
-        target: 'http://192.168.3.120:5000', // 公司
+        target: 'http://192.168.31.214:5000', // 家里
+        // target: 'http://192.168.3.120:5000', // 公司
         changeOrigin: true,
         pathRewrite: {
           '^/api': '', // 重写路径，去掉 /api 前缀
