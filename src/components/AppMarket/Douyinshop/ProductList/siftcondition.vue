@@ -199,7 +199,7 @@ export default defineComponent({
 
         // 只看驳回商品
         const handleverify_exist_audit_reject_suggest = () =>{
-            ctx.emit('sift_callback','suggest')
+            ctx.emit('sift_callback', 'suggest')
         }
 
     return {

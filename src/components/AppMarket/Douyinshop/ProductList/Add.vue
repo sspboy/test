@@ -1,6 +1,9 @@
 <!-- 抖店铺==新建商品组件 -->
 <template>
 
+    <!-- 动态渲染异步组件 -->
+    <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="" :data="PAGEDATA"/>
+
     <a-modal
       v-model:open="props.data.AddDate"
       title="新建商品"
@@ -26,9 +29,10 @@
                                 >
                                     主图
                                 </a-divider>
+
                                 <div style="width: 100%; height: 120px;">
 
-                                    <p class="img_pic" v-for="item in fileList">
+                                    <p class="img_pic" v-for="item in PicList">
                                         <a-image :src="item.url" />
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
                                             <a-button type="text" size="small" @click="console.log(item)"> 
@@ -39,9 +43,9 @@
 
                                     <!--添加按钮-->
                                     <p 
-                                        @click="console.log('添加图片')" 
+                                        @click="PAGEDATA.selectimg_open=true" 
                                         class="cursor Add_img"
-                                        v-if="fileList.length < 6"
+                                        v-if="PicList.length < 6"
                                         >
                                         <a-flex justify="center" align="center" style="height: 100%;">
                                             <PlusOutlined /> 添加 
@@ -112,7 +116,7 @@
                                     <p 
                                         @click="console.log('添加图片')" 
                                         class="cursor Add_3_4_img"
-                                        v-if="fileList.length < 6"
+                                        v-if="PicList.length < 6"
                                         >
                                         <a-flex justify="center" align="center" style="height: 100%;">
                                             <PlusOutlined /> 添加 
@@ -170,7 +174,19 @@
                                 :model="formState"
                             >
                                 <a-row :gutter="[16,0]">
-                                    <a-col :span="12">
+
+                                    <a-col :span="18">
+                                        <a-form-item
+                                            label="商品标题"
+                                            name="name"
+                                            placeholder="输入商品标题"
+                                            :rules="[{ required: true, message: '请输入商品标题' }]"
+                                        >
+                                            <a-input v-model:value="formState.name" show-count :maxlength="30" />
+                                        </a-form-item>
+                                    </a-col>
+
+                                    <a-col :span="6">
                                         <a-form-item 
                                             label="商品类型" 
                                             name="product_type"
@@ -184,22 +200,9 @@
                                             </a-select>
                                         </a-form-item>
                                     </a-col>
-                                    
-                                    <a-col :span="12"></a-col>
 
-                                    <a-col :span="12">
-                                        <a-form-item
-                                            label="商品标题"
-                                            name="name"
-                                            placeholder="输入商品标题"
-                                            :rules="[{ required: true, message: '请输入商品标题' }]"
-                                        >
-                                            <a-input v-model:value="formState.name" show-count :maxlength="30" />
-                                        </a-form-item>
-                                    </a-col>
-                                    <a-col :span="12">
-                                        <p></p>
-                                    </a-col>
+
+
                                     <a-col :span="12">
                                         <a-form-item
                                             label="推荐语"
@@ -290,14 +293,10 @@
                                         >
                                             <a-input-group compact>
                                                 <a-input v-model:value="formState.size_info_template_id" placeholder="请选择尺码模板" disabled style="width: calc(60%)" />
-                                                <a-button >选择</a-button>
+                                                <a-button>选择</a-button>
                                             </a-input-group>
                                         </a-form-item>                                    
                                     </a-col>
-
-                                    <a-col :span="6"><p>尺码模板 -- remark</p></a-col>
-                                    <a-col :span="6"><p>商家备注 -- remark</p></a-col>
-                                    <a-col :span="6"><p>商家备注 -- remark</p></a-col>
 
                                 </a-row>
                             </a-form>
@@ -339,7 +338,7 @@
     </a-modal>
 </template>
 <script>
-import { defineComponent,ref,reactive,onMounted,h } from 'vue';
+import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,h } from 'vue';
 import { useStore } from 'vuex'
 import { PlusOutlined,DeleteOutlined} from '@ant-design/icons-vue';
 
@@ -348,41 +347,73 @@ export default defineComponent({
     name:'新建商品',
     components:{
         PlusOutlined,
-        DeleteOutlined
+        DeleteOutlined,
+        selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
+        // 运费模板组件
+        // 尺码模板组件
     },
     props: {
         data:{typr:Object}
     },
     setup(props,ctx) {
 
+        // 添加商品配置
+        const PAGEDATA=reactive({
+            selectimg_open:false, // 添加图片显示状态配置
+            setimg_name:''// 添加图片对象名称;将选择的图片添加到指定的数组
+        })
+
         // console.log(props.data.product_id)
 
-        // 主图
-        const fileList = ref([
+        // 主图对象
+
+        // 调用素材组件,添加图片到页面方法
+        const Add_img = (typeName) => {
+
+            PAGEDATA.selectimg_open = true;
+            PAGEDATA.setimg_name = typeName; // 'PicList'
+
+        }
+
+        // 图片组件获取地址后添加到页面容器：：：回调方法
+        const Add_Callback = (typeNameObject) =>{
+
+            if(type == 'PicList'){// 判断回调type：：：主图添加
+                // 添加主图方法
+            }else if(type == 'long_img_List'){// 判断回调type：：：3:4长图添加
+                // 添加长图方法
+            }else if(type == 'white_img'){// 判断回调type：：：白底图添加
+                // 添加白底图方法
+            }else if(type == 'white_img'){
+                // 添加视频方法
+            }
+        }
+
+        const PicList = ref([
             {
                 uid: '-1',
                 name: 'image.png',
                 status: 'done',
                 url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
             },
-            {
-                uid: '-2',
-                name: 'image.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            },
-            {
-                uid: '-3',
-                name: 'image.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            },
-            {
-                uid: '-4',
-                name: 'image.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            },
+            // {
+            //     uid: '-2',
+            //     name: 'image.png',
+            //     status: 'done',
+            //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+            // },
+            // {
+            //     uid: '-3',
+            //     name: 'image.png',
+            //     status: 'done',
+            //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+            // },
+            // {
+            //     uid: '-4',
+            //     name: 'image.png',
+            //     status: 'done',
+            //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+            // },
             // {
             //     uid: '-xxx',
             //     percent: 50,
@@ -396,7 +427,8 @@ export default defineComponent({
             //     status: 'error',
             // },
         ]);
-        // 主图删除
+
+        // 删除主图方法
         const del_pic = ()=>{
 
         }
@@ -496,8 +528,9 @@ export default defineComponent({
         const activeKey = ref('1');
 
         return{
+            PAGEDATA,
             props,
-            fileList,
+            PicList,
             long_img_List,
             white_img,
             video_info,

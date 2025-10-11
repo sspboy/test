@@ -166,7 +166,7 @@ const routes = [
     {
         path: '/sizetemplate',
         name: 'sizetemplate',
-        component: () => import('../views/AppMarket/DouyinShop/Sizetemplate.vue'),    // 尺码模板
+        component: () => import('../views/AppMarket/DouyinShop/SizeTemplate.vue'),    // 尺码模板
         meta:{
             title:'尺码模板',
         }
