@@ -122,6 +122,7 @@ export class A_Patch{
         },
         // 素材接口
         material:{
+            "searchfolder":"api/douyin/material/searchfolder",
             "list":"api/douyin/material/list",
             "detaile":"api/douyin/material/getmaterialdetaile",
             "delete":"api/douyin/material/",

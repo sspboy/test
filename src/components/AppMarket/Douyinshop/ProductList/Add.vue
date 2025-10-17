@@ -1,8 +1,10 @@
 <!-- 抖店铺==新建商品组件 -->
 <template>
 
-    <!-- 动态渲染异步组件 -->
+    <!-- 动态渲染异步组件--添加主图 -->
     <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="" :data="PAGEDATA"/>
+
+    <!-- 动态渲染异步组件--添加白底图 -->
 
     <a-modal
       v-model:open="props.data.AddDate"
@@ -21,8 +23,9 @@
                     <a-tab-pane key="1" tab="基础信息">
 
                         <a-row>
+
+                            <!----主图--pic-->
                             <a-col :span="16">
-                                <!----主图--pic-->
                                 <a-divider 
                                     orientation="left" 
                                     orientation-margin="0px"
@@ -32,10 +35,10 @@
 
                                 <div style="width: 100%; height: 120px;">
 
-                                    <p class="img_pic" v-for="item in PicList">
+                                    <p class="img_pic" v-for="item in Pic_Fun.PicList.value">
                                         <a-image :src="item.url" />
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="console.log(item)"> 
+                                            <a-button type="text" size="small" @click="Pic_Fun.del_pic(item.uid)"> 
                                                 <DeleteOutlined />
                                             </a-button>
                                         </span>
@@ -43,9 +46,9 @@
 
                                     <!--添加按钮-->
                                     <p 
-                                        @click="PAGEDATA.selectimg_open=true" 
+                                        @click="Add_img('PicList')" 
                                         class="cursor Add_img"
-                                        v-if="PicList.length < 6"
+                                        v-if="Pic_Fun.PicList.value.length < 6"
                                         >
                                         <a-flex justify="center" align="center" style="height: 100%;">
                                             <PlusOutlined /> 添加 
@@ -73,7 +76,7 @@
 
                                     <!--添加按钮-->
                                     <p 
-                                        @click="console.log('添加图片')" 
+                                        @click="Add_img('white_img')" 
                                         class="cursor Add_img"
                                         v-if="white_img.length < 1"
                                     >
@@ -85,12 +88,12 @@
                                 </div>
                             </a-col>
 
-
                         </a-row>
                         
                         <a-row>
+
+                            <!--3比4长图 -- long_pic_url -->
                             <a-col :span="16">
-                                <!--3比4长图 -- long_pic_url -->
                                 <a-divider 
                                     orientation="left" 
                                     orientation-margin="0px"
@@ -113,15 +116,15 @@
 
 
                                     <!--添加按钮-->
-                                    <p 
-                                        @click="console.log('添加图片')" 
+                                    <!-- <p 
+                                        @click="Add_img('long_img_List')" 
                                         class="cursor Add_3_4_img"
                                         v-if="PicList.length < 6"
-                                        >
+                                    >
                                         <a-flex justify="center" align="center" style="height: 100%;">
                                             <PlusOutlined /> 添加 
                                         </a-flex>
-                                    </p>
+                                    </p> -->
 
                                 </div>
 
@@ -144,7 +147,7 @@
 
                                     <!--添加按钮-->
                                     <p 
-                                        @click="console.log('添加图片')" 
+                                        @click="Add_img('video_info')" 
                                         class="cursor Add_3_4_img"
                                         v-if="video_info.length < 1"
                                     >
@@ -154,7 +157,6 @@
                                     </p>
                                 </div>
                             </a-col>
-
 
                         </a-row>
 
@@ -359,19 +361,15 @@ export default defineComponent({
 
         // 添加商品配置
         const PAGEDATA=reactive({
-            selectimg_open:false, // 添加图片显示状态配置
-            setimg_name:''// 添加图片对象名称;将选择的图片添加到指定的数组
+            selectimg_open:false,       // 添加主图-图片显示状态配置
+            setimg_name:'',             // 添加图片的对象['PicList','long_img_List','white_img','video']
         })
-
-        // console.log(props.data.product_id)
-
-        // 主图对象
 
         // 调用素材组件,添加图片到页面方法
         const Add_img = (typeName) => {
 
             PAGEDATA.selectimg_open = true;
-            PAGEDATA.setimg_name = typeName; // 'PicList'
+            PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
 
         }
 
@@ -387,51 +385,65 @@ export default defineComponent({
             }else if(type == 'white_img'){
                 // 添加视频方法
             }
-        }
 
-        const PicList = ref([
-            {
-                uid: '-1',
-                name: 'image.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+        }
+        
+        // 主图对象
+        const Pic_Fun = {
+
+            PicList:ref([
+                {
+                    uid: '-1',
+                    name: 'image.png',
+                    status: 'done',
+                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                },
+                // {
+                //     uid: '-2',
+                //     name: 'image.png',
+                //     status: 'done',
+                //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                // },
+                // {
+                //     uid: '-3',
+                //     name: 'image.png',
+                //     status: 'done',
+                //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                // },
+                // {
+                //     uid: '-4',
+                //     name: 'image.png',
+                //     status: 'done',
+                //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                // },
+                // {
+                //     uid: '-xxx',
+                //     percent: 50,
+                //     name: 'image.png',
+                //     status: 'uploading',
+                //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                // },
+                // {
+                //     uid: '-5',
+                //     name: 'image.png',
+                //     status: 'error',
+                // },
+            ]),
+            // 删除图片
+            del_pic:(d_id)=>{
+                // console.log(d_id)
+                Pic_Fun.PicList.value.forEach((val, idx) => {
+                    // console.log(val,idx);
+                    if(d_id == val.uid){Pic_Fun.PicList.value.splice(idx, 1)}
+                })
             },
-            // {
-            //     uid: '-2',
-            //     name: 'image.png',
-            //     status: 'done',
-            //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            // },
-            // {
-            //     uid: '-3',
-            //     name: 'image.png',
-            //     status: 'done',
-            //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            // },
-            // {
-            //     uid: '-4',
-            //     name: 'image.png',
-            //     status: 'done',
-            //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            // },
-            // {
-            //     uid: '-xxx',
-            //     percent: 50,
-            //     name: 'image.png',
-            //     status: 'uploading',
-            //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            // },
-            // {
-            //     uid: '-5',
-            //     name: 'image.png',
-            //     status: 'error',
-            // },
-        ]);
+            // 添加图片
+            add_pic:()=>{
 
-        // 删除主图方法
-        const del_pic = ()=>{
-
+            }
+        
         }
+
 
         // 3:4长图
         const long_img_List = ref([
@@ -473,7 +485,7 @@ export default defineComponent({
             // },
         ]);
         // 长图删除
-        const del_long_img = ()=>{
+        const del_long_img = (data_name,d_id)=>{
             
         }
         // 白底图
@@ -529,8 +541,8 @@ export default defineComponent({
 
         return{
             PAGEDATA,
+            Pic_Fun,// 主图
             props,
-            PicList,
             long_img_List,
             white_img,
             video_info,
@@ -538,7 +550,8 @@ export default defineComponent({
             handleOk,
             formState,
             formRef,
-            del_video
+            del_video,
+            Add_img,
         }
     }
 })
