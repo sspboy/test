@@ -24,6 +24,7 @@
                         <a-button @click="showChildnetDrawer">网络地址上传图片</a-button>
                     </a-space>
                 </a-col>
+
                 <a-col :span="18">
                     <!--面包屑导航-->
                     <!-- <div style="margin: 6px 0 0 0;"> 
@@ -47,8 +48,8 @@
             </a-row>
 
 
-            <a-layout style="height: 96%;">
-                <a-layout-sider class="siderStyle">
+            <a-layout style="height: 96%; margin-top: 16px;">
+                <a-layout-sider class="siderStyle" width="300">
                     <a-directory-tree
                         v-model:expandedKeys="expandedKeys"
                         v-model:selectedKeys="selectedKeys"
@@ -61,7 +62,9 @@
                 <a-layout>
                     <a-layout-header class="headerStyle">Header</a-layout-header>
                     <a-layout-content class="contentStyle">Content</a-layout-content>
-                    <a-layout-footer class="footerStyle">Footer</a-layout-footer>
+                    <a-layout-footer class="footerStyle">          
+                        <nav_pagination :fandata="PAGEDATA" v-on:complete="console.log('hehe')"/>
+                    </a-layout-footer>
                 </a-layout>
             </a-layout>
 
@@ -105,13 +108,17 @@ import { defineComponent,ref,reactive,onMounted,h } from 'vue';
 import { FolderOutlined,HomeOutlined,UserOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
+
 // 组件引用=====开始
+import nav_pagination from "@/components/nav_pagination.vue";
+
 export default defineComponent({
    name:'Materialplus',
    components:{
     FolderOutlined,
     UserOutlined,
-    HomeOutlined
+    HomeOutlined,
+    nav_pagination //翻页组件
    },
     props: {
         data:{typr:Object}
@@ -121,6 +128,15 @@ export default defineComponent({
 
         console.log(props)
         console.log(props.data.setimg_name)
+        const PAGEDATA = reactive({
+            List_conditions:reactive({     // 默认查询配置
+
+                    "page":1,            // 当前页面
+                    "size":10,           // 显示数量
+            })
+        })
+              
+
         const tool = new TOOL.TOOL()            // 工具方法
         const API = new utils.A_Patch()         // 请求接口地址合集
 
@@ -147,38 +163,54 @@ export default defineComponent({
             
             // 初始化素材菜单
             Loadtree:()=>{
+
                 tool.Http_.post(API.AppSrtoreAPI.material.searchfolder,{
+
                     "parent_folder_id":"0",// 父文件夹id
                     "order_by":"0",// [必填]排序方式 0-创建时间倒序 1-创建时间正序 2-修改时间倒序 3-修改时间正序 4-文件夹名倒序 5-文件夹名正序
                     "page_num":"1",// [必填]
                     "page_size":"100"//[必填]
+
                 }).then((res)=>{
 
                     // 不为空
 
                     // 为空
-                    console.log(res)
 
-                    var t_obj={};
-                    t_obj.title='';// 标题
-                    t_obj.key='';// k
-                    t_obj.folder_id=''; // id
-                    t_obj.folder_type=''; // 类型
-                    t_obj.name=''; // 名称
-                    t_obj.operate_status=''; // 文件夹状态。1-有效 4-在回收站中
-                    t_obj.parent_folder_id=''; // 父文件夹id
-                    t_obj.create_time=''; // 创建时间
-                    t_obj.update_time=''; // 更新时间
-                    t_obj.delete_time=''; // 删除时间
-                    t_obj.folder_attr=''; // 父文件夹属性（文件夹属性，0-文件夹（不限素材类型），1-图片文件夹（只能上传图片），2-视频文件夹（只能上传视频））
-                    var total=''; // 符合条件文件夹数量
+                    // console.log(res)
+
+                    var folder_info_list = res.data.data.folder_info_list
+                    var total=res.data.data.total; // 符合条件文件夹数量
+
+                    folder_info_list.forEach((obj,idx)=>{
+                        console.log(obj)
+                        var t_obj={};
+                        t_obj.title=obj.name;// 标题
+                        t_obj.key=obj.folder_id;// k
+                        t_obj.folder_id=obj.folder_id; // id
+                        t_obj.folder_type=''; // 类型
+                        t_obj.name=''; // 名称
+                        t_obj.operate_status=''; // 文件夹状态。1-有效 4-在回收站中
+                        t_obj.parent_folder_id=''; // 父文件夹id
+                        t_obj.create_time=''; // 创建时间
+                        t_obj.update_time=''; // 更新时间
+                        t_obj.delete_time=''; // 删除时间
+                        t_obj.folder_attr=''; // 父文件夹属性（文件夹属性，0-文件夹（不限素材类型），1-图片文件夹（只能上传图片），2-视频文件夹（只能上传视频））
+                        treeData.value.push(t_obj)
+                    })
+
+
 
 
                 })
-            }
+            },
+
+            // 根据id查询
+            Loadf_id:(l_id)=>{
+
+            },
 
 
-            // 初始化图片列表
 
             // 本地上传图片
 
@@ -195,7 +227,6 @@ export default defineComponent({
 
         }
 
-        Material_Images.Loadtree()
 
         const expandedKeys = ref([]);
         const selectedKeys = ref([]);
@@ -215,27 +246,34 @@ export default defineComponent({
             // },
         ]);
 
-        // 异步加载菜单
+        // 初始化素材菜单
+        Material_Images.Loadtree()
+
+        // 点击菜单===》异步加载菜单
         const onLoadData = treeNode => {
             return new Promise(resolve => {
+
                 // console.log(treeNode.key)
                 if (treeNode.dataRef.children) {
                     resolve();
                     return;
                 }
                 setTimeout(() => {
+
                     treeNode.dataRef.children = [
                         {
-                        title: 'Child Node',
-                        key: `${treeNode.eventKey}-0`,
+                            title: 'Child Node',
+                            key: `${treeNode.eventKey}-0`,
                         },
                         {
-                        title: 'Child Node',
-                        key: `${treeNode.eventKey}-1`,
+                            title: 'Child Node',
+                            key: `${treeNode.eventKey}-1`,
                         },
                     ];
+
                     treeData.value = [...treeData.value];
                     resolve();
+
                 }, 1000);
             });
         };
@@ -249,6 +287,7 @@ export default defineComponent({
 
         return{
             props,
+            PAGEDATA,
             childrenDrawer,
             childnetDrawer,
             onClose,
@@ -266,7 +305,7 @@ export default defineComponent({
 </script>
 <style scoped>
 .headerStyle{text-align: center;background-color: #fff;height: 64px;line-height: 64px;}
-.contentStyle{text-align: center;}
-.siderStyle{background-color: #fff;}
-.footerStyle{text-align: center;}
+.contentStyle{text-align: center;background-color: #fff;}
+.siderStyle{background-color: #fff;overflow: auto;padding: 10px 10px 10px 0;width: 400px;}
+.footerStyle{text-align: center;background-color: #fff;}
 </style>
