@@ -3,7 +3,6 @@
 
     <a-drawer
         v-model:open="props.data.selectimg_open"
-        title="选择图片"
         width="60%"
         :closable="false"
         :footer-style="{ textAlign: 'left' }"
@@ -60,8 +59,32 @@
                     />
                 </a-layout-sider>
                 <a-layout>
-                    <a-layout-header class="headerStyle">Header</a-layout-header>
-                    <a-layout-content class="contentStyle">Content</a-layout-content>
+
+                    <a-layout-content class="contentStyle">
+
+                        <div style="text-align: left;padding: 10px;height: 100px;">
+                            已选择图片：
+                        </div>
+
+                        <a-list :grid="{ gutter: 16, column: 4 }" :data-source="Material_Images.data_img_list.value">
+                                <template #renderItem="{ item }">
+                                <a-list-item>
+                                    <a-checkbox-group v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
+                                        <a-card>
+                                            <a-image
+                                                src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                                            />
+                                            <p>
+                                                <a-checkbox value="A">文件名称</a-checkbox>
+                                            </p>
+                                        </a-card>
+                                    </a-checkbox-group>
+
+                                </a-list-item>
+                                </template>
+                        </a-list>
+
+                    </a-layout-content>
                     <a-layout-footer class="footerStyle">          
                         <nav_pagination :fandata="PAGEDATA" v-on:complete="console.log('hehe')"/>
                     </a-layout-footer>
@@ -209,7 +232,22 @@ export default defineComponent({
             Loadf_id:(l_id)=>{
 
             },
-
+            // 素材图片列表
+            data_img_list:ref([
+                {
+                    title: 'Title 1',
+                },
+                {
+                    title: 'Title 2',
+                },
+                {
+                    title: 'Title 3',
+                },
+                {
+                    title: 'Title 4',
+                },
+            ]),
+            check_value:ref([]),
 
 
             // 本地上传图片
@@ -304,7 +342,7 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-.headerStyle{text-align: center;background-color: #fff;height: 64px;line-height: 64px;}
+.headerStyle{text-align: left;background-color: #fff;height: 64px;line-height: 64px;}
 .contentStyle{text-align: center;background-color: #fff;}
 .siderStyle{background-color: #fff;overflow: auto;padding: 10px 10px 10px 0;width: 400px;}
 .footerStyle{text-align: center;background-color: #fff;}
