@@ -17,6 +17,7 @@
                 <a-col :span="6">
                     <!--图片上传按钮-->
                     <a-space>
+                        <h3 style="margin: 4px 0 0 0;">选择素材</h3>
                         <!--本地上传图片 按钮-->
                         <a-button type="primary" @click="showChildrenDrawer">本地上传图片</a-button>
                         <!--网络地址上传图片 按钮-->
@@ -83,37 +84,39 @@
 
                         <a-list :grid="{ gutter: 6, column: 5 }" :data-source="Material_Images.data_img_list.value">
                                 <template #renderItem="{ item }">
-                                <a-list-item>
-                                    <a-checkbox-group v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
+                                                                            <a-checkbox-group v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
 
-                                        <!--图片文件 显示方式-->
-                                        <div v-if="item.material_type == 'photo'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
-                                            
-                                            <a-image
-                                                width="200"
-                                                :src="item.byte_url"
-                                            />
-                                            <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;">
-                                                <a-checkbox value="A">{{item.materil_name}}</a-checkbox>
-                                            </p>
+                                    <a-list-item>
 
-                                        </div>
+                                            <!--图片文件 显示方式-->
+                                            <div v-if="item.material_type == 'photo'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
+                                                
+                                                <a-image
+                                                    width="200"
+                                                    :src="item.byte_url"
+                                                />
+                                                <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;">
+                                                    <a-checkbox v-model:value="item.byte_url">{{ item.materil_id }}</a-checkbox>
+                                                </p>
 
-                                        <!--视频 显示方式-->
-                                        <div v-if="item.material_type == 'video'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
-                                            <a-image
-                                                width="200"
-                                                :src="item.video_info.video_cover_url"
-                                            />
-                                            <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;">
-                                                <a-checkbox value="A">{{item.materil_name}}</a-checkbox>
-                                            </p>
-                                        </div>
+                                            </div>
+
+                                            <!--视频 显示方式-->
+                                            <div v-if="item.material_type == 'video'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
+                                                <a-image
+                                                    width="200"
+                                                    :src="item.video_info.video_cover_url"
+                                                />
+                                                <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;">
+                                                    <a-checkbox v-model:value="item.byte_url">{{item.materil_id}}</a-checkbox>
+                                                </p>
+                                            </div>
 
 
+
+                                    </a-list-item>
                                     </a-checkbox-group>
 
-                                </a-list-item>
                                 </template>
                         </a-list>
 
@@ -264,7 +267,7 @@ export default defineComponent({
 
                     // 添加图片列表
                     child_material.forEach((obj, idx)=>{
-                        // console.log(obj)
+                        console.log(obj)
                         obj.title=obj.materil_name; // 图片名称
                         Material_Images.data_img_list.value.push(obj)
                     })
