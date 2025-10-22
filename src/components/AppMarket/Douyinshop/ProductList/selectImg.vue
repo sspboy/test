@@ -3,7 +3,7 @@
 
     <a-drawer
         v-model:open="props.data.selectimg_open"
-        width="60%"
+        width="80%"
         :closable="false"
         :footer-style="{ textAlign: 'left' }"
         @close="onClose"
@@ -48,16 +48,31 @@
 
 
             <a-layout style="height: 96%; margin-top: 16px;">
+                
+                <!-- 左侧素材选择树 菜单 -->
                 <a-layout-sider class="siderStyle" width="300">
-                    <a-directory-tree
+
+                    <!-- 加载状态 -->
+                    <div v-if="treeData.length == 0" style="text-align: center;margin-top: 65%;"><a-spin /></div>
+
+                    <!-- 为空状态 -->
+                    <div v-if="treeData.value === 'undefined'" style="text-align: center;margin-top: 65%;"><a-empty /></div>
+
+                    <!-- 不为空状态 -->
+                    <a-tree
                         v-model:expandedKeys="expandedKeys"
                         v-model:selectedKeys="selectedKeys"
                         :load-data="onLoadData"
                         :tree-data="treeData"
-                        @select="click_loadimglist"
-                        multiple
-                    />
+                        show-icon
+                    >
+                    <template #icon="{ key, selected }">
+                        <FolderOutlined />
+                    </template>
+                    </a-tree>
+
                 </a-layout-sider>
+
                 <a-layout>
 
                     <a-layout-content class="contentStyle">
@@ -66,18 +81,36 @@
                             已选择图片：
                         </div>
 
-                        <a-list :grid="{ gutter: 16, column: 4 }" :data-source="Material_Images.data_img_list.value">
+                        <a-list :grid="{ gutter: 6, column: 5 }" :data-source="Material_Images.data_img_list.value">
                                 <template #renderItem="{ item }">
                                 <a-list-item>
                                     <a-checkbox-group v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
-                                        <a-card>
+
+                                        <!--图片文件 显示方式-->
+                                        <div v-if="item.material_type == 'photo'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
+                                            
                                             <a-image
-                                                src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                                                width="200"
+                                                :src="item.byte_url"
                                             />
-                                            <p>
-                                                <a-checkbox value="A">文件名称</a-checkbox>
+                                            <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;">
+                                                <a-checkbox value="A">{{item.materil_name}}</a-checkbox>
                                             </p>
-                                        </a-card>
+
+                                        </div>
+
+                                        <!--视频 显示方式-->
+                                        <div v-if="item.material_type == 'video'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
+                                            <a-image
+                                                width="200"
+                                                :src="item.video_info.video_cover_url"
+                                            />
+                                            <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;">
+                                                <a-checkbox value="A">{{item.materil_name}}</a-checkbox>
+                                            </p>
+                                        </div>
+
+
                                     </a-checkbox-group>
 
                                 </a-list-item>
@@ -93,9 +126,6 @@
 
 
         </div>
-
-
-
 
         <!--本地上传 抽屉 -->
         <a-drawer v-model:open="childrenDrawer" title="本地上传" width="320" :closable="false">
@@ -127,7 +157,7 @@
 </template>
 
 <script>
-import { defineComponent,ref,reactive,onMounted,h } from 'vue';
+import { defineComponent,ref,reactive,onMounted,h,watch } from 'vue';
 import { FolderOutlined,HomeOutlined,UserOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
@@ -141,7 +171,7 @@ export default defineComponent({
     FolderOutlined,
     UserOutlined,
     HomeOutlined,
-    nav_pagination //翻页组件
+    nav_pagination, //翻页组件
    },
     props: {
         data:{typr:Object}
@@ -152,10 +182,12 @@ export default defineComponent({
         console.log(props)
         console.log(props.data.setimg_name)
         const PAGEDATA = reactive({
-            List_conditions:reactive({     // 默认查询配置
-
-                    "page":1,            // 当前页面
-                    "size":10,           // 显示数量
+            total_number:ref(0),         // 图片列表内容总数
+            f_id:0,          // 根目录id
+            List_conditions:reactive({   // 默认查询配置
+                "page":1,            // 当前页面
+                "size":10,           // 显示数量
+                "total":0           // 总页数
             })
         })
               
@@ -187,66 +219,88 @@ export default defineComponent({
             // 初始化素材菜单
             Loadtree:()=>{
 
-                tool.Http_.post(API.AppSrtoreAPI.material.searchfolder,{
+                tool.Http_.post(API.AppSrtoreAPI.material.getfolder,{
 
-                    "parent_folder_id":"0",// 父文件夹id
-                    "order_by":"0",// [必填]排序方式 0-创建时间倒序 1-创建时间正序 2-修改时间倒序 3-修改时间正序 4-文件夹名倒序 5-文件夹名正序
-                    "page_num":"1",// [必填]
-                    "page_size":"100"//[必填]
+                    "folder_id":"0",// 文件夹id
+                    "page_num":1,
+                    "page_size":10
 
                 }).then((res)=>{
 
-                    // 不为空
+                    // res为空
 
-                    // 为空
+                    // res不为空
 
-                    // console.log(res)
+                    // 子文件夹列表
+                    var folder_info_list = res.data.data.folder_info.child_folder
 
-                    var folder_info_list = res.data.data.folder_info_list
-                    var total=res.data.data.total; // 符合条件文件夹数量
+                    // 子素材列表
+                    var child_material = res.data.data.folder_info.child_material
 
-                    folder_info_list.forEach((obj,idx)=>{
-                        console.log(obj)
-                        var t_obj={};
-                        t_obj.title=obj.name;// 标题
-                        t_obj.key=obj.folder_id;// k
-                        t_obj.folder_id=obj.folder_id; // id
-                        t_obj.folder_type=''; // 类型
-                        t_obj.name=''; // 名称
-                        t_obj.operate_status=''; // 文件夹状态。1-有效 4-在回收站中
-                        t_obj.parent_folder_id=''; // 父文件夹id
-                        t_obj.create_time=''; // 创建时间
-                        t_obj.update_time=''; // 更新时间
-                        t_obj.delete_time=''; // 删除时间
-                        t_obj.folder_attr=''; // 父文件夹属性（文件夹属性，0-文件夹（不限素材类型），1-图片文件夹（只能上传图片），2-视频文件夹（只能上传视频））
-                        treeData.value.push(t_obj)
+                    // 符合条件文件夹数量
+                    var total_child_material_num = res.data.data.folder_info.total_child_material_num;
+                    console.log(total_child_material_num)
+                    PAGEDATA.total_number = total_child_material_num
+
+                    // 添加菜单名称和id
+                    folder_info_list.forEach((obj, idx)=>{
+
+                        obj.title = obj.folder_name;
+                        obj.key = obj.folder_id;
+                        obj.isLeaf = true;
+
+                        tool.Http_.post(API.AppSrtoreAPI.material.getfolder,{
+                            "folder_id":obj.folder_id,// 文件夹id
+                            "page_num":1,
+                            "page_size":10
+                        }).then((res)=>{
+                            var obj_child_f_list = res.data.data.folder_info.child_folder;
+                            if(obj_child_f_list.length !== 0){obj.isLeaf = false;}
+                        }).then(()=>{
+                            treeData.value=[...folder_info_list]
+                        })
+
                     })
 
-
-
-
+                    // 添加图片列表
+                    child_material.forEach((obj, idx)=>{
+                        // console.log(obj)
+                        obj.title=obj.materil_name; // 图片名称
+                        Material_Images.data_img_list.value.push(obj)
+                    })
                 })
             },
 
-            // 根据id查询
-            Loadf_id:(l_id)=>{
+
+            // 根据id查询文件夹下 素材列表 翻页
+            Get_material_list:(l_id, page, page_size)=>{
+                
+                tool.Http_.post(API.AppSrtoreAPI.material.getfolder,{
+                    "folder_id":l_id,// 文件夹id
+                    "page_num":1,
+                    "page_size":100
+                }).then((res)=>{
+
+                    // 子文件夹
+                    var child_folder = res.data.data.folder_info.child_folder
+                    console.log('子文件夹',child_folder)
+
+                    // 子素材
+                    var child_material = res.data.data.folder_info.child_material
+                    console.log('子素材',child_material)
+
+                })
 
             },
+
+
+            // 根据id_查询素材文件+素材图片
+
+
             // 素材图片列表
-            data_img_list:ref([
-                {
-                    title: 'Title 1',
-                },
-                {
-                    title: 'Title 2',
-                },
-                {
-                    title: 'Title 3',
-                },
-                {
-                    title: 'Title 4',
-                },
-            ]),
+            data_img_list:ref([]),
+            
+            // 勾选素材对象
             check_value:ref([]),
 
 
@@ -268,21 +322,7 @@ export default defineComponent({
 
         const expandedKeys = ref([]);
         const selectedKeys = ref([]);
-        const treeData = ref([
-            // {
-            //     title: 'Expand to load',
-            //     key: '0',
-            // },
-            // {
-            //     title: 'Expand to load',
-            //     key: '1',
-            // },
-            // {
-            //     title: 'Tree Node',
-            //     key: '2',
-            //     isLeaf: true,
-            // },
-        ]);
+        const treeData = ref([]);
 
         // 初始化素材菜单
         Material_Images.Loadtree()
@@ -291,30 +331,94 @@ export default defineComponent({
         const onLoadData = treeNode => {
             return new Promise(resolve => {
 
-                // console.log(treeNode.key)
+                var F_if = treeNode.key
+
+                console.log('加载树', F_if)
+
+                // 请求文件夹信息
+                tool.Http_.post(API.AppSrtoreAPI.material.getfolder,{
+                    "folder_id":F_if,// 文件夹id
+                    "page_num":1,
+                    "page_size":100
+                }).then((res)=>{
+
+                    // 当前文件夹id
+                    var folder_id = res.data.data.folder_info.folder_id;
+
+                    // 当前文件夹类型
+                    var folder_type = res.data.data.folder_info.folder_type;
+
+                    // 当前文件夹名称
+                    var folder_name = res.data.data.folder_info.folder_name;
+
+                    // 文件夹状态：：1-有效 4-在回收站中
+                    var operate_status = res.data.data.folder_info.operate_status;
+
+                    // 子文件夹列表
+                    var child_folder_list = res.data.data.folder_info.child_folder
+                    var chile_folder_number = child_folder_list.length;
+
+                    // 数量=0:禁用子菜单
+                    if(chile_folder_number == 0){
+                        console.log('子文件夹为空', child_folder_list)
+                        treeNode.isLeaf = true;
+                        treeData.value = [...treeData.value];
+                        resolve();
+                    }else {// 数量!=0：加载子菜单
+                        console.log('子文件夹',child_folder_list)
+                        // 添加菜单名称和id
+                        child_folder_list.forEach((obj, idx)=>{
+                            obj.title = obj.folder_name;
+                            obj.key = obj.folder_id;
+                        })
+                        treeNode.dataRef.children = child_folder_list;
+                        treeData.value = [...treeData.value];
+                        resolve();
+                    }
+
+
+                    // 子素材列表
+                    var child_material_list = res.data.data.folder_info.child_material
+                    console.log('子素材',child_material_list)
+
+                    // 文件夹下素材总数目
+                    var total_child_material_num = res.data.data.folder_info.total_child_material_num;
+                    console.log('子素材总数目',total_child_material_num)
+
+                })
+
+                // 如果存在子菜单 跳过
                 if (treeNode.dataRef.children) {
                     resolve();
                     return;
                 }
-                setTimeout(() => {
 
-                    treeNode.dataRef.children = [
-                        {
-                            title: 'Child Node',
-                            key: `${treeNode.eventKey}-0`,
-                        },
-                        {
-                            title: 'Child Node',
-                            key: `${treeNode.eventKey}-1`,
-                        },
-                    ];
 
-                    treeData.value = [...treeData.value];
-                    resolve();
+                // 如果没有子菜单 则添加子菜单
+                // setTimeout(() => {
 
-                }, 1000);
+                //     treeNode.dataRef.children = [
+                //         // {
+                //         //     title: 'Child Node',
+                //         //     key: `${treeNode.eventKey}-0`,
+                //         // },
+                //         // {
+                //         //     title: 'Child Node',
+                //         //     key: `${treeNode.eventKey}-1`,
+                //         // },
+                //     ];
+
+                //     treeData.value = [...treeData.value];
+
+                //     resolve();
+
+                // }, 1000);
             });
         };
+        // 点击菜单===》 加载图片列表
+        watch(selectedKeys, () => {
+            console.log('selectedKeys', selectedKeys);
+        });
 
         // 点击菜单--加载素材列表
         const click_loadimglist = (e)=>{

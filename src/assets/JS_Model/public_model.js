@@ -122,7 +122,8 @@ export class A_Patch{
         },
         // 素材接口
         material:{
-            "searchfolder":"api/douyin/material/searchfolder",
+            "searchfolder":"api/douyin/material/searchfolder",  // 搜索文件夹
+            "getfolder":"api/douyin/material/getfolderinfo",// 查看文件夹信息
             "list":"api/douyin/material/list",
             "detaile":"api/douyin/material/getmaterialdetaile",
             "delete":"api/douyin/material/",
