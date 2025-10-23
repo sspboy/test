@@ -14,18 +14,21 @@
 
             <a-row>
 
-                <a-col :span="6">
+                <a-col :span="18">
                     <!--图片上传按钮-->
                     <a-space>
                         <h3 style="margin: 4px 0 0 0;">选择素材</h3>
+                    </a-space>
+                </a-col>
+
+                <a-col :span="6">
+                    <!--图片上传按钮-->
+                    <a-space>
                         <!--本地上传图片 按钮-->
                         <a-button type="primary" @click="showChildrenDrawer">本地上传图片</a-button>
                         <!--网络地址上传图片 按钮-->
                         <a-button @click="showChildnetDrawer">网络地址上传图片</a-button>
                     </a-space>
-                </a-col>
-
-                <a-col :span="18">
                     <!--面包屑导航-->
                     <!-- <div style="margin: 6px 0 0 0;"> 
                         <a-breadcrumb>
@@ -76,51 +79,68 @@
 
                 <a-layout>
 
-                    <a-layout-content class="contentStyle">
-
-                        <div style="text-align: left;padding: 10px;height: 100px;">
-                            已选择图片：
-                        </div>
-
-                        <a-list :grid="{ gutter: 6, column: 5 }" :data-source="Material_Images.data_img_list.value">
-                                <template #renderItem="{ item }">
-                                                                            <a-checkbox-group v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
-
-                                    <a-list-item>
-
-                                            <!--图片文件 显示方式-->
-                                            <div v-if="item.material_type == 'photo'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
-                                                
-                                                <a-image
-                                                    width="200"
-                                                    :src="item.byte_url"
-                                                />
-                                                <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;">
-                                                    <a-checkbox v-model:value="item.byte_url">{{ item.materil_id }}</a-checkbox>
-                                                </p>
-
-                                            </div>
-
-                                            <!--视频 显示方式-->
-                                            <div v-if="item.material_type == 'video'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
-                                                <a-image
-                                                    width="200"
-                                                    :src="item.video_info.video_cover_url"
-                                                />
-                                                <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;">
-                                                    <a-checkbox v-model:value="item.byte_url">{{item.materil_id}}</a-checkbox>
-                                                </p>
-                                            </div>
+                    
 
 
 
-                                    </a-list-item>
-                                    </a-checkbox-group>
+                    <!-- 列表 不为空状态 -->
+                    <a-checkbox-group  v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
 
-                                </template>
-                        </a-list>
+                        <a-layout-content  class="contentStyle">
 
-                    </a-layout-content>
+                            <div style="text-align: left;padding: 10px;height: 100px;margin: 0 0 0 12px;">
+                                已选择图片：
+                            </div>
+
+                            <!-- 列表 为空状态 -->
+
+                            <a-list 
+                                :grid="{ gutter: 6, column: 5 }" 
+                                :data-source="PAGEDATA.datalist"
+                                :loading="PAGEDATA.loading"
+                            >
+
+                                    <template #renderItem="{ item }">
+                                        
+
+                                        <a-list-item>
+
+                                                <!--图片文件 显示方式-->
+                                                <div v-if="item.material_type == 'photo'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
+
+                                                    <a-image
+                                                        width="200"
+                                                        :src="item.byte_url"
+                                                    />
+                                                    <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;text-align: left;">
+                                                        <a-checkbox :value="item.material_id">{{ item.materil_name }}</a-checkbox>
+                                                    </p>
+
+                                                </div>
+
+                                                <!--视频 显示方式-->
+                                                <div v-if="item.material_type == 'video'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
+                                                    <a-image
+                                                        width="200"
+                                                        :src="item.video_info.video_cover_url"
+                                                    />
+                                                    <p style="padding: 2px;margin: 4px 0 0 0;width: 90%;height: 28px;overflow: hidden;text-align: left;">
+                                                        <a-checkbox :value="item.material_id">{{ item.materil_name }}</a-checkbox>
+                                                    </p>
+                                                </div>
+
+
+
+                                        </a-list-item>
+                                    </template>
+                                                                        
+
+                            </a-list>
+
+                        </a-layout-content>
+                    </a-checkbox-group>
+
+                    <!-- 翻页 -->
                     <a-layout-footer class="footerStyle">          
                         <nav_pagination :fandata="PAGEDATA" v-on:complete="console.log('hehe')"/>
                     </a-layout-footer>
@@ -149,7 +169,7 @@
         <!--底部按钮-->
         <template #footer>
 
-            <a-button style="margin-right: 8px" type="primary" @click="onClose">确认</a-button>
+            <a-button style="margin-right: 8px" type="primary" @click="Material_Images.click_submit">确认</a-button>
 
             <a-button  @click="onClose">取消</a-button>
             
@@ -174,26 +194,24 @@ export default defineComponent({
     FolderOutlined,
     UserOutlined,
     HomeOutlined,
-    nav_pagination, //翻页组件
+    nav_pagination, // 翻页组件
    },
     props: {
         data:{typr:Object}
     },
     setup(props,ctx) {
 
-
-        console.log(props)
-        console.log(props.data.setimg_name)
         const PAGEDATA = reactive({
-            total_number:ref(0),         // 图片列表内容总数
-            f_id:0,          // 根目录id
-            List_conditions:reactive({   // 默认查询配置
-                "page":1,            // 当前页面
-                "size":10,           // 显示数量
-                "total":0           // 总页数
-            })
+            total_number:ref(0),            // 图片列表内容总数
+            datalist:ref([]),               // 素材列表数据
+            loading:ref(true),              // 素材列表加载状态
+            f_id:0,                         // 根目录id
+            List_conditions:reactive({      // 默认查询配置
+                "page":1,                   // 当前页面
+                "size":10,                  // 显示数量
+                "total":0                   // 总页数
+            }),
         })
-              
 
         const tool = new TOOL.TOOL()            // 工具方法
         const API = new utils.A_Patch()         // 请求接口地址合集
@@ -233,7 +251,8 @@ export default defineComponent({
                     // res为空
 
                     // res不为空
-
+                    PAGEDATA.loading = false
+                    
                     // 子文件夹列表
                     var folder_info_list = res.data.data.folder_info.child_folder
 
@@ -265,13 +284,15 @@ export default defineComponent({
 
                     })
 
-                    // 添加图片列表
+                    // 初始化图片列表
                     child_material.forEach((obj, idx)=>{
-                        console.log(obj)
+                        // console.log(obj)
                         obj.title=obj.materil_name; // 图片名称
-                        Material_Images.data_img_list.value.push(obj)
+                        PAGEDATA.datalist.push(obj); // 添加到图片列表
                     })
+
                 })
+
             },
 
 
@@ -306,20 +327,16 @@ export default defineComponent({
             // 勾选素材对象
             check_value:ref([]),
 
+            // 素材抽屉--提交按钮
+            click_submit:()=>{
+                console.log(Material_Images.check_value.value)
+            },
+            // 素材抽屉--取消按钮
+            click_cancel:()=>{
+                console.log('取消按钮')
+                props.data.selectimg_open = false;
 
-            // 本地上传图片
-
-            // 网络地址上传图片
-
-            // 单张上传图片
-
-            // 批量上传图片
-            
-            // 请求素材所以后文件夹
-            // 列表默认打开文件
-            // 素材列表
-            // 点击文件夹
-
+            }
         }
 
 
@@ -418,16 +435,73 @@ export default defineComponent({
                 // }, 1000);
             });
         };
+        
         // 点击菜单===》 加载图片列表
         watch(selectedKeys, () => {
-            console.log('selectedKeys', selectedKeys);
+
+            console.log('文件夹id', selectedKeys.value[0]);
+
+            console.log('加载素材列表')
+
+            console.log('翻页组件')
+
+            // PAGEDATA.total_number = 10
+
         });
 
-        // 点击菜单--加载素材列表
-        const click_loadimglist = (e)=>{
-            console.log(e)
-            var api_url = ''
+        // 请求商品列表接口数据
+        const loadproductData = async(data) => {
+
+            PAGEDATA.loading = true;
+
+            // 请求商品接口
+            const res = await axios.post(API.AppSrtoreAPI.dou_product.list, data)
+
+            var res_data = res.data.data;
+            var res_list = res_data.data;
+            var total = res_data.total;
+
+            // 请求数据为空
+            if(res_list.length == 0){
+                PAGEDATA.justify = 'center';
+                PAGEDATA.align = 'center';
+                PAGEDATA.loading = false;
+                PAGEDATA.datalist = [];
+                PAGEDATA.total_number = 0
+            }else{
+                setTimeout(() => {
+                    PAGEDATA.loading = false;
+                    PAGEDATA.justify = 'start';
+                    PAGEDATA.align = 'start';
+                    // 请求数据不为空
+                    PAGEDATA.datalist = res_list;
+                    PAGEDATA.total_number = total;
+                }, 1000);
+            }
         }
+
+        // 【翻页-组件 回调方法】========================================开始
+        // 翻页查询条件
+        const navData=ref({
+            "page":1,
+            "size":10,
+        })
+
+        const page_turning = (data)=>{
+
+            PAGEDATA.justify = 'flex-start';
+            
+            PAGEDATA.align = 'flex-start';
+
+            navData.value.page = data.page;
+            
+            navData.value.size = data.page_size;
+
+            loadproductData(navData.value)
+
+        }
+        // 【查询组件 回调方法】========================================结束
+
 
 
         return{
@@ -443,7 +517,6 @@ export default defineComponent({
             selectedKeys,
             treeData,
             onLoadData,
-            click_loadimglist
         }
     }
 })
