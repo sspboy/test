@@ -23,7 +23,6 @@
                         <!--面包屑导航-->
                         <div style="margin: 8px 0 0 20px;"> 
                             <a-breadcrumb>
-
                                     <a-breadcrumb-item v-for=" item in PAGEDATA.BreadCrumb" href="#">
                                         <FolderOutlined />
                                         <span @click="console.log('加载当前文件夹素材列表', item.folder_id)" class="font_size_12">
@@ -82,17 +81,25 @@
 
                 <a-layout>
 
-                    
-
-
-
                     <!-- 列表 不为空状态 -->
                     <a-checkbox-group  v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
 
                         <a-layout-content class="contentStyle">
 
                             <div style="text-align: left;padding: 10px;height: 100px;margin: 0 0 0 12px;">
+
                                 已选择图片：
+                                <a-list
+                                    :grid="{ gutter: 6, column: 5 }" 
+                                    :data-source="Material_Images.confirm_img_list.value"
+                                >
+                                    <template #renderItem="{ item }">
+                                        <a-list-item>
+                                            <a-image width="200" :src="item" />
+                                        </a-list-item>
+                                    </template>
+                                </a-list>
+
                             </div>
 
                             <!-- 列表 为空状态 -->
@@ -116,7 +123,7 @@
                                                             :src="item.byte_url"
                                                         />
                                                         <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;text-align: left;">
-                                                            <a-checkbox :value="item.material_id">{{ item.materil_name }}</a-checkbox>
+                                                            <a-checkbox :value="item.material_id" @change="Material_Images.select_img_fun(item.byte_url)">{{ item.materil_name }}</a-checkbox>
                                                         </p>
 
                                                     </div>
@@ -128,11 +135,9 @@
                                                             :src="item.video_info.video_cover_url"
                                                         />
                                                         <p style="padding: 2px;margin: 4px 0 0 0;width: 90%;height: 28px;overflow: hidden;text-align: left;">
-                                                            <a-checkbox :value="item.material_id">{{ item.materil_name }}</a-checkbox>
+                                                            <a-checkbox :value="item.material_id" @change="console.log('视频')">{{ item.materil_name }}</a-checkbox>
                                                         </p>
                                                     </div>
-
-
 
                                             </a-list-item>
                                         </template>
@@ -227,7 +232,8 @@ export default defineComponent({
                     "folder_name":"素材库",
                     "folder_id":0
                 }
-            ])
+            ]),
+
         })
 
         const tool = new TOOL.TOOL()            // 工具方法
@@ -350,6 +356,9 @@ export default defineComponent({
             // 勾选素材对象
             check_value:ref([]),
 
+            // 已选图片素材数据列表
+            confirm_img_list:ref([]),
+
             // 素材抽屉--提交按钮
             click_submit:()=>{
                 console.log(Material_Images.check_value.value)
@@ -358,7 +367,11 @@ export default defineComponent({
             click_cancel:()=>{
                 console.log('取消按钮')
                 props.data.selectimg_open = false;
-
+            },
+            
+            // 选择素材图片方法
+            select_img_fun:(byte_url)=>{
+                Material_Images.confirm_img_list.value.push(byte_url)
             }
         }
 
@@ -409,7 +422,7 @@ export default defineComponent({
                     var child_folder_list = res.data.data.folder_info.child_folder
                     var chile_folder_number = child_folder_list.length;
 
-                    // 数量=0:禁用子菜单
+                    // 子文件夹数量=0:禁用子菜单
                     if(chile_folder_number == 0){
                         // console.log('子文件夹为空', child_folder_list)
                         treeNode.isLeaf = true;
@@ -423,13 +436,27 @@ export default defineComponent({
                         child_folder_list.forEach((obj, idx)=>{
                             // 面包屑
                             var breadcrumb = treeNode.dataRef.breadcrumb;
+
                             obj.title = obj.folder_name;
                             obj.key = obj.folder_id;
+                            obj.isLeaf = true;
                             obj.breadcrumb = [...breadcrumb]
                             obj.breadcrumb.push({
                                 "folder_id":obj.folder_id,
                                 "folder_name":obj.folder_name
                             })
+
+                            tool.Http_.post(API.AppSrtoreAPI.material.getfolder,{
+                                "folder_id":obj.folder_id,// 文件夹id
+                                "page_num":1,
+                                "page_size":10
+                            }).then((res)=>{
+                                var obj_child_f_list = res.data.data.folder_info.child_folder;
+                                if(obj_child_f_list.length !== 0){obj.isLeaf = false;}
+                            })
+
+
+
                         })
                         treeNode.dataRef.children = child_folder_list;
                         treeData.value = [...treeData.value];
@@ -452,10 +479,18 @@ export default defineComponent({
             });
         };
         
-        const handleSelect = (keys,event) =>{
-            console.log(keys)
-            console.log(event.node)
-            PAGEDATA.BreadCrumb = [...event.node.breadcrumb]
+        // 点击树型菜单方法
+        const handleSelect = (keys, event) =>{
+            // console.log('文件夹id', keys) // 打印文件夹id
+            // console.log('文件信息',event.node) // 打印节点信息
+            PAGEDATA.BreadCrumb = [...event.node.breadcrumb] // 刷新面包屑
+            // 判断是否刷新右侧素材列表
+            if(keys.length > 0){
+                navData.value.folder_id = keys[0]
+                navData.value.page_num = 1;
+                navData.value.page_size = 10;
+                loadproductData(navData.value)
+            }
         }
 
 
@@ -507,7 +542,7 @@ export default defineComponent({
 
         const page_turning = (data)=>{
 
-            console.log(data)
+            // console.log(data)
 
             PAGEDATA.justify = 'flex-start';
             
