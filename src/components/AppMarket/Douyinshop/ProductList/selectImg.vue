@@ -25,7 +25,10 @@
                             <a-breadcrumb>
                                     <a-breadcrumb-item v-for=" item in PAGEDATA.BreadCrumb" href="#">
                                         <FolderOutlined />
-                                        <span @click="console.log('加载当前文件夹素材列表', item.folder_id)" class="font_size_12">
+                                        <span 
+                                            @click="console.log('加载当前文件夹素材列表', item.folder_id)" 
+                                            class="font_size_12"
+                                        >
                                             {{ item.folder_name }}
                                         </span>
                                     </a-breadcrumb-item>
@@ -41,9 +44,9 @@
                     <!--图片上传按钮-->
                     <a-space :size="28">
                         <!--本地上传图片 按钮-->
-                        <a-button type="primary" @click="showChildrenDrawer">本地上传图片</a-button>
+                        <a-button type="primary" size="small" @click="showChildrenDrawer">本地上传图片</a-button>
                         <!--网络地址上传图片 按钮-->
-                        <a-button @click="showChildnetDrawer">网络地址上传图片</a-button>
+                        <a-button size="small" @click="showChildnetDrawer">网络地址上传图片</a-button>
                         <!--关闭窗口-->
                         <CloseOutlined @click="onClose" />
                     </a-space>
@@ -87,12 +90,23 @@
                         <a-layout-content class="contentStyle">
 
                             <div class="confimImg">
-                                    <p>已选择图片：</p>
+
+                                    <p style="padding: 0 0 0 20px;">
+                                        已选择图片 <a-tag :bordered="false">{{ Material_Images.confirm_img_list.value.length }}</a-tag>张 ------ 
+                                        <a href="#" @click="Material_Images.clear_confirm_img_list"><ClearOutlined />清空</a>
+                                    </p>
+
+                                    <!--暂无数据-->
+                                    <div v-if="Material_Images.confirm_img_list.value.length == 0" style="margin-top: 110px;">
+                                        <a-empty :image="simpleImage" />
+                                    </div>
+                                    
+                                    <!--列表数据 迭代-->
                                     <div v-for="item in Material_Images.confirm_img_list.value" class="confimbox">
-                                        <a-image style="height:50px;" :src="item" />
+                                        <a-image style="height:50px;" :src="item.byte_url" />
                                         <p style="margin: 10px 0 0 0;font-size: 12px;">
                                             <a-button type="text" size="small" @click="Material_Images.clear_img_fun(item)"> 
-                                                <DeleteOutlined />
+                                            <CloseCircleOutlined />
                                             </a-button>
                                         </p>
                                     </div>
@@ -100,7 +114,7 @@
 
 
                             <!-- 列表 为空状态 -->
-                            <div style="height:340px;overflow-x: hidden;overflow-y: auto;padding: 20px 0 0 0;">
+                            <div style="height:420px;overflow-x: hidden;overflow-y: auto;padding: 20px 0 0 0;">
                                 <a-list 
                                     :grid="{ gutter: 6, column: 5 }" 
                                     :data-source="PAGEDATA.datalist"
@@ -113,38 +127,47 @@
                                             <a-list-item>
 
                                                     <!--图片文件 显示方式-->
-                                                    <div v-if="item.material_type == 'photo'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
+                                                    <div v-if="item.material_type == 'photo'" class="Listimgbox">
 
                                                         <a-image
                                                             :style="Material_Images.material_width(item.photo_info)"
                                                             :src="item.byte_url"
                                                         />
 
-                                                        <p style="padding: 2px;margin: 4px 0 0 0;width: 140px;height: 28px;overflow: hidden;text-align: left;">
-                                                            <a-checkbox 
-                                                                :value="item.material_id" 
-                                                                @change="Material_Images.select_img_fun(item.byte_url)" 
-                                                                @click="console.log(item)"
-                                                            >
-                                                                选择
-                                                            </a-checkbox>
-                                                            详情
-                                                            编辑
-                                                            删除
+                                                        <p class="img_list_box">
+                                                            <a-space align="center" size="2">
+                                                                <template #split>
+                                                                <a-divider type="vertical" />
+                                                                </template>
+                                                            <a-typography-link>
+                                                                <a-checkbox 
+                                                                    :value="item.material_id"
+                                                                    @change="Material_Images.select_img_fun(item)" 
+                                                                    @click="Material_Images.get_checked_status"
+                                                                />
+                                                            </a-typography-link>
+                                                            <a-typography-link><a href="#"  class="font_size_12"><EditOutlined /> 编辑 </a></a-typography-link>
+                                                            <a-typography-link><a href="#"  class="font_size_12"><DeleteOutlined /> 删除 </a></a-typography-link>
+                                                            </a-space>
                                                         </p>
 
                                                     </div>
 
                                                     <!--视频 显示方式-->
-                                                    <div v-else-if="item.material_type == 'video'" style="border: 1px solid silver; border-radius: 6px;padding: 4px;">
+                                                    <div v-else-if="item.material_type == 'video'" class="Listimgbox">
                                                         <a-image
                                                             :height="100"
                                                             :src="item.video_info.video_cover_url"
                                                         />
-                                                        <p style="padding: 2px;margin: 4px 0 0 0;width: 90%;height: 28px;overflow: hidden;text-align: left;text-align: center;">
-                                                        预览
-                                                        详情
-                                                        删除
+                                                        <p class="video_list_box">
+                                                            <a-space align="center" size="2">
+                                                                <template #split>
+                                                                <a-divider type="vertical" />
+                                                                </template>
+                                                                <a-typography-link><a href="#" class="font_size_12">视频</a></a-typography-link>
+                                                                <a-typography-link><a href="#" class="font_size_12">编辑</a></a-typography-link>
+                                                                <a-typography-link><a href="#" class="font_size_12">删除</a></a-typography-link>
+                                                            </a-space>
                                                         </p>
                                                     </div>
 
@@ -210,7 +233,8 @@
 
 <script>
 import { defineComponent,ref,reactive,computed,onMounted,h,watch } from 'vue';
-import { FolderOutlined,HomeOutlined,UserOutlined,CloseOutlined,DeleteOutlined } from '@ant-design/icons-vue';
+import{Empty, message} from 'ant-design-vue'
+import { FolderOutlined,HomeOutlined,UserOutlined,CloseOutlined,DeleteOutlined,CloseCircleOutlined,PictureOutlined,EditOutlined,ClearOutlined } from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import axios from "axios";
@@ -222,17 +246,21 @@ export default defineComponent({
    name:'Materialplus',
    components:{
     FolderOutlined,
+    EditOutlined,
     UserOutlined,
     HomeOutlined,
     CloseOutlined,
     DeleteOutlined,
+    CloseCircleOutlined,
+    PictureOutlined,
+    ClearOutlined,
     nav_pagination, // 翻页组件
    },
     props: {
         data:{typr:Object}
     },
     setup(props,ctx) {
-        
+        const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;
         // 数据配置
         const PAGEDATA = reactive({
             total_number:ref(0),            // 图片列表内容总数
@@ -258,9 +286,11 @@ export default defineComponent({
 
         const tool = new TOOL.TOOL()            // 工具方法
         const API = new utils.A_Patch()         // 请求接口地址合集
-
         const childrenDrawer = ref(false);      // 本地上传抽屉状态
         const childnetDrawer = ref(false);      // 网络上传抽屉状态
+        const expandedKeys = ref([]); // 展开指定的树节点
+        const selectedKeys = ref([]); // 选中的节点树
+        const treeData = ref([]);
 
         // 关闭选择素材抽屉
         const onClose = () => {
@@ -373,27 +403,50 @@ export default defineComponent({
 
             // 已选图片素材数据列表
             confirm_img_list:ref([]),
+            
 
-            // 素材抽屉--提交按钮
+            // 已选图片素材--清空
+            clear_confirm_img_list:()=>{
+                Material_Images.confirm_img_list.value = [];
+                Material_Images.cunt_img_num = 0;
+            },
+
+            // 素材抽屉--确认提交按钮
             click_submit:()=>{
                 console.log(Material_Images.confirm_img_list.value)
+                var res_num = Material_Images.confirm_img_list.value.length;
+                if(res_num == 0){
+                    // 提示选中图片为空
+                    tool.Fun_.message('info','已选图片素材不能为空！')
+                }else if(res_num > 0){
+                    console.log('回调添加图片到指定容器')
+                    ctx.emit('add_img_callback',Material_Images.confirm_img_list.value)
+                }
+                
+                // 提示添加图片成功
+                // 关闭抽屉
+                // 回调添加素材图片到页面方法
             },
+
             // 素材抽屉--取消按钮
             click_cancel:()=>{
                 console.log('取消按钮')
                 props.data.selectimg_open = false;
             },
 
-            
             // 选择素材图片方法
-            select_img_fun:(byte_url)=>{
+            select_img_fun:(item)=>{
                 // 判断添加的图片是否重复
-                if (Material_Images.confirm_img_list.value.includes(byte_url)) {
-                    console.log('存在');
+                if (Material_Images.confirm_img_list.value.includes(item)) {
+                    // console.log('存在');
                 }else{
-                    console.log('不存在');
-                    Material_Images.confirm_img_list.value.push(byte_url)
+                    // console.log('不存在');
+                    Material_Images.confirm_img_list.value.push(item)
                 }
+            },
+            // 获取checked状态
+            get_checked_status:(event)=>{
+                // console.log(event.target.checked,event.target)
             },
             // 去除选中得素材图片方法
             clear_img_fun:(url)=>{
@@ -401,11 +454,6 @@ export default defineComponent({
                 if (idx > -1) Material_Images.confirm_img_list.value.splice(idx, 1);
             } 
         }
-
-
-        const expandedKeys = ref([]); // 展开指定的树节点
-        const selectedKeys = ref([]); // 选中的节点树
-        const treeData = ref([]);
 
         // 初始化素材菜单
         Material_Images.Loadtree()
@@ -601,6 +649,7 @@ export default defineComponent({
             onLoadData,
             page_turning,
             handleSelect,
+            simpleImage
         }
     }
 })
@@ -610,6 +659,9 @@ export default defineComponent({
 .contentStyle{text-align: center;background-color: #fff;height: 100%;}
 .siderStyle{background-color: #fff;overflow: auto;padding: 10px 10px 10px 0;width: 400px;}
 .footerStyle{text-align: center;background-color: #fff;}
-.confimImg{text-align: left;padding: 10px 0 10px 0;margin: 0 0 10px 24px;height:300px;width: 100%;overflow-x: auto;overflow-y: auto;border-bottom: 1px #f2f2f2 solid;}
-.confimbox{width: 60px;height: 60px;margin: 10px 10px 30px 0;padding: 4px; float: left;border: 1px #f2f2f2 solid;border-radius: 4px;text-align: center;}
+.confimImg{text-align: left;padding: 10px 0 10px 0;margin: 0 0 10px 0;height:300px;width: 100%;overflow-x: auto;overflow-y: auto;border-bottom: 1px #f2f2f2 solid;}
+.confimbox{width: 60px;height: 60px;margin: 10px 20px 30px 20px;padding: 4px; float: left;border: 1px #f2f2f2 solid;border-radius: 4px;text-align: center;}
+.Listimgbox{border: 1px solid #f2f2f2; border-radius: 6px;padding: 10px 4px 4px 4px;}
+.video_list_box{padding: 6px 0 0 0;margin: 4px 0 0 0;width: 100%;height: 28px;overflow: hidden;text-align: left;text-align: center;}
+.img_list_box{padding: 2px;margin: 4px 0 0 0;width: 100%;height: 28px;overflow: hidden;text-align: left;}
 </style>

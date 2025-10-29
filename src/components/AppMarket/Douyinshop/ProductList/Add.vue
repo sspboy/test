@@ -2,13 +2,12 @@
 <template>
 
     <!-- 动态渲染异步组件--添加主图 -->
-    <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="" :data="PAGEDATA"/>
+    <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="Pic_Fun.add_pic" :data="PAGEDATA"/>
 
     <!-- 动态渲染异步组件--添加白底图 -->
 
     <a-modal
       v-model:open="props.data.AddDate"
-      title="新建商品"
       width="100%"
       wrap-class-name="full-modal"
       @ok="handleOk"
@@ -16,7 +15,6 @@
         <a-layout-content class="content">
 
             <div style="width: 950px;margin: 0 auto;">
-
 
                 <a-tabs v-model:activeKey="activeKey">
 
@@ -26,6 +24,7 @@
 
                             <!----主图--pic-->
                             <a-col :span="16">
+
                                 <a-divider 
                                     orientation="left" 
                                     orientation-margin="0px"
@@ -305,7 +304,6 @@
                         </div>
                     </a-tab-pane>
 
-
                     <a-tab-pane key="3" tab="规格&库存">
                         
                     <a-divider orientation="left" orientation-margin="0px">规格&库存</a-divider>
@@ -438,8 +436,8 @@ export default defineComponent({
                 })
             },
             // 添加图片
-            add_pic:()=>{
-
+            add_pic:(list)=>{
+                console.log(list)
             }
         
         }
@@ -484,6 +482,7 @@ export default defineComponent({
             //     status: 'error',
             // },
         ]);
+
         // 长图删除
         const del_long_img = (data_name,d_id)=>{
             
