@@ -146,8 +146,9 @@
                                                                     @click="Material_Images.get_checked_status"
                                                                 />
                                                             </a-typography-link>
-                                                            <a-typography-link><a href="#"  class="font_size_12"><EditOutlined /> 编辑 </a></a-typography-link>
-                                                            <a-typography-link><a href="#"  class="font_size_12"><DeleteOutlined /> 删除 </a></a-typography-link>
+                                                            <a-typography-link><a href="#"  class="font_size_12" @click="showChildimgDrawer(item)"><EditOutlined /> 详情 </a></a-typography-link>
+                                                            <a-typography-link><a href="#"  class="font_size_12" ><EditOutlined /> 复制 </a></a-typography-link>
+
                                                             </a-space>
                                                         </p>
 
@@ -165,7 +166,7 @@
                                                                 <a-divider type="vertical" />
                                                                 </template>
                                                                 <a-typography-link><a href="#" class="font_size_12">视频</a></a-typography-link>
-                                                                <a-typography-link><a href="#" class="font_size_12">编辑</a></a-typography-link>
+                                                                <a-typography-link><a href="#" class="font_size_12">查看详情</a></a-typography-link>
                                                                 <a-typography-link><a href="#" class="font_size_12">删除</a></a-typography-link>
                                                             </a-space>
                                                         </p>
@@ -173,7 +174,6 @@
 
                                             </a-list-item>
                                         </template>
-                                                                            
 
                                 </a-list>
                             </div>
@@ -186,7 +186,9 @@
                     <a-layout-footer class="footerStyle">          
                         <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
                     </a-layout-footer>
+
                 </a-layout>
+
             </a-layout>
 
 
@@ -209,6 +211,27 @@
 
 
         <!--图片详情 抽屉 -->
+        <a-drawer v-model:open="childimgDrawer" title="图片详情" width="320" :closable="false">
+
+            <div v-if="Material_Images.image_detaile !== undefined">
+                <p>素材ID：{{ Material_Images.image_detaile.value.material_id }}</P>
+                <p>图片名称：{{ Material_Images.image_detaile.value.materil_name }}</p>
+                <p folder_id="">所属文件夹ID：{{ Material_Images.image_detaile.value.folder_id }}</p>
+                <p origin_url="">图片来源地址：</p>
+                <p origin_url="">素材地址：</p>
+                <p material_type="">图片长 宽 格式</p>
+                <p operate_status="">素材状态：</p>
+                <p material_type="">素材类型：图片</p>
+                <p audit_status="">审核状态：图片</p>
+                <p audit_reject_desc="">审核失败原因：图片</p>
+                <p size="">素材大小：{{ Material_Images.image_detaile.value.size }} kb</p>
+                <p material_type="">创建时间: {{ Material_Images.image_detaile.value.create_time }}</p>
+                <p material_type="">修改时间: {{ Material_Images.image_detaile.value.update_time }}</p>
+            </div>
+
+            <a-button type="primary" size="small" @click="showChildimgDrawer">关闭</a-button>
+
+        </a-drawer>
         <!--编辑图片 抽屉 -->
         <!--删除图片 抽屉 -->
 
@@ -288,6 +311,8 @@ export default defineComponent({
         const API = new utils.A_Patch()         // 请求接口地址合集
         const childrenDrawer = ref(false);      // 本地上传抽屉状态
         const childnetDrawer = ref(false);      // 网络上传抽屉状态
+        const childimgDrawer = ref(false);      // 本地图片详情状态
+
         const expandedKeys = ref([]); // 展开指定的树节点
         const selectedKeys = ref([]); // 选中的节点树
         const treeData = ref([]);
@@ -305,6 +330,18 @@ export default defineComponent({
         // 显示网络上传--按钮
         const showChildnetDrawer = () => {
             childnetDrawer.value = !childnetDrawer.value;
+        };
+
+        // 显示图片详情--按钮
+        const showChildimgDrawer = (item) => {
+            console.log(item)
+            childimgDrawer.value = !childimgDrawer.value;
+            Material_Images.image_detaile.value = undefined;
+            if(childimgDrawer.value){// 添加详情信息
+                Material_Images.image_detaile.value = item;
+            }else{ // 清空详情内容
+                Material_Images.image_detaile.value = undefined;
+            }
         };
 
         // 图片素材管理
@@ -430,7 +467,7 @@ export default defineComponent({
 
             // 素材抽屉--取消按钮
             click_cancel:()=>{
-                console.log('取消按钮')
+                // console.log('取消按钮')
                 props.data.selectimg_open = false;
             },
 
@@ -452,7 +489,11 @@ export default defineComponent({
             clear_img_fun:(url)=>{
                 const idx = Material_Images.confirm_img_list.value.indexOf(url);
                 if (idx > -1) Material_Images.confirm_img_list.value.splice(idx, 1);
-            } 
+            },
+            // 图片详情
+            image_detaile:ref(undefined),
+            // 视频详情
+            video_detaile:ref(undefined)
         }
 
         // 初始化素材菜单
@@ -639,9 +680,11 @@ export default defineComponent({
             PAGEDATA,
             childrenDrawer,
             childnetDrawer,
+            childimgDrawer,
             onClose,
             showChildrenDrawer,
             showChildnetDrawer,
+            showChildimgDrawer,
             Material_Images,
             expandedKeys,
             selectedKeys,
