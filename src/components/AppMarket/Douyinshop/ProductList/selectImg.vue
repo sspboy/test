@@ -214,16 +214,29 @@
         <a-drawer v-model:open="childimgDrawer" title="图片详情" width="320" :closable="false">
 
             <div v-if="Material_Images.image_detaile !== undefined">
+                <p>所属文件夹ID：{{ Material_Images.image_detaile.value.folder_id }}</p>
                 <p>素材ID：{{ Material_Images.image_detaile.value.material_id }}</P>
                 <p>图片名称：{{ Material_Images.image_detaile.value.materil_name }}</p>
-                <p folder_id="">所属文件夹ID：{{ Material_Images.image_detaile.value.folder_id }}</p>
-                <p origin_url="">图片来源地址：</p>
-                <p origin_url="">素材地址：</p>
-                <p material_type="">图片长 宽 格式</p>
-                <p operate_status="">素材状态：</p>
-                <p material_type="">素材类型：图片</p>
-                <p audit_status="">审核状态：图片</p>
-                <p audit_reject_desc="">审核失败原因：图片</p>
+                <p>来源地址：</p>
+                <div style="width: 90%;background-color: #f2f2f2;padding: 4px;">
+                    <a-typography-paragraph :copyable="{ tooltip: false }">
+                        {{ Material_Images.image_detaile.value.origin_url }}
+                    </a-typography-paragraph>
+                </div>
+                <p>素材地址：</p>
+                <p style="width: 90%;background-color: #f2f2f2;padding: 4px;">
+                                        <a-typography-paragraph :copyable="{ tooltip: false }">
+
+                    {{ Material_Images.image_detaile.value.byte_url }}</a-typography-paragraph>
+                </p>
+
+                <p photo_info="">图片长 宽 格式{{ Material_Images.image_detaile.value.photo_info }}</p>
+                <p video_info="">图片长 宽 格式</p>
+
+                <p audit_status="">审核状态：{{ Material_Images.image_detaile.value.audit_status }}</p>
+                <p material_type="">类型：{{ Material_Images.image_detaile.value.material_type }}</p>
+                <p operate_status="">文件夹状态：{{ Material_Images.image_detaile.value.operate_status }}</p>
+                <p audit_reject_desc="">审核失败原因：{{ Material_Images.image_detaile.value.audit_reject_desc }}</p>
                 <p size="">素材大小：{{ Material_Images.image_detaile.value.size }} kb</p>
                 <p material_type="">创建时间: {{ Material_Images.image_detaile.value.create_time }}</p>
                 <p material_type="">修改时间: {{ Material_Images.image_detaile.value.update_time }}</p>
