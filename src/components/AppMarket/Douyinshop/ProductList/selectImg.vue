@@ -214,35 +214,72 @@
         <a-drawer v-model:open="childimgDrawer" title="图片详情" width="320" :closable="false">
 
             <div v-if="Material_Images.image_detaile !== undefined">
+
+            <!--图片信息-->
                 <p>所属文件夹ID：{{ Material_Images.image_detaile.value.folder_id }}</p>
                 <p>素材ID：{{ Material_Images.image_detaile.value.material_id }}</P>
                 <p>图片名称：{{ Material_Images.image_detaile.value.materil_name }}</p>
+
                 <p>来源地址：</p>
-                <div style="width: 90%;background-color: #f2f2f2;padding: 4px;">
+                <div style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;">
                     <a-typography-paragraph :copyable="{ tooltip: false }">
                         {{ Material_Images.image_detaile.value.origin_url }}
                     </a-typography-paragraph>
                 </div>
-                <p>素材地址：</p>
-                <p style="width: 90%;background-color: #f2f2f2;padding: 4px;">
-                                        <a-typography-paragraph :copyable="{ tooltip: false }">
 
-                    {{ Material_Images.image_detaile.value.byte_url }}</a-typography-paragraph>
+                <p style="margin: 10px 0 10px 0;">素材地址：</p>
+                <div style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;margin: 0 0 20px 0;">
+                        <a-typography-paragraph :copyable="{ tooltip: false }">
+                            {{ Material_Images.image_detaile.value.byte_url }}
+                        </a-typography-paragraph>
+                </div>
+
+                <p v-if="Material_Images.image_detaile.value.photo_info !== undefined">
+                    图片长 {{ Material_Images.image_detaile.value.photo_info.width }}px
+                    宽  {{ Material_Images.image_detaile.value.photo_info.height }}px
+                    格式  {{ Material_Images.image_detaile.value.photo_info.format }}
                 </p>
 
-                <p photo_info="">图片长 宽 格式{{ Material_Images.image_detaile.value.photo_info }}</p>
-                <p video_info="">图片长 宽 格式</p>
+            <!--视频信息-->
+                <p v-else-if="Material_Images.image_detaile.value.video_info !== undefined">
+                    封面 {{ Material_Images.image_detaile.value.video_info.video_cover_url }}
+                    视频时长 {{ Material_Images.image_detaile.value.video_info.duration }}
+                    宽 {{ Material_Images.image_detaile.value.video_info.duration }}
+                    格式 {{ Material_Images.image_detaile.value.video_info.format }}
+                </p>
 
-                <p audit_status="">审核状态：{{ Material_Images.image_detaile.value.audit_status }}</p>
-                <p material_type="">类型：{{ Material_Images.image_detaile.value.material_type }}</p>
-                <p operate_status="">文件夹状态：{{ Material_Images.image_detaile.value.operate_status }}</p>
-                <p audit_reject_desc="">审核失败原因：{{ Material_Images.image_detaile.value.audit_reject_desc }}</p>
+
+                <p>审核状态：
+                    <!--1-待审核；2-审核中；3-通过 4-拒绝；注意：只有audit_status =3时byte_url才会返回-->
+                    <span v-if="Material_Images.image_detaile.value.audit_status == '1'">待审核</span>
+                    <span v-else-if="Material_Images.image_detaile.value.audit_status == '2'">审核中</span>
+                    <span v-else-if="Material_Images.image_detaile.value.audit_status == '3'">审核通过</span>
+                    <span v-else-if="Material_Images.image_detaile.value.audit_status == '4'">拒绝</span>
+                </p>
+
+                <p v-if="Material_Images.image_detaile.value.audit_status == '4'">审核失败原因：{{ Material_Images.image_detaile.value.audit_reject_desc }}</p>
+
+                <p material_type="">素材类型：
+                    <span v-if="Material_Images.image_detaile.value.material_type == 'photo'">图片</span>
+                    <span v-else-if="Material_Images.image_detaile.value.material_type == 'video'">视频</span>
+                </p>
+
+                <p operate_status="">文件夹状态：
+                    <!--0-待下载；1-有效；4-在回收站中-->
+                    <span v-if="Material_Images.image_detaile.value.operate_status == 0">待下载</span>
+                    <span v-else-if="Material_Images.image_detaile.value.operate_status == 1">有效</span>
+                    <span v-else-if="Material_Images.image_detaile.value.operate_status == 4">回收站中</span>
+                </p>
                 <p size="">素材大小：{{ Material_Images.image_detaile.value.size }} kb</p>
                 <p material_type="">创建时间: {{ Material_Images.image_detaile.value.create_time }}</p>
                 <p material_type="">修改时间: {{ Material_Images.image_detaile.value.update_time }}</p>
+
+            </div>
+            <div v-if="Material_Images.image_detaile == undefined">
+                  <a-spin />
             </div>
 
-            <a-button type="primary" size="small" @click="showChildimgDrawer">关闭</a-button>
+            <a-button size="small" @click="showChildimgDrawer">关闭</a-button>
 
         </a-drawer>
         <!--编辑图片 抽屉 -->
@@ -349,11 +386,11 @@ export default defineComponent({
         const showChildimgDrawer = (item) => {
             console.log(item)
             childimgDrawer.value = !childimgDrawer.value;
-            Material_Images.image_detaile.value = undefined;
+            // Material_Images.image_detaile.value = undefined;
             if(childimgDrawer.value){// 添加详情信息
                 Material_Images.image_detaile.value = item;
             }else{ // 清空详情内容
-                Material_Images.image_detaile.value = undefined;
+                // Material_Images.image_detaile.value = undefined;
             }
         };
 
