@@ -92,7 +92,9 @@
                             <div class="confimImg">
 
                                     <p style="padding: 0 0 0 20px;">
-                                        已选择图片 <a-tag :bordered="false">{{ Material_Images.confirm_img_list.value.length }}</a-tag>张 ------ 
+                                        已选择图片 
+                                        <a-tag :bordered="false">{{ Material_Images.confirm_img_list.value.length }}</a-tag>
+                                        张 ------ 
                                         <a href="#" @click="Material_Images.clear_confirm_img_list"><ClearOutlined />清空</a>
                                     </p>
 
@@ -134,20 +136,25 @@
                                                             :src="item.byte_url"
                                                         />
 
-                                                        <p class="img_list_box">
-                                                            <a-space align="center" size="2">
+                                                        <p class="img_list_box" style="text-align: center;">
+
+                                                            <a-space align="center" size="2" >
+                                                                
                                                                 <template #split>
-                                                                <a-divider type="vertical" />
+                                                                    <a-divider type="vertical" />
                                                                 </template>
-                                                            <a-typography-link>
-                                                                <a-checkbox 
-                                                                    :value="item.material_id"
-                                                                    @change="Material_Images.select_img_fun(item)" 
-                                                                    @click="Material_Images.get_checked_status"
-                                                                />
-                                                            </a-typography-link>
-                                                            <a-typography-link><a href="#"  class="font_size_12" @click="showChildimgDrawer(item)"><EditOutlined /> 详情 </a></a-typography-link>
-                                                            <a-typography-link><a href="#"  class="font_size_12" ><EditOutlined /> 复制 </a></a-typography-link>
+
+                                                                <a-typography-link>
+                                                                    <a-checkbox 
+                                                                        :value="item.material_id"
+                                                                        @change="Material_Images.select_img_fun(item)" 
+                                                                    ></a-checkbox>
+                                                                </a-typography-link>
+
+                                                                <a-typography-link>
+                                                                    <a href="#" class="font_size_12" @click="showChildimgDrawer(item)">
+                                                                    <EyeOutlined /> 查看详情 </a>
+                                                                </a-typography-link>
 
                                                             </a-space>
                                                         </p>
@@ -165,9 +172,10 @@
                                                                 <template #split>
                                                                 <a-divider type="vertical" />
                                                                 </template>
-                                                                <a-typography-link><a href="#" class="font_size_12">视频</a></a-typography-link>
-                                                                <a-typography-link><a href="#" class="font_size_12">查看详情</a></a-typography-link>
-                                                                <a-typography-link><a href="#" class="font_size_12">删除</a></a-typography-link>
+
+                                                                <a-typography-link>
+                                                                    <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)"><EyeOutlined />查看详情</a>
+                                                                </a-typography-link>
                                                             </a-space>
                                                         </p>
                                                     </div>
@@ -220,13 +228,14 @@
                 <p>素材ID：{{ Material_Images.image_detaile.value.material_id }}</P>
                 <p>图片名称：{{ Material_Images.image_detaile.value.materil_name }}</p>
 
-                <p>来源地址：</p>
-                <div style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;">
-                    <a-typography-paragraph :copyable="{ tooltip: false }">
-                        {{ Material_Images.image_detaile.value.origin_url }}
-                    </a-typography-paragraph>
-                </div>
-
+                <p v-if="Material_Images.image_detaile.value.origin_url !== ''">
+                    来源地址：
+                    <div style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px; margin: 8px 0 0 0;">
+                        <a-typography-paragraph :copyable="{ tooltip: false }">
+                            {{ Material_Images.image_detaile.value.origin_url }}
+                        </a-typography-paragraph>
+                    </div>
+                </p>
                 <p style="margin: 10px 0 10px 0;">素材地址：</p>
                 <div style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;margin: 0 0 20px 0;">
                         <a-typography-paragraph :copyable="{ tooltip: false }">
@@ -270,11 +279,12 @@
                     <span v-else-if="Material_Images.image_detaile.value.operate_status == 1">有效</span>
                     <span v-else-if="Material_Images.image_detaile.value.operate_status == 4">回收站中</span>
                 </p>
-                <p size="">素材大小：{{ Material_Images.image_detaile.value.size }} kb</p>
+                <p size="">文件大小：{{ Material_Images.image_detaile.value.size }} kb</p>
                 <p material_type="">创建时间: {{ Material_Images.image_detaile.value.create_time }}</p>
                 <p material_type="">修改时间: {{ Material_Images.image_detaile.value.update_time }}</p>
 
             </div>
+
             <div v-if="Material_Images.image_detaile == undefined">
                   <a-spin />
             </div>
@@ -282,14 +292,56 @@
             <a-button size="small" @click="showChildimgDrawer">关闭</a-button>
 
         </a-drawer>
-        <!--编辑图片 抽屉 -->
-        <!--删除图片 抽屉 -->
-
-
 
         <!--视频详情 抽屉 -->
-        <!--编辑视频 抽屉 -->
+        <a-drawer v-model:open="childvideoDrawer" title="视频详情" width="320" :closable="false">
 
+            <div v-if="Material_Images.video_detaile !== undefined">
+            <!--视频信息-->
+                <p>所属文件夹ID：{{ Material_Images.video_detaile.value.folder_id }}</p>
+                <p>素材ID：{{ Material_Images.video_detaile.value.material_id }}</P>
+                <p>图片名称：{{ Material_Images.video_detaile.value.materil_name }}</p>
+
+                <p v-if="Material_Images.video_detaile.value.origin_url !== ''">
+                    来源地址：
+                    <div class="sucai_url">
+                        <a-typography-paragraph :copyable="{ tooltip: false }">
+                            {{ Material_Images.video_detaile.value.origin_url }}
+                        </a-typography-paragraph>
+                    </div>
+                    <video
+                        ref="videoEl"
+                        controls
+                        preload="metadata"
+                        width="100%" 
+                    >
+                        <source :src="Material_Images.video_detaile.value.origin_url" type="video/mp4"></source>
+                    </video>
+                </p>
+
+                <p style="margin: 10px 0 10px 0;" v-if="Material_Images.video_detaile.value.byte_url !== ''">
+                    素材地址：
+                    <div class="sucai_url">
+                        <a-typography-paragraph :copyable="{ tooltip: false }">
+                            {{ Material_Images.video_detaile.value.byte_url }}
+                        </a-typography-paragraph>
+                    </div>
+                </p>
+
+                <p v-if="Material_Images.video_detaile.value.video_info !== undefined">
+                    视频时长 {{ Material_Images.video_detaile.value.video_info.duration }}
+                    宽 {{ Material_Images.video_detaile.value.video_info.duration }}
+                    格式 {{ Material_Images.video_detaile.value.video_info.format }}
+                </p>
+            </div>
+
+            <div v-if="Material_Images.image_detaile == undefined">
+                  <a-spin />
+            </div>
+
+            <a-button size="small" @click="showChildvideoDrawer">关闭</a-button>
+
+        </a-drawer>
 
         <!--底部按钮-->
         <template #footer>
@@ -307,7 +359,7 @@
 <script>
 import { defineComponent,ref,reactive,computed,onMounted,h,watch } from 'vue';
 import{Empty, message} from 'ant-design-vue'
-import { FolderOutlined,HomeOutlined,UserOutlined,CloseOutlined,DeleteOutlined,CloseCircleOutlined,PictureOutlined,EditOutlined,ClearOutlined } from '@ant-design/icons-vue';
+import { FolderOutlined,HomeOutlined,UserOutlined,CloseOutlined,DeleteOutlined,CloseCircleOutlined,PictureOutlined,EditOutlined,ClearOutlined,EyeOutlined } from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import axios from "axios";
@@ -327,6 +379,7 @@ export default defineComponent({
     CloseCircleOutlined,
     PictureOutlined,
     ClearOutlined,
+    EyeOutlined,
     nav_pagination, // 翻页组件
    },
     props: {
@@ -361,7 +414,8 @@ export default defineComponent({
         const API = new utils.A_Patch()         // 请求接口地址合集
         const childrenDrawer = ref(false);      // 本地上传抽屉状态
         const childnetDrawer = ref(false);      // 网络上传抽屉状态
-        const childimgDrawer = ref(false);      // 本地图片详情状态
+        const childimgDrawer = ref(false);      // 图片详情状态
+        const childvideoDrawer = ref(false);    // 视频详情状态
 
         const expandedKeys = ref([]); // 展开指定的树节点
         const selectedKeys = ref([]); // 选中的节点树
@@ -384,13 +438,22 @@ export default defineComponent({
 
         // 显示图片详情--按钮
         const showChildimgDrawer = (item) => {
-            console.log(item)
             childimgDrawer.value = !childimgDrawer.value;
             // Material_Images.image_detaile.value = undefined;
             if(childimgDrawer.value){// 添加详情信息
                 Material_Images.image_detaile.value = item;
             }else{ // 清空详情内容
                 // Material_Images.image_detaile.value = undefined;
+            }
+        };
+        // 显示视频详情--按钮
+        const showChildvideoDrawer = (item) => {
+            console.log(item)
+            childvideoDrawer.value = !childvideoDrawer.value;
+            if(childvideoDrawer.value){// 添加详情信息
+                Material_Images.video_detaile.value = item;
+            }else{ // 清空详情内容
+                // Material_Images.video_detaile.value = undefined;
             }
         };
 
@@ -481,7 +544,6 @@ export default defineComponent({
                 return  res
             },
 
-
             // 素材图片列表
             data_img_list:ref([]),
             
@@ -500,7 +562,6 @@ export default defineComponent({
 
             // 素材抽屉--确认提交按钮
             click_submit:()=>{
-                console.log(Material_Images.confirm_img_list.value)
                 var res_num = Material_Images.confirm_img_list.value.length;
                 if(res_num == 0){
                     // 提示选中图片为空
@@ -523,9 +584,11 @@ export default defineComponent({
 
             // 选择素材图片方法
             select_img_fun:(item)=>{
+                
                 // 判断添加的图片是否重复
                 if (Material_Images.confirm_img_list.value.includes(item)) {
                     // console.log('存在');
+                    Material_Images.clear_img_fun(item)
                 }else{
                     // console.log('不存在');
                     Material_Images.confirm_img_list.value.push(item)
@@ -533,11 +596,23 @@ export default defineComponent({
             },
             // 获取checked状态
             get_checked_status:(event)=>{
-                // console.log(event.target.checked,event.target)
+                var m_checked = event.target.checked; // 选择状态
+                var m_id = event.target.value;
+                if(!m_checked){
+                    Material_Images.confirm_img_list.value.forEach((obj, idx)=>{
+                        var s_id = obj.material_id;// 列表中素材id
+                        console.log(s_id)
+                        console.log(m_id)
+                        if(m_id === s_id){
+                            Material_Images.confirm_img_list.value.splice(idx, 1);
+                        }
+                    })
+                }
+
             },
             // 去除选中得素材图片方法
-            clear_img_fun:(url)=>{
-                const idx = Material_Images.confirm_img_list.value.indexOf(url);
+            clear_img_fun:(item)=>{
+                const idx = Material_Images.confirm_img_list.value.indexOf(item);
                 if (idx > -1) Material_Images.confirm_img_list.value.splice(idx, 1);
             },
             // 图片详情
@@ -731,10 +806,12 @@ export default defineComponent({
             childrenDrawer,
             childnetDrawer,
             childimgDrawer,
+            childvideoDrawer,
             onClose,
             showChildrenDrawer,
             showChildnetDrawer,
             showChildimgDrawer,
+            showChildvideoDrawer,
             Material_Images,
             expandedKeys,
             selectedKeys,
@@ -757,4 +834,5 @@ export default defineComponent({
 .Listimgbox{border: 1px solid #f2f2f2; border-radius: 6px;padding: 10px 4px 4px 4px;}
 .video_list_box{padding: 6px 0 0 0;margin: 4px 0 0 0;width: 100%;height: 28px;overflow: hidden;text-align: left;text-align: center;}
 .img_list_box{padding: 2px;margin: 4px 0 0 0;width: 100%;height: 28px;overflow: hidden;text-align: left;}
+.sucai_url{width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;margin: 0 0 20px 0;}
 </style>
