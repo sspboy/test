@@ -153,7 +153,7 @@
 
                                                                 <a-typography-link>
                                                                     <a href="#" class="font_size_12" @click="showChildimgDrawer(item)">
-                                                                    <EyeOutlined /> 查看详情 </a>
+                                                                    <EyeOutlined /> 图片详情 </a>
                                                                 </a-typography-link>
 
                                                             </a-space>
@@ -172,9 +172,9 @@
                                                                 <template #split>
                                                                 <a-divider type="vertical" />
                                                                 </template>
-
+                                                                <span class="font_size_12">视频素材</span>
                                                                 <a-typography-link>
-                                                                    <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)"><EyeOutlined />查看详情</a>
+                                                                    <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)"><EyeOutlined /> 视频详情</a>
                                                                 </a-typography-link>
                                                             </a-space>
                                                         </p>
@@ -228,14 +228,14 @@
                 <p>素材ID：{{ Material_Images.image_detaile.value.material_id }}</P>
                 <p>图片名称：{{ Material_Images.image_detaile.value.materil_name }}</p>
 
-                <p v-if="Material_Images.image_detaile.value.origin_url !== ''">
+                <div v-if="Material_Images.image_detaile.value.origin_url !== ''">
                     来源地址：
-                    <div style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px; margin: 8px 0 0 0;">
+                    <p style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px; margin: 8px 0 0 0;">
                         <a-typography-paragraph :copyable="{ tooltip: false }">
                             {{ Material_Images.image_detaile.value.origin_url }}
                         </a-typography-paragraph>
-                    </div>
-                </p>
+                    </p>
+                </div>
                 <p style="margin: 10px 0 10px 0;">素材地址：</p>
                 <div style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;margin: 0 0 20px 0;">
                         <a-typography-paragraph :copyable="{ tooltip: false }">
@@ -302,13 +302,16 @@
                 <p>素材ID：{{ Material_Images.video_detaile.value.material_id }}</P>
                 <p>图片名称：{{ Material_Images.video_detaile.value.materil_name }}</p>
 
-                <p v-if="Material_Images.video_detaile.value.origin_url !== ''">
-                    来源地址：
-                    <div class="sucai_url">
+                <div v-if="Material_Images.video_detaile.value.origin_url !== ''">
+
+                    <p>来源地址：</p>
+
+                    <p class="sucai_url">
                         <a-typography-paragraph :copyable="{ tooltip: false }">
                             {{ Material_Images.video_detaile.value.origin_url }}
                         </a-typography-paragraph>
-                    </div>
+                    </p>
+
                     <video
                         ref="videoEl"
                         controls
@@ -317,16 +320,16 @@
                     >
                         <source :src="Material_Images.video_detaile.value.origin_url" type="video/mp4"></source>
                     </video>
-                </p>
+                </div>
 
-                <p style="margin: 10px 0 10px 0;" v-if="Material_Images.video_detaile.value.byte_url !== ''">
+                <div style="margin: 10px 0 10px 0;" v-if="Material_Images.video_detaile.value.byte_url !== ''">
                     素材地址：
-                    <div class="sucai_url">
+                    <p class="sucai_url">
                         <a-typography-paragraph :copyable="{ tooltip: false }">
                             {{ Material_Images.video_detaile.value.byte_url }}
                         </a-typography-paragraph>
-                    </div>
-                </p>
+                    </p>
+                </div>
 
                 <p v-if="Material_Images.video_detaile.value.video_info !== undefined">
                     视频时长 {{ Material_Images.video_detaile.value.video_info.duration }}

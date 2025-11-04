@@ -6,6 +6,10 @@
 
     <!-- 动态渲染异步组件--添加白底图 -->
 
+    <!-- 动态渲染异步组件--添加长图 -->
+
+    <!-- 动态渲染异步组件--添加视频 -->
+
     <a-modal
       v-model:open="props.data.AddDate"
       width="100%"
@@ -47,7 +51,7 @@
                                     <p 
                                         @click="Add_img('PicList')" 
                                         class="cursor Add_img"
-                                        v-if="Pic_Fun.PicList.value.length < 6"
+                                        v-if="Pic_Fun.PicList.value.length < 5"
                                         >
                                         <a-flex justify="center" align="center" style="height: 100%;">
                                             <PlusOutlined /> 添加 
@@ -64,10 +68,10 @@
                                 
                                 <div style="width: 100%;height:120px;">
 
-                                    <p class="img_pic" v-for="item in white_img">
+                                    <p class="img_pic" v-for="item in whiteimg_Fun.PicList.value">
                                         <a-image :src="item.url" />
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="console.log('删除图片')"> 
+                                            <a-button type="text" size="small" @click="whiteimg_Fun.del"> 
                                                 <DeleteOutlined />
                                             </a-button>
                                         </span>
@@ -77,7 +81,7 @@
                                     <p 
                                         @click="Add_img('white_img')" 
                                         class="cursor Add_img"
-                                        v-if="white_img.length < 1"
+                                        v-if="whiteimg_Fun.PicList.value < 1"
                                     >
                                         <a-flex justify="center" align="center" style="height: 100%;">
                                             <PlusOutlined /> 添加 
@@ -100,14 +104,14 @@
                                     3:4长图 
                                 </a-divider>
 
-                                <div style="width: 100%;height: 140px;">
+                                <div style="width: 100%;height: 160px;">
 
-                                    <p class="img_3_4_pic" v-for="item in long_img_List">
+                                    <p class="img_3_4_pic" v-for="item in Longimg_Fun.PicList.value">
                                         
-                                        <a-image :src="item.url" />
+                                        <a-image :height="110" :src="item.url" />
 
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="console.log('删除图片')"> 
+                                            <a-button type="text" size="small" @click="Longimg_Fun.del(item.uid)"> 
                                                 <DeleteOutlined />
                                             </a-button>
                                         </span>
@@ -115,15 +119,15 @@
 
 
                                     <!--添加按钮-->
-                                    <!-- <p 
+                                    <p 
                                         @click="Add_img('long_img_List')" 
                                         class="cursor Add_3_4_img"
-                                        v-if="PicList.length < 6"
+                                        v-if="Longimg_Fun.PicList.value.length < 6"
                                     >
                                         <a-flex justify="center" align="center" style="height: 100%;">
                                             <PlusOutlined /> 添加 
                                         </a-flex>
-                                    </p> -->
+                                    </p>
 
                                 </div>
 
@@ -135,10 +139,10 @@
 
                                 <div style="width: 100%;height:120px;">
 
-                                    <p class="img_3_4_pic" v-for="item in video_info">
-                                        <a-image :src="item.url" />
+                                    <p class="img_3_4_pic" v-for="item in video_Fun.PicList.value">
+                                        <a-image :height="110" :src="item.url" />
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="del_video"> 
+                                            <a-button type="text" size="small" @click="video_Fun.del"> 
                                                 <DeleteOutlined />
                                             </a-button>
                                         </span>
@@ -148,7 +152,7 @@
                                     <p 
                                         @click="Add_img('video_info')" 
                                         class="cursor Add_3_4_img"
-                                        v-if="video_info.length < 1"
+                                        v-if="video_Fun.PicList.value.length < 1"
                                     >
                                         <a-flex justify="center" align="center" style="height: 100%;">
                                             <PlusOutlined /> 添加 
@@ -176,7 +180,7 @@
                             >
                                 <a-row :gutter="[16,0]">
 
-                                    <a-col :span="18">
+                                    <a-col :span="24">
                                         <a-form-item
                                             label="商品标题"
                                             name="name"
@@ -187,7 +191,7 @@
                                         </a-form-item>
                                     </a-col>
 
-                                    <a-col :span="6">
+                                    <a-col :span="8">
                                         <a-form-item 
                                             label="商品类型" 
                                             name="product_type"
@@ -202,9 +206,7 @@
                                         </a-form-item>
                                     </a-col>
 
-
-
-                                    <a-col :span="12">
+                                    <a-col :span="8">
                                         <a-form-item
                                             label="推荐语"
                                             name="recommend_remark"
@@ -213,7 +215,7 @@
                                             <a-input v-model:value="formState.recommend_remark" show-count :maxlength="30" placeholder="输入商品推荐语"/>
                                         </a-form-item>
                                     </a-col>
-                                    <a-col :span="12">
+                                    <a-col :span="8">
                                         <a-form-item
                                             label="商家备注"
                                             name="remark"
@@ -222,7 +224,7 @@
                                             <a-input v-model:value="formState.remark" placeholder="商家可见备注" show-count :maxlength="30" />
                                         </a-form-item>
                                     </a-col>
-                                    <a-col :span="6">
+                                    <a-col :span="8">
                                         <a-form-item 
                                             label="支付方式" 
                                             name="pay_type"
@@ -236,7 +238,7 @@
                                         </a-form-item>
                                     </a-col>
                                     
-                                    <a-col :span="6">
+                                    <a-col :span="8">
                                         <a-form-item 
                                             label="减库存类型" 
                                             name="reduce_type"
@@ -249,7 +251,7 @@
                                         </a-form-item>
                                     </a-col>
 
-                                    <a-col :span="6">
+                                    <a-col :span="8">
                                         <a-form-item
                                             label="客服电话"
                                             name="mobile"
@@ -260,7 +262,7 @@
                                         </a-form-item>
                                     </a-col>
 
-                                    <a-col :span="6">
+                                    <a-col :span="8">
                                         <a-form-item
                                             label="提交方式"
                                             name="commit"
@@ -273,27 +275,27 @@
                                         </a-form-item>
                                     </a-col>
 
-                                    <a-col :span="6">
+                                    <a-col :span="8">
                                         <a-form-item
                                             label="运费模板"
                                             name="freight_id"
                                             :rules="[{ required: true, message: '请选择运费模板'}]"
                                         >
                                             <a-input-group compact>
-                                                <a-input v-model:value="formState.freight_id" placeholder="选择运费模板" disabled style="width: calc(60%)" />
+                                                <a-input v-model:value="formState.freight_id" placeholder="选择运费模板" disabled style="width: calc(74%)" />
                                                 <a-button >选择</a-button>
                                             </a-input-group>
                                         </a-form-item>                                    
                                     </a-col>
 
-                                    <a-col :span="6">
+                                    <a-col :span="8">
                                         <a-form-item
                                             label="尺码模板"
                                             name="size_info_template_id"
                                             :rules="[{ required: true, message: '请选择尺码模板'}]"
                                         >
                                             <a-input-group compact>
-                                                <a-input v-model:value="formState.size_info_template_id" placeholder="请选择尺码模板" disabled style="width: calc(60%)" />
+                                                <a-input v-model:value="formState.size_info_template_id" placeholder="请选择尺码模板" disabled style="width: calc(74%)" />
                                                 <a-button>选择</a-button>
                                             </a-input-group>
                                         </a-form-item>                                    
@@ -330,7 +332,6 @@
                     </a-tab-pane>
 
                 </a-tabs>
-
 
             </div> 
         </a-layout-content>
@@ -388,7 +389,7 @@ export default defineComponent({
         
         // 主图对象
         const Pic_Fun = {
-
+            open:ref(false),// 抽屉状态
             PicList:ref([
                 {
                     uid: '-1',
@@ -396,42 +397,28 @@ export default defineComponent({
                     status: 'done',
                     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
                 },
-                // {
-                //     uid: '-2',
-                //     name: 'image.png',
-                //     status: 'done',
-                //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                // },
-                // {
-                //     uid: '-3',
-                //     name: 'image.png',
-                //     status: 'done',
-                //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                // },
-                // {
-                //     uid: '-4',
-                //     name: 'image.png',
-                //     status: 'done',
-                //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                // },
-                // {
-                //     uid: '-xxx',
-                //     percent: 50,
-                //     name: 'image.png',
-                //     status: 'uploading',
-                //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                // },
-                // {
-                //     uid: '-5',
-                //     name: 'image.png',
-                //     status: 'error',
-                // },
+                {
+                    uid: '-2',
+                    name: 'image.png',
+                    status: 'done',
+                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                },
+                {
+                    uid: '-3',
+                    name: 'image.png',
+                    status: 'done',
+                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                },
+                {
+                    uid: '-4',
+                    name: 'image.png',
+                    status: 'done',
+                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                }
             ]),
             // 删除图片
             del_pic:(d_id)=>{
-                // console.log(d_id)
                 Pic_Fun.PicList.value.forEach((val, idx) => {
-                    // console.log(val,idx);
                     if(d_id == val.uid){Pic_Fun.PicList.value.splice(idx, 1)}
                 })
             },
@@ -442,65 +429,83 @@ export default defineComponent({
         
         }
 
-
         // 3:4长图
-        const long_img_List = ref([
-            {
-                uid: '-1',
-                name: 'image.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            },
-            {
-                uid: '-2',
-                name: 'image.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            },
-            {
-                uid: '-3',
-                name: 'image.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            },
-            {
-                uid: '-4',
-                name: 'image.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            },
-            // {
-            //     uid: '-xxx',
-            //     percent: 50,
-            //     name: 'image.png',
-            //     status: 'uploading',
-            //     url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            // },
-            // {
-            //     uid: '-5',
-            //     name: 'image.png',
-            //     status: 'error',
-            // },
-        ]);
+        const Longimg_Fun = {
+            open:ref(false),// 抽屉状态
+            PicList:ref([
+                {
+                    uid: '-1',
+                    name: 'image.png',
+                    status: 'done',
+                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                },
+                {
+                    uid: '-2',
+                    percent: 50,
+                    name: 'image.png',
+                    status: 'uploading',
+                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                },
 
-        // 长图删除
-        const del_long_img = (data_name,d_id)=>{
-            
-        }
-        // 白底图
-        const white_img = ref([
-            {
-                uid: '-1',
-                name: 'image.png',
-                status: 'done',
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+            ]),
+
+            // 删除长图
+            del:(d_id)=>{
+                // console.log(d_id)
+                Longimg_Fun.PicList.value.forEach((val, idx) => {
+                    // console.log(val,idx);
+                    if(d_id == val.uid){Longimg_Fun.PicList.value.splice(idx, 1)}
+                })
             },
-        ])
-        // 白底图删除
-        const del_white_img = ()=>{
-            
+            // 添加长图
+            add:()=>{
+                console.log('添加长图')
+            }
         }
+
+        // 白底图
+        const whiteimg_Fun={
+            open:ref(false),// 抽屉状态
+
+            PicList:ref([
+                {
+                        uid: '-1',
+                        name: 'image.png',
+                        status: 'done',
+                        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                },
+            ]),
+            // 删除白底图
+            del:()=>{
+                whiteimg_Fun.PicList.value.length = 0
+            },
+            // 添加白底图
+            add:()=>{
+                console.log('添加白底图')
+            }
+        }
+
         // 视频
+        const video_Fun={
+            open:ref(false),// 抽屉状态
+            PicList:ref([
+                {
+                    uid: '-1',
+                    name: 'image.png',
+                    status: 'done',  
+                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+                },
+            ]),
+            // 删除视频
+            del:()=>{
+                video_Fun.PicList.value.length = 0;
+            },
+            // 添加视频
+            add:()=>{
+
+            }
+        }
+
         const video_info = ref([
             {
                 uid: '-1',
@@ -541,9 +546,10 @@ export default defineComponent({
         return{
             PAGEDATA,
             Pic_Fun,// 主图
+            whiteimg_Fun,// 白底图
+            Longimg_Fun,// 长图
+            video_Fun,
             props,
-            long_img_List,
-            white_img,
             video_info,
             activeKey,
             handleOk,
