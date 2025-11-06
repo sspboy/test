@@ -33,7 +33,6 @@
                                         </span>
                                     </a-breadcrumb-item>
                             </a-breadcrumb>
-
                         </div>
 
                     </a-space>
@@ -45,8 +44,10 @@
                     <a-space :size="28">
                         <!--本地上传图片 按钮-->
                         <a-button type="primary" size="small" @click="showChildrenDrawer">本地上传图片</a-button>
-                        <!--网络地址上传图片 按钮-->
+                        <!--上传图片 按钮-->
                         <a-button size="small" @click="showChildnetDrawer">网络地址上传图片</a-button>
+                        <!--上传视频 按钮-->
+                        <a-button size="small" @click="showChildnetDrawer">上传视频</a-button>
                         <!--关闭窗口-->
                         <CloseOutlined @click="onClose" />
                     </a-space>
@@ -203,7 +204,7 @@
         </div>
 
         <!--本地上传 抽屉 -->
-        <a-drawer v-model:open="childrenDrawer" title="本地上传" width="320" :closable="false">
+        <a-drawer v-model:open="childrenDrawer" title="本地上传图片" width="320" :closable="false">
 
             <a-button type="primary" @click="showChildrenDrawer">This is two-level drawer</a-button>
 
@@ -211,7 +212,14 @@
 
 
         <!--网络上传 抽屉 -->
-        <a-drawer v-model:open="childnetDrawer" title="网络地址上传" width="320" :closable="false">
+        <a-drawer v-model:open="childnetDrawer" title="网络地址上传图片" width="320" :closable="false">
+
+            <a-button type="primary" @click="showChildnetDrawer">This is two-level drawer</a-button>
+
+        </a-drawer>
+
+        <!--网络上传视频 抽屉 -->
+        <a-drawer v-model:open="childnetDrawer" title="网络地址上传视频" width="320" :closable="false">
 
             <a-button type="primary" @click="showChildnetDrawer">This is two-level drawer</a-button>
 
@@ -227,9 +235,11 @@
                 <p>所属文件夹ID：{{ Material_Images.image_detaile.value.folder_id }}</p>
                 <p>素材ID：{{ Material_Images.image_detaile.value.material_id }}</P>
                 <p>图片名称：{{ Material_Images.image_detaile.value.materil_name }}</p>
-
                 <div v-if="Material_Images.image_detaile.value.origin_url !== ''">
-                    来源地址：
+                    <p style="margin: 10px 0 10px 0;">来源地址：</p>
+                    <p style="margin: 10px 0 10px 0;">
+                        <img width="50" :src="Material_Images.image_detaile.value.origin_url"></img>
+                    </p>
                     <p style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px; margin: 8px 0 0 0;">
                         <a-typography-paragraph :copyable="{ tooltip: false }">
                             {{ Material_Images.image_detaile.value.origin_url }}
@@ -237,6 +247,8 @@
                     </p>
                 </div>
                 <p style="margin: 10px 0 10px 0;">素材地址：</p>
+                <p style="margin: 10px 0 10px 0;"><img width="50" :src="Material_Images.image_detaile.value.byte_url"></img></p>
+
                 <div style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;margin: 0 0 20px 0;">
                         <a-typography-paragraph :copyable="{ tooltip: false }">
                             {{ Material_Images.image_detaile.value.byte_url }}
@@ -248,16 +260,6 @@
                     宽  {{ Material_Images.image_detaile.value.photo_info.height }}px
                     格式  {{ Material_Images.image_detaile.value.photo_info.format }}
                 </p>
-
-            <!--视频信息-->
-                <p v-else-if="Material_Images.image_detaile.value.video_info !== undefined">
-                    封面 {{ Material_Images.image_detaile.value.video_info.video_cover_url }}
-                    视频时长 {{ Material_Images.image_detaile.value.video_info.duration }}
-                    宽 {{ Material_Images.image_detaile.value.video_info.duration }}
-                    格式 {{ Material_Images.image_detaile.value.video_info.format }}
-                </p>
-
-
                 <p>审核状态：
                     <!--1-待审核；2-审核中；3-通过 4-拒绝；注意：只有audit_status =3时byte_url才会返回-->
                     <span v-if="Material_Images.image_detaile.value.audit_status == '1'">待审核</span>
@@ -296,7 +298,7 @@
         <!--视频详情 抽屉 -->
         <a-drawer v-model:open="childvideoDrawer" title="视频详情" width="320" :closable="false">
 
-            <div v-if="Material_Images.video_detaile !== undefined">
+            <div v-if="Material_Images.video_detaile.value !== undefined">
             <!--视频信息-->
                 <p>所属文件夹ID：{{ Material_Images.video_detaile.value.folder_id }}</p>
                 <p>素材ID：{{ Material_Images.video_detaile.value.material_id }}</P>
@@ -313,7 +315,7 @@
                     </p>
 
                     <video
-                        ref="videoEl"
+                        :key="Material_Images.video_detaile.value.material_id"
                         controls
                         preload="metadata"
                         width="100%" 
@@ -333,12 +335,11 @@
 
                 <p v-if="Material_Images.video_detaile.value.video_info !== undefined">
                     视频时长 {{ Material_Images.video_detaile.value.video_info.duration }}
-                    宽 {{ Material_Images.video_detaile.value.video_info.duration }}
                     格式 {{ Material_Images.video_detaile.value.video_info.format }}
                 </p>
-            </div>
+            </div> 
 
-            <div v-if="Material_Images.image_detaile == undefined">
+            <div v-if="Material_Images.video_detaile.value == undefined">
                   <a-spin />
             </div>
 
@@ -451,10 +452,12 @@ export default defineComponent({
         };
         // 显示视频详情--按钮
         const showChildvideoDrawer = (item) => {
-            console.log(item)
             childvideoDrawer.value = !childvideoDrawer.value;
+
             if(childvideoDrawer.value){// 添加详情信息
+                Material_Images.video_detaile.value = undefined;
                 Material_Images.video_detaile.value = item;
+                console.log(Material_Images.video_detaile.value)
             }else{ // 清空详情内容
                 // Material_Images.video_detaile.value = undefined;
             }
@@ -570,8 +573,9 @@ export default defineComponent({
                     // 提示选中图片为空
                     tool.Fun_.message('info','已选图片素材不能为空！')
                 }else if(res_num > 0){
-                    console.log('回调添加图片到指定容器')
-                    ctx.emit('add_img_callback',Material_Images.confirm_img_list.value)
+                    // console.log(props.data.setimg_name)
+                    onClose() // 关闭添加素材组件
+                    ctx.emit('add_img_callback', Material_Images.confirm_img_list.value)
                 }
                 
                 // 提示添加图片成功

@@ -2,13 +2,7 @@
 <template>
 
     <!-- 动态渲染异步组件--添加主图 -->
-    <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="Pic_Fun.add_pic" :data="PAGEDATA"/>
-
-    <!-- 动态渲染异步组件--添加白底图 -->
-
-    <!-- 动态渲染异步组件--添加长图 -->
-
-    <!-- 动态渲染异步组件--添加视频 -->
+    <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="PAGEDATA.Add_Callback" :data="PAGEDATA"/>
 
     <a-modal
       v-model:open="props.data.AddDate"
@@ -39,17 +33,22 @@
                                 <div style="width: 100%; height: 120px;">
 
                                     <p class="img_pic" v-for="item in Pic_Fun.PicList.value">
-                                        <a-image :src="item.url" />
+
+                                        <a-image :src="item.byte_url" />
+                                        <!--图片尺寸不复合情况下-->
+
+                                        <!--图片尺寸1：1情况下-->
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="Pic_Fun.del_pic(item.uid)"> 
+                                            <a-button type="text" size="small" @click="Pic_Fun.del_pic(item.material_id)"> 
                                                 <DeleteOutlined />
                                             </a-button>
                                         </span>
+
                                     </p>
 
                                     <!--添加按钮-->
                                     <p 
-                                        @click="Add_img('PicList')" 
+                                        @click="PAGEDATA.change_material_type('PicList')" 
                                         class="cursor Add_img"
                                         v-if="Pic_Fun.PicList.value.length < 5"
                                         >
@@ -69,7 +68,9 @@
                                 <div style="width: 100%;height:120px;">
 
                                     <p class="img_pic" v-for="item in whiteimg_Fun.PicList.value">
-                                        <a-image :src="item.url" />
+
+                                        <a-image :src="item.byte_url" />
+
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
                                             <a-button type="text" size="small" @click="whiteimg_Fun.del"> 
                                                 <DeleteOutlined />
@@ -79,7 +80,7 @@
 
                                     <!--添加按钮-->
                                     <p 
-                                        @click="Add_img('white_img')" 
+                                        @click="PAGEDATA.change_material_type('white_img')" 
                                         class="cursor Add_img"
                                         v-if="whiteimg_Fun.PicList.value < 1"
                                     >
@@ -108,10 +109,10 @@
 
                                     <p class="img_3_4_pic" v-for="item in Longimg_Fun.PicList.value">
                                         
-                                        <a-image :height="110" :src="item.url" />
+                                        <a-image :height="110" :src="item.byte_url" />
 
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="Longimg_Fun.del(item.uid)"> 
+                                            <a-button type="text" size="small" @click="Longimg_Fun.del(item.material_id)"> 
                                                 <DeleteOutlined />
                                             </a-button>
                                         </span>
@@ -120,9 +121,9 @@
 
                                     <!--添加按钮-->
                                     <p 
-                                        @click="Add_img('long_img_List')" 
+                                        @click="PAGEDATA.change_material_type('long_img_List')" 
                                         class="cursor Add_3_4_img"
-                                        v-if="Longimg_Fun.PicList.value.length < 6"
+                                        v-if="Longimg_Fun.PicList.value.length < 5"
                                     >
                                         <a-flex justify="center" align="center" style="height: 100%;">
                                             <PlusOutlined /> 添加 
@@ -140,7 +141,7 @@
                                 <div style="width: 100%;height:120px;">
 
                                     <p class="img_3_4_pic" v-for="item in video_Fun.PicList.value">
-                                        <a-image :height="110" :src="item.url" />
+                                        <a-image :height="110" :src="item.byte_url" />
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
                                             <a-button type="text" size="small" @click="video_Fun.del"> 
                                                 <DeleteOutlined />
@@ -150,7 +151,7 @@
 
                                     <!--添加按钮-->
                                     <p 
-                                        @click="Add_img('video_info')" 
+                                        @click="PAGEDATA.change_material_type('video_info')" 
                                         class="cursor Add_3_4_img"
                                         v-if="video_Fun.PicList.value.length < 1"
                                     >
@@ -342,6 +343,7 @@
 import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,h } from 'vue';
 import { useStore } from 'vuex'
 import { PlusOutlined,DeleteOutlined} from '@ant-design/icons-vue';
+import * as TOOL from '@/assets/JS_Model/tool';
 
 // 组件引用=====开始
 export default defineComponent({
@@ -358,187 +360,136 @@ export default defineComponent({
     },
     setup(props,ctx) {
 
+        const tool = new TOOL.TOOL()            // 工具方法
+
         // 添加商品配置
         const PAGEDATA=reactive({
             selectimg_open:false,       // 添加主图-图片显示状态配置
             setimg_name:'',             // 添加图片的对象['PicList','long_img_List','white_img','video']
-        })
-
-        // 调用素材组件,添加图片到页面方法
-        const Add_img = (typeName) => {
-
-            PAGEDATA.selectimg_open = true;
-            PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
-
-        }
-
-        // 图片组件获取地址后添加到页面容器：：：回调方法
-        const Add_Callback = (typeNameObject) =>{
-
-            if(type == 'PicList'){// 判断回调type：：：主图添加
-                // 添加主图方法
-            }else if(type == 'long_img_List'){// 判断回调type：：：3:4长图添加
-                // 添加长图方法
-            }else if(type == 'white_img'){// 判断回调type：：：白底图添加
-                // 添加白底图方法
-            }else if(type == 'white_img'){
-                // 添加视频方法
+            // 图片组件获取地址后添加到页面容器：：：回调方法
+            Add_Callback:(data)=>{
+                var type = PAGEDATA.setimg_name; // 添加类型
+                if(type == 'PicList'){// 判断回调type：：：主图添加
+                    // console.log(type,'添加主图:')
+                    Pic_Fun.add(data)// 添加主图方法
+                }else if(type == 'long_img_List'){// 判断回调type：：：3:4长图添加
+                    // console.log(type,'添加长图')
+                    Longimg_Fun.add(data)// 添加长图方法
+                }else if(type == 'white_img'){// 判断回调type：：：白底图添加
+                    // console.log(type,'添加白底图')
+                    whiteimg_Fun.add(data)// 添加白底图方法
+                }else if(type == 'video_info'){
+                    // console.log(type,'添加视频:验证是否视频')
+                    video_Fun.add(data)// 添加视频方法
+                }
+            },
+            // 变更添加素材类型
+            change_material_type:(typeName)=>{
+                PAGEDATA.selectimg_open = true;
+                PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
             }
-
-        }
+        })
         
         // 主图对象
         const Pic_Fun = {
-            open:ref(false),// 抽屉状态
-            PicList:ref([
-                {
-                    uid: '-1',
-                    name: 'image.png',
-                    status: 'done',
-                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                },
-                {
-                    uid: '-2',
-                    name: 'image.png',
-                    status: 'done',
-                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                },
-                {
-                    uid: '-3',
-                    name: 'image.png',
-                    status: 'done',
-                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                },
-                {
-                    uid: '-4',
-                    name: 'image.png',
-                    status: 'done',
-                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                }
-            ]),
+            PicList:ref([]),
             // 删除图片
             del_pic:(d_id)=>{
                 Pic_Fun.PicList.value.forEach((val, idx) => {
-                    if(d_id == val.uid){Pic_Fun.PicList.value.splice(idx, 1)}
+                    if(d_id == val.material_id){Pic_Fun.PicList.value.splice(idx, 1)}
                 })
             },
             // 添加图片
-            add_pic:(list)=>{
-                console.log(list)
+            add:(data)=>{
+
+                data.forEach((obj,idx)=>{
+                    Pic_Fun.PicList.value.push(obj)
+                })
+
+                if(Pic_Fun.PicList.value.length > 5){
+                    Pic_Fun.PicList.value = Pic_Fun.PicList.value.slice(0, 5)
+                }
+
             }
-        
         }
 
         // 3:4长图
         const Longimg_Fun = {
-            open:ref(false),// 抽屉状态
-            PicList:ref([
-                {
-                    uid: '-1',
-                    name: 'image.png',
-                    status: 'done',
-                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                },
-                {
-                    uid: '-2',
-                    percent: 50,
-                    name: 'image.png',
-                    status: 'uploading',
-                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                },
-
-            ]),
-
+            PicList:ref([]),
             // 删除长图
             del:(d_id)=>{
                 // console.log(d_id)
                 Longimg_Fun.PicList.value.forEach((val, idx) => {
                     // console.log(val,idx);
-                    if(d_id == val.uid){Longimg_Fun.PicList.value.splice(idx, 1)}
+                    if(d_id == val.material_id){Longimg_Fun.PicList.value.splice(idx, 1)}
                 })
             },
             // 添加长图
-            add:()=>{
-                console.log('添加长图')
+            add:(data)=>{
+                data.forEach((obj,idx)=>{
+                    Longimg_Fun.PicList.value.push(obj)
+                })
+                if(Longimg_Fun.PicList.value.length > 5){
+                    Longimg_Fun.PicList.value = Longimg_Fun.PicList.value.slice(0, 5)
+                }
             }
         }
 
         // 白底图
         const whiteimg_Fun={
-            open:ref(false),// 抽屉状态
-
-            PicList:ref([
-                {
-                        uid: '-1',
-                        name: 'image.png',
-                        status: 'done',
-                        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                },
-            ]),
+            PicList:ref([]),
             // 删除白底图
             del:()=>{
                 whiteimg_Fun.PicList.value.length = 0
             },
             // 添加白底图
-            add:()=>{
-                console.log('添加白底图')
+            add:(data)=>{
+                whiteimg_Fun.PicList.value.length = 0;
+                whiteimg_Fun.PicList.value.push(data[0])
             }
         }
 
         // 视频
         const video_Fun={
-            open:ref(false),// 抽屉状态
-            PicList:ref([
-                {
-                    uid: '-1',
-                    name: 'image.png',
-                    status: 'done',  
-                    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-                },
-            ]),
+            PicList:ref([]),
             // 删除视频
             del:()=>{
                 video_Fun.PicList.value.length = 0;
             },
             // 添加视频
-            add:()=>{
+            add:(data)=>{
 
+                var obj = data[0]
+                var material_type = obj.material_type; // 对象类型图片、视频
+                console.log(material_type)
+
+                // 判断添加素材类型：仅允许添加
+                if(material_type == 'photo'){
+                    tool.Fun_.message('info', '请选择视频文件')
+                }else if(material_type == 'video'){
+                    video_Fun.PicList.value.length = 0;
+                    video_Fun.PicList.value.push(data[0])
+                }
             }
-        }
-
-        const video_info = ref([
-            {
-                uid: '-1',
-                name: 'image.png',
-                status: 'done',  
-                url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            },
-        ])
-        // 视频删除
-        const del_video = ()=>{
-            video_info.value = []
         }
 
         // 基础信息
         const formRef = ref();
         const formState = reactive({
-            product_type:'0',
-            mobile:'13888888888',
-            name:undefined,
-            recommend_remark:undefined,
-            pay_type:'1',
-            reduce_type:'1',        // 减库存类型
-            freight_id:undefined,   // 运费模板
-            size_info_template_id:undefined,    // 尺码模板
-            commit:'false',         // 提交
-            remark:undefined        // 商家备注
+            product_type:'0',           // 商品类别
+            mobile:'13888888888',       // 客服电话
+            name:undefined,             // 商品标题
+            recommend_remark:undefined, // 推荐语
+            pay_type:'1',               // 支付类型
+            reduce_type:'1',            // 减库存类型
+            freight_id:undefined,       // 运费模板
+            size_info_template_id:undefined,// 尺码模板
+            commit:'false',             // 提交
+            remark:undefined            // 商家备注
         })
 
-
         // 确认按钮
-        const handleOk = e => {
-            console.log(e);
-        };
+        const handleOk = e => {console.log(e);};
 
         // 默认选项卡
         const activeKey = ref('1');
@@ -550,13 +501,10 @@ export default defineComponent({
             Longimg_Fun,// 长图
             video_Fun,
             props,
-            video_info,
             activeKey,
             handleOk,
             formState,
             formRef,
-            del_video,
-            Add_img,
         }
     }
 })
