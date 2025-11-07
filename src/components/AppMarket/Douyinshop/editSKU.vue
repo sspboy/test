@@ -4,7 +4,7 @@
 
       <a-modal v-model:open="props.data.open" width="800px" :title="props.data.title" :confirm-loading="confirmLoading" @ok="handleOk" >
 
-        <a-form ref="formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm">
+      <a-form ref="formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm">
 
           <a-form-item 
             v-for="(spec, spec_index) in dynamicValidateForm.obj" 
@@ -88,7 +88,7 @@
                 <!--规格值 结束-->
 
 
-        </a-form-item>
+          </a-form-item>
           
 
         <a-form-item>
@@ -188,6 +188,7 @@ export default defineComponent({
       const API = new utils.A_Patch()       // 请求接口地址合集
       const TO = new TABLE.TableOperate()   // 表格操作方法
       const t = new tool.TOOL()// 公用方法
+
       const confirmLoading = ref(false);
       const formRef = ref();
       const skulistRef = ref();
@@ -521,44 +522,43 @@ export default defineComponent({
 
 
       // 规格列表
-
       const columns = [
-      {
-        title: 'Name',
-        dataIndex: 'name',
-      },
-      {
-        title: 'Cash Assets',
-        className: 'column-money',
-        dataIndex: 'money',
-      },
-      {
-        title: 'Address',
-        dataIndex: 'address',
-      },
-    ];
+        {
+          title: 'Name',
+          dataIndex: 'name',
+        },
+        {
+          title: 'Cash Assets',
+          className: 'column-money',
+          dataIndex: 'money',
+        },
+        {
+          title: 'Address',
+          dataIndex: 'address',
+        },
+      ];
 
 
-    const data = [
-      {
-        key: '1',
-        name: 'John Brown',
-        money: '￥300,000.00',
-        address: 'New York No. 1 Lake Park',
-      },
-      {
-        key: '2',
-        name: 'Jim Green',
-        money: '￥1,256,000.00',
-        address: 'London No. 1 Lake Park',
-      },
-      {
-        key: '3',
-        name: 'Joe Black',
-        money: '￥120,000.00',
-        address: 'Sidney No. 1 Lake Park',
-      },
-    ];
+      const data = [
+        {
+          key: '1',
+          name: 'John Brown',
+          money: '￥300,000.00',
+          address: 'New York No. 1 Lake Park',
+        },
+        {
+          key: '2',
+          name: 'Jim Green',
+          money: '￥1,256,000.00',
+          address: 'London No. 1 Lake Park',
+        },
+        {
+          key: '3',
+          name: 'Joe Black',
+          money: '￥120,000.00',
+          address: 'Sidney No. 1 Lake Park',
+        },
+      ];
 
         
         return {

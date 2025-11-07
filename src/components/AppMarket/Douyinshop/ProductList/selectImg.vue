@@ -23,18 +23,17 @@
                         <!--面包屑导航-->
                         <div style="margin: 8px 0 0 20px;"> 
                             <a-breadcrumb>
-                                    <a-breadcrumb-item v-for=" item in PAGEDATA.BreadCrumb" href="#">
-                                        <FolderOutlined />
-                                        <span 
-                                            @click="console.log('加载当前文件夹素材列表', item.folder_id)" 
-                                            class="font_size_12"
-                                        >
-                                            {{ item.folder_name }}
-                                        </span>
-                                    </a-breadcrumb-item>
+                                <a-breadcrumb-item v-for=" item in PAGEDATA.BreadCrumb" href="#">
+                                    <FolderOutlined />
+                                    <span 
+                                        @click="console.log('加载当前文件夹素材列表', item.folder_id)" 
+                                        class="font_size_12"
+                                    >
+                                    {{ item.folder_name }}
+                                    </span>
+                                </a-breadcrumb-item>
                             </a-breadcrumb>
                         </div>
-
                     </a-space>
 
                 </a-col>
@@ -106,13 +105,15 @@
                                     
                                     <!--列表数据 迭代-->
                                     <div v-for="item in Material_Images.confirm_img_list.value" class="confimbox">
-                                        <a-image style="height:50px;" :src="item.byte_url" />
-                                        <p style="margin: 10px 0 0 0;font-size: 12px;">
-                                            <a-button type="text" size="small" @click="Material_Images.clear_img_fun(item)"> 
-                                            <CloseCircleOutlined />
-                                            </a-button>
-                                        </p>
+                                            <a-image v-if="item.material_type == 'photo'" style="height:50px;" :src="item.byte_url" />
+                                            <a-image v-if="item.material_type == 'video'" style="height:50px;" :src="item.video_info.video_cover_url" />
+                                            <p style="margin: 10px 0 0 0;font-size: 12px;">
+                                                <a-button type="text" size="small" @click="Material_Images.clear_img_fun(item)"> 
+                                                <CloseCircleOutlined />
+                                                </a-button>
+                                            </p>
                                     </div>
+
                             </div>
 
 
@@ -173,7 +174,13 @@
                                                                 <template #split>
                                                                 <a-divider type="vertical" />
                                                                 </template>
-                                                                <span class="font_size_12">视频素材</span>
+                                                                <a-typography-link>
+                                                                    <a-checkbox 
+                                                                        :value="item.material_id"
+                                                                        @change="Material_Images.select_img_fun(item)"
+                                                                        class="font_size_12" 
+                                                                    >视频</a-checkbox>
+                                                                </a-typography-link>
                                                                 <a-typography-link>
                                                                     <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)"><EyeOutlined /> 视频详情</a>
                                                                 </a-typography-link>
@@ -334,7 +341,7 @@
                 </div>
 
                 <p v-if="Material_Images.video_detaile.value.video_info !== undefined">
-                    视频时长 {{ Material_Images.video_detaile.value.video_info.duration }}
+                    视频时长 {{ Material_Images.video_detaile.value.video_info.duration }} 秒 
                     格式 {{ Material_Images.video_detaile.value.video_info.format }}
                 </p>
             </div> 

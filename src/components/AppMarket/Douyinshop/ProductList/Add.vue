@@ -141,7 +141,7 @@
                                 <div style="width: 100%;height:120px;">
 
                                     <p class="img_3_4_pic" v-for="item in video_Fun.PicList.value">
-                                        <a-image :height="110" :src="item.byte_url" />
+                                        <a-image :height="110" :src="item.video_info.video_cover_url" />
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
                                             <a-button type="text" size="small" @click="video_Fun.del"> 
                                                 <DeleteOutlined />
@@ -309,9 +309,104 @@
 
                     <a-tab-pane key="3" tab="规格&库存">
                         
-                    <a-divider orientation="left" orientation-margin="0px">规格&库存</a-divider>
-                    <p>规格</p>
-                    <p>库存列表</p>
+                        <a-divider orientation="left" orientation-margin="0px">
+                            规格&库存
+                        </a-divider>
+
+                        <a-form ref="sku_formRef" name="dynamic_form_nest_item" :model="dynamicValidateForm">
+
+                            <a-form-item 
+                                v-for="(item,index) in dynamicValidateForm" 
+                                :name="[item.name]" 
+                                :rules="{required: true,trigger: 'change', message:''}"
+                            >
+                                <!--规格名称 开始-->
+                                <a-input 
+                                    v-model:value="item.name"
+                                    size="small" 
+                                    placeholder="输入规格名称" 
+                                    style="width: 200px;" 
+                                    autocomplete="off"
+                                    allow-clear 
+                                />
+                    
+                                <a-button type="dashed" size="small" class="add_btn_class" block @click="addspecvalue(index)">
+                                <PlusOutlined />
+                                </a-button>
+
+                                <a-button type="dashed" size="small" class="add_btn_class" block @click="removeSpec(item,index)">
+                                <MinusOutlined />
+                                </a-button>
+                            <!--规格名称 结束-->
+
+                            <!--规格值 开始-->
+                            <div style="width: 100%;clear: both; margin:4px 0 0 0;">
+
+                            <a-space v-for="(v_item, spec_value_index) in item.value" style="margin:2px 4px 0 0;" align="baseline" >
+                                    
+                                <a-form-item v-if="index === 0" :name="[index, spec_value_index]" :rules="{required: true, trigger: 'change', message:''}">
+
+                                    <div style="width: 200px;margin: 10px 0 4px 0;">
+                                        <a-input v-model:value="v_item.v_name" 
+                                        placeholder="输入值" 
+                                        size="small" 
+                                        style="font-size: 12px;margin:0 0 6px 0;" 
+                                        autocomplete="off"
+                                        allow-clear/>
+                                    </div>
+
+                                    <span v-if="v_item.url=== undefined || v_item.url === ''">
+                                        <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
+                                        <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor"/>
+                                        </span>
+                                    </span>
+
+                                    <span v-else-if="v_item.url != undefined" style="float: left;">
+                                        <a-image style="border-radius:4px;margin-top: 5px;" :width="42" :height="42" :src="v_item.url"/>
+                                    </span>
+
+                                <a-form-item>
+                                    <a-textarea 
+                                    placeholder="输入规格图片地址" 
+                                    size="small"
+                                    autocomplete="off"
+                                    :auto-size="{ minRows: 2, maxRows: 2 }" 
+                                    allow-clear
+                                    style="font-size:12px;margin:4px 0 0 6px;width: 150px;"
+                                    />
+                                </a-form-item>
+                                
+                                </a-form-item>
+
+
+
+                                <a-form-item v-if="index != 0" :name="['obj', index]" :rules="{required: true, trigger: 'change', message:''}">
+                                    <a-input 
+                                    v-model:value="v_name" 
+                                    placeholder="输入值" 
+                                    size="small"
+                                    autocomplete="off"
+                                    style="font-size: 12px;width: 200px;" 
+                                    allow-clear/>
+                                </a-form-item>
+
+                                <MinusCircleOutlined @click="remove_spec_value(item, index)" style="margin: 0 5px 0 0;" />
+
+                            </a-space>
+
+                            </div>
+                            <!--规格值 结束-->
+
+
+                            </a-form-item>
+
+                            <a-form-item>
+                                <a-button type="dashed" @click="addspec" size="middle">添加规格</a-button>
+                            </a-form-item>
+
+                        </a-form>
+
+
                     </a-tab-pane>
 
                     <a-tab-pane key="4" tab="分类属性">
@@ -342,8 +437,9 @@
 <script>
 import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,h } from 'vue';
 import { useStore } from 'vuex'
-import { PlusOutlined,DeleteOutlined} from '@ant-design/icons-vue';
+import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
 
 // 组件引用=====开始
 export default defineComponent({
@@ -351,6 +447,8 @@ export default defineComponent({
     components:{
         PlusOutlined,
         DeleteOutlined,
+        MinusOutlined,
+        MinusCircleOutlined,
         selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
         // 运费模板组件
         // 尺码模板组件
@@ -361,6 +459,7 @@ export default defineComponent({
     setup(props,ctx) {
 
         const tool = new TOOL.TOOL()            // 工具方法
+        const TO = new TABLE.TableOperate()   // 表格操作方法
 
         // 添加商品配置
         const PAGEDATA=reactive({
@@ -370,16 +469,12 @@ export default defineComponent({
             Add_Callback:(data)=>{
                 var type = PAGEDATA.setimg_name; // 添加类型
                 if(type == 'PicList'){// 判断回调type：：：主图添加
-                    // console.log(type,'添加主图:')
                     Pic_Fun.add(data)// 添加主图方法
                 }else if(type == 'long_img_List'){// 判断回调type：：：3:4长图添加
-                    // console.log(type,'添加长图')
                     Longimg_Fun.add(data)// 添加长图方法
                 }else if(type == 'white_img'){// 判断回调type：：：白底图添加
-                    // console.log(type,'添加白底图')
                     whiteimg_Fun.add(data)// 添加白底图方法
                 }else if(type == 'video_info'){
-                    // console.log(type,'添加视频:验证是否视频')
                     video_Fun.add(data)// 添加视频方法
                 }
             },
@@ -494,6 +589,137 @@ export default defineComponent({
         // 默认选项卡
         const activeKey = ref('1');
 
+        // 规格库存
+        const sku_formRef=ref()
+        const sku_listRef=ref()
+        const sku_columns = ref([
+            {
+            title: 'Name',
+            dataIndex: 'name',
+            },
+            {
+            title: 'Cash Assets',
+            className: 'column-money',
+            dataIndex: 'money',
+            },
+            {
+            title: 'Address',
+            dataIndex: 'address',
+            },
+        ])
+        const sku_spece_data=ref(
+            [
+                {
+                key: '1',
+                name: 'John Brown',
+                money: '￥300,000.00',
+                address: 'New York No. 1 Lake Park',
+                },
+                {
+                key: '2',
+                name: 'Jim Green',
+                money: '￥1,256,000.00',
+                address: 'London No. 1 Lake Park',
+                },
+                {
+                key: '3',
+                name: 'Joe Black',
+                money: '￥120,000.00',
+                address: 'Sidney No. 1 Lake Park',
+            }
+        ])
+        // 规格值-->构造表
+        const dynamicValidateForm =  ref([
+            {
+            name:'',
+            value:[{
+                v_name:'',// 值名称
+                url:''//
+            }],
+            }
+        ]);
+      // 删除【规格】
+      const removeSpec = (item, data)=>{
+
+        let index = dynamicValidateForm.value.obj.indexOf(item);
+
+        if (index !== -1) {
+          dynamicValidateForm.value.obj.splice(index, 1);
+        }
+
+      }
+
+
+      // 删除【规格值】
+      const remove_spec_value = (item, data) => {
+
+        let index = dynamicValidateForm.value.obj[data].value.indexOf(item);
+
+        if (index !== -1) {
+          dynamicValidateForm.value.obj[data].value.splice(index, 1);
+        }
+
+      };
+
+
+      // 添加规格
+      const addspec = () =>{
+
+        console.log(dynamicValidateForm.value)
+
+        var obj_number = dynamicValidateForm.value.obj.length;
+
+        if(obj_number>=3){
+          
+          message.info('规格最多不能超过三组！');
+          
+          return false
+
+        }else{
+
+          dynamicValidateForm.value.obj.push({
+            
+            name:"规格名称",
+
+            value:[{value:undefined}],
+          
+          })
+
+        }
+
+      }
+
+
+      // 添加规格值
+      const addspecvalue = (data) => {
+
+
+        var value_number = dynamicValidateForm.value[data].value.length;
+        console.log(dynamicValidateForm.value[data])
+
+
+        if(value_number >= 20){
+          
+          message.info('规格值最多不能超过20组！');
+
+          return false
+
+        }else{
+        
+          dynamicValidateForm.value[data].value.push({
+                v_name:'',// 值名称
+                url:''//
+            });
+
+        }
+      };
+
+
+        // 分类属性
+
+        // 描述详情
+
+
         return{
             PAGEDATA,
             Pic_Fun,// 主图
@@ -505,6 +731,12 @@ export default defineComponent({
             handleOk,
             formState,
             formRef,
+            sku_formRef, // sku
+            dynamicValidateForm,
+            removeSpec,
+            addspecvalue,
+            remove_spec_value,
+            addspec,
         }
     }
 })
@@ -518,5 +750,6 @@ export default defineComponent({
 .Add_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
 .Add_3_4_img{height: 132px;width: 99px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
 .Add_3_4_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
+.add_btn_class{width: 40px; margin:0 0 0 20px;}
 
 </style>
