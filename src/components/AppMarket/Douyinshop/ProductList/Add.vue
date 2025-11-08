@@ -357,7 +357,7 @@
 
                                     <span v-if="v_item.url=== undefined || v_item.url === ''">
                                         <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
-                                        <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor"/>
+                                            <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor"/>
                                         </span>
                                     </span>
 
@@ -365,16 +365,16 @@
                                         <a-image style="border-radius:4px;margin-top: 5px;" :width="42" :height="42" :src="v_item.url"/>
                                     </span>
 
-                                <a-form-item>
-                                    <a-textarea 
-                                    placeholder="输入规格图片地址" 
-                                    size="small"
-                                    autocomplete="off"
-                                    :auto-size="{ minRows: 2, maxRows: 2 }" 
-                                    allow-clear
-                                    style="font-size:12px;margin:4px 0 0 6px;width: 150px;"
-                                    />
-                                </a-form-item>
+                                    <a-form-item>
+                                        <a-textarea 
+                                        placeholder="输入规格图片地址" 
+                                        size="small"
+                                        autocomplete="off"
+                                        :auto-size="{ minRows: 2, maxRows: 2 }" 
+                                        allow-clear
+                                        style="font-size:12px;margin:4px 0 0 6px;width: 150px;"
+                                        />
+                                    </a-form-item>
                                 
                                 </a-form-item>
 
@@ -390,7 +390,7 @@
                                     allow-clear/>
                                 </a-form-item>
 
-                                <MinusCircleOutlined @click="remove_spec_value(item, index)" style="margin: 0 5px 0 0;" />
+                                <MinusCircleOutlined @click="remove_spec_value(v_item, index)" style="margin: 0 5px 0 0;" />
 
                             </a-space>
 
@@ -653,10 +653,10 @@ export default defineComponent({
       // 删除【规格值】
       const remove_spec_value = (item, data) => {
 
-        let index = dynamicValidateForm.value.obj[data].value.indexOf(item);
+        let index = dynamicValidateForm.value[data].value.indexOf(item);
 
         if (index !== -1) {
-          dynamicValidateForm.value.obj[data].value.splice(index, 1);
+          dynamicValidateForm.value[data].value.splice(index, 1);
         }
 
       };
@@ -667,23 +667,23 @@ export default defineComponent({
 
         console.log(dynamicValidateForm.value)
 
-        var obj_number = dynamicValidateForm.value.obj.length;
+        var obj_number = dynamicValidateForm.value.length;
 
         if(obj_number>=3){
           
-          message.info('规格最多不能超过三组！');
+          tool.Fun_.message('info','规格最多不能超过三组！');
           
           return false
 
         }else{
 
-          dynamicValidateForm.value.obj.push({
-            
-            name:"规格名称",
-
-            value:[{value:undefined}],
-          
-          })
+          dynamicValidateForm.value.push({
+            name:'',
+            value:[{
+                v_name:'',// 值名称
+                url:''//
+            }],
+            })
 
         }
 
@@ -693,20 +693,13 @@ export default defineComponent({
       // 添加规格值
       const addspecvalue = (data) => {
 
-
         var value_number = dynamicValidateForm.value[data].value.length;
-        console.log(dynamicValidateForm.value[data])
-
 
         if(value_number >= 20){
-          
-          message.info('规格值最多不能超过20组！');
-
-          return false
-
+            tool.Fun_.message('error', '规格值最多不能超过20组！')
+            return false
         }else{
-        
-          dynamicValidateForm.value[data].value.push({
+            dynamicValidateForm.value[data].value.push({
                 v_name:'',// 值名称
                 url:''//
             });
