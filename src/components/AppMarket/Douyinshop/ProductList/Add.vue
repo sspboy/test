@@ -313,12 +313,13 @@
                             规格
                         </a-divider>
 
-                        <a-form ref="SPECS.sku_formRef" name="dynamic_form_nest_item" :model="SPECS.Obj">
+                        <a-form ref="SPECS.sku_formRef" name="SPECS" :model="SPECS.Obj">
 
                             <a-form-item 
                                 v-for="(item, index) in SPECS.Obj" 
-                                :name="[item.name]" 
-                                :rules="{required: true,trigger: 'change', message:''}"
+                                :name="[index,'name']"
+                                :key="item.index"
+                                :rules="{required: true, trigger: 'change', message:' '}"
                             >
                                 <!--规格名称 开始-->
                                 <a-input 
@@ -327,7 +328,7 @@
                                     placeholder="输入规格名称" 
                                     style="width: 200px;" 
                                     autocomplete="off"
-                                    allow-clear 
+                                    allow-clear
                                 />
                     
                                 <a-button type="dashed" size="small" class="add_btn_class" block @click="SPECS.pushvalue(index)">
@@ -342,17 +343,20 @@
                                 <!--规格值 开始-->
                                 <div style="width: 100%;clear: both; margin:4px 0 0 0;">
 
-                                <a-space v-for="(v_item, spec_value_index) in item.value" style="margin:2px 4px 0 0;" align="baseline" >
-                                        
-                                    <a-form-item v-if="index === 0" :name="[index, spec_value_index]" :rules="{required: true, trigger: 'change', message:''}">
+                                <a-space v-for="(v_item, spec_value_index) in item.value" :key="v_item.index" style="margin:2px 4px 0 0;" align="baseline" >
 
+                                    <a-form-item 
+                                        v-if="index === 0" 
+                                        :name="[index, 'value', spec_value_index,'v_name']" 
+                                        :rules="{required: true, trigger: 'change', message:''}">
                                         <div style="width: 200px;margin: 10px 0 4px 0;">
                                             <a-input v-model:value="v_item.v_name" 
-                                            placeholder="输入值" 
-                                            size="small" 
-                                            style="font-size: 12px;margin:0 0 6px 0;" 
-                                            autocomplete="off"
-                                            allow-clear/>
+                                                placeholder="输入值" 
+                                                size="small" 
+                                                style="font-size: 12px;margin:0 0 6px 0;" 
+                                                autocomplete="off"
+                                                allow-clear
+                                            />
                                         </div>
 
                                         <span v-if="v_item.url=== undefined || v_item.url === ''">
@@ -370,24 +374,28 @@
                                             placeholder="输入规格图片地址" 
                                             size="small"
                                             autocomplete="off"
-                                            :auto-size="{ minRows: 2, maxRows: 2 }" 
                                             allow-clear
+                                            :auto-size="{ minRows: 2, maxRows: 2 }" 
                                             style="font-size:12px;margin:4px 0 0 6px;width: 150px;"
                                             />
                                         </a-form-item>
                                     
                                     </a-form-item>
 
+                                    <a-form-item
+                                        v-if="index !== 0"
+                                        :name="[index, 'value', spec_value_index,'v_name']" 
+                                        :rules="{required: true, trigger: 'change', message:''}"
+                                        >
 
-
-                                    <a-form-item v-else-if="index != 0" :name="[index, spec_value_index]" :rules="{required: true, trigger: 'change', message:''}">
                                         <a-input 
-                                        v-model:value="v_item.v_name" 
-                                        placeholder="输入值" 
-                                        size="small"
-                                        autocomplete="off"
-                                        style="font-size: 12px;width: 200px;" 
-                                        allow-clear/>
+                                            v-model:value="v_item.v_name"
+                                            placeholder="输入值" 
+                                            size="small"
+                                            autocomplete="off"
+                                            allow-clear
+                                            style="font-size: 12px;width: 200px;" 
+                                        />
                                     </a-form-item>
 
                                     <MinusCircleOutlined @click="SPECS.removevalue(v_item, index)" style="margin: 0 5px 0 0;" />
@@ -396,7 +404,6 @@
 
                                 </div>
                                 <!--规格值 结束-->
-
 
                             </a-form-item>
 
@@ -408,6 +415,7 @@
 
                         <!--库存开始-->
                         <a-divider orientation="left" orientation-margin="0px">库存</a-divider>
+                        
                         <a-form ref="skulistRef" :model="sku_list" name="basic">
                             <a-table :columns="sku_list.columns" :data-source="sku_list.data" :pagination="false" style="font-size: 12px;" size="small" bordered>
                             
@@ -418,22 +426,25 @@
                                 </template>
 
                                 <template v-if="column.dataIndex === 'price'">
-                                <a-form-item :name="['data', index, 'price']" :rules="{required: true, trigger: 'change', message:'不能为空'}">
+                                <a-form-item 
+                                    :name="['data', index, 'price']" 
+                                    :rules="{required: true, trigger: 'change', message:''}"
+                                >
                                     <a-input-number 
-                                    placeholder="输入价格" 
-                                    size="small" 
-                                    v-model:value="record.price" 
-                                    prefix="￥" 
-                                    :min="0" 
-                                    :step="0.01"
-                                    autocomplete="off"
-                                    allow-clear
-                                    style="font-size: 12px;width: 100%;"/>
+                                        placeholder="输入价格" 
+                                        size="small" 
+                                        v-model:value="record.price" 
+                                        prefix="￥" 
+                                        :min="0" 
+                                        :step="0.01"
+                                        autocomplete="off"
+                                        allow-clear
+                                        style="font-size: 12px;width: 100%;"/>
                                 </a-form-item>
                                 </template>
 
                                 <template v-if="column.dataIndex === 'stock_num'">
-                                <a-form-item :name="['data', index, 'stock_num']" :rules="{required: true, trigger: 'change', message:'不能为空'}">
+                                <a-form-item :name="['data', index, 'stock_num']" :rules="{required: true, trigger: 'change', message:''}">
                                     <a-input-number 
                                     placeholder="输入库存" 
                                     size="small" 
@@ -442,23 +453,25 @@
                                     v-model:value="record.stock_num" 
                                     autocomplete="off"
                                     allow-clear
-                                    style="font-size: 12px;"/>
+                                    style="font-size: 12px;width: 100%;"/>
                                 </a-form-item>
                                 </template>
                                 
                                 <template v-if="column.dataIndex === 'code'">
-                                    <a-form-item :name="['data', index, 'code']" :rules="{required: false, trigger: 'change', message:'不能为空'}">
+                                    <a-form-item :name="['data', index, 'code']" :rules="{required: false, trigger: 'change', message:''}">
                                         <a-input
                                             placeholder="商家编码"
                                             autocomplete="off"
                                             v-model:value="record.code" 
                                             size="small" 
                                             allow-clear
-                                            style="font-size: 12px;" />
+                                            style="font-size: 12px;width: 100%;" />
                                     </a-form-item>
                                 </template>
                                 
                             </template>
+
+
                             <!-- <template #title>规格列表</template>
                             <template #footer>Footer</template> -->
                             
@@ -470,9 +483,27 @@
 
                     <a-tab-pane key="3" tab="分类属性">
                         
-                        <a-divider orientation="left" orientation-margin="0px">分类属性</a-divider>
-                        <p>分类</p>
-                        <p>属性</p>
+                        <a-divider orientation="left" orientation-margin="0px">选择商品分类</a-divider>
+                        <p>
+                            <a-form ref="first_formRef">        
+                                <a-form-item name="cate_name">
+                                    <a-cascader
+                                        v-model:value="cate_name"
+                                        :options="options"
+                                        :load-data="loadData"
+                                        @change="console.log(cate_name)"
+                                        placeholder="选择分类"
+                                    />
+                                </a-form-item>
+                            </a-form>
+                        </p>
+
+                        <a-divider orientation="left" orientation-margin="0px">商品属性</a-divider>
+
+                        <p>
+
+                            <a-empty :image="simpleImage" />
+                        </p>
 
                     </a-tab-pane>
 
@@ -497,8 +528,11 @@
 import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed } from 'vue';
 import { useStore } from 'vuex'
 import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined} from '@ant-design/icons-vue';
+import axios from 'axios';
+import { Empty } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
+import * as utils from '@/assets/JS_Model/public_model';
 
 // 组件引用=====开始
 export default defineComponent({
@@ -519,6 +553,17 @@ export default defineComponent({
 
         const tool = new TOOL.TOOL()            // 工具方法
         const TO = new TABLE.TableOperate()   // 表格操作方法
+        const API = new utils.A_Patch()         // 请求接口地址合集
+        const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;
+
+        // 分类信息初始化
+        onMounted(() => {
+            tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
+                let obj_list = res.data.data
+                options.value = get_cate_list(obj_list)
+
+            })
+        })
 
         // 添加商品配置
         const PAGEDATA=reactive({
@@ -651,8 +696,8 @@ export default defineComponent({
         // 规格库存
         const SPECS = reactive({
 
-            sku_formRef:ref(), // 
-            sku_listRef:ref(),
+            sku_formRef:ref(null),
+            sku_listRef:ref(null),
             sku_columns:ref([]),
             sku_spece_data:ref([]),
 
@@ -682,7 +727,7 @@ export default defineComponent({
                     name:undefined,
                     value:[{
                         v_name:undefined,       // 值名称
-                        url:undefined           //
+                        url:undefined           // 图片地址
                     }],
                     })
                 }
@@ -740,7 +785,7 @@ export default defineComponent({
             var get_p_s_obj = () => {
 
                 var res_obj = {}
-                for(let i of dynamicValidateForm.value.obj){
+                for(let i of SPECS.Obj){
                     for(let y of i.value){if(y.price != undefined){
                         var p_s_obj = {}
                         p_s_obj.price === undefined ? '':y.price
@@ -758,13 +803,13 @@ export default defineComponent({
             
                 var res_list = []
 
-                var datalist = dynamicValidateForm.value.obj;
+                var datalist = SPECS.Obj;
                 
                 // 规格取值
                 for(let i of datalist){
                     var v_list = []
                     for(let y of i.value){
-                    v_list.push(y.value)
+                        v_list.push(y.v_name)
                     }
                     res_list.push(v_list)
                 }
@@ -774,19 +819,19 @@ export default defineComponent({
                 
                 // 比对价格、库存、编码
                 // console.log(d_list)
-                JSON.parse(props.data.sku_list)
+                // JSON.parse(props.data.sku_list)
 
-                for (let i of d_list){
-                    var value = i.join('&gt;')
-                    var p_s_res = JSON.parse(props.data.sku_list) // 价格库存关系匹配 
-                    // console.log(p_s_res[value])
-                    let obj = p_s_res[value];
-                    let price = obj.price // 价格
-                    let stock_num = obj.canBookCount // 库存
-                    i.push(price)
-                    i.push(stock_num)
+                // for (let i of d_list){
+                //     var value = i.join('&gt;')
+                //     var p_s_res = JSON.parse(props.data.sku_list) // 价格库存关系匹配 
+                //     // console.log(p_s_res[value])
+                //     let obj = p_s_res[value];
+                //     let price = obj.price // 价格
+                //     let stock_num = obj.canBookCount // 库存
+                //     i.push(price)
+                //     i.push(stock_num)
 
-                }
+                // }
 
                 return d_list
 
@@ -864,7 +909,7 @@ export default defineComponent({
                     var data = {}
 
                     for(var i=0;i<name_list.length;i++){
-                    data[name_list[i]] = y[i];
+                        data[name_list[i]] = y[i];
                     }
                     data.price = y[y.length-2] === undefined? 0:y[y.length-2] + ''
                     data.stock_num = y[y.length-1] + ''
@@ -886,102 +931,53 @@ export default defineComponent({
             // }
 
             return reactive({
-                columns: [
-                    {
-                        title: '规格A',
-                        dataIndex: 'name',
-                    },{
-                        title: '规格B',
-                        dataIndex: 'money',
-                    },{
-                        title: '规格C',
-                        dataIndex: 'address',
-                    },{
-                        title: '价格',
-                        dataIndex: 'price',
-                    },
-                    {
-                        title: '库存',
-                        dataIndex: 'stock_num',
-                    },{
-                        title: '商家编码',
-                        dataIndex: 'code',
-                    },
-                ],
-                data:[
-                        {
-                        key: '1',
-                        name: 'John Brown',
-                        money: '300,000.00',
-                        address: 'New York No. 1 Lake Park',
-                        price:'300,000.00',
-                        stock_num:'2',
-                        code:''
-                        },
-                        {
-                        key: '2',
-                        name: 'Jim Green',
-                        money: '1,256,000.00',
-                        address: 'London No. 1 Lake Park',
-                        price:'300,000.00',
-                        stock_num:'2',
-                        code:''
-                        },
-                        {
-                        key: '3',
-                        name: 'Joe Black',
-                        money: '120,000.00',
-                        address: 'Sidney No. 1 Lake Park',
-                        price:'300,000.00',
-                        stock_num:'2',
-                        code:''
-                    }
-                ]
+                columns: get_colums(),
+                data:get_data()
             }) 
             
         })
 
 
-        const sku_formRef=ref()
-        const sku_listRef=ref()
-        const sku_columns = ref([
-            {
-            title: 'Name',
-            dataIndex: 'name',
-            },
-            {
-            title: 'Cash Assets',
-            className: 'column-money',
-            dataIndex: 'money',
-            },
-            {
-            title: 'Address',
-            dataIndex: 'address',
-            },
-        ])
-        const sku_spece_data=ref(
-            [
-                {
-                key: '1',
-                name: 'John Brown',
-                money: '￥300,000.00',
-                address: 'New York No. 1 Lake Park',
-                },
-                {
-                key: '2',
-                name: 'Jim Green',
-                money: '￥1,256,000.00',
-                address: 'London No. 1 Lake Park',
-                },
-                {
-                key: '3',
-                name: 'Joe Black',
-                money: '￥120,000.00',
-                address: 'Sidney No. 1 Lake Park',
-            }
-        ])
 
-        // 分类属性
+        // 分类属性：：异步请求子分类
+        // 类目列表转换
+        const get_cate_list=(obj)=>{ 
+            var obj_list = []
+            for(let i of obj){
+                let cate_obj = {}
+                cate_obj.value = i.id;
+                cate_obj.label = i.name;
+                cate_obj.isLeaf = i.is_leaf;
+                obj_list.push(cate_obj)
+            }
+            return obj_list
+        }
+        const first_formRef = ref();  // 表单数据绑定
+        const options = ref([])       // 分类选项
+        const cate_name = ref([])     //分类
+        const select_loading = ref(false) // 
+        const loadData = selectedOptions => {
+
+            const targetOption = selectedOptions[selectedOptions.length - 1];
+
+            var cid = targetOption.value;       // 分类id
+
+            var isLeaf = targetOption.isLeaf;   // 是否叶子类目
+
+            // console.log(targetOption)
+
+            targetOption.loading = true; // load options
+            
+            // const res = await axios.post(API.AppSrtoreAPI.dou_product.cate, {"cid":cid})
+
+            axios.post(API.AppSrtoreAPI.dou_product.cate, {"cid":cid}).then(res=>{
+                targetOption.loading = false;
+                targetOption.children = get_cate_list(res.data.data)
+                options.value = [...options.value]
+            })
+        };
+
+
 
         // 描述详情
 
@@ -997,9 +993,15 @@ export default defineComponent({
             handleOk,
             formState,
             formRef,
-            sku_formRef, // sku
             SPECS,
-            sku_list
+            sku_list,
+            loadData,
+            first_formRef,// 分类属性选择
+            options,
+            cate_name,
+            select_loading,
+            simpleImage
+            
         }
     }
 })
