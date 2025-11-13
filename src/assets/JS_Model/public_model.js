@@ -146,8 +146,9 @@ export class A_Patch{
             "audit":"api/douyin/product/auditlist",             // 商品审核记录&详情 
             "qualitydetaile":"api/douyin/product/qualitydetaile",// 商品质量分
             "qualitytask":"api/douyin/product/qualitytask",     // 店铺诊断任务
-            "qualitylist":"api/douyin/product/qualitylist",// 质量分列表
+            "qualitylist":"api/douyin/product/qualitylist",     // 质量分列表
             "brand":"api/douyin/product/brandlist",             // 商品品牌
+            "format":"api/douyin/product/getformat",            // 商品属性
         },
         // 运费模板
         freight:{

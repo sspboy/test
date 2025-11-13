@@ -485,23 +485,105 @@
                         
                         <a-divider orientation="left" orientation-margin="0px">选择商品分类</a-divider>
                         <p>
-                            <a-form ref="first_formRef">        
-                                <a-form-item name="cate_name">
+                            <a-form ref="CATE.first_formRef">        
+                                <a-form-item name="CATE.cate_name.value">
                                     <a-cascader
-                                        v-model:value="cate_name"
-                                        :options="options"
-                                        :load-data="loadData"
-                                        @change="console.log(cate_name)"
+                                        v-model:value="CATE.cate_name.value"
+                                        :options="CATE.options.value"
+                                        :load-data="CATE.loadData"
+                                        @change="CATE.loadFormat"
                                         placeholder="选择分类"
                                     />
                                 </a-form-item>
                             </a-form>
                         </p>
 
-                        <a-divider orientation="left" orientation-margin="0px">商品属性</a-divider>
+                        <a-divider orientation="left" orientation-margin="0px">
+                            商品属性
+                        </a-divider>
 
-                        <p>
+                        <a-row v-if="CATE.format.value.length !== 0" :loading="true" :gutter="[16,16]">
 
+                            <a-col v-for="item in CATE.format.value" :span="6">
+                                
+                                <!--输入文本 required-->
+                                <div v-if="item.type == 'text'">
+                                    <p>
+                                        {{ item.property_name }}
+                                        <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                    </p>
+                                    <p><a-input type="text" placeholder="请输入"></a-input></p>
+                                </div>
+
+                                <!--单选-->
+                                <div v-if="item.type == 'select'">
+                                    <p>
+                                        {{ item.property_name }}
+                                        <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                    </p>
+                                    <p>
+                                        <a-select
+                                            ref="select"
+                                            v-model:value="item.result_value"
+                                            placeholder="请选择"
+                                            allow-clear
+                                            @change="console.log(item.result_value)"
+                                            style="width: 120px;width: 100%;"
+                                        >
+                                            <a-select-option v-for="opt in item.options" :value="opt.value" >
+                                                {{ opt.name }}
+                                            </a-select-option>
+                                        </a-select>
+                                    </p>
+                                </div>
+
+                                <!--多选-->
+                                <div v-if="item.type == 'multi_select'">
+                                    <p>
+                                        {{ item.property_name }}
+                                        <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                    </p>
+                                    <p>
+                                        <a-select
+                                            ref="select"
+                                            v-model:value="item.result_value"
+                                            placeholder="请选择"
+                                            mode="multiple"
+                                            :maxTagCount="1"
+                                            allow-clear
+                                            @change="console.log(item.result_value.length)"
+                                            style="width: 120px;width: 100%;"
+                                        >
+                                            <a-select-option v-for="opt in item.options" :value="opt.value" >
+                                                {{ opt.name }}
+                                            </a-select-option>
+                                        </a-select>
+                                    </p>
+                                </div>
+
+                                <!--时间戳-->
+                                <div v-if="item.type == 'timestamp'">
+                                    <p>
+                                        {{ item.property_name }}
+                                        <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                    </p>
+                                </div>
+
+                                <!--时间段-->
+                                <div v-if="item.type == 'timerange'">
+                                    <p>
+                                        {{ item.property_name }}
+                                        <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                    </p>
+                                </div>
+
+                                
+
+
+                            </a-col>
+                        </a-row>
+
+                        <p v-if="CATE.format.value.length == 0">
                             <a-empty :image="simpleImage" />
                         </p>
 
@@ -560,8 +642,7 @@ export default defineComponent({
         onMounted(() => {
             tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
                 let obj_list = res.data.data
-                options.value = get_cate_list(obj_list)
-
+                CATE.options.value = CATE.get_cate_list(obj_list)
             })
         })
 
@@ -692,7 +773,6 @@ export default defineComponent({
 
         // 默认选项卡
         const activeKey = ref('1');
-
         // 规格库存
         const SPECS = reactive({
 
@@ -937,45 +1017,76 @@ export default defineComponent({
             
         })
 
+        // 分类
+        const CATE = {
+
+            first_formRef:ref(),        // 表单数据绑定
+            options:ref([]),            // 分类选项
+            cate_name:ref([]),          // 分类
+            select_loading:ref(false),  // 加载状态
+            format:ref([]),             // 商品属性
+            // 类目列表转换
+            get_cate_list:(obj)=>{
+                var obj_list = []
+                for(let i of obj){
+                    let cate_obj = {}
+                    cate_obj.value = i.id;
+                    cate_obj.label = i.name;
+                    cate_obj.isLeaf = i.is_leaf;
+                    obj_list.push(cate_obj)
+                }
+                return obj_list
+            },
+            // 选择下级分类加载方法
+            loadData:selectedOptions =>{
+
+                const targetOption = selectedOptions[selectedOptions.length - 1];
+
+                var cid = targetOption.value;       // 分类id
+
+                var isLeaf = targetOption.isLeaf;   // 是否叶子类目
+
+                // console.log(targetOption)
+
+                targetOption.loading = true; // load options
+                
+                // const res = await axios.post(API.AppSrtoreAPI.dou_product.cate, {"cid":cid})
+
+                axios.post(API.AppSrtoreAPI.dou_product.cate, {"cid":cid}).then(res=>{
+                    targetOption.loading = false;
+                    targetOption.children = CATE.get_cate_list(res.data.data)
+                    CATE.options.value = [...CATE.options.value]
+                })
+            },
+            // 请求属性:加载到列表
+            loadFormat:async()=>{
+
+                console.log(CATE.cate_name.value.at(-1))
+
+                var cate_id = CATE.cate_name.value.at(-1)
+
+                var res = await axios.post(API.AppSrtoreAPI.dou_product.format, {
+                    "category_leaf_id":cate_id
+                })
+
+                console.log(res.data.data)
+
+                var data_list = res.data.data.data;
+
+                data_list.forEach((obj,index)=>{
+                    var type = obj.type;
+                    if(type == 'select' || type == 'multi_select'){
+                        obj.result_value = ref()
+                        obj.label = obj.name;
+                    }
+                })
+
+                CATE.format.value = res.data.data.data;
 
 
-        // 分类属性：：异步请求子分类
-        // 类目列表转换
-        const get_cate_list=(obj)=>{ 
-            var obj_list = []
-            for(let i of obj){
-                let cate_obj = {}
-                cate_obj.value = i.id;
-                cate_obj.label = i.name;
-                cate_obj.isLeaf = i.is_leaf;
-                obj_list.push(cate_obj)
+
             }
-            return obj_list
         }
-        const first_formRef = ref();  // 表单数据绑定
-        const options = ref([])       // 分类选项
-        const cate_name = ref([])     //分类
-        const select_loading = ref(false) // 
-        const loadData = selectedOptions => {
-
-            const targetOption = selectedOptions[selectedOptions.length - 1];
-
-            var cid = targetOption.value;       // 分类id
-
-            var isLeaf = targetOption.isLeaf;   // 是否叶子类目
-
-            // console.log(targetOption)
-
-            targetOption.loading = true; // load options
-            
-            // const res = await axios.post(API.AppSrtoreAPI.dou_product.cate, {"cid":cid})
-
-            axios.post(API.AppSrtoreAPI.dou_product.cate, {"cid":cid}).then(res=>{
-                targetOption.loading = false;
-                targetOption.children = get_cate_list(res.data.data)
-                options.value = [...options.value]
-            })
-        };
 
 
 
@@ -994,13 +1105,9 @@ export default defineComponent({
             formState,
             formRef,
             SPECS,
+            CATE,
             sku_list,
-            loadData,
-            first_formRef,// 分类属性选择
-            options,
-            cate_name,
-            select_loading,
-            simpleImage
+            simpleImage,
             
         }
     }
