@@ -483,7 +483,7 @@
 
                     <a-tab-pane key="3" tab="分类属性">
                         
-                        <a-divider orientation="left" orientation-margin="0px">选择商品分类</a-divider>
+                        <a-divider orientation="left" orientation-margin="0px">分类</a-divider>
                         <p>
                             <a-form ref="CATE.first_formRef">        
                                 <a-form-item name="CATE.cate_name.value">
@@ -499,7 +499,7 @@
                         </p>
 
                         <a-divider orientation="left" orientation-margin="0px">
-                            商品属性
+                            属性
                         </a-divider>
 
                         <a-row v-if="CATE.format.value.length !== 0" :loading="true" :gutter="[16,16]">
@@ -538,7 +538,7 @@
                                 </div>
 
                                 <!--多选-->
-                                <div v-if="item.type == 'multi_select'">
+                                <div v-if="item.type == 'multi_select' || item.type == 'multi_value_measure'">
                                     <p>
                                         {{ item.property_name }}
                                         <span v-if="item.required ==1" style="color: red;">--必填</span>
@@ -551,12 +551,13 @@
                                             mode="multiple"
                                             :maxTagCount="1"
                                             allow-clear
-                                            @change="console.log(item.result_value.length)"
+                                            @change="CATE.dis_ops(item)"
                                             style="width: 120px;width: 100%;"
                                         >
-                                            <a-select-option v-for="opt in item.options" :value="opt.value" >
+                                            <a-select-option v-for="opt in item.options" :value="opt.value" :disabled="opt.disabled">
                                                 {{ opt.name }}
                                             </a-select-option>
+
                                         </a-select>
                                     </p>
                                 </div>
@@ -576,10 +577,6 @@
                                         <span v-if="item.required ==1" style="color: red;">--必填</span>
                                     </p>
                                 </div>
-
-                                
-
-
                             </a-col>
                         </a-row>
 
@@ -591,7 +588,24 @@
 
                     <a-tab-pane key="4" tab="描述详情">
                         <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
-                        <p>富媒体编辑框</p>
+                        <div style="border: 1px solid #ccc;height: 100%;">
+          
+                            <Toolbar
+                                style="border-bottom: 1px solid #ccc"
+                                :editor="editorRef"
+                                :defaultConfig="toolbarConfig"
+                                :mode="mode"
+                            />
+
+                            <Editor
+                                style="height: 600px; overflow-y: hidden;"
+                                v-model="valueHtml"
+                                :defaultConfig="editorConfig"
+                                :mode="mode"
+                                @onCreated="handleCreated"
+                            />
+
+                        </div>
                     </a-tab-pane>
 
                     <a-tab-pane key="5" tab="限购设置">
@@ -607,7 +621,7 @@
     </a-modal>
 </template>
 <script>
-import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed } from 'vue';
+import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed,shallowRef,onBeforeUnmount } from 'vue';
 import { useStore } from 'vuex'
 import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined} from '@ant-design/icons-vue';
 import axios from 'axios';
@@ -615,6 +629,8 @@ import { Empty } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
+import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 
 // 组件引用=====开始
 export default defineComponent({
@@ -625,6 +641,8 @@ export default defineComponent({
         MinusOutlined,
         MinusCircleOutlined,
         selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
+        Editor,// 详情编辑
+        Toolbar, // 编辑工具栏
         // 运费模板组件
         // 尺码模板组件
     },
@@ -1061,7 +1079,7 @@ export default defineComponent({
             // 请求属性:加载到列表
             loadFormat:async()=>{
 
-                console.log(CATE.cate_name.value.at(-1))
+                // console.log(CATE.cate_name.value.at(-1)) // 数组最后一个值
 
                 var cate_id = CATE.cate_name.value.at(-1)
 
@@ -1069,29 +1087,138 @@ export default defineComponent({
                     "category_leaf_id":cate_id
                 })
 
-                console.log(res.data.data)
-
                 var data_list = res.data.data.data;
 
                 data_list.forEach((obj,index)=>{
                     var type = obj.type;
+                    if(type == 'multi_value_measure'){console.log(obj)}
                     if(type == 'select' || type == 'multi_select'){
-                        obj.result_value = ref()
+                        obj.result_value = ref() // 选中结果
                         obj.label = obj.name;
                     }
                 })
 
                 CATE.format.value = res.data.data.data;
 
+            },
+            // 多选-禁用超过限制选项
+            dis_ops:(item)=>{
 
+                var multi_select_max = item.multi_select_max;
+                var result_value = item.result_value;
+                var options = item.options;
 
+                // console.log(multi_select_max)
+                // console.log(result_value)
+                // console.log(options)
+
+                // 选中值是否超过限制
+                if(result_value.length >= multi_select_max){
+                    // 非选中值添加禁用属性
+                    options.forEach((obj,index)=>{
+                        var value = obj.value;
+                        // 过滤选中值
+                        if(!result_value.includes(value)){
+                            obj.disabled = true
+                        }
+                    })
+                }else{
+                    // 非选中值添加禁用属性
+                    options.forEach((obj,index)=>{
+                        obj.disabled = false
+                    })
+                }
             }
+            // 获取分类&属性值
+            // 验证分类&属性值
+        }
+
+        // 描述详情
+        const DES={
+
+        }
+        // 图片数据
+        const valueHtml = ref('<p></p>')
+        const mode = 'simple' // 或 'simple' 'default'
+
+        // 编辑器实例，必须用 shallowRef
+        const editorRef = shallowRef()
+
+        const editorConfig = { placeholder: '请输入内容...' }
+
+        // 编辑器工具栏配置
+        const toolbarConfig = {
+            excludeKeys: [
+            'bold',
+            "underline",
+            "italic",
+            "through",
+            "color",
+            "clearStyle",
+            "bgColor",
+            "codeBlock",
+            "blockquote",
+            "bulletedList",
+            "numberedList",
+            "insertTable",
+            "header1",
+            "header2",
+            "header3",
+            'headerSelect',
+            'italic',
+            'group-more-style', // 排除菜单组，写菜单组 key 的值即可
+            //"fullScreen",
+            "insertLink",
+            "editLink",
+            "insertVideo",
+            "uploadVideo",
+            "todo",
+            "redo",
+            "undo",
+            "uploadImage"
+            ]
+        }
+
+        // 组件销毁时，也及时销毁编辑器
+        onBeforeUnmount(() => {
+            const editor = editorRef.value
+            // if (editor == null) {
+            //   return editor.destroy()
+            // }
+        })
+
+        //  创建编辑器
+        const handleCreated = (editor) => {
+            
+            editorRef.value = editor // 记录 editor 实例，重要！
+            
+            editor.clear() // 清空编辑器
+
+            // var img_list = [] // 初始数据
+
+            // for(let i of img_list){
+
+            //     const node = { type: 'image', children: [{ text: '' }]}
+
+            //         node.src = i.OriginUrl
+            //         node.OriginUrl = i.OriginUrl  
+            //         node.Name= i.Name
+            //         node.MaterialId = i.MaterialId
+            //         node.ByteUrl = i.ByteUrl
+            //         node.AuditStatus = i.AuditStatus
+            //         node.IsNew = i.IsNew
+            //         node.FolderId = i.FolderId
+            //         editor.insertNode(node)
+
+            // }
+
         }
 
 
 
-        // 描述详情
+        const confirmLoading = ref(false);
 
+        // 限购设置
 
         return{
             PAGEDATA,
@@ -1108,6 +1235,13 @@ export default defineComponent({
             CATE,
             sku_list,
             simpleImage,
+            // 描述详情
+            valueHtml,
+            editorRef,
+            editorConfig,
+            toolbarConfig,
+            handleCreated,
+            mode,
             
         }
     }

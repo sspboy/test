@@ -544,7 +544,7 @@ export default {
                 "need_audit_reject_suggest":true
         }
         
-        console.log(navData.value)
+        // console.log(navData.value)
 
         loadproductData(navData.value);
       }else{ // 查询按钮

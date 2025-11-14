@@ -2,7 +2,7 @@
   <div id="components-pagination-demo-mini" class="nav_s">
     <a-pagination 
       style="font-size: 12px;" 
-      size="small" 
+      size="small"
       @change="onChange"
       v-model:current="props.fandata.List_conditions.page"
       :total="props.fandata.total_number" 
@@ -14,6 +14,7 @@
 </template>
 
 <script>
+
 import {defineComponent} from 'vue'
 
 export default defineComponent({
@@ -23,7 +24,6 @@ export default defineComponent({
 
   // 接受父组件数据
   props:{
-    // 接受父组件面信息【翻页信息】
     fandata:{
       type:Object // 数据类型为数字
     }
@@ -49,8 +49,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-#components-pagination-demo-mini .ant-pagination:not(:last-child) {
-  margin-bottom: 24px;
-}
+#components-pagination-demo-mini .ant-pagination:not(:last-child) {margin-bottom: 24px;}
 .nav_s{margin: 18px 0 0 0;float: right;}
 </style>
