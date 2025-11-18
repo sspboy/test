@@ -432,7 +432,7 @@ export default {
 
       innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
 
-      AddDate:ref(false),              // 编辑显示状态
+      AddDate:ref(false),              // 新建显示状态
       EditDate:ref(false),             // 编辑显示状态
       DetaileDate:ref(false),          // 详情页显示状态
       MoreSelectData:ref(false),       // 更多查询显示状态

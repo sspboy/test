@@ -8,11 +8,11 @@
       v-model:open="props.data.AddDate"
       width="100%"
       wrap-class-name="full-modal"
-      @ok="handleOk"
+      :footer="null"
     >
         <a-layout-content class="content">
 
-            <div style="width: 950px;margin: 0 auto;">
+            <div style="width: 950px;margin: 0 auto;height: 100%;">
 
                 <a-tabs v-model:activeKey="activeKey">
 
@@ -163,8 +163,6 @@
                             </a-col>
 
                         </a-row>
-
-                        
 
                         <!--基本信息-->
                         <a-divider 
@@ -484,6 +482,7 @@
                     <a-tab-pane key="3" tab="分类属性">
                         
                         <a-divider orientation="left" orientation-margin="0px">分类</a-divider>
+
                         <p>
                             <a-form ref="CATE.first_formRef">        
                                 <a-form-item name="CATE.cate_name.value">
@@ -587,7 +586,14 @@
                     </a-tab-pane>
 
                     <a-tab-pane key="4" tab="描述详情">
-                        <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
+
+                        <div style="margin: 0 0 10px 0;">
+                            <a-space>
+                                <a-button type="dashed" block>插入素材</a-button>
+                                <a-button type="dashed" block>清空</a-button>
+                            </a-space>
+                        </div>
+
                         <div style="border: 1px solid #ccc;height: 100%;">
           
                             <Toolbar
@@ -609,14 +615,53 @@
                     </a-tab-pane>
 
                     <a-tab-pane key="5" tab="限购设置">
-                        <a-divider orientation="left" orientation-margin="0px">限购设置</a-divider>
-                        <p>限购设置</p>
+                        <a-form
+                            ref="formRef"
+                            name="ProductInfo"
+                            :model="formState"
+                        >
+                            
+                            <a-form-item
+                                label="每个用户每次下单限购件数"
+                                name="maximum_per_order"
+                            >
+                                <a-input v-model:value="formState.maximum_per_order" placeholder="输入件数"></a-input>
+                            </a-form-item>
+
+                            <a-form-item
+                                label="每个用户累计限购件数"
+                                name="limit_per_buyer"
+                            >
+                                <a-input v-model:value="formState.limit_per_buyer" placeholder="输入件数"></a-input>
+                            </a-form-item>
+
+                            <a-form-item
+                                label="每个用户每次下单至少购买的件数"
+                                name="minimum_per_order"
+                            >
+                                <a-input v-model:value="formState.minimum_per_order"  placeholder="输入件数"></a-input>
+                            </a-form-item>
+                        </a-form>
                     </a-tab-pane>
 
                 </a-tabs>
 
-            </div> 
+            </div>
+
         </a-layout-content>
+
+        <!--底部按钮--开始-->
+        <a-affix offset-bottom="1">
+            <div style="width: 950px;margin: 0 auto;text-align: center;padding: 10px 0 0 0;">
+                <a-space align="end" style="height: 100%;">
+                    <a-button type="primary" @click="handleOk">提交</a-button>
+                    <a-button @click="closed">取消</a-button>
+                </a-space>
+            </div>
+        </a-affix>
+        <!--底部按钮--结束-->
+
+
 
     </a-modal>
 </template>
@@ -652,9 +697,10 @@ export default defineComponent({
     setup(props,ctx) {
 
         const tool = new TOOL.TOOL()            // 工具方法
-        const TO = new TABLE.TableOperate()   // 表格操作方法
+        const TO = new TABLE.TableOperate()     // 表格操作方法
         const API = new utils.A_Patch()         // 请求接口地址合集
-        const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;
+        const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;  // 默认为空图标
+        const buttonload= ref(true)             // 新建按钮loading状态；
 
         // 分类信息初始化
         onMounted(() => {
@@ -701,6 +747,9 @@ export default defineComponent({
             add:(data)=>{
 
                 data.forEach((obj,idx)=>{
+                    // 判断是否图片素材
+                    // 是=>添加到数组
+                    // 不是=>过滤掉后提示('请添加图片素材')
                     Pic_Fun.PicList.value.push(obj)
                 })
 
@@ -782,15 +831,17 @@ export default defineComponent({
             reduce_type:'1',            // 减库存类型
             freight_id:undefined,       // 运费模板
             size_info_template_id:undefined,// 尺码模板
-            commit:'false',             // 提交
-            remark:undefined            // 商家备注
+            commit:'false',                 // 提交
+            remark:undefined,               // 商家备注
+            limit_per_buyer:ref(),          // 每个用户累计限购件数
+            maximum_per_order:ref(),        // 每个用户每次下单限购件数
+            minimum_per_order:ref(),        // 每个用户每次下单至少购买的件数
         })
 
-        // 确认按钮
-        const handleOk = e => {console.log(e);};
 
         // 默认选项卡
         const activeKey = ref('1');
+
         // 规格库存
         const SPECS = reactive({
 
@@ -1182,6 +1233,7 @@ export default defineComponent({
         // 组件销毁时，也及时销毁编辑器
         onBeforeUnmount(() => {
             const editor = editorRef.value
+            console.log('des',editor)
             // if (editor == null) {
             //   return editor.destroy()
             // }
@@ -1214,12 +1266,15 @@ export default defineComponent({
 
         }
 
-
-
         const confirmLoading = ref(false);
 
-        // 限购设置
+        // 确认按钮
+        const handleOk = e => {console.log(e);};
 
+        // 关闭按钮
+        const closed = () =>{
+            props.data.AddDate = !props.data.AddDate;
+        }
         return{
             PAGEDATA,
             Pic_Fun,        // 主图
@@ -1229,6 +1284,7 @@ export default defineComponent({
             props,
             activeKey,
             handleOk,
+            closed,
             formState,
             formRef,
             SPECS,
@@ -1249,7 +1305,7 @@ export default defineComponent({
 
 </script>
 <style scoped>
-.content{padding: 0;margin: 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 88vh;}
+.content{padding: 0;margin: 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 90vh;}
 .img_pic{height: 100px;width: 100px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
 .img_3_4_pic{height: 132px;width: 99px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
 .Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
