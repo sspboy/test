@@ -53,7 +53,7 @@
                                         v-if="Pic_Fun.PicList.value.length < 5"
                                         >
                                         <a-flex justify="center" align="center" style="height: 100%;">
-                                            <PlusOutlined /> 添加 
+                                            <PlusOutlined />
                                         </a-flex>
                                     </p>
 
@@ -85,7 +85,7 @@
                                         v-if="whiteimg_Fun.PicList.value < 1"
                                     >
                                         <a-flex justify="center" align="center" style="height: 100%;">
-                                            <PlusOutlined /> 添加 
+                                            <PlusOutlined />
                                         </a-flex>
                                     </p>
 
@@ -126,7 +126,7 @@
                                         v-if="Longimg_Fun.PicList.value.length < 5"
                                     >
                                         <a-flex justify="center" align="center" style="height: 100%;">
-                                            <PlusOutlined /> 添加 
+                                            <PlusOutlined />
                                         </a-flex>
                                     </p>
 
@@ -156,7 +156,7 @@
                                         v-if="video_Fun.PicList.value.length < 1"
                                     >
                                         <a-flex justify="center" align="center" style="height: 100%;">
-                                            <PlusOutlined /> 添加 
+                                            <PlusOutlined />
                                         </a-flex>
                                     </p>
                                 </div>
@@ -610,7 +610,6 @@
                                 :mode="mode"
                                 @onCreated="handleCreated"
                             />
-
                         </div>
                     </a-tab-pane>
 
@@ -651,7 +650,7 @@
         </a-layout-content>
 
         <!--底部按钮--开始-->
-        <a-affix offset-bottom="1">
+        <a-affix :offset-bottom="1">
             <div style="width: 950px;margin: 0 auto;text-align: center;padding: 10px 0 0 0;">
                 <a-space align="end" style="height: 100%;">
                     <a-button type="primary" @click="handleOk">提交</a-button>
@@ -716,15 +715,15 @@ export default defineComponent({
             setimg_name:'',             // 添加图片的对象['PicList','long_img_List','white_img','video']
             // 图片组件获取地址后添加到页面容器：：：回调方法
             Add_Callback:(data)=>{
-                var type = PAGEDATA.setimg_name; // 添加类型
-                if(type == 'PicList'){// 判断回调type：：：主图添加
-                    Pic_Fun.add(data)// 添加主图方法
-                }else if(type == 'long_img_List'){// 判断回调type：：：3:4长图添加
-                    Longimg_Fun.add(data)// 添加长图方法
-                }else if(type == 'white_img'){// 判断回调type：：：白底图添加
-                    whiteimg_Fun.add(data)// 添加白底图方法
+                var type = PAGEDATA.setimg_name;        // 添加类型
+                if(type == 'PicList'){                  // 判断回调type：：：主图添加
+                    Pic_Fun.add(data)                   // 添加主图方法
+                }else if(type == 'long_img_List'){      // 判断回调type：：：3:4长图添加
+                    Longimg_Fun.add(data)               // 添加长图方法
+                }else if(type == 'white_img'){          // 判断回调type：：：白底图添加
+                    whiteimg_Fun.add(data)              // 添加白底图方法
                 }else if(type == 'video_info'){
-                    video_Fun.add(data)// 添加视频方法
+                    video_Fun.add(data)                 // 添加视频方法
                 }
             },
             // 变更添加素材类型
@@ -736,6 +735,7 @@ export default defineComponent({
         
         // 主图对象
         const Pic_Fun = {
+
             PicList:ref([]),
             // 删除图片
             del_pic:(d_id)=>{
@@ -743,21 +743,53 @@ export default defineComponent({
                     if(d_id == val.material_id){Pic_Fun.PicList.value.splice(idx, 1)}
                 })
             },
+
             // 添加图片
             add:(data)=>{
 
                 data.forEach((obj,idx)=>{
                     // 判断是否图片素材
-                    // 是=>添加到数组
-                    // 不是=>过滤掉后提示('请添加图片素材')
-                    Pic_Fun.PicList.value.push(obj)
+                    var material_type = obj.material_type;
+
+                    // console.log(material_type)
+                    // 是图片=>添加到数组
+                    if(material_type == 'photo'){
+                        var photo_info = obj.photo_info;
+                        var pic_width = photo_info.width;      // 宽度
+                        var pic_height = photo_info.height;     // 高度
+                        if(pic_width == pic_height){
+                            Pic_Fun.PicList.value.push(obj)
+                        }else{
+                            tool.Fun_.message('info','主图长宽比例需要1:1,不小于600X600.')
+                        }
+                    }else if(material_type == 'video'){
+                        tool.Fun_.message('info','【主图】不能选择视频，请选择图片素材！')
+                    }
                 })
 
+                // 只保留5张主图；
                 if(Pic_Fun.PicList.value.length > 5){
                     Pic_Fun.PicList.value = Pic_Fun.PicList.value.slice(0, 5)
+                    tool.Fun_.message('info','最多上传5张主图')
                 }
 
+            },
+            
+            // 获取主图
+            get:()=>{
+
+                var pic = Pic_Fun.PicList.value;
+                if(pic.length == 0){
+                    tool.Fun_.message('info','主图不能为空！')
+                }else{
+                    var res_text = ''
+                    pic.forEach((obj,index)=>{
+                        res_text = res_text + '|' + obj.byte_url
+                    })
+                    return res_text
+                }
             }
+
         }
 
         // 3:4长图
@@ -779,6 +811,10 @@ export default defineComponent({
                 if(Longimg_Fun.PicList.value.length > 5){
                     Longimg_Fun.PicList.value = Longimg_Fun.PicList.value.slice(0, 5)
                 }
+            },
+            // 获取长图
+            get:()=>{
+                console.log(video_Fun.PicList.value)
             }
         }
 
@@ -792,7 +828,24 @@ export default defineComponent({
             // 添加白底图
             add:(data)=>{
                 whiteimg_Fun.PicList.value.length = 0;
-                whiteimg_Fun.PicList.value.push(data[0])
+                var obj = data[0];
+                var material_type = obj.material_type;
+                if(material_type == 'photo'){
+                    var photo_info = obj.photo_info;
+                    var pic_width = photo_info.width;      // 宽度
+                    var pic_height = photo_info.height;     // 高度
+                    if(pic_width == pic_height){
+                        whiteimg_Fun.PicList.value.push(obj)
+                    }else{
+                        tool.Fun_.message('info','主图长宽比例需要1:1,不小于600X600.')
+                    }
+                }else if(material_type == 'video'){
+                    tool.Fun_.message('info','【白底图】不能选择视频，请选择图片素材！')
+                }
+            },
+            // 验证白底图
+            get:()=>{
+                console.log(whiteimg_Fun.PicList.value)
             }
         }
 
@@ -808,7 +861,6 @@ export default defineComponent({
 
                 var obj = data[0]
                 var material_type = obj.material_type; // 对象类型图片、视频
-                console.log(material_type)
 
                 // 判断添加素材类型：仅允许添加
                 if(material_type == 'photo'){
@@ -817,6 +869,9 @@ export default defineComponent({
                     video_Fun.PicList.value.length = 0;
                     video_Fun.PicList.value.push(data[0])
                 }
+            },
+            get:()=>{
+                console.log(video_Fun.PicList.value)
             }
         }
 
@@ -1185,16 +1240,52 @@ export default defineComponent({
         }
 
         // 描述详情
-        const DES={
+        const DES = {
+
+            // 初始化
+            valueHtml:ref('<p></p>'),
+            mode:ref('simple'),// 或 'simple' 'default'
+            // 编辑器实例，必须用 shallowRef
+            editorRef:shallowRef(),
+            editorConfig:{placeholder: '请输入内容...' },// 默认值
+            // 编辑器工具栏配置
+            toolbarConfig:{
+                excludeKeys: [
+                    'bold',
+                    "underline",
+                    "italic",
+                    "through",
+                    "color",
+                    "clearStyle",
+                    "bgColor",
+                    "codeBlock",
+                    "blockquote",
+                    "bulletedList",
+                    "numberedList",
+                    "insertTable",
+                    "header1",
+                    "header2",
+                    "header3",
+                    'headerSelect',
+                    'italic',
+                    'group-more-style', // 排除菜单组，写菜单组 key 的值即可
+                    //"fullScreen",
+                    "insertLink",
+                    "editLink",
+                    "insertVideo",
+                    "uploadVideo",
+                    "todo",
+                    "redo",
+                    "undo",
+                    "uploadImage"
+                ]
+            }
 
         }
         // 图片数据
         const valueHtml = ref('<p></p>')
-        const mode = 'simple' // 或 'simple' 'default'
-
-        // 编辑器实例，必须用 shallowRef
-        const editorRef = shallowRef()
-
+        const mode = 'simple'           // 或 'simple' 'default'
+        const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
         const editorConfig = { placeholder: '请输入内容...' }
 
         // 编辑器工具栏配置
@@ -1232,11 +1323,14 @@ export default defineComponent({
 
         // 组件销毁时，也及时销毁编辑器
         onBeforeUnmount(() => {
-            const editor = editorRef.value
-            console.log('des',editor)
+
+            const editor = editorRef.value;
+
+            // console.log('des',editor)
             // if (editor == null) {
             //   return editor.destroy()
             // }
+
         })
 
         //  创建编辑器
@@ -1269,7 +1363,25 @@ export default defineComponent({
         const confirmLoading = ref(false);
 
         // 确认按钮
-        const handleOk = e => {console.log(e);};
+        const handleOk = e => {
+            var pic = Pic_Fun.get(); // 主图
+            // 白底图
+            // 长图
+            // 视频
+            // 基础
+            // 规格
+            // 库存
+            // 描述
+            // 限购
+
+            // 商品上传
+
+            // 上传成功
+
+            // 上传失败
+            
+
+        };
 
         // 关闭按钮
         const closed = () =>{
@@ -1307,7 +1419,7 @@ export default defineComponent({
 <style scoped>
 .content{padding: 0;margin: 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 90vh;}
 .img_pic{height: 100px;width: 100px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
-.img_3_4_pic{height: 132px;width: 99px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
+.img_3_4_pic{height: 132px;width: 99px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
 .Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
 .Add_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
 .Add_3_4_img{height: 132px;width: 99px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}

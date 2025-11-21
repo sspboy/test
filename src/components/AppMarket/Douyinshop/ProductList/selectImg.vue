@@ -155,7 +155,7 @@
 
                                                                 <a-typography-link>
                                                                     <a href="#" class="font_size_12" @click="showChildimgDrawer(item)">
-                                                                    <EyeOutlined /> 图片详情 </a>
+                                                                    <EyeOutlined /> 详情 </a>
                                                                 </a-typography-link>
 
                                                             </a-space>
@@ -182,7 +182,7 @@
                                                                     >视频</a-checkbox>
                                                                 </a-typography-link>
                                                                 <a-typography-link>
-                                                                    <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)"><EyeOutlined /> 视频详情</a>
+                                                                    <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)"><EyeOutlined /> 详情</a>
                                                                 </a-typography-link>
                                                             </a-space>
                                                         </p>
