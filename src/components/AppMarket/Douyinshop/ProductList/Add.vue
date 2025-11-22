@@ -1282,6 +1282,7 @@ export default defineComponent({
             }
 
         }
+
         // 图片数据
         const valueHtml = ref('<p></p>')
         const mode = 'simple'           // 或 'simple' 'default'
@@ -1365,7 +1366,7 @@ export default defineComponent({
         // 确认按钮
         const handleOk = e => {
             var pic = Pic_Fun.get(); // 主图
-            // 白底图
+            var w_pic = whiteimg_Fun.get();// 白底图
             // 长图
             // 视频
             // 基础
@@ -1410,6 +1411,7 @@ export default defineComponent({
             toolbarConfig,
             handleCreated,
             mode,
+            DES,
             
         }
     }
