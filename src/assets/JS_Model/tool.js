@@ -4,33 +4,31 @@ import { message } from 'ant-design-vue';
 
     // 添加响应拦截器
     axios.interceptors.response.use(function (response) {
+
         // 对响应数据做点什么
-        // 接口错误
-        // 权限错误
-        // cookie过期
+        var res_info = {
+                "NOT_Login_Power":"未登录或登录过期.",
+                "isv.invalid_ip":"IP被限制.",
+                "isv.access-token-expired":"Token请过期重新授权.",
+                "dop.authorization-closed":"授权已被关闭，请重新打开授权开关.",
+            }
+
+        Object.keys(res_info).forEach(key=>{
+            // console.log(key, res_info[key])
+            var key_text = key;
+            var message_text = res_info[key];
+            if(response.data.sub_code == key_text){
+                message.error(message_text)
+            }
+        })
         
-        // console.log('响应拦截器')
-        // console.log(response)
-        if(response.data == "NOT_Login_Power"){
-            message.error('未登录或登录过期')
-            window.location.href = '/'
-        }
-
-        if(response.data.sub_code == "isv.invalid_ip"){
-            message.error('IP被限制')
-        }
-
-        if(response.data.sub_code == "isv.access-token-expired"){
-            message.error('Token请过期重新授权')
-        }
-
-        // console.log(response.data)
-
         return response;
 
     }, function (error) {
+
         // 对响应错误做点什么
         return Promise.reject(error);
+
     });
 
 const API = new utils.A_Patch()// 请求接口

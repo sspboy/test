@@ -599,16 +599,16 @@
                             <Toolbar
                                 style="border-bottom: 1px solid #ccc"
                                 :editor="editorRef"
-                                :defaultConfig="toolbarConfig"
-                                :mode="mode"
+                                :defaultConfig="DES.toolbarConfig"
+                                :mode="DES.mode.value"
                             />
 
                             <Editor
                                 style="height: 600px; overflow-y: hidden;"
-                                v-model="valueHtml"
-                                :defaultConfig="editorConfig"
-                                :mode="mode"
-                                @onCreated="handleCreated"
+                                v-model="DES.valueHtml.value"
+                                :defaultConfig="DES.editorConfig"
+                                :mode="DES.mode.value"
+                                @onCreated="DES.handleCreated"
                             />
                         </div>
                     </a-tab-pane>
@@ -846,6 +846,12 @@ export default defineComponent({
             // 验证白底图
             get:()=>{
                 console.log(whiteimg_Fun.PicList.value)
+                var res = whiteimg_Fun.PicList.value;
+                if(res.length >0){
+                    return res
+                }else{
+                    return False
+                }
             }
         }
 
@@ -1240,6 +1246,7 @@ export default defineComponent({
         }
 
         // 描述详情
+        const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
         const DES = {
 
             // 初始化
@@ -1279,48 +1286,18 @@ export default defineComponent({
                     "undo",
                     "uploadImage"
                 ]
+            },
+            // 创建编辑器
+            handleCreated:(editor) => {
+                editorRef.value = editor // 记录 editor 实例，重要！
+                editor.clear() // 清空编辑器
             }
 
         }
 
-        // 图片数据
-        const valueHtml = ref('<p></p>')
-        const mode = 'simple'           // 或 'simple' 'default'
-        const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
-        const editorConfig = { placeholder: '请输入内容...' }
 
-        // 编辑器工具栏配置
-        const toolbarConfig = {
-            excludeKeys: [
-            'bold',
-            "underline",
-            "italic",
-            "through",
-            "color",
-            "clearStyle",
-            "bgColor",
-            "codeBlock",
-            "blockquote",
-            "bulletedList",
-            "numberedList",
-            "insertTable",
-            "header1",
-            "header2",
-            "header3",
-            'headerSelect',
-            'italic',
-            'group-more-style', // 排除菜单组，写菜单组 key 的值即可
-            //"fullScreen",
-            "insertLink",
-            "editLink",
-            "insertVideo",
-            "uploadVideo",
-            "todo",
-            "redo",
-            "undo",
-            "uploadImage"
-            ]
-        }
+
+
 
         // 组件销毁时，也及时销毁编辑器
         onBeforeUnmount(() => {
@@ -1334,45 +1311,81 @@ export default defineComponent({
 
         })
 
-        //  创建编辑器
-        const handleCreated = (editor) => {
-            
-            editorRef.value = editor // 记录 editor 实例，重要！
-            
-            editor.clear() // 清空编辑器
-
-            // var img_list = [] // 初始数据
-
-            // for(let i of img_list){
-
-            //     const node = { type: 'image', children: [{ text: '' }]}
-
-            //         node.src = i.OriginUrl
-            //         node.OriginUrl = i.OriginUrl  
-            //         node.Name= i.Name
-            //         node.MaterialId = i.MaterialId
-            //         node.ByteUrl = i.ByteUrl
-            //         node.AuditStatus = i.AuditStatus
-            //         node.IsNew = i.IsNew
-            //         node.FolderId = i.FolderId
-            //         editor.insertNode(node)
-
-            // }
-
-        }
-
         const confirmLoading = ref(false);
 
         // 确认按钮
         const handleOk = e => {
-            var pic = Pic_Fun.get(); // 主图
-            var w_pic = whiteimg_Fun.get();// 白底图
-            // 长图
-            // 视频
-            // 基础
+
+            var pic = Pic_Fun.get();            // 主图-必填
+            console.log(pic)
+
+            var w_pic = whiteimg_Fun.get();     // 白底图
+            console.log(w_pic)
+
+            var long_pic = Longimg_Fun.get()    // 长图
+            console.log(long_pic)
+
+            var video_info = video_Fun.get()    // 视频
+            console.log(long_pic)
+
+            // 标题
+            var name = formState.name;
+
+            // 电话
+            var mobile = formState.mobile;
+
+            // 支付方式
+            var pay_type = '';
+
+            // 减库存类型
+            var reduce_type = '';
+
+            // 运费模板
+            var freight_id = '';
+
+            // 重量
+            var weight = '';
+
+            // 单位
+            var weight_unit = '';
+
+            // 商家推荐语
+            var recommend_remark = formState.recommend_remark;
+
+            // 备注 商家可见
+            var remark = formState.remark;
+
+            // 分类
+            var category_leaf_id = 20000
+
+            // 属性 无品牌id则传596120136;
+            var product_format_new = {
+                "property_id":[
+                    {"value":value,
+                    "name":"property_name",
+                    "diy_type":0}
+                ]
+            }
+
             // 规格
+            var specs = '颜色|红色,黑色^尺码|S,M'
+
+            // 规格图片
+            var spec_pic = 'img_url,img_url,img_url'
+
             // 库存
+            var spec_prices = {
+                
+            }
+
             // 描述
+            var description = 'img_url1|img_url2|img_url3'
+
+            // 仅保存，保存+提审
+            var commit = ''
+
+
+
             // 限购
 
             // 商品上传
@@ -1390,14 +1403,9 @@ export default defineComponent({
         }
         return{
             PAGEDATA,
-            Pic_Fun,        // 主图
-            whiteimg_Fun,   // 白底图
-            Longimg_Fun,    // 长图
-            video_Fun,
+            Pic_Fun,whiteimg_Fun,Longimg_Fun,video_Fun,        // 主图,白底图,长图,视频
             props,
             activeKey,
-            handleOk,
-            closed,
             formState,
             formRef,
             SPECS,
@@ -1405,13 +1413,9 @@ export default defineComponent({
             sku_list,
             simpleImage,
             // 描述详情
-            valueHtml,
-            editorRef,
-            editorConfig,
-            toolbarConfig,
-            handleCreated,
-            mode,
-            DES,
+            editorRef,DES,
+            // 提交，关闭
+            handleOk,closed,
             
         }
     }
@@ -1427,5 +1431,4 @@ export default defineComponent({
 .Add_3_4_img{height: 132px;width: 99px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
 .Add_3_4_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
 .add_btn_class{width: 40px; margin:0 0 0 20px;}
-
 </style>
