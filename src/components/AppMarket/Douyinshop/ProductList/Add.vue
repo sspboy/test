@@ -176,17 +176,13 @@
                                 ref="formRef"
                                 name="ProductInfo"
                                 :model="formState"
+                                :rules="rules"
                             >
                                 <a-row :gutter="[16,0]">
 
                                     <a-col :span="24">
-                                        <a-form-item
-                                            label="商品标题"
-                                            name="name"
-                                            placeholder="输入商品标题"
-                                            :rules="[{ required: true, message: '请输入商品标题' }]"
-                                        >
-                                            <a-input v-model:value="formState.name" show-count :maxlength="30" />
+                                        <a-form-item label="商品标题" name="name">
+                                            <a-input v-model:value="formState.name" placeholder="输入商品标题" show-count :maxlength="30" />
                                         </a-form-item>
                                     </a-col>
 
@@ -194,7 +190,6 @@
                                         <a-form-item 
                                             label="商品类型" 
                                             name="product_type"
-                                            :rules="[{ required: true, message: '请选择类型' }]"
                                         >
                                             <a-select v-model:value="formState.product_type" placeholder="选择类型">
                                                 <a-select-option value="0">普通</a-select-option>
@@ -209,7 +204,6 @@
                                         <a-form-item
                                             label="推荐语"
                                             name="recommend_remark"
-                                            :rules="[{ required: false, message: '请输入商家推荐语'}]"
                                         >
                                             <a-input v-model:value="formState.recommend_remark" show-count :maxlength="30" placeholder="输入商品推荐语"/>
                                         </a-form-item>
@@ -218,7 +212,6 @@
                                         <a-form-item
                                             label="商家备注"
                                             name="remark"
-                                            :rules="[{ required: false, message: '' }]"
                                         >
                                             <a-input v-model:value="formState.remark" placeholder="商家可见备注" show-count :maxlength="30" />
                                         </a-form-item>
@@ -227,7 +220,6 @@
                                         <a-form-item 
                                             label="支付方式" 
                                             name="pay_type"
-                                            :rules="[{ required: true, message: '请选择方式' }]"
                                         >
                                             <a-select v-model:value="formState.pay_type" placeholder="选择支付方式">
                                                 <a-select-option value="0">货到付款</a-select-option>
@@ -241,7 +233,6 @@
                                         <a-form-item 
                                             label="减库存类型" 
                                             name="reduce_type"
-                                            :rules="[{ required: true, message: '请选择减库存类型' }]"
                                         >
                                             <a-select v-model:value="formState.reduce_type" placeholder="选择方式">
                                                 <a-select-option value="1">拍下减库存</a-select-option>
@@ -255,7 +246,6 @@
                                             label="客服电话"
                                             name="mobile"
                                             placeholder="输入客服电话"
-                                            :rules="[{ required: true, message: '请输入客服电话'}]"
                                         >
                                             <a-input v-model:value="formState.mobile" />
                                         </a-form-item>
@@ -265,7 +255,6 @@
                                         <a-form-item
                                             label="提交方式"
                                             name="commit"
-                                            :rules="[{ required: true, message: '请输提交方式'}]"
                                         >
                                             <a-select v-model:value="formState.commit" placeholder="选择方式">
                                                 <a-select-option value="true">保存+提审</a-select-option>
@@ -278,7 +267,6 @@
                                         <a-form-item
                                             label="运费模板"
                                             name="freight_id"
-                                            :rules="[{ required: true, message: '请选择运费模板'}]"
                                         >
                                             <a-input-group compact>
                                                 <a-input v-model:value="formState.freight_id" placeholder="选择运费模板" disabled style="width: calc(74%)" />
@@ -291,7 +279,6 @@
                                         <a-form-item
                                             label="尺码模板"
                                             name="size_info_template_id"
-                                            :rules="[{ required: true, message: '请选择尺码模板'}]"
                                         >
                                             <a-input-group compact>
                                                 <a-input v-model:value="formState.size_info_template_id" placeholder="请选择尺码模板" disabled style="width: calc(74%)" />
@@ -850,7 +837,7 @@ export default defineComponent({
                 if(res.length >0){
                     return res
                 }else{
-                    return False
+                    return false
                 }
             }
         }
@@ -883,14 +870,77 @@ export default defineComponent({
 
         // 基础信息
         const formRef = ref();
+        const rules = {
+            // 标题
+            name: [
+                {
+                    required: true,
+                    message: '商品标题不能为空',
+                    trigger: 'change',
+                },
+                {
+                    min: 12,
+                    max: 30,
+                    message: '不超过30个中文字',
+                    trigger: 'blur',
+                },
+            ],
+            // 客服电话
+            mobile:[{
+                    required: true,
+                    message: '客服电话不能为空',
+                    trigger: 'change',
+            }],
+            // 商品类型
+            product_type:[{
+                required: true,
+                message: '类型不能为空!',
+                trigger: 'change',
+            }],
+            // 支付方式
+            pay_type:[
+                {
+                    required: true,
+                    message: '支付方式不能为空!',
+                    trigger: 'change',
+            }],
+            // 减库存方式
+            reduce_type:[
+                {
+                    required: true,
+                    message: '减库存方式不能为空!',
+                    trigger: 'change',
+            }],
+            // 提交方式
+            commit:[
+                {
+                    required: true,
+                    message: '提交方式不能为空!',
+                    trigger: 'change',
+            }],
+            // 运费模板
+            freight_id:[
+                {
+                    required: true,
+                    message: '提交方式不能为空!',
+                    trigger: 'change',
+            }],
+            // 尺码模板
+            size_info_template_id:[
+                {
+                    required: true,
+                    message: '提交方式不能为空!',
+                    trigger: 'change',
+            }],
+        }
         const formState = reactive({
-            product_type:'0',           // 商品类别
-            mobile:'13888888888',       // 客服电话
-            name:undefined,             // 商品标题
-            recommend_remark:undefined, // 推荐语
-            pay_type:'1',               // 支付类型
-            reduce_type:'1',            // 减库存类型
-            freight_id:undefined,       // 运费模板
+            product_type:'0',               // 商品类别
+            mobile:'13888888888',           // 客服电话
+            name:undefined,                 // 商品标题
+            recommend_remark:undefined,     // 推荐语
+            pay_type:'1',                   // 支付类型
+            reduce_type:'1',                // 减库存类型
+            freight_id:undefined,           // 运费模板
             size_info_template_id:undefined,// 尺码模板
             commit:'false',                 // 提交
             remark:undefined,               // 商家备注
@@ -1322,11 +1372,18 @@ export default defineComponent({
             var w_pic = whiteimg_Fun.get();     // 白底图
             console.log(w_pic)
 
-            var long_pic = Longimg_Fun.get()    // 长图
+            var long_pic = Longimg_Fun.get();    // 长图
             console.log(long_pic)
 
-            var video_info = video_Fun.get()    // 视频
+            var video_info = video_Fun.get();    // 视频
             console.log(long_pic)
+
+            // 验证基础信息
+            formRef.value.validate().then(() => {
+                console.log('values', formState, toRaw(formState));
+            }).catch(error => {
+                console.log('error', error);
+            });
 
             // 标题
             var name = formState.name;
@@ -1361,35 +1418,77 @@ export default defineComponent({
             // 属性 无品牌id则传596120136;
             var product_format_new = {
                 "property_id":[
-                    {"value":value,
-                    "name":"property_name",
-                    "diy_type":0}
+                    {
+                        "value":'value',
+                        "name":"property_name",
+                        "diy_type":0
+                    }
                 ]
-            }
-
-            // 规格
-            var specs = '颜色|红色,黑色^尺码|S,M'
-
-            // 规格图片
-            var spec_pic = 'img_url,img_url,img_url'
-
-            // 库存
-            var spec_prices = {
-                
             }
 
             // 描述
             var description = 'img_url1|img_url2|img_url3'
 
-            // 仅保存，保存+提审
+            // 仅保存false，保存+提审true
             var commit = ''
 
+            // 规格
+            var specs = '颜色|红色,黑色^尺码|S,M'
+            var spec_info = ''
+            // 规格图片
+            var spec_pic = 'img_url,img_url,img_url'
+
+            // 库存
+            var spec_prices_v2 = {
+            }
 
 
             // 限购
 
             // 商品上传
+            const pro_upload_json = {
 
+                "out_product_id":"19840228",
+
+                "product_type":0,
+
+                "category_leaf_id":22438,
+
+                "name":"测试玉兔逢春原创冬季",
+
+                "pic":"https://p3-aio.ecombdimg.com/obj/ecom-shop-material/webp_m_cf827a85c74f7e4c0f0096b9ec7e4464_sx_125536_www800-800",
+
+                "description":"https://p3-aio.ecombdimg.com/obj/ecom-shop-material/webp_m_cf827a85c74f7e4c0f0096b9ec7e4464_sx_125536_www800-800",
+
+                "pay_type":0,
+
+                "reduce_type":1,
+                
+                "freight_id":0,
+                
+                "mobile":"13888881818",
+
+                "commit":false,
+
+                "spec_info":{
+                    "spec_values":[
+                    {
+                        "property_name":"颜色",
+                        "values":[{"value_name":"粉色", "remark":"可爱的"}]
+                    }
+                ]},
+
+                "spec_prices_v2":[
+                    {
+                        "sell_properties":[{"property_name":"颜色","value_name":"粉色"}],
+                        "sku_type":0,
+                        "stock_num":99,
+                        "price":10000
+                    }
+                ]
+
+
+            }
             // 上传成功
 
             // 上传失败
@@ -1397,10 +1496,13 @@ export default defineComponent({
 
         };
 
-        // 关闭按钮
+        // 关闭新建商品按钮
         const closed = () =>{
+
             props.data.AddDate = !props.data.AddDate;
+
         }
+
         return{
             PAGEDATA,
             Pic_Fun,whiteimg_Fun,Longimg_Fun,video_Fun,        // 主图,白底图,长图,视频
@@ -1416,6 +1518,7 @@ export default defineComponent({
             editorRef,DES,
             // 提交，关闭
             handleOk,closed,
+            rules
             
         }
     }
