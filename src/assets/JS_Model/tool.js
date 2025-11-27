@@ -14,14 +14,20 @@ import { message } from 'ant-design-vue';
             }
 
         Object.keys(res_info).forEach(key=>{
-            // console.log(key, res_info[key])
             var key_text = key;
             var message_text = res_info[key];
             if(response.data.sub_code == key_text){
+                // console.log(key, res_info[key])
                 message.error(message_text)
             }
         })
-        
+
+        if(response.data.sub_code == 'NOT_Login_Power'){
+            // 当前窗口打开
+            window.open('/', '_self');
+        }
+
+        // console.log(response)
         return response;
 
     }, function (error) {

@@ -23,23 +23,18 @@
                             <!----主图--pic-->
                             <a-col :span="16">
 
-                                <a-divider 
-                                    orientation="left" 
-                                    orientation-margin="0px"
-                                >
-                                    主图
-                                </a-divider>
+                                <a-divider orientation="left" orientation-margin="0px">主图</a-divider>
 
                                 <div style="width: 100%; height: 120px;">
 
-                                    <p class="img_pic" v-for="item in Pic_Fun.PicList.value">
+                                    <p class="img_pic" v-for="(item,index) in Pic_Fun.PicList.value">
 
                                         <a-image :src="item.byte_url" />
                                         <!--图片尺寸不复合情况下-->
 
                                         <!--图片尺寸1：1情况下-->
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="Pic_Fun.del_pic(item.material_id)"> 
+                                            <a-button type="text" size="small" @click="Pic_Fun.del_pic(index)"> 
                                                 <DeleteOutlined />
                                             </a-button>
                                         </span>
@@ -107,12 +102,12 @@
 
                                 <div style="width: 100%;height: 160px;">
 
-                                    <p class="img_3_4_pic" v-for="item in Longimg_Fun.PicList.value">
+                                    <p class="img_3_4_pic" v-for="(item,index) in Longimg_Fun.PicList.value">
                                         
                                         <a-image :height="110" :src="item.byte_url" />
 
                                         <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="Longimg_Fun.del(item.material_id)"> 
+                                            <a-button type="text" size="small" @click="Longimg_Fun.del(index)"> 
                                                 <DeleteOutlined />
                                             </a-button>
                                         </span>
@@ -170,6 +165,7 @@
                             orientation-margin="0px">
                             基础信息
                         </a-divider>
+
                         <div style="width: 100%;">
 
                             <a-form
@@ -182,7 +178,7 @@
 
                                     <a-col :span="24">
                                         <a-form-item label="商品标题" name="name">
-                                            <a-input v-model:value="formState.name" placeholder="输入商品标题" show-count :maxlength="30" />
+                                            <a-input v-model:value="formState.name" autoComplete="off" placeholder="输入商品标题" show-count :maxlength="30" />
                                         </a-form-item>
                                     </a-col>
 
@@ -205,7 +201,7 @@
                                             label="推荐语"
                                             name="recommend_remark"
                                         >
-                                            <a-input v-model:value="formState.recommend_remark" show-count :maxlength="30" placeholder="输入商品推荐语"/>
+                                            <a-input v-model:value="formState.recommend_remark" autoComplete="off" show-count :maxlength="30" placeholder="输入商品推荐语"/>
                                         </a-form-item>
                                     </a-col>
                                     <a-col :span="8">
@@ -213,7 +209,7 @@
                                             label="商家备注"
                                             name="remark"
                                         >
-                                            <a-input v-model:value="formState.remark" placeholder="商家可见备注" show-count :maxlength="30" />
+                                            <a-input v-model:value="formState.remark" autoComplete="off" placeholder="商家可见备注" show-count :maxlength="30" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :span="8">
@@ -269,8 +265,8 @@
                                             name="freight_id"
                                         >
                                             <a-input-group compact>
-                                                <a-input v-model:value="formState.freight_id" placeholder="选择运费模板" disabled style="width: calc(74%)" />
-                                                <a-button >选择</a-button>
+                                                <a-input v-model:value="formState.freight_id.name" placeholder="选择运费模板" disabled style="width: calc(74%);" />
+                                                <a-button class="font_size_12">选择</a-button>
                                             </a-input-group>
                                         </a-form-item>                                    
                                     </a-col>
@@ -431,14 +427,15 @@
                                 <template v-if="column.dataIndex === 'stock_num'">
                                 <a-form-item :name="['data', index, 'stock_num']" :rules="{required: true, trigger: 'change', message:''}">
                                     <a-input-number 
-                                    placeholder="输入库存" 
-                                    size="small" 
-                                    :min="0"
-                                    :max="999999999"
-                                    v-model:value="record.stock_num" 
-                                    autocomplete="off"
-                                    allow-clear
-                                    style="font-size: 12px;width: 100%;"/>
+                                        placeholder="输入库存" 
+                                        size="small" 
+                                        :min="0"
+                                        :max="999999999"
+                                        v-model:value="record.stock_num" 
+                                        autocomplete="off"
+                                        allow-clear
+                                        style="font-size: 12px;width: 100%;"
+                                    />
                                 </a-form-item>
                                 </template>
                                 
@@ -469,20 +466,19 @@
                     <a-tab-pane key="3" tab="分类属性">
                         
                         <a-divider orientation="left" orientation-margin="0px">分类</a-divider>
+                        <a-form :model="CATE.format_formRef">        
 
-                        <p>
-                            <a-form ref="CATE.first_formRef">        
-                                <a-form-item name="CATE.cate_name.value">
-                                    <a-cascader
-                                        v-model:value="CATE.cate_name.value"
-                                        :options="CATE.options.value"
-                                        :load-data="CATE.loadData"
-                                        @change="CATE.loadFormat"
-                                        placeholder="选择分类"
-                                    />
-                                </a-form-item>
-                            </a-form>
-                        </p>
+                            <p>
+                                    <a-form-item name="CATE.cate_name.value">
+                                        <a-cascader
+                                            v-model:value="CATE.cate_name.value"
+                                            :options="CATE.options.value"
+                                            :load-data="CATE.loadData"
+                                            @change="CATE.loadFormat"
+                                            placeholder="选择分类"
+                                        />
+                                    </a-form-item>
+                            </p>
 
                         <a-divider orientation="left" orientation-margin="0px">
                             属性
@@ -498,7 +494,23 @@
                                         {{ item.property_name }}
                                         <span v-if="item.required ==1" style="color: red;">--必填</span>
                                     </p>
-                                    <p><a-input type="text" placeholder="请输入"></a-input></p>
+                                    <p v-if="item.required ==1">
+                                        <a-input 
+                                            type="text" 
+                                            placeholder="请输入" 
+                                            v-model:value="item.result_value"
+                                            :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]"
+
+                                        />
+                                    </p>
+                                    <p v-else-if="item.required !== 1">
+                                        <a-input 
+                                            type="text" 
+                                            placeholder="请输入" 
+                                            v-model:value="item.result_value"
+                                        />
+                                    </p>
+
                                 </div>
 
                                 <!--单选-->
@@ -507,19 +519,37 @@
                                         {{ item.property_name }}
                                         <span v-if="item.required ==1" style="color: red;">--必填</span>
                                     </p>
-                                    <p>
-                                        <a-select
-                                            ref="select"
-                                            v-model:value="item.result_value"
-                                            placeholder="请选择"
-                                            allow-clear
-                                            @change="console.log(item.result_value)"
-                                            style="width: 120px;width: 100%;"
-                                        >
-                                            <a-select-option v-for="opt in item.options" :value="opt.value" >
-                                                {{ opt.name }}
-                                            </a-select-option>
-                                        </a-select>
+                                    <p v-if="item.required ==1">
+                                        <a-form-item :name="item.property_id" :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]">
+                                            <a-select
+                                                ref="select"
+                                                v-model:value="CATE.format_formRef[item.property_id]"
+                                                placeholder="请选择"
+                                                allow-clear
+                                                @change="console.log(item.result_value)"
+                                                style="width: 120px;width: 100%;"
+                                            >
+                                                <a-select-option v-for="opt in item.options" :value="opt.value" >
+                                                    {{ opt.name }}
+                                                </a-select-option>
+                                            </a-select>
+                                        </a-form-item>
+                                    </p>
+                                    <p v-else-if="item.required !==1">
+                                        <a-form-item :name="item.property_id">
+                                            <a-select
+                                                ref="select"
+                                                v-model:value="CATE.format_formRef[item.property_id]"
+                                                placeholder="请选择"
+                                                allow-clear
+                                                @change="console.log(item.result_value)"
+                                                style="width: 120px;width: 100%;"
+                                            >
+                                                <a-select-option v-for="opt in item.options" :value="opt.value" >
+                                                    {{ opt.name }}
+                                                </a-select-option>
+                                            </a-select>
+                                        </a-form-item>
                                     </p>
                                 </div>
 
@@ -529,7 +559,25 @@
                                         {{ item.property_name }}
                                         <span v-if="item.required ==1" style="color: red;">--必填</span>
                                     </p>
-                                    <p>
+                                    <p v-if="item.required ==1">
+                                        <a-select
+                                            ref="select"
+                                            v-model:value="item.result_value"
+                                            :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]"
+                                            placeholder="请选择"
+                                            mode="multiple"
+                                            :maxTagCount="1"
+                                            allow-clear
+                                            @change="CATE.dis_ops(item)"
+                                            style="width: 120px;width: 100%;"
+                                        >
+                                            <a-select-option v-for="opt in item.options" :value="opt.value" :disabled="opt.disabled">
+                                                {{ opt.name }}
+                                            </a-select-option>
+
+                                        </a-select>
+                                    </p>
+                                    <p v-if="item.required !==1">
                                         <a-select
                                             ref="select"
                                             v-model:value="item.result_value"
@@ -569,6 +617,7 @@
                         <p v-if="CATE.format.value.length == 0">
                             <a-empty :image="simpleImage" />
                         </p>
+                        </a-form>
 
                     </a-tab-pane>
 
@@ -652,7 +701,7 @@
     </a-modal>
 </template>
 <script>
-import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed,shallowRef,onBeforeUnmount } from 'vue';
+import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed,shallowRef,onBeforeUnmount,toRaw } from 'vue';
 import { useStore } from 'vuex'
 import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined} from '@ant-design/icons-vue';
 import axios from 'axios';
@@ -725,10 +774,8 @@ export default defineComponent({
 
             PicList:ref([]),
             // 删除图片
-            del_pic:(d_id)=>{
-                Pic_Fun.PicList.value.forEach((val, idx) => {
-                    if(d_id == val.material_id){Pic_Fun.PicList.value.splice(idx, 1)}
-                })
+            del_pic:(index)=>{
+                Pic_Fun.PicList.value.splice(index, 1)
             },
 
             // 添加图片
@@ -771,9 +818,9 @@ export default defineComponent({
                 }else{
                     var res_text = ''
                     pic.forEach((obj,index)=>{
-                        res_text = res_text + '|' + obj.byte_url
+                        res_text = res_text + obj.byte_url  + '|'
                     })
-                    return res_text
+                    return res_text.slice(0, -1)
                 }
             }
 
@@ -783,12 +830,8 @@ export default defineComponent({
         const Longimg_Fun = {
             PicList:ref([]),
             // 删除长图
-            del:(d_id)=>{
-                // console.log(d_id)
-                Longimg_Fun.PicList.value.forEach((val, idx) => {
-                    // console.log(val,idx);
-                    if(d_id == val.material_id){Longimg_Fun.PicList.value.splice(idx, 1)}
-                })
+            del:(idx)=>{
+                Longimg_Fun.PicList.value.splice(idx, 1);
             },
             // 添加长图
             add:(data)=>{
@@ -801,7 +844,20 @@ export default defineComponent({
             },
             // 获取长图
             get:()=>{
-                console.log(video_Fun.PicList.value)
+                var res = Longimg_Fun.PicList.value;
+
+                if(res.length >0){
+
+                    var res_text = ''
+                    res.forEach((obj,index)=>{
+                        res_text = res_text + obj.byte_url  + '|'
+                    })
+
+                    return res_text.slice(0, -1)
+
+                }else{
+                    return undefined
+                }
             }
         }
 
@@ -832,19 +888,20 @@ export default defineComponent({
             },
             // 验证白底图
             get:()=>{
-                console.log(whiteimg_Fun.PicList.value)
                 var res = whiteimg_Fun.PicList.value;
                 if(res.length >0){
-                    return res
+                    return res[0].byte_url
                 }else{
-                    return false
+                    return undefined
                 }
             }
         }
 
         // 视频
         const video_Fun={
+
             PicList:ref([]),
+
             // 删除视频
             del:()=>{
                 video_Fun.PicList.value.length = 0;
@@ -864,12 +921,24 @@ export default defineComponent({
                 }
             },
             get:()=>{
-                console.log(video_Fun.PicList.value)
+
+                var res = video_Fun.PicList.value;
+
+                if(res.length >0){
+                    
+                    return res
+                
+                }else{
+                
+                    return undefined
+                
+                }
             }
         }
 
         // 基础信息
         const formRef = ref();
+
         const rules = {
             // 标题
             name: [
@@ -879,9 +948,9 @@ export default defineComponent({
                     trigger: 'change',
                 },
                 {
-                    min: 12,
+                    min: 4,
                     max: 30,
-                    message: '不超过30个中文字',
+                    message: '至少4个汉字,不超过30个汉字,不能含emoj表情.',
                     trigger: 'blur',
                 },
             ],
@@ -922,31 +991,25 @@ export default defineComponent({
             freight_id:[
                 {
                     required: true,
-                    message: '提交方式不能为空!',
+                    message: '运费模板不能为空!',
                     trigger: 'change',
-            }],
-            // 尺码模板
-            size_info_template_id:[
-                {
-                    required: true,
-                    message: '提交方式不能为空!',
-                    trigger: 'change',
-            }],
+            }]
         }
+
         const formState = reactive({
             product_type:'0',               // 商品类别
-            mobile:'13888888888',           // 客服电话
+            mobile:'18888888888',           // 客服电话
             name:undefined,                 // 商品标题
             recommend_remark:undefined,     // 推荐语
             pay_type:'1',                   // 支付类型
             reduce_type:'1',                // 减库存类型
-            freight_id:undefined,           // 运费模板
+            freight_id:{"name":"包邮","value":0},           // 运费模板
             size_info_template_id:undefined,// 尺码模板
             commit:'false',                 // 提交
             remark:undefined,               // 商家备注
-            limit_per_buyer:ref(),          // 每个用户累计限购件数
-            maximum_per_order:ref(),        // 每个用户每次下单限购件数
-            minimum_per_order:ref(),        // 每个用户每次下单至少购买的件数
+            limit_per_buyer:undefined,          // 每个用户累计限购件数
+            maximum_per_order:undefined,        // 每个用户每次下单限购件数
+            minimum_per_order:undefined,        // 每个用户每次下单至少购买的件数
         })
 
 
@@ -1200,11 +1263,18 @@ export default defineComponent({
         // 分类
         const CATE = {
 
-            first_formRef:ref(),        // 表单数据绑定
             options:ref([]),            // 分类选项
             cate_name:ref([]),          // 分类
             select_loading:ref(false),  // 加载状态
-            format:ref([]),             // 商品属性
+            
+            // 商品属性结构数据：：渲染表单格式
+            format:ref([]),
+
+            // 表单数据绑定:
+            format_formRef:reactive({
+
+            }),
+
             // 类目列表转换
             get_cate_list:(obj)=>{
                 var obj_list = []
@@ -1252,13 +1322,21 @@ export default defineComponent({
                 var data_list = res.data.data.data;
 
                 data_list.forEach((obj,index)=>{
+                    
+                    // console.log(obj)
+
+                    CATE.format_formRef[obj.property_id] = ''
+
                     var type = obj.type;
-                    if(type == 'multi_value_measure'){console.log(obj)}
-                    if(type == 'select' || type == 'multi_select'){
-                        obj.result_value = ref() // 选中结果
-                        obj.label = obj.name;
-                    }
+
+                    // if(type == 'select' || type == 'multi_select'){
+                    //     obj.result_value = ref() // 选中结果
+                    //     obj.label = obj.property_name;
+                    // }
+
                 })
+
+                console.log(CATE.format_formRef)
 
                 CATE.format.value = res.data.data.data;
 
@@ -1345,10 +1423,6 @@ export default defineComponent({
 
         }
 
-
-
-
-
         // 组件销毁时，也及时销毁编辑器
         onBeforeUnmount(() => {
 
@@ -1358,47 +1432,44 @@ export default defineComponent({
             // if (editor == null) {
             //   return editor.destroy()
             // }
-
         })
 
         const confirmLoading = ref(false);
 
         // 确认按钮
-        const handleOk = e => {
-
-            var pic = Pic_Fun.get();            // 主图-必填
-            console.log(pic)
-
-            var w_pic = whiteimg_Fun.get();     // 白底图
-            console.log(w_pic)
-
-            var long_pic = Longimg_Fun.get();    // 长图
-            console.log(long_pic)
-
-            var video_info = video_Fun.get();    // 视频
-            console.log(long_pic)
+        const handleOk = () => {
 
             // 验证基础信息
             formRef.value.validate().then(() => {
-                console.log('values', formState, toRaw(formState));
+
+                formState.pic = Pic_Fun.get();            // 主图-必填
+
+                formState.w_pic = whiteimg_Fun.get();     // 白底图
+
+                formState.long_pic = Longimg_Fun.get();    // 长图
+
+                formState.video_info = video_Fun.get();    // 视频
+                
+                console.log('基础信息结果', toRaw(formState));
+
             }).catch(error => {
+
                 console.log('error', error);
+
             });
 
-            // 标题
-            var name = formState.name;
+            // 规格信息
+            // var category_leaf_id = toRaw(CATE.cate_name.value);
 
-            // 电话
-            var mobile = formState.mobile;
+            // var pro_format = CATE.format.value;
 
-            // 支付方式
-            var pay_type = '';
+            // console.log('分类结果', category_leaf_id);
 
-            // 减库存类型
-            var reduce_type = '';
+            // console.log('商品属性', pro_format);
 
-            // 运费模板
-            var freight_id = '';
+            // 分类属性信息
+
+            // 描述信息
 
             // 重量
             var weight = '';

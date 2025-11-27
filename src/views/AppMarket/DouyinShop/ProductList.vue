@@ -506,7 +506,7 @@ export default {
             // 请求数据不为空
             PAGEDATA.datalist = res_list;
             PAGEDATA.total_number = total;
-          }, 1000);
+          }, 100);
         }
     }
 
