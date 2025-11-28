@@ -131,6 +131,7 @@
 
                             <!--视频 -- material_video_id -->
                             <a-col :span="8">
+
                                 <a-divider orientation="left" orientation-margin="0px">视频</a-divider>
 
                                 <div style="width: 100%;height:120px;">
@@ -403,7 +404,7 @@
                             <template #bodyCell="{ column, text, record, index }">
                                 
                                 <template v-if="column.dataIndex === 'name'">
-                                <a>{{ text }}</a>
+                                    <a>{{ text }}</a>
                                 </template>
 
                                 <template v-if="column.dataIndex === 'price'">
@@ -466,18 +467,21 @@
                     <a-tab-pane key="3" tab="分类属性">
                         
                         <a-divider orientation="left" orientation-margin="0px">分类</a-divider>
+
                         <a-form :model="CATE.format_formRef">        
 
                             <p>
-                                    <a-form-item name="CATE.cate_name.value">
-                                        <a-cascader
-                                            v-model:value="CATE.cate_name.value"
-                                            :options="CATE.options.value"
-                                            :load-data="CATE.loadData"
-                                            @change="CATE.loadFormat"
-                                            placeholder="选择分类"
-                                        />
-                                    </a-form-item>
+                                <a-form-item 
+                                    name="CATE.cate_name.value"
+                                >
+                                    <a-cascader
+                                        v-model:value="CATE.cate_name.value"
+                                        :options="CATE.options.value"
+                                        :load-data="CATE.loadData"
+                                        @change="CATE.loadFormat"
+                                        placeholder="选择分类"
+                                    />
+                                </a-form-item>
                             </p>
 
                         <a-divider orientation="left" orientation-margin="0px">
@@ -494,21 +498,30 @@
                                         {{ item.property_name }}
                                         <span v-if="item.required ==1" style="color: red;">--必填</span>
                                     </p>
-                                    <p v-if="item.required ==1">
+                                    <p v-if="item.required == 1">
+                                        <a-form-item :name="item.property_id" :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]">
                                         <a-input 
                                             type="text" 
-                                            placeholder="请输入" 
-                                            v-model:value="item.result_value"
-                                            :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]"
-
+                                            placeholder="请输入"
+                                            autoComplete="off"
+                                            allow-clear
+                                            v-model:value="CATE.format_formRef[item.property_id]"
+                                            @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
                                         />
+                                        </a-form-item>
                                     </p>
                                     <p v-else-if="item.required !== 1">
+                                        <a-form-item :name="item.property_id">
                                         <a-input 
                                             type="text" 
-                                            placeholder="请输入" 
-                                            v-model:value="item.result_value"
+                                            placeholder="请输入"
+                                            autoComplete="off"
+                                            allow-clear
+                                            v-model:value="CATE.format_formRef[item.property_id]"
+                                            @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
+
                                         />
+                                        </a-form-item>
                                     </p>
 
                                 </div>
@@ -519,6 +532,7 @@
                                         {{ item.property_name }}
                                         <span v-if="item.required ==1" style="color: red;">--必填</span>
                                     </p>
+
                                     <p v-if="item.required ==1">
                                         <a-form-item :name="item.property_id" :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]">
                                             <a-select
@@ -526,15 +540,16 @@
                                                 v-model:value="CATE.format_formRef[item.property_id]"
                                                 placeholder="请选择"
                                                 allow-clear
-                                                @change="console.log(item.result_value)"
+                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
                                                 style="width: 120px;width: 100%;"
                                             >
-                                                <a-select-option v-for="opt in item.options" :value="opt.value" >
+                                                <a-select-option v-for="opt in item.options" :value="opt.value_id" >
                                                     {{ opt.name }}
                                                 </a-select-option>
                                             </a-select>
                                         </a-form-item>
                                     </p>
+
                                     <p v-else-if="item.required !==1">
                                         <a-form-item :name="item.property_id">
                                             <a-select
@@ -542,10 +557,10 @@
                                                 v-model:value="CATE.format_formRef[item.property_id]"
                                                 placeholder="请选择"
                                                 allow-clear
-                                                @change="console.log(item.result_value)"
+                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
                                                 style="width: 120px;width: 100%;"
                                             >
-                                                <a-select-option v-for="opt in item.options" :value="opt.value" >
+                                                <a-select-option v-for="opt in item.options" :value="opt.value_id" >
                                                     {{ opt.name }}
                                                 </a-select-option>
                                             </a-select>
@@ -559,40 +574,44 @@
                                         {{ item.property_name }}
                                         <span v-if="item.required ==1" style="color: red;">--必填</span>
                                     </p>
-                                    <p v-if="item.required ==1">
+                                    <p v-if="item.required == 1">
+
+                                        <a-form-item :name="item.property_id" :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]">
+
                                         <a-select
                                             ref="select"
-                                            v-model:value="item.result_value"
-                                            :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]"
+                                            v-model:value="CATE.format_formRef[item.property_id]"
                                             placeholder="请选择"
                                             mode="multiple"
                                             :maxTagCount="1"
                                             allow-clear
-                                            @change="CATE.dis_ops(item)"
+                                            @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
                                             style="width: 120px;width: 100%;"
                                         >
-                                            <a-select-option v-for="opt in item.options" :value="opt.value" :disabled="opt.disabled">
+                                            <a-select-option v-for="opt in item.options" :value="opt.value_id" :disabled="opt.disabled">
                                                 {{ opt.name }}
                                             </a-select-option>
 
                                         </a-select>
+                                    </a-form-item>
                                     </p>
                                     <p v-if="item.required !==1">
+                                        <a-form-item :name="item.property_id">
                                         <a-select
                                             ref="select"
-                                            v-model:value="item.result_value"
+                                            v-model:value="CATE.format_formRef[item.property_id]"
                                             placeholder="请选择"
                                             mode="multiple"
                                             :maxTagCount="1"
                                             allow-clear
-                                            @change="CATE.dis_ops(item)"
+                                            @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
                                             style="width: 120px;width: 100%;"
                                         >
-                                            <a-select-option v-for="opt in item.options" :value="opt.value" :disabled="opt.disabled">
+                                            <a-select-option v-for="opt in item.options" :value="opt.value_id" :disabled="opt.disabled">
                                                 {{ opt.name }}
                                             </a-select-option>
-
                                         </a-select>
+                                        </a-form-item>
                                     </p>
                                 </div>
 
@@ -1263,10 +1282,12 @@ export default defineComponent({
         // 分类
         const CATE = {
 
-            options:ref([]),            // 分类选项
             cate_name:ref([]),          // 分类
+
+            options:ref([]),            // 分类选项
+
             select_loading:ref(false),  // 加载状态
-            
+
             // 商品属性结构数据：：渲染表单格式
             format:ref([]),
 
@@ -1308,6 +1329,7 @@ export default defineComponent({
                     CATE.options.value = [...CATE.options.value]
                 })
             },
+
             // 请求属性:加载到列表
             loadFormat:async()=>{
 
@@ -1321,55 +1343,105 @@ export default defineComponent({
 
                 var data_list = res.data.data.data;
 
-                data_list.forEach((obj,index)=>{
-                    
-                    // console.log(obj)
+                Object.keys(CATE.format_formRef).forEach(key => delete CATE.format_formRef[key]); // 清空
 
-                    CATE.format_formRef[obj.property_id] = ''
+                // 加载属性结构
+                data_list.forEach((obj,index)=>{
 
                     var type = obj.type;
 
-                    // if(type == 'select' || type == 'multi_select'){
-                    //     obj.result_value = ref() // 选中结果
-                    //     obj.label = obj.property_name;
-                    // }
+                    if(type == 'select' || type == 'multi_select' || type == 'multi_value_measure'){
+
+                        CATE.format_formRef[obj.property_id] = undefined;
+
+                    }else if(type == 'text'){
+
+                        CATE.format_formRef[obj.property_id] = undefined;
+                    
+                    }
 
                 })
 
-                console.log(CATE.format_formRef)
+                // console.log(CATE.format_formRef)
 
                 CATE.format.value = res.data.data.data;
 
             },
             // 多选-禁用超过限制选项
-            dis_ops:(item)=>{
+            dis_ops:(item, data)=>{
 
+                var type = item.type; // 类别
                 var multi_select_max = item.multi_select_max;
-                var result_value = item.result_value;
-                var options = item.options;
+                var result_value = data; // 选中的值
+                var options = item.options; // 选项
+                var diy_type = item.diy_type; // 是否支撑自定义
 
-                // console.log(multi_select_max)
-                // console.log(result_value)
-                // console.log(options)
+                // 文本 text
+                if(type == 'text'){
+                    
+                    console.log({"value":0,"name":result_value,"diy_type":diy_type})
+                
+                }else if(type == 'select'){// 单选 select
 
-                // 选中值是否超过限制
-                if(result_value.length >= multi_select_max){
-                    // 非选中值添加禁用属性
+                    var v_name = ''
+
                     options.forEach((obj,index)=>{
-                        var value = obj.value;
-                        // 过滤选中值
-                        if(!result_value.includes(value)){
-                            obj.disabled = true
-                        }
+                        if(obj.value_id == data){v_name = obj.name}
                     })
-                }else{
-                    // 非选中值添加禁用属性
-                    options.forEach((obj,index)=>{
-                        obj.disabled = false
+
+                    console.log({"value":data,"name":v_name,"diy_type":diy_type})
+
+                }else if(type == 'multi_select' || type == 'multi_value_measure'){ // 多选 'multi_select' & 'multi_value_measure'
+
+                    // 迭代选中值
+                    var res_lisr = []
+                    result_value.forEach((obj,index)=>{
+                        var r_name = CATE.select_name(obj,options)
+                        var r_obj = {"value":obj,"name":r_name,"diy_type":diy_type}
+                        console.log(r_obj)
+
                     })
+
+                    // console.log({"value":"","name":"","diy_type":diy_type})
+
+                    // 选中值--超过限制
+                    if(result_value.length >= multi_select_max){
+
+                        // 非选中值添加禁用属性
+                        options.forEach((obj,index)=>{
+
+                            var value = obj.value_id;
+
+                            // 过滤选中值
+                            if(!result_value.includes(value)){
+                                obj.disabled = true
+                            }
+                        })
+
+                    }else{// 选中值--没有超过限制
+
+                        // 非选中值添加禁用属性
+
+                        options.forEach((obj,index)=>{
+                            obj.disabled = false
+                        })
+
+                    }
                 }
+            },
+            // 获取多选属性值
+            select_name:(v_id,op)=>{
+                var r_name = ''
+                op.forEach((obj,index)=>{
+                    var name = obj.name;
+                    if(v_id == obj.value_id){
+                        console.log(name)
+                        r_name = name
+                    }
+                })
+                return r_name
+
             }
-            // 获取分类&属性值
             // 验证分类&属性值
         }
 
