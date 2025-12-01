@@ -1019,6 +1019,7 @@ export default defineComponent({
             product_type:'0',               // 商品类别
             mobile:'18888888888',           // 客服电话
             name:undefined,                 // 商品标题
+
             recommend_remark:undefined,     // 推荐语
             pay_type:'1',                   // 支付类型
             reduce_type:'1',                // 减库存类型
@@ -1026,6 +1027,7 @@ export default defineComponent({
             size_info_template_id:undefined,// 尺码模板
             commit:'false',                 // 提交
             remark:undefined,               // 商家备注
+
             limit_per_buyer:undefined,          // 每个用户累计限购件数
             maximum_per_order:undefined,        // 每个用户每次下单限购件数
             minimum_per_order:undefined,        // 每个用户每次下单至少购买的件数
@@ -1158,22 +1160,6 @@ export default defineComponent({
 
                 // 笛卡尔积方法
                 var d_list = tool.Fun_.cartesianProduct(res_list)
-                
-                // 比对价格、库存、编码
-                // console.log(d_list)
-                // JSON.parse(props.data.sku_list)
-
-                // for (let i of d_list){
-                //     var value = i.join('&gt;')
-                //     var p_s_res = JSON.parse(props.data.sku_list) // 价格库存关系匹配 
-                //     // console.log(p_s_res[value])
-                //     let obj = p_s_res[value];
-                //     let price = obj.price // 价格
-                //     let stock_num = obj.canBookCount // 库存
-                //     i.push(price)
-                //     i.push(stock_num)
-
-                // }
 
                 return d_list
 
@@ -1261,16 +1247,6 @@ export default defineComponent({
                 return data_list
 
             }
-
-            // if(sku_list_data === '0'){                // 没有SKU—list的情况下
-
-            //     var data_list = get_data()            // 实时排列的sku列表
-
-            // }else{// 有SKU-list数据的情况下
-
-            //     var data_list = get_old_data()            // 实时排列的sku列表
-
-            // }
 
             return reactive({
                 columns: get_colums(),
@@ -1370,62 +1346,61 @@ export default defineComponent({
             // 多选-禁用超过限制选项
             dis_ops:(item, data)=>{
 
-                var type = item.type; // 类别
-                var multi_select_max = item.multi_select_max;
-                var result_value = data; // 选中的值
-                var options = item.options; // 选项
-                var diy_type = item.diy_type; // 是否支撑自定义
+                if(data !== undefined){// 提交数据不为空时
 
-                // 文本 text
-                if(type == 'text'){
+                    var type = item.type; // 类别
+                    var multi_select_max = item.multi_select_max;
+                    var result_value = data; // 选中的值
+                    var options = item.options; // 选项
+                    var diy_type = item.diy_type; // 是否支撑自定义
                     
-                    console.log({"value":0,"name":result_value,"diy_type":diy_type})
-                
-                }else if(type == 'select'){// 单选 select
+                    // 文本 text
+                    if(type == 'text'){
+                        CATE.format_formRef[item.property_id] = {"value":0,"name":result_value,"diy_type":diy_type}
+                        // console.log({"value":0,"name":result_value,"diy_type":diy_type})
+                    }else if(type == 'select'){// 单选 select
 
-                    var v_name = ''
-
-                    options.forEach((obj,index)=>{
-                        if(obj.value_id == data){v_name = obj.name}
-                    })
-
-                    console.log({"value":data,"name":v_name,"diy_type":diy_type})
-
-                }else if(type == 'multi_select' || type == 'multi_value_measure'){ // 多选 'multi_select' & 'multi_value_measure'
-
-                    // 迭代选中值
-                    var res_lisr = []
-                    result_value.forEach((obj,index)=>{
-                        var r_name = CATE.select_name(obj,options)
-                        var r_obj = {"value":obj,"name":r_name,"diy_type":diy_type}
-                        console.log(r_obj)
-
-                    })
-
-                    // console.log({"value":"","name":"","diy_type":diy_type})
-
-                    // 选中值--超过限制
-                    if(result_value.length >= multi_select_max){
-
-                        // 非选中值添加禁用属性
-                        options.forEach((obj,index)=>{
-
-                            var value = obj.value_id;
-
-                            // 过滤选中值
-                            if(!result_value.includes(value)){
-                                obj.disabled = true
-                            }
-                        })
-
-                    }else{// 选中值--没有超过限制
-
-                        // 非选中值添加禁用属性
+                        var v_name = ''
 
                         options.forEach((obj,index)=>{
-                            obj.disabled = false
+                            if(obj.value_id == data){v_name = obj.name}
+                        })
+                        CATE.format_formRef[item.property_id] = {"value":data,"name":v_name,"diy_type":diy_type}
+
+                    }else if(type == 'multi_select' || type == 'multi_value_measure'){ // 多选 'multi_select' & 'multi_value_measure'
+
+                        // 迭代选中值
+                        var res_lisr = []
+                        result_value.forEach((obj,index)=>{
+                            var r_name = CATE.select_name(obj,options)
+                            var r_obj = {"value":obj,"name":r_name,"diy_type":diy_type}
+                            res_lisr.push(r_obj)
                         })
 
+                        CATE.format_formRef[item.property_id] = res_lisr
+
+                        // 选中值--超过限制
+                        if(result_value.length >= multi_select_max){
+
+                            // 非选中值添加禁用属性
+                            options.forEach((obj,index)=>{
+
+                                var value = obj.value_id;
+
+                                // 过滤选中值
+                                if(!result_value.includes(value)){
+                                    obj.disabled = true
+                                }
+                            })
+
+                        }else{// 选中值--没有超过限制
+
+                            // 非选中值添加禁用属性
+                            options.forEach((obj,index)=>{
+                                obj.disabled = false
+                            })
+
+                        }
                     }
                 }
             },
@@ -1435,13 +1410,13 @@ export default defineComponent({
                 op.forEach((obj,index)=>{
                     var name = obj.name;
                     if(v_id == obj.value_id){
-                        console.log(name)
+                        // console.log(name)
                         r_name = name
                     }
                 })
                 return r_name
 
-            }
+            },
             // 验证分类&属性值
         }
 
@@ -1512,34 +1487,50 @@ export default defineComponent({
         const handleOk = () => {
 
             // 验证基础信息
-            formRef.value.validate().then(() => {
+            formRef.value.validate()
+            .then(() => {
 
-                formState.pic = Pic_Fun.get();            // 主图-必填
+                formState.pic = Pic_Fun.get();// 主图-必填
 
-                formState.w_pic = whiteimg_Fun.get();     // 白底图
+                formState.white_back_ground_pic_url = whiteimg_Fun.get();// 白底图：url(仅素材中心url有效)，白底图比例要求1:1
 
-                formState.long_pic = Longimg_Fun.get();    // 长图
+                formState.long_pic_url = Longimg_Fun.get();    // 长图
 
                 formState.video_info = video_Fun.get();    // 视频
                 
                 console.log('基础信息结果', toRaw(formState));
 
+                // throw '已终止'
+
+            })
+            .then(()=>{ // 规格&库存&验证
+
+
+                console.log('规格', toRaw(SPECS.Obj))
+                
+                var res = sku_list
+
+                console.log('库存',res)
+
+
+            })
+            .then(()=>{ // 分类信息验证
+
+                var category_leaf_id = toRaw(CATE.cate_name.value);
+
+                console.log('分类id',category_leaf_id)
+
+                console.log('属性',CATE.format_formRef)
+
+                // activeKey.value = '1'
+
             }).catch(error => {
 
                 console.log('error', error);
 
-            });
+            })
 
-            // 规格信息
-            // var category_leaf_id = toRaw(CATE.cate_name.value);
 
-            // var pro_format = CATE.format.value;
-
-            // console.log('分类结果', category_leaf_id);
-
-            // console.log('商品属性', pro_format);
-
-            // 分类属性信息
 
             // 描述信息
 
@@ -1578,6 +1569,7 @@ export default defineComponent({
             // 规格
             var specs = '颜色|红色,黑色^尺码|S,M'
             var spec_info = ''
+
             // 规格图片
             var spec_pic = 'img_url,img_url,img_url'
 
