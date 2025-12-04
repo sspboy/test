@@ -397,7 +397,8 @@ export default defineComponent({
         data:{typr:Object}
     },
     setup(props,ctx) {
-        const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;
+
+        const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE; // 默认为空的图标
         // 数据配置
         const PAGEDATA = reactive({
             total_number:ref(0),            // 图片列表内容总数
