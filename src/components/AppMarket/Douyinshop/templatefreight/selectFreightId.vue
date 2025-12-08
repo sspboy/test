@@ -7,8 +7,8 @@
       @close="onClose"
    >
       <template #extra>
-         <a-button style="margin-right: 8px" @click="onClose">Cancel</a-button>
-         <a-button type="primary" @click="onClose">Submit</a-button>
+         <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
+         <a-button type="primary" @click="comfirm">确认</a-button>
       </template>
 
       <a-radio-group v-model:value="PAGEDATA.select_value">
@@ -52,7 +52,7 @@
   </a-drawer>
 </template>
 <script>
-import { defineComponent,ref,reactive,onMounted,h,nextTick } from 'vue';
+import { defineComponent,ref,reactive,onMounted,h,nextTick,toRaw } from 'vue';
 import { useStore } from 'vuex'
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
@@ -150,7 +150,29 @@ export default defineComponent({
 
 
       // 单选模板id回传
+
+
       // 确认
+      const comfirm = () =>{
+
+         // 获取模板id
+         var template_id = PAGEDATA.select_value;
+         var t_list = toRaw(PAGEDATA.list.value);
+         var o = {}
+
+         t_list.forEach((obj,index)=>{
+            var o_id = obj.template.id;
+            var o_name = obj.template.template_name;
+            if(template_id == o_id){
+               // console.log(o_id, o_name)
+               o.id = o_id
+               o.name = o_name
+            }
+         })
+         
+         ctx.emit('freight_callback',o)
+
+      }
       // 取消
       const onClose = () =>{
 
@@ -161,6 +183,7 @@ export default defineComponent({
          props,
          PAGEDATA,
          onClose,
+         comfirm,
          size,
          onLoadMore
 

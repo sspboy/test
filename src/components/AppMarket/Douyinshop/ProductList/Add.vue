@@ -805,10 +805,14 @@ export default defineComponent({
                         if(pic_width == pic_height){
                             Pic_Fun.PicList.value.push(obj)
                         }else{
+                        
                             tool.Fun_.message('info','主图长宽比例需要1:1,不小于600X600.')
+                        
                         }
                     }else if(material_type == 'video'){
+
                         tool.Fun_.message('info','【主图】不能选择视频，请选择图片素材！')
+                    
                     }
                 })
 
