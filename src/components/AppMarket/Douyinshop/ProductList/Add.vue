@@ -3,8 +3,10 @@
 
     <!-- 动态渲染异步组件--选择素材 -->
     <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="PAGEDATA.Add_Callback" :data="PAGEDATA"/>
+
     <!-- 动态渲染异步组件--选择运费模板 -->
     <selectFreightid v-if="PAGEDATA.freighttemplate_open" v-on:freight_callback="selectfreight_callback" :data="PAGEDATA"/>
+
     <!-- 动态渲染异步组件--选择尺码模板 -->
     <selectsizetemplateid v-if="PAGEDATA.sizetemplate_open" v-on:sizetemplate_callback="selectsizetemplate_callback" :data="PAGEDATA"/>
 
@@ -282,7 +284,7 @@
                                             name="size_info_template_id"
                                         >
                                             <a-input-group compact>
-                                                <a-input v-model:value="formState.size_info_template_id" placeholder="请选择尺码模板" disabled style="width: calc(74%)" />
+                                                <a-input v-model:value="formState.size_info_template_id.name" placeholder="请选择尺码模板" disabled style="width: calc(74%)" />
                                                 <a-button @click="PAGEDATA.chang_sizetemplate">选择</a-button>
                                             </a-input-group>
                                         </a-form-item>                                    
@@ -1021,7 +1023,7 @@ export default defineComponent({
             pay_type:'1',                   // 支付类型
             reduce_type:'1',                // 减库存类型
             freight_id:{"name":"包邮","value":0},           // 运费模板
-            size_info_template_id:undefined,// 尺码模板
+            size_info_template_id:{"name":undefined,"value":undefined},// 尺码模板
             commit:'false',                 // 提交
             remark:undefined,               // 商家备注
 
@@ -1467,12 +1469,24 @@ export default defineComponent({
 
         // 选择运费模板==回调方法
         const selectfreight_callback=(data)=>{
-            console.log(data)
+            // 填充id
+            var f_id = data.id
+            var f_name = data.name
+            // 填充名称
+            formState.freight_id.value = f_id
+            formState.freight_id.name = f_name
+            // console.log(formState.freight_id)
         }
 
         // 选择尺码模板==回调方法
         const selectsizetemplate_callback=(data)=>{
-            console.log(data)
+            // 填充id
+            var s_id = data.id;
+            var s_name = data.name;
+            // 填充名称
+            formState.size_info_template_id.value = s_id
+            formState.size_info_template_id.name = s_name
+            // console.log(formState.size_info_template_id)
         }
 
         // 确认按钮

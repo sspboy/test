@@ -6,10 +6,6 @@
       :open="props.data.freighttemplate_open" 
       @close="onClose"
    >
-      <template #extra>
-         <a-button style="margin-right: 8px" @click="onClose">取消</a-button>
-         <a-button type="primary" @click="comfirm">确认</a-button>
-      </template>
 
       <a-radio-group v-model:value="PAGEDATA.select_value">
 
@@ -45,11 +41,18 @@
                   >加载更多</a-button>
             </div>
          </template>
-
       </a-list>
-                  </a-radio-group>
+      </a-radio-group>
+
+      <template #footer>
+         <a-space align="end" style="height: 100%;">
+            <a-button type="primary" @click="comfirm">确认</a-button>
+            <a-button @click="onClose">取消</a-button>
+         </a-space>
+      </template>
 
   </a-drawer>
+
 </template>
 <script>
 import { defineComponent,ref,reactive,onMounted,h,nextTick,toRaw } from 'vue';
@@ -87,74 +90,71 @@ export default defineComponent({
 
 
       // 获取当前店铺尺码模板
-        onMounted(() => {
+      onMounted(() => {
 
-            const first_Data = {
-                  "page":PAGEDATA.count,
-                  "size":12, 
-            }
+         const first_Data = {
+               "page":PAGEDATA.count,
+               "size":10, 
+         }
 
-            tool.Http_.post(API.AppSrtoreAPI.freight.list, first_Data).then(res=>{
+         tool.Http_.post(API.AppSrtoreAPI.freight.list, first_Data).then(res=>{
+            
+            var datarespone = res.data.data;// 数据对象
+            var total_num = datarespone.Count; // 数据总条数
+            var List = datarespone.List; // 列表数据
+
+            PAGEDATA.initLoading = false;
+            console.log('运费模板',List)
+
+            PAGEDATA.data.value = List;
+            PAGEDATA.list.value = List;
+
+         })
+      })
+      // 加载更多数据
+      const onLoadMore = () => {
+
+         PAGEDATA.loading = true;
+
+         PAGEDATA.count = PAGEDATA.count + 1;
+
+         const get_more_data = {
+               "page":PAGEDATA.count,
+               "size":10, 
+         }
+
+         tool.Http_.post(API.AppSrtoreAPI.freight.list, get_more_data).then(res=>{
                
-               var datarespone = res.data.data;// 数据对象
-               var total_num = datarespone.Count; // 数据总条数
-               var List = datarespone.List; // 列表数据
+               if(res.data.data == "None"){ // 请求数据为空
 
-               PAGEDATA.initLoading = false;
-               console.log('运费模板',List)
+                  PAGEDATA.list.value = PAGEDATA.data.value;
 
-               PAGEDATA.data.value = List;
-               PAGEDATA.list.value = List;
+                  PAGEDATA.loading = false;
 
-            })
-        })
-        // 加载更多数据
-        const onLoadMore = () => {
+                  return tool.Fun_.message('info','没有更多数据了') // 提示信息
+               
+               }else{ // 请求数据不为空
 
-            PAGEDATA.loading = true;
+                  const newData = PAGEDATA.data.value.concat(res.data.data.List);
 
-            PAGEDATA.count = PAGEDATA.count + 1;
+                  PAGEDATA.data.value = newData;
 
-            const get_more_data = {
-                "page":PAGEDATA.count,
-                "size":12, 
-            }
+                  PAGEDATA.list.value = newData;
 
-            tool.Http_.post(API.AppSrtoreAPI.freight.list, get_more_data).then(res=>{
-                
-                if(res.data.data == "None"){ // 请求数据为空
+                  nextTick(() => {
+                     window.dispatchEvent(new Event('resize'));
+                  });
+                  
+                  PAGEDATA.loading = false;
 
-                    PAGEDATA.list.value = PAGEDATA.data.value;
-
-                    PAGEDATA.loading = false;
-
-                    return tool.Fun_.message('info','没有更多数据了') // 提示信息
-                
-                }else{ // 请求数据不为空
-
-                    const newData = PAGEDATA.data.value.concat(res.data.data.List);
-
-                    PAGEDATA.data.value = newData;
-
-                    PAGEDATA.list.value = newData;
-
-                    nextTick(() => {
-                        window.dispatchEvent(new Event('resize'));
-                    });
-                    
-                    PAGEDATA.loading = false;
-
-                }
-            })
-        };
-
-
-      // 单选模板id回传
+               }
+         })
+      };
 
 
       // 确认
       const comfirm = () =>{
-
+         console.log(PAGEDATA.select_value)
          // 获取模板id
          var template_id = PAGEDATA.select_value;
          var t_list = toRaw(PAGEDATA.list.value);
@@ -169,10 +169,23 @@ export default defineComponent({
                o.name = o_name
             }
          })
-         
-         ctx.emit('freight_callback',o)
+         // 选择为空
+         if(o.name == undefined){
+
+            tool.Fun_.message('info','请选择运费模板!')
+
+         }else{
+
+            // 选择不为空::回填
+            ctx.emit('freight_callback',o)
+
+            onClose() // 关闭弹窗
+
+         }
+
 
       }
+
       // 取消
       const onClose = () =>{
 
