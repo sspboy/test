@@ -208,7 +208,11 @@
                                             label="推荐语"
                                             name="recommend_remark"
                                         >
-                                            <a-input v-model:value="formState.recommend_remark" autoComplete="off" show-count :maxlength="30" placeholder="输入商品推荐语"/>
+                                            <a-input v-model:value="formState.recommend_remark" 
+                                            autoComplete="off" 
+                                            show-count :maxlength="30" 
+                                            placeholder="输入商品推荐语"
+                                            />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :span="8">
@@ -216,7 +220,7 @@
                                             label="商家备注"
                                             name="remark"
                                         >
-                                            <a-input v-model:value="formState.remark" autoComplete="off" placeholder="商家可见备注" show-count :maxlength="30" />
+                                            <a-input v-model:value="formState.remark" autoComplete="off" placeholder="商家可见备注"  show-count :maxlength="30" />
                                         </a-form-item>
                                     </a-col>
                                     <a-col :span="8">
@@ -248,9 +252,9 @@
                                         <a-form-item
                                             label="客服电话"
                                             name="mobile"
-                                            placeholder="输入客服电话"
+                                            
                                         >
-                                            <a-input v-model:value="formState.mobile" />
+                                            <a-input v-model:value="formState.mobile" placeholder="输入客服电话"/>
                                         </a-form-item>
                                     </a-col>
 
@@ -272,7 +276,7 @@
                                             name="freight_id"
                                         >
                                             <a-input-group compact>
-                                                <a-input v-model:value="formState.freight_id.name" placeholder="选择运费模板" disabled style="width: calc(74%);" />
+                                                <a-input v-model:value="formState.freight_id.name" placeholder="选择运费模板" disabled style="width: calc(74%);padding: 5.5px;" />
                                                 <a-button class="font_size_12" @click="PAGEDATA.chang_freighttemplate">选择</a-button>
                                             </a-input-group>
                                         </a-form-item>                                    
@@ -284,7 +288,7 @@
                                             name="size_info_template_id"
                                         >
                                             <a-input-group compact>
-                                                <a-input v-model:value="formState.size_info_template_id.name" placeholder="请选择尺码模板" disabled style="width: calc(74%)" />
+                                                <a-input v-model:value="formState.size_info_template_id.name" placeholder="请选择尺码模板" disabled style="width: calc(74%);padding: 5.5px;" />
                                                 <a-button @click="PAGEDATA.chang_sizetemplate">选择</a-button>
                                             </a-input-group>
                                         </a-form-item>                                    
@@ -763,8 +767,8 @@ export default defineComponent({
                     whiteimg_Fun.add(data)              // 添加白底图方法
                 }else if(type == 'video_info'){
                     video_Fun.add(data)                 // 添加视频方法
-                }else if(type == 'des'){
-                    // 添加描述详情
+                }else if(type == 'des'){                // 添加描述详情
+                    DES.add_img(data)
                 }
             },
             // 变更添加素材类型
@@ -1420,9 +1424,8 @@ export default defineComponent({
         // 描述详情
         const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
         const DES = {
-
             // 初始化
-            valueHtml:ref('<p></p>'),
+            valueHtml:ref('<p>你好啊！！！</p>'),
             mode:ref('simple'),// 或 'simple' 'default'
             // 编辑器实例，必须用 shallowRef
             editorRef:shallowRef(),
@@ -1463,8 +1466,34 @@ export default defineComponent({
             handleCreated:(editor) => {
                 editorRef.value = editor // 记录 editor 实例，重要！
                 editor.clear() // 清空编辑器
-            }
 
+            },
+            // 加载图片到编辑器
+            add_img:(img_list)=>{
+                var image_text = ''
+                for(let i of img_list){
+                    console.log(i)
+                    let url = i.byte_url;
+
+                    image_text = image_text + '<img class="ant-image-img" src=" ' + url + '">';
+                    // const node = { type: 'image', children: [{ text: '' }]}
+                    // node.src = i.OriginUrl
+                    // node.OriginUrl = i.OriginUrl  
+                    // node.Name= i.Name
+                    // node.MaterialId = i.MaterialId
+                    // node.ByteUrl = i.ByteUrl
+                    // node.AuditStatus = i.AuditStatus
+                    // node.IsNew = i.IsNew
+                    // node.FolderId = i.FolderId
+
+                }
+                DES.valueHtml.value = DES.valueHtml.value + image_text
+            },
+            // 获取图片
+            get_img:()=>{
+                var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
+
+            }
         }
 
         // 选择运费模板==回调方法
@@ -1544,12 +1573,10 @@ export default defineComponent({
 
             // 分类信息验证
             var category_leaf_id = toRaw(CATE.cate_name.value);
-
-            if(category_leaf_id.length > 0){// 分类不能为空
+            // 分类不能为空
+            if(category_leaf_id.length > 0){
                 
                 console.log('分类id',category_leaf_id)
-
-                // 验证属性
 
                 CATE.form_ref.value.validate().then(()=>{
 
@@ -1630,15 +1657,7 @@ export default defineComponent({
                         "price":10000
                     }
                 ]
-
-
             }
-
-            // 上传成功
-
-            // 上传失败
-            
-
         };
 
         // 关闭新建商品按钮

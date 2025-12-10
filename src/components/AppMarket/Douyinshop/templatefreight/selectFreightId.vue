@@ -104,7 +104,7 @@ export default defineComponent({
             var List = datarespone.List; // 列表数据
 
             PAGEDATA.initLoading = false;
-            console.log('运费模板',List)
+            // console.log('运费模板',List)
 
             PAGEDATA.data.value = List;
             PAGEDATA.list.value = List;
