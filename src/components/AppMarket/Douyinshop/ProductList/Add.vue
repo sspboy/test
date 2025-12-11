@@ -652,13 +652,16 @@
                     <a-tab-pane key="4" tab="描述详情">
 
                         <div style="margin: 0 0 10px 0;">
+
                             <a-space>
+
                                 <a-button 
                                     type="dashed" 
                                     @click="PAGEDATA.change_material_type('des')" 
                                     block
                                 >插入素材</a-button>
-                                <a-button type="dashed" block>清空</a-button>
+
+                                <a-button type="dashed" @click="DES.clear_img" block>清空</a-button>
                             </a-space>
                         </div>
 
@@ -723,7 +726,7 @@ export default defineComponent({
         MinusOutlined,
         MinusCircleOutlined,
         selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
-        Editor,// 详情编辑
+        Editor, // 详情编辑
         Toolbar, // 编辑工具栏
         selectFreightid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templatefreight/selectFreightId.vue')),// 运费模板组件
         selectsizetemplateid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/selectsizetemplateid.vue')),// 尺码模板组件
@@ -1425,10 +1428,10 @@ export default defineComponent({
         const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
         const DES = {
             // 初始化
-            valueHtml:ref('<p>你好啊！！！</p>'),
+            valueHtml:ref('<p></p>'),
             mode:ref('simple'),// 或 'simple' 'default'
             // 编辑器实例，必须用 shallowRef
-            editorRef:shallowRef(),
+            editorRef:shallowRef('<p></p>'),
             editorConfig:{placeholder: '请输入内容...' },// 默认值
             // 编辑器工具栏配置
             toolbarConfig:{
@@ -1459,40 +1462,47 @@ export default defineComponent({
                     "todo",
                     "redo",
                     "undo",
-                    "uploadImage"
+                    "group-image",
+                    "uploadImage",
+                    "insertImage",
+
                 ]
             },
             // 创建编辑器
             handleCreated:(editor) => {
                 editorRef.value = editor // 记录 editor 实例，重要！
                 editor.clear() // 清空编辑器
-
             },
             // 加载图片到编辑器
             add_img:(img_list)=>{
-                var image_text = ''
+                var image_text = '<p>'
                 for(let i of img_list){
-                    console.log(i)
                     let url = i.byte_url;
-
                     image_text = image_text + '<img class="ant-image-img" src=" ' + url + '">';
-                    // const node = { type: 'image', children: [{ text: '' }]}
-                    // node.src = i.OriginUrl
-                    // node.OriginUrl = i.OriginUrl  
-                    // node.Name= i.Name
-                    // node.MaterialId = i.MaterialId
-                    // node.ByteUrl = i.ByteUrl
-                    // node.AuditStatus = i.AuditStatus
-                    // node.IsNew = i.IsNew
-                    // node.FolderId = i.FolderId
-
                 }
-                DES.valueHtml.value = DES.valueHtml.value + image_text
+                DES.valueHtml.value = DES.valueHtml.value + image_text + '</p>'
             },
             // 获取图片
             get_img:()=>{
+
                 var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
 
+                // 描述为空
+                if(img_list.length == 0){
+                    tool.Fun_.message('error','详情描述图片不能为空！')
+                    return false
+                }else{
+                    // 描述不为空
+                    console.log(img_list)
+                    img_list.forEach((obj,index)=>{
+                        console.log(obj,index)
+                    })
+                    return img_list
+                }
+            },
+            // 清空描述图
+            clear_img:()=>{
+                DES.valueHtml.value = '';
             }
         }
 
@@ -1543,7 +1553,8 @@ export default defineComponent({
                 formState.long_pic_url = Longimg_Fun.get();// 长图
                 console.log('长图', Longimg_Fun.get())
             }
-
+            
+            // 视频信息
             if(video_Fun.get()){
                 formState.material_video_id = video_Fun.get();// 视频
                 var video_obj = video_Fun.get()
@@ -1598,7 +1609,7 @@ export default defineComponent({
             }
 
             // 描述
-            var description = 'img_url1|img_url2|img_url3'
+            var description = DES.get_img();
 
             // 仅保存false，保存+提审true
             var commit = ''

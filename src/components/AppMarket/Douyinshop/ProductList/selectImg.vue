@@ -544,6 +544,7 @@ export default defineComponent({
 
             // 图片尺寸验证
             material_width:(_info)=>{
+                
                 var width = _info.width;
                 var height = _info.height;
 
