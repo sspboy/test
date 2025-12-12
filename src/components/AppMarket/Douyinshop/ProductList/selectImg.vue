@@ -128,7 +128,7 @@
                                         <template #renderItem="{ item }">
                                             
 
-                                            <a-list-item>
+                                            <a-list-item key="item.material_id">
 
                                                     <!--图片文件 显示方式-->
                                                     <div v-if="item.material_type == 'photo'" class="Listimgbox">
@@ -137,7 +137,7 @@
                                                             :style="Material_Images.material_width(item.photo_info)"
                                                             :src="item.byte_url"
                                                         />
-
+                                                        
                                                         <p class="img_list_box" style="text-align: center;">
 
                                                             <a-space align="center" size="2" >

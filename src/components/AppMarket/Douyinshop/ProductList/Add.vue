@@ -506,7 +506,7 @@
                                             <span v-if="item.required ==1" style="color: red;">--必填</span>
                                         </p>
                                         <p v-if="item.required == 1">
-                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]">
+                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
                                             <a-input 
                                                 type="text" 
                                                 placeholder="请输入"
@@ -541,7 +541,7 @@
                                         </p>
 
                                         <p v-if="item.required ==1">
-                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]">
+                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
                                                 <a-select
                                                     ref="select"
                                                     v-model:value="CATE.format_formRef[item.property_id]"
@@ -583,7 +583,7 @@
                                         </p>
                                         <p v-if="item.required == 1">
 
-                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: '不能为空！',trigger: 'change',}]">
+                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
 
                                             <a-select
                                                 ref="select"
@@ -1309,7 +1309,6 @@ export default defineComponent({
                     CATE.options.value = [...CATE.options.value]
                 })
             },
-
             // 请求属性:加载到列表
             loadFormat:async()=>{
 
@@ -1431,7 +1430,7 @@ export default defineComponent({
             valueHtml:ref('<p></p>'),
             mode:ref('simple'),// 或 'simple' 'default'
             // 编辑器实例，必须用 shallowRef
-            editorRef:shallowRef('<p></p>'),
+            editorRef:shallowRef(),
             editorConfig:{placeholder: '请输入内容...' },// 默认值
             // 编辑器工具栏配置
             toolbarConfig:{
@@ -1485,19 +1484,21 @@ export default defineComponent({
             // 获取图片
             get_img:()=>{
 
-                var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
-
                 // 描述为空
-                if(img_list.length == 0){
-                    tool.Fun_.message('error','详情描述图片不能为空！')
+                if(editorRef.value == undefined){
                     return false
-                }else{
-                    // 描述不为空
-                    console.log(img_list)
-                    img_list.forEach((obj,index)=>{
-                        console.log(obj,index)
-                    })
-                    return img_list
+                }else {
+                    var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
+                    if(img_list.length == 0 || editorRef.value == undefined){
+                        return false
+                    }else{
+                        // 描述不为空
+                        // console.log(img_list)
+                        img_list.forEach((obj,index)=>{
+                            console.log(obj,index)
+                        })
+                        return img_list
+                    }
                 }
             },
             // 清空描述图
@@ -1572,35 +1573,60 @@ export default defineComponent({
                 // console.log('error', error);
                 tool.Fun_.message('error',error.errorFields[0].errors[0])
                 activeKey.value = '1'
-                return ''
-                // throw '已终止'
+                throw '已终止'
+
+            }).then(()=>{
+
+                // 规格&库存&验证
+                console.log('规格', toRaw(SPECS.Obj))
+                
+                // var res = sku_list
+                // console.log('库存', res)
+
+            }).then(()=>{
+
+                // 分类属性
+                var category_leaf_id = toRaw(CATE.cate_name.value);
+                console.log('分类id',category_leaf_id)
+
+                // 分类不能为空
+                if(category_leaf_id.length == 0){
+
+                    tool.Fun_.message('error','商品分类不能为空！')
+
+                    activeKey.value = '3'
+
+                    throw '已终止'
+
+                }else if(category_leaf_id.length > 0){
+                    
+                    CATE.form_ref.value.validate().then(()=>{
+
+                        console.log('属性', CATE.form_ref.value)
+
+                    }).catch(error => {
+
+                        tool.Fun_.message('error',error.errorFields[0].errors[0])
+
+                        activeKey.value = '3'
+
+                        throw '已终止'
+
+                    }).then(()=>{
+
+                        // 描述
+                        var description = DES.get_img();
+                        if(!description){
+                            tool.Fun_.message('error','详情描述图片不能为空！')
+                            activeKey.value = '4'
+                        }
+                    })
+                }
 
             })
 
-            // 规格&库存&验证
-            // console.log('规格', toRaw(SPECS.Obj))
-            // var res = sku_list
-            // console.log('库存', res)
 
-            // 分类信息验证
-            var category_leaf_id = toRaw(CATE.cate_name.value);
-            // 分类不能为空
-            if(category_leaf_id.length > 0){
-                
-                console.log('分类id',category_leaf_id)
 
-                CATE.form_ref.value.validate().then(()=>{
-
-                    console.log('属性')
-
-                }).catch(error => {
-
-                    console.log('error', error);
-
-                    activeKey.value = '3'
-        
-                })
-            }
 
 
             // 属性 无品牌id则传596120136;
@@ -1608,8 +1634,7 @@ export default defineComponent({
                 "property_id":[{"value":'value',"name":"property_name","diy_type":0}]
             }
 
-            // 描述
-            var description = DES.get_img();
+
 
             // 仅保存false，保存+提审true
             var commit = ''
