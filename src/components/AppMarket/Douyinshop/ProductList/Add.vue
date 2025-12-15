@@ -351,24 +351,16 @@
 
                                         <span v-if="v_item.url=== undefined || v_item.url === ''">
                                             <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
-                                                <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor"/>
+                                                <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor" @click="PAGEDATA.change_spec_imng_fun('spec_img',v_item)"/>
                                             </span>
                                         </span>
 
                                         <span v-else-if="v_item.url != undefined" style="float: left;">
-                                            <a-image style="border-radius:4px;margin-top: 5px;" :width="42" :height="42" :src="v_item.url"/>
+                                            <a-image style="border-radius:4px;margin-top: 5px;" :width="42" :height="42" :src="v_item.url" />
+                                            <a-button type="text" size="small" @click="SPECS.remove_img(v_item)"> 
+                                                <DeleteOutlined />
+                                            </a-button>
                                         </span>
-
-                                        <a-form-item>
-                                            <a-textarea 
-                                            placeholder="输入规格图片地址" 
-                                            size="small"
-                                            autocomplete="off"
-                                            allow-clear
-                                            :auto-size="{ minRows: 2, maxRows: 2 }" 
-                                            style="font-size:12px;margin:4px 0 0 6px;width: 150px;"
-                                            />
-                                        </a-form-item>
                                     
                                     </a-form-item>
 
@@ -710,7 +702,7 @@ import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed,sh
 import { useStore } from 'vuex'
 import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined} from '@ant-design/icons-vue';
 import axios from 'axios';
-import { Empty } from 'ant-design-vue';
+import { Empty, Space } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
@@ -759,6 +751,8 @@ export default defineComponent({
             sizetemplate_open:false,       // 尺码模板-图片显示状态配置
 
             setimg_name:'',             // 添加图片的对象['PicList','long_img_List','white_img','video','des']
+            sku_img_obj:'',             // 规格图片对象
+
             // 图片组件获取地址后添加到页面容器：：：回调方法
             Add_Callback:(data)=>{
                 var type = PAGEDATA.setimg_name;        // 添加类型
@@ -772,12 +766,20 @@ export default defineComponent({
                     video_Fun.add(data)                 // 添加视频方法
                 }else if(type == 'des'){                // 添加描述详情
                     DES.add_img(data)
+                }else if(type == 'spec_img'){           // 添加规格图片
+                    SPECS.add_img(data)
                 }
             },
             // 变更添加素材类型
             change_material_type:(typeName)=>{
                 PAGEDATA.selectimg_open = true;
                 PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
+            },
+            // 规格图片
+            change_spec_imng_fun:(typeName, item)=>{
+                PAGEDATA.selectimg_open = true;
+                PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
+                PAGEDATA.sku_img_obj = item;
             },
             // 选择尺码
             chang_sizetemplate:()=>{
@@ -1111,6 +1113,23 @@ export default defineComponent({
                 if (index !== -1) {
                     SPECS.Obj[data].value.splice(index, 1);
                 }
+            },
+
+            // 选择规格图片
+            add_img:(data)=>{
+                // console.log(data)
+                var img_byte_url = data[0].byte_url
+                PAGEDATA.sku_img_obj.url = img_byte_url
+            },
+
+            // 清除规格图片
+            remove_img:(item)=>{
+                item.url = ''
+            },
+
+            // 获取规格图片
+            get_aku_img:()=>{
+                // 所有
             }
 
         })
@@ -1539,7 +1558,7 @@ export default defineComponent({
                 // throw '已终止'
             }else{ // 主图不为空
                 formState.pic = Pic_Fun.get();  // 主图-必填
-                console.log('主图', Pic_Fun.get())
+                // console.log('主图', Pic_Fun.get())
 
             }
 
@@ -1566,7 +1585,7 @@ export default defineComponent({
             // 验证基础信息::图片信息验证
             formRef.value.validate().then(() => {
 
-                console.log('基础信息结果', toRaw(formState));
+                // console.log('基础信息结果', toRaw(formState));
 
             }).catch(error => {
 
@@ -1577,16 +1596,49 @@ export default defineComponent({
 
             }).then(()=>{
 
-                // 规格&库存&验证
+                // 规格
                 console.log('规格', toRaw(SPECS.Obj))
-                
-                // var res = sku_list
-                // console.log('库存', res)
+
+                var specs = '颜色|红色,黑色^尺码|S,M'
+
+                var spec_info = {
+                    "spec_values":[
+                        {
+                            "property_name":"颜色",
+                            "values":[{"value_name":"粉色", "remark":"可爱的"}]
+                        }
+                    ]
+                }
+
+                // 规格图片
+                var spec_pic = 'img_url,img_url,img_url'
+
+                // 库存格式
+                var res = sku_list
+                console.log(res.value)
+                console.log('columns', res.value.columns)
+                console.log('data', res.value.data)
+
+                // 库存
+                var spec_prices_v2 = [
+                    {
+                        "sell_properties":[{"property_name":"颜色","value_name":"粉色"}],
+                        "sku_type":0,
+                        "stock_num":99,
+                        "price":10000
+                    }
+                ]
 
             }).then(()=>{
 
+                // 属性 无品牌id则传596120136;
+                var product_format_new = {
+                    "property_id":[{"value":'value',"name":"property_name","diy_type":0}]
+                }
+
                 // 分类属性
                 var category_leaf_id = toRaw(CATE.cate_name.value);
+
                 console.log('分类id',category_leaf_id)
 
                 // 分类不能为空
@@ -1626,29 +1678,8 @@ export default defineComponent({
             })
 
 
-
-
-
-            // 属性 无品牌id则传596120136;
-            var product_format_new = {
-                "property_id":[{"value":'value',"name":"property_name","diy_type":0}]
-            }
-
-
-
             // 仅保存false，保存+提审true
             var commit = ''
-
-            // 规格
-            var specs = '颜色|红色,黑色^尺码|S,M'
-            var spec_info = ''
-
-            // 规格图片
-            var spec_pic = 'img_url,img_url,img_url'
-
-            // 库存
-            var spec_prices_v2 = {
-            }
 
             // 限购
 
