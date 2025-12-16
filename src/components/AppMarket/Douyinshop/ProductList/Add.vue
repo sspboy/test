@@ -1127,10 +1127,40 @@ export default defineComponent({
                 item.url = ''
             },
 
-            // 获取规格图片
-            get_aku_img:()=>{
-                // 所有
-            }
+            // 获取规格上传对象
+            get_spec_obj:()=>{
+
+                console.log(toRaw(SPECS.Obj))   // 规格文案
+
+                var spec_list = toRaw(SPECS.Obj);
+
+                if(spec_list > 0){
+
+                }else{
+
+                    return false
+                    
+                }
+
+                var specs = '颜色|红色,黑色^尺码|S,M'
+                var spec_info = {
+                    "spec_values":[
+                        {
+                            "property_name":"颜色",
+                            "values":[{"value_name":"粉色", "remark":"可爱的"}]
+                        }
+                    ]
+                }
+            },
+            // 获取规格上传图片地址
+            get_sku_img:()=>{
+
+                // 所有图片容器
+                console.log(toRaw(SPECS.Obj))
+
+                // 图片需要全部填写，或不填写，不已允许;
+                return ''
+            },
 
         })
 
@@ -1205,11 +1235,11 @@ export default defineComponent({
                 res_list.push(code_obj)
                 return res_list
             }
-            
+
             // 规格表单data取值(实时)
             var get_data = () =>{
 
-                var p_s_obj = get_p_s_obj()
+                var p_s_obj = get_p_s_obj();
 
                 var name_list = get_name_sku_list()//名称列表
 
@@ -1271,7 +1301,7 @@ export default defineComponent({
 
             return reactive({
                 columns: get_colums(),
-                data:get_data()
+                data: get_data()
             }) 
             
         })
@@ -1527,7 +1557,7 @@ export default defineComponent({
         }
 
         // 选择运费模板==回调方法
-        const selectfreight_callback=(data)=>{
+        const selectfreight_callback= (data)=>{
             // 填充id
             var f_id = data.id
             var f_name = data.name
@@ -1538,7 +1568,7 @@ export default defineComponent({
         }
 
         // 选择尺码模板==回调方法
-        const selectsizetemplate_callback=(data)=>{
+        const selectsizetemplate_callback= (data)=>{
             // 填充id
             var s_id = data.id;
             var s_name = data.name;
@@ -1596,22 +1626,10 @@ export default defineComponent({
 
             }).then(()=>{
 
-                // 规格
-                console.log('规格', toRaw(SPECS.Obj))
+                SPECS.get_spec_obj()// 规格文案
 
-                var specs = '颜色|红色,黑色^尺码|S,M'
-
-                var spec_info = {
-                    "spec_values":[
-                        {
-                            "property_name":"颜色",
-                            "values":[{"value_name":"粉色", "remark":"可爱的"}]
-                        }
-                    ]
-                }
-
-                // 规格图片
-                var spec_pic = 'img_url,img_url,img_url'
+                SPECS.get_sku_img()// 规格图片
+                var spec_pic = 'img_url,img_url,img_url'// 规格图片
 
                 // 库存格式
                 var res = sku_list
