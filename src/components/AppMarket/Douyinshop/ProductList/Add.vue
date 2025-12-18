@@ -303,6 +303,7 @@
                         
                         <a-divider orientation="left" orientation-margin="0px">
                             规格
+                            <a-checkbox v-model:checked="SPECS.SpecImagState" @change="SPECS.SpecImagState_change_fun">规格图片</a-checkbox>
                         </a-divider>
 
                         <a-form ref="SPECS.sku_formRef" name="SPECS" :model="SPECS.Obj">
@@ -340,6 +341,7 @@
                                         v-if="index === 0" 
                                         :name="[index, 'value', spec_value_index,'v_name']" 
                                         :rules="{required: true, trigger: 'change', message:''}">
+
                                         <div style="width: 200px;margin: 10px 0 4px 0;">
                                             <a-input v-model:value="v_item.v_name" 
                                                 placeholder="输入值" 
@@ -348,20 +350,25 @@
                                                 allow-clear
                                             />
                                         </div>
+                                        
+                                        <div v-if="SPECS.SpecImag.state">
 
-                                        <span v-if="v_item.url=== undefined || v_item.url === ''">
-                                            <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
-                                                <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor" @click="PAGEDATA.change_spec_imng_fun('spec_img',v_item)"/>
+                                            <span v-if="v_item.url== undefined || v_item.url == ''">
+                                                <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
+                                                    <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor" @click="PAGEDATA.change_spec_imng_fun('spec_img',v_item)"/>
+                                                </span>
                                             </span>
-                                        </span>
 
-                                        <span v-else-if="v_item.url != undefined" style="float: left;">
-                                            <a-image style="border-radius:4px;margin-top: 5px;" :width="42" :height="42" :src="v_item.url" />
-                                            <a-button type="text" size="small" @click="SPECS.remove_img(v_item)"> 
-                                                <DeleteOutlined />
-                                            </a-button>
-                                        </span>
-                                    
+                                            <span v-else-if="v_item.url != undefined"" style="float: left;">
+
+                                                <a-image style="border-radius:4px;" :width="42" :height="42" :src="v_item.url" />
+
+                                                <a-button type="text" size="small" style="margin-left: 10px;" @click="SPECS.remove_img(v_item)"> 
+                                                    <DeleteOutlined />
+                                                </a-button>
+                                            </span>
+                                        </div>
+
                                     </a-form-item>
 
                                     <a-form-item
@@ -373,7 +380,6 @@
                                         <a-input 
                                             v-model:value="v_item.v_name"
                                             placeholder="输入值" 
-                                            size="small"
                                             autocomplete="off"
                                             allow-clear
                                             style="font-size: 12px;width: 200px;" 
@@ -708,6 +714,7 @@ import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
+import { checkboxGroupProps } from 'ant-design-vue/es/checkbox';
 
 // 组件引用=====开始
 export default defineComponent({
@@ -790,7 +797,7 @@ export default defineComponent({
                 PAGEDATA.freighttemplate_open = true;
             },
         })
-        
+
         // 主图对象
         const Pic_Fun = {
 
@@ -1114,6 +1121,15 @@ export default defineComponent({
                     SPECS.Obj[data].value.splice(index, 1);
                 }
             },
+            
+            // 是否添加规格图片
+            SpecImag:reactive({
+                state:true
+            }),
+            SpecImagState_change_fun:()=>{
+                SPECS.SpecImag.state = !SPECS.SpecImag.state;
+                console.log(SPECS.SpecImag.state)
+            },
 
             // 选择规格图片
             add_img:(data)=>{
@@ -1130,19 +1146,29 @@ export default defineComponent({
             // 获取规格上传对象
             get_spec_obj:()=>{
 
-                console.log(toRaw(SPECS.Obj))   // 规格文案
+                // console.log(toRaw(SPECS.Obj))// 规格文案
 
-                var spec_list = toRaw(SPECS.Obj);
+                var spec_list = toRaw(SPECS.Obj)
 
-                if(spec_list > 0){
+                console.log(spec_list)// 规格文案
+
+                if(spec_list.length > 0){
+
+                    spec_list.forEach((obj, index)=>{
+                        console.log(obj)
+                    })
+
+                }else if(false){
+
+                    console.log('没有填写规格')
 
                 }else{
 
                     return false
-                    
                 }
 
-                var specs = '颜色|红色,黑色^尺码|S,M'
+                var specs = '颜色|红色,黑色^尺码|S,M';
+
                 var spec_info = {
                     "spec_values":[
                         {
@@ -1301,7 +1327,8 @@ export default defineComponent({
 
             return reactive({
                 columns: get_colums(),
-                data: get_data()
+                data: get_data(),
+                o_data:get_old_data()
             }) 
             
         })
@@ -1588,7 +1615,7 @@ export default defineComponent({
                 // throw '已终止'
             }else{ // 主图不为空
                 formState.pic = Pic_Fun.get();  // 主图-必填
-                // console.log('主图', Pic_Fun.get())
+                console.log('主图', Pic_Fun.get())
 
             }
 
@@ -1617,6 +1644,10 @@ export default defineComponent({
 
                 // console.log('基础信息结果', toRaw(formState));
 
+                // 标题
+                var res = toRaw(formState)
+                console.log(res)
+
             }).catch(error => {
 
                 // console.log('error', error);
@@ -1629,13 +1660,16 @@ export default defineComponent({
                 SPECS.get_spec_obj()// 规格文案
 
                 SPECS.get_sku_img()// 规格图片
+
                 var spec_pic = 'img_url,img_url,img_url'// 规格图片
 
                 // 库存格式
-                var res = sku_list
-                console.log(res.value)
-                console.log('columns', res.value.columns)
-                console.log('data', res.value.data)
+                // var res = sku_list
+                // console.log(res.value)
+                // console.log('columns', res.value.columns)
+                // console.log('data', res.value.data)
+                // console.log('o_data', res.value.o_data)
+
 
                 // 库存
                 var spec_prices_v2 = [
