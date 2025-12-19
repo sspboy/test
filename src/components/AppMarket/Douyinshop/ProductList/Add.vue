@@ -306,17 +306,17 @@
                             <a-checkbox v-model:checked="SPECS.SpecImagState" @change="SPECS.SpecImagState_change_fun">规格图片</a-checkbox>
                         </a-divider>
 
-                        <a-form ref="SPECS.sku_formRef" name="SPECS" :model="SPECS.Obj">
+                        <a-form ref="sku_formRef" name="SPECS" :model="SPECS.Obj">
 
                             <a-form-item 
                                 v-for="(item, index) in SPECS.Obj" 
-                                :name="[index,'name']"
+                                :name="[index, 'property_name']"
                                 :key="item.index"
                                 :rules="{required: true, trigger: 'change', message:' '}"
                             >
                                 <!--规格名称 开始-->
                                 <a-input 
-                                    v-model:value="item.name"
+                                    v-model:value="item.property_name"
                                     placeholder="输入规格名称" 
                                     style="width: 200px;" 
                                     autocomplete="off"
@@ -324,26 +324,26 @@
                                 />
                     
                                 <a-button type="dashed" size="small" class="add_btn_class" block @click="SPECS.pushvalue(index)">
-                                <PlusOutlined />
+                                    <PlusOutlined />
                                 </a-button>
 
                                 <a-button type="dashed" size="small" class="add_btn_class" block @click="SPECS.del(item,index)">
-                                <MinusOutlined />
+                                    <MinusOutlined />
                                 </a-button>
                             <!--规格名称 结束-->
 
                                 <!--规格值 开始-->
                                 <div style="width: 100%;clear: both; margin:4px 0 0 0;">
 
-                                <a-space v-for="(v_item, spec_value_index) in item.value" :key="v_item.index" style="margin:2px 4px 0 0;" align="baseline" >
+                                <a-space v-for="(v_item, spec_value_index) in item.values" :key="v_item.index" style="margin:2px 4px 0 0;" align="baseline" >
 
                                     <a-form-item 
                                         v-if="index === 0" 
-                                        :name="[index, 'value', spec_value_index,'v_name']" 
+                                        :name="[index, 'values', spec_value_index,'value_name']" 
                                         :rules="{required: true, trigger: 'change', message:''}">
 
                                         <div style="width: 200px;margin: 10px 0 4px 0;">
-                                            <a-input v-model:value="v_item.v_name" 
+                                            <a-input v-model:value="v_item.value_name" 
                                                 placeholder="输入值" 
                                                 style="font-size: 12px;margin:0 0 6px 0;" 
                                                 autocomplete="off"
@@ -373,12 +373,12 @@
 
                                     <a-form-item
                                         v-if="index !== 0"
-                                        :name="[index, 'value', spec_value_index,'v_name']" 
+                                        :name="[index, 'values', spec_value_index,'value_name']" 
                                         :rules="{required: true, trigger: 'change', message:''}"
                                         >
 
                                         <a-input 
-                                            v-model:value="v_item.v_name"
+                                            v-model:value="v_item.value_name"
                                             placeholder="输入值" 
                                             autocomplete="off"
                                             allow-clear
@@ -970,7 +970,7 @@ export default defineComponent({
             }
         }
 
-        // 基础信息
+        // 标题等...基础信息
         const formRef = ref();
 
         const rules = {
@@ -1046,22 +1046,23 @@ export default defineComponent({
             limit_per_buyer:undefined,          // 每个用户累计限购件数
             maximum_per_order:undefined,        // 每个用户每次下单限购件数
             minimum_per_order:undefined,        // 每个用户每次下单至少购买的件数
+
         })
 
-
         // 规格库存
+        const sku_formRef = ref();
+
         const SPECS = reactive({
 
-            sku_formRef:ref(null),
             sku_listRef:ref(null),
             sku_columns:ref([]),
             sku_spece_data:ref([]),
 
             // 规格数据对象
             Obj:ref([{
-                name:undefined,
-                value:[{
-                    v_name:undefined,  // 值名称
+                property_name:undefined,
+                values:[{
+                    value_name:undefined,  // 值名称
                     url:undefined      // 规格图片
                 }],
             }]),
@@ -1080,9 +1081,9 @@ export default defineComponent({
                 }else{
 
                 SPECS.Obj.push({
-                    name:undefined,
-                    value:[{
-                        v_name:undefined,       // 值名称
+                    property_name:undefined,
+                    values:[{
+                        value_name:undefined,       // 值名称
                         url:undefined           // 图片地址
                     }],
                     })
@@ -1101,13 +1102,13 @@ export default defineComponent({
             // 添加规格值
             pushvalue:(data)=>{
                 // console.log(SPECS.Obj[data].value.length)
-                var value_number = SPECS.Obj[data].value.length;
+                var value_number = SPECS.Obj[data].values.length;
                 if(value_number >= 20){
                     tool.Fun_.message('error', '规格值最多不能超过20组！')
                     return false
                 }else{
-                    SPECS.Obj[data].value.push({
-                        v_name:undefined,// 值名称
+                    SPECS.Obj[data].values.push({
+                        value_name:undefined,// 值名称
                         url:undefined//
                     });
 
@@ -1116,9 +1117,9 @@ export default defineComponent({
 
             // 删除规格值
             removevalue:(item,data)=>{
-                let index = SPECS.Obj[data].value.indexOf(item);
+                let index = SPECS.Obj[data].values.indexOf(item);
                 if (index !== -1) {
-                    SPECS.Obj[data].value.splice(index, 1);
+                    SPECS.Obj[data].values.splice(index, 1);
                 }
             },
             
@@ -1126,6 +1127,7 @@ export default defineComponent({
             SpecImag:reactive({
                 state:true
             }),
+
             SpecImagState_change_fun:()=>{
                 SPECS.SpecImag.state = !SPECS.SpecImag.state;
                 console.log(SPECS.SpecImag.state)
@@ -1146,26 +1148,52 @@ export default defineComponent({
             // 获取规格上传对象
             get_spec_obj:()=>{
 
-                // console.log(toRaw(SPECS.Obj))// 规格文案
+                // 验证规格
+                sku_formRef.value.validate().then(() => {
 
-                var spec_list = toRaw(SPECS.Obj)
+                    var spec_list = toRaw(SPECS.Obj)
+                    var spece_value_number = spec_list[0].values.length;// 主规格值 数量；；；
 
-                console.log(spec_list)// 规格文案
+                    var spec_img_list = []
+                    spec_list[0].values.forEach((obj, index)=>{
+                        var o_img_u = obj.url;
+                        console.log(o_img_u)
+                        if(o_img_u !== undefined && o_img_u !== ''){
+                            spec_img_list.push(obj.url)
+                        }
+                    })
+                    var s_img_number = spec_img_list.length; // 主规格值图片数量；
 
-                if(spec_list.length > 0){
+                    // 如果需要上传图片
+                    if(SPECS.SpecImag.state){
 
-                    spec_list.forEach((obj, index)=>{
-                        console.log(obj)
+                        if(spece_value_number == s_img_number){
+                            // 规格图片:图片数量需要好与主规格值数量一直：
+                            console.log(spec_img_list)
+
+                            var spec_pic = 'img_url,img_url,img_url';
+
+                        }else{
+                            tool.Fun_.message('error', '规格信息不能为空！');
+                            return ''
+                        }
+                    }
+
+                    // 规格文案对象获取
+                    console.log('规格文案', {
+                        "spec_pic":"",
+                        "spec_values":spec_list
                     })
 
-                }else if(false){
 
-                    console.log('没有填写规格')
+                }).catch( error => {
 
-                }else{
+                    // 规格错误提示
+                    tool.Fun_.message('error', '规格信息不能为空！');
 
                     return false
-                }
+
+                })
 
                 var specs = '颜色|红色,黑色^尺码|S,M';
 
@@ -1178,19 +1206,22 @@ export default defineComponent({
                     ]
                 }
             },
+
             // 获取规格上传图片地址
             get_sku_img:()=>{
 
                 // 所有图片容器
-                console.log(toRaw(SPECS.Obj))
+                // console.log(toRaw(SPECS.Obj))
 
                 // 图片需要全部填写，或不填写，不已允许;
                 return ''
             },
+            // 获取价格库存商家编码
 
         })
 
         // 根据规格-->构造规格列表
+        const skulistRef = ref()
         const sku_list = computed(()=>{
             
             // 提取sku的name数组
@@ -1198,7 +1229,7 @@ export default defineComponent({
                 var name_list = []
                 var datalist = SPECS.Obj;
                 for(let i of datalist){
-                    name_list.push(i.name)
+                    name_list.push(i.property_name)
                 }
                 return name_list
             }
@@ -1208,7 +1239,7 @@ export default defineComponent({
 
                 var res_obj = {}
                 for(let i of SPECS.Obj){
-                    for(let y of i.value){if(y.price != undefined){
+                    for(let y of i.values){if(y.price != undefined){
                         var p_s_obj = {}
                         p_s_obj.price === undefined ? '':y.price
                         p_s_obj.stock_num === undefined ? '':y.stock_num
@@ -1229,8 +1260,8 @@ export default defineComponent({
                 // 规格取值
                 for(let i of datalist){
                     var v_list = []
-                    for(let y of i.value){
-                        v_list.push(y.v_name)
+                    for(let y of i.values){
+                        v_list.push(y.value_name)
                     }
                     res_list.push(v_list)
                 }
@@ -1608,16 +1639,15 @@ export default defineComponent({
         // 确认按钮
         const handleOk = () => {
 
-            if(!Pic_Fun.get()){// 主图为空时候
-                tool.Fun_.message('error','主图不能为空！')
-                activeKey.value = '1'
-                return ''
-                // throw '已终止'
-            }else{ // 主图不为空
-                formState.pic = Pic_Fun.get();  // 主图-必填
-                console.log('主图', Pic_Fun.get())
-
-            }
+            // if(!Pic_Fun.get()){// 主图为空时候
+            //     tool.Fun_.message('error','主图不能为空！')
+            //     activeKey.value = '1'
+            //     return ''
+            //     // throw '已终止'
+            // }else{ // 主图不为空
+            //     formState.pic = Pic_Fun.get();  // 主图-必填
+            //     console.log('主图', Pic_Fun.get())
+            // }
 
             // 白底图不为空时候
             if(whiteimg_Fun.get()){
@@ -1646,22 +1676,27 @@ export default defineComponent({
 
                 // 标题
                 var res = toRaw(formState)
-                console.log(res)
+                
+                // 基础信息
+                console.log('基础信息结果', res)
 
             }).catch(error => {
 
                 // console.log('error', error);
-                tool.Fun_.message('error',error.errorFields[0].errors[0])
-                activeKey.value = '1'
-                throw '已终止'
+
+                // tool.Fun_.message('error',error.errorFields[0].errors[0]);
+                
+                // activeKey.value = '1';
+                
+                // throw '已终止'
 
             }).then(()=>{
 
-                SPECS.get_spec_obj()// 规格文案
+                SPECS.get_spec_obj(); // 规格文案
 
-                SPECS.get_sku_img()// 规格图片
+                SPECS.get_sku_img(); // 规格图片
 
-                var spec_pic = 'img_url,img_url,img_url'// 规格图片
+                var spec_pic = 'img_url,img_url,img_url'; // 规格图片
 
                 // 库存格式
                 // var res = sku_list
@@ -1669,7 +1704,6 @@ export default defineComponent({
                 // console.log('columns', res.value.columns)
                 // console.log('data', res.value.data)
                 // console.log('o_data', res.value.o_data)
-
 
                 // 库存
                 var spec_prices_v2 = [
@@ -1684,48 +1718,48 @@ export default defineComponent({
             }).then(()=>{
 
                 // 属性 无品牌id则传596120136;
-                var product_format_new = {
-                    "property_id":[{"value":'value',"name":"property_name","diy_type":0}]
-                }
+                // var product_format_new = {
+                //     "property_id":[{"value":'value',"name":"property_name","diy_type":0}]
+                // }
 
                 // 分类属性
-                var category_leaf_id = toRaw(CATE.cate_name.value);
+                // var category_leaf_id = toRaw(CATE.cate_name.value);
 
-                console.log('分类id',category_leaf_id)
+                // console.log('分类id',category_leaf_id)
 
                 // 分类不能为空
-                if(category_leaf_id.length == 0){
+                // if(category_leaf_id.length == 0){
 
-                    tool.Fun_.message('error','商品分类不能为空！')
+                //     tool.Fun_.message('error','商品分类不能为空！')
 
-                    activeKey.value = '3'
+                //     activeKey.value = '3'
 
-                    throw '已终止'
+                //     throw '已终止'
 
-                }else if(category_leaf_id.length > 0){
+                // }else if(category_leaf_id.length > 0){
                     
-                    CATE.form_ref.value.validate().then(()=>{
+                //     CATE.form_ref.value.validate().then(()=>{
 
-                        console.log('属性', CATE.form_ref.value)
+                //         console.log('属性', CATE.form_ref.value)
 
-                    }).catch(error => {
+                //     }).catch(error => {
 
-                        tool.Fun_.message('error',error.errorFields[0].errors[0])
+                //         tool.Fun_.message('error',error.errorFields[0].errors[0])
 
-                        activeKey.value = '3'
+                //         activeKey.value = '3'
 
-                        throw '已终止'
+                //         throw '已终止'
 
-                    }).then(()=>{
+                //     }).then(()=>{
 
-                        // 描述
-                        var description = DES.get_img();
-                        if(!description){
-                            tool.Fun_.message('error','详情描述图片不能为空！')
-                            activeKey.value = '4'
-                        }
-                    })
-                }
+                //         // 描述
+                //         var description = DES.get_img();
+                //         if(!description){
+                //             tool.Fun_.message('error','详情描述图片不能为空！')
+                //             activeKey.value = '4'
+                //         }
+                //     })
+                // }
 
             })
 
@@ -1793,9 +1827,11 @@ export default defineComponent({
             activeKey,
             formState,
             formRef,
+            sku_formRef,
             SPECS,
             CATE,
             sku_list,
+            skulistRef,
             simpleImage,
             // 描述详情
             editorRef,DES,
