@@ -1148,8 +1148,16 @@ export default defineComponent({
             // 获取规格上传对象
             get_spec_obj:()=>{
 
+                // console.log(sku_formRef.value)
+
+                if(sku_formRef.value == undefined){
+                    tool.Fun_.message('error', '规格信息不能为空！');
+                    activeKey.value = '2'
+                    return ''
+                }
+
                 // 验证规格
-                sku_formRef.value.validate().then(() => {
+                sku_formRef.value?.validate().then(() => {
 
                     var spec_list = toRaw(SPECS.Obj)
                     var spece_value_number = spec_list[0].values.length;// 主规格值 数量；；；
@@ -1170,9 +1178,7 @@ export default defineComponent({
                         if(spece_value_number == s_img_number){
                             // 规格图片:图片数量需要好与主规格值数量一直：
                             console.log(spec_img_list)
-
                             var spec_pic = 'img_url,img_url,img_url';
-
                         }else{
                             tool.Fun_.message('error', '规格信息不能为空！');
                             return ''
@@ -1198,12 +1204,11 @@ export default defineComponent({
                 var specs = '颜色|红色,黑色^尺码|S,M';
 
                 var spec_info = {
-                    "spec_values":[
-                        {
+
+                    "spec_values":[{
                             "property_name":"颜色",
                             "values":[{"value_name":"粉色", "remark":"可爱的"}]
-                        }
-                    ]
+                        }]
                 }
             },
 
@@ -1222,6 +1227,7 @@ export default defineComponent({
 
         // 根据规格-->构造规格列表
         const skulistRef = ref()
+
         const sku_list = computed(()=>{
             
             // 提取sku的name数组
@@ -1684,17 +1690,17 @@ export default defineComponent({
 
                 // console.log('error', error);
 
-                // tool.Fun_.message('error',error.errorFields[0].errors[0]);
+                tool.Fun_.message('error',error.errorFields[0].errors[0]);
                 
-                // activeKey.value = '1';
+                activeKey.value = '1';
                 
-                // throw '已终止'
+                throw '已终止'
 
             }).then(()=>{
 
                 SPECS.get_spec_obj(); // 规格文案
 
-                SPECS.get_sku_img(); // 规格图片
+                // SPECS.get_sku_img(); // 规格图片
 
                 var spec_pic = 'img_url,img_url,img_url'; // 规格图片
 
