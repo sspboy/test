@@ -169,7 +169,8 @@
                         <!--基本信息-->
                         <a-divider 
                             orientation="left" 
-                            orientation-margin="0px">
+                            orientation-margin="0px"
+                        >
                             基础信息
                         </a-divider>
 
@@ -300,10 +301,13 @@
                     </a-tab-pane>
 
                     <a-tab-pane key="2" tab="规格&库存">
-                        
+
                         <a-divider orientation="left" orientation-margin="0px">
                             规格
-                            <a-checkbox v-model:checked="SPECS.SpecImagState" @change="SPECS.SpecImagState_change_fun">规格图片</a-checkbox>
+                            <a-checkbox 
+                                v-model:checked="SPECS.SpecImag" 
+                                @change="SPECS.SpecImagState_change_fun"
+                            >上传图片</a-checkbox>
                         </a-divider>
 
                         <a-form ref="sku_formRef" name="SPECS" :model="SPECS.Obj">
@@ -330,7 +334,7 @@
                                 <a-button type="dashed" size="small" class="add_btn_class" block @click="SPECS.del(item,index)">
                                     <MinusOutlined />
                                 </a-button>
-                            <!--规格名称 结束-->
+                                <!--规格名称 结束-->
 
                                 <!--规格值 开始-->
                                 <div style="width: 100%;clear: both; margin:4px 0 0 0;">
@@ -342,7 +346,7 @@
                                         :name="[index, 'values', spec_value_index,'value_name']" 
                                         :rules="{required: true, trigger: 'change', message:''}">
 
-                                        <div style="width: 200px;margin: 10px 0 4px 0;">
+                                        <div style="width: 200px;margin: 0 0 4px 0;">
                                             <a-input v-model:value="v_item.value_name" 
                                                 placeholder="输入值" 
                                                 style="font-size: 12px;margin:0 0 6px 0;" 
@@ -351,7 +355,7 @@
                                             />
                                         </div>
                                         
-                                        <div v-if="SPECS.SpecImag.state">
+                                        <div v-if="SPECS.SpecImag">
 
                                             <span v-if="v_item.url== undefined || v_item.url == ''">
                                                 <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
@@ -406,8 +410,15 @@
                         
                         <a-form ref="skulistRef" :model="sku_list" name="basic">
                             
-                            <a-table :columns="sku_list.columns" :data-source="sku_list.data" :pagination="false" style="font-size: 12px;" size="small" bordered>
-                            
+                            <a-table 
+                                :columns="sku_list.columns" 
+                                :data-source="sku_list.data" 
+                                :pagination="false" 
+                                style="font-size: 12px;" 
+                                size="small" 
+                                bordered
+                            >
+
                             <template #bodyCell="{ column, text, record, index }">
                                 
                                 <template v-if="column.dataIndex === 'name'">
@@ -415,25 +426,28 @@
                                 </template>
 
                                 <template v-if="column.dataIndex === 'price'">
-                                <a-form-item 
-                                    :name="['data', index, 'price']" 
-                                    :rules="{required: true, trigger: 'change', message:''}"
-                                >
-                                    <a-input-number 
-                                        placeholder="输入价格" 
-                                        size="small" 
-                                        v-model:value="record.price" 
-                                        prefix="￥" 
-                                        :min="0" 
-                                        :step="0.01"
-                                        autocomplete="off"
-                                        allow-clear
-                                        style="font-size: 12px;width: 100%;"/>
-                                </a-form-item>
+                                    <a-form-item 
+                                        :name="['data', index, 'price']" 
+                                        :rules="{required: true, trigger: 'change'}"
+                                        >
+                                        <a-input-number 
+                                            placeholder="输入价格" 
+                                            size="small" 
+                                            v-model:value="record.price" 
+                                            prefix="￥" 
+                                            :min="0" 
+                                            :step="0.01"
+                                            autocomplete="off"
+                                            allow-clear
+                                            style="font-size: 12px;width: 100%;"/>
+                                    </a-form-item>
                                 </template>
 
                                 <template v-if="column.dataIndex === 'stock_num'">
-                                <a-form-item :name="['data', index, 'stock_num']" :rules="{required: true, trigger: 'change', message:''}">
+                                <a-form-item 
+                                    :name="['data', index, 'stock_num']" 
+                                    :rules="{required: true, trigger: 'change', message:''}"
+                                >
                                     <a-input-number 
                                         placeholder="输入库存" 
                                         size="small" 
@@ -448,7 +462,10 @@
                                 </template>
                                 
                                 <template v-if="column.dataIndex === 'code'">
-                                    <a-form-item :name="['data', index, 'code']" :rules="{required: false, trigger: 'change', message:''}">
+                                    <a-form-item 
+                                        :name="['data', index, 'code']" 
+                                        :rules="{required: false, trigger: 'change', message:''}"
+                                        >
                                         <a-input
                                             placeholder="商家编码"
                                             autocomplete="off"
@@ -738,8 +755,8 @@ export default defineComponent({
         const tool = new TOOL.TOOL()            // 工具方法
         const TO = new TABLE.TableOperate()     // 表格操作方法
         const API = new utils.A_Patch()         // 请求接口地址合集
-        const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;  // 默认为空图标
-        const buttonload= ref(true)             // 新建按钮loading状态；
+        const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;// 默认为空图标
+        const buttonload = ref(true)            // 新建按钮loading状态；
         const activeKey = ref('1');             // 默认选项卡
 
         // 分类信息初始化
@@ -970,10 +987,12 @@ export default defineComponent({
             }
         }
 
-        // 标题等...基础信息
+        // 标题基础信息
         const formRef = ref();
 
+        // 基础信息验证规则
         const rules = {
+
             // 标题
             name: [
                 {
@@ -988,12 +1007,14 @@ export default defineComponent({
                     trigger: 'blur',
                 },
             ],
+
             // 客服电话
             mobile:[{
                     required: true,
                     message: '客服电话不能为空',
                     trigger: 'change',
             }],
+
             // 商品类型
             product_type:[{
                 required: true,
@@ -1051,9 +1072,9 @@ export default defineComponent({
 
         // 规格库存
         const sku_formRef = ref();
-
         const SPECS = reactive({
 
+            SpecImag:true,// 是否添加规格图片
             sku_listRef:ref(null),
             sku_columns:ref([]),
             sku_spece_data:ref([]),
@@ -1122,15 +1143,10 @@ export default defineComponent({
                     SPECS.Obj[data].values.splice(index, 1);
                 }
             },
-            
-            // 是否添加规格图片
-            SpecImag:reactive({
-                state:true
-            }),
 
+            // 点击勾选
             SpecImagState_change_fun:()=>{
-                SPECS.SpecImag.state = !SPECS.SpecImag.state;
-                console.log(SPECS.SpecImag.state)
+                SPECS.SpecImag = !!SPECS.SpecImag
             },
 
             // 选择规格图片
@@ -1148,46 +1164,59 @@ export default defineComponent({
             // 获取规格上传对象
             get_spec_obj:()=>{
 
-                // console.log(sku_formRef.value)
-
+                // 规格未初始化
                 if(sku_formRef.value == undefined){
                     tool.Fun_.message('error', '规格信息不能为空！');
                     activeKey.value = '2'
-                    return ''
+                    return false
                 }
 
                 // 验证规格
-                sku_formRef.value?.validate().then(() => {
+                sku_formRef.value.validate().then(() => {
 
-                    var spec_list = toRaw(SPECS.Obj)
+                    var spec_list = toRaw(SPECS.Obj)  // 
+
                     var spece_value_number = spec_list[0].values.length;// 主规格值 数量；；；
 
-                    var spec_img_list = []
+                    var spec_img_list = [] // 规格图片列表
+
+                    // 迭代规格图片
                     spec_list[0].values.forEach((obj, index)=>{
+
                         var o_img_u = obj.url;
-                        console.log(o_img_u)
+
                         if(o_img_u !== undefined && o_img_u !== ''){
                             spec_img_list.push(obj.url)
                         }
+
+                        // delete obj.url;  // 删除url键值
+
                     })
-                    var s_img_number = spec_img_list.length; // 主规格值图片数量；
+
+                    var s_img_number = spec_img_list.length; // 主规格值图片数量；；；
 
                     // 如果需要上传图片
-                    if(SPECS.SpecImag.state){
+                    if(SPECS.SpecImag){
 
                         if(spece_value_number == s_img_number){
+
                             // 规格图片:图片数量需要好与主规格值数量一直：
-                            console.log(spec_img_list)
-                            var spec_pic = 'img_url,img_url,img_url';
+                            var spec_pic = spec_img_list.join(',');
+
                         }else{
-                            tool.Fun_.message('error', '规格信息不能为空！');
-                            return ''
+
+                            tool.Fun_.message('error', '规格图片需要填写，图片数量要与规格数量一致！');
+                            activeKey.value = '2'
+                            return false
+
                         }
                     }
 
+
+
                     // 规格文案对象获取
-                    console.log('规格文案', {
-                        "spec_pic":"",
+                    console.log('规格信息:', {
+                        "spec_pic": spec_pic,
                         "spec_values":spec_list
                     })
 
@@ -1196,7 +1225,7 @@ export default defineComponent({
 
                     // 规格错误提示
                     tool.Fun_.message('error', '规格信息不能为空！');
-
+                    activeKey.value = '2'
                     return false
 
                 })
@@ -1678,8 +1707,6 @@ export default defineComponent({
             // 验证基础信息::图片信息验证
             formRef.value.validate().then(() => {
 
-                // console.log('基础信息结果', toRaw(formState));
-
                 // 标题
                 var res = toRaw(formState)
                 
@@ -1817,6 +1844,7 @@ export default defineComponent({
                     }
                 ]
             }
+
         };
 
         // 关闭新建商品按钮
@@ -1861,4 +1889,6 @@ export default defineComponent({
 .Add_3_4_img{height: 132px;width: 99px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
 .Add_3_4_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
 .add_btn_class{width: 40px; margin:0 0 0 20px;}
+
+ 
 </style>

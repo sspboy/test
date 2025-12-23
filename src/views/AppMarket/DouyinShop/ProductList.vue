@@ -1,7 +1,7 @@
 
 
 <template>
-  <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
+  
 
   <!-- 动态渲染异步组件 -->
   <add_components v-if="PAGEDATA.AddDate" :data="PAGEDATA"/>
@@ -9,6 +9,7 @@
   <detaile_components v-if="PAGEDATA.DetaileDate" :data="PAGEDATA"/>
 
   <more_select :data="PAGEDATA" @moer_select_callback="sift_select"/><!--更多筛选组件-->
+  <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
 
   <a-layout style="height: 100vh;width: 100vw;">
 
@@ -214,14 +215,15 @@
     <!--右侧内容部分 结束-->
 
 
-</a-layout>
+  </a-layout>
+  
+  </a-checkbox-group>
 
 
 <!--确认删除-->
 <a-modal v-model:open="deldata.open" title="确认删除" :confirm-loading="deldata.del_loading" @ok="deldata.confirm_fun">
   <p>确认删除选中商品吗？</p>
 </a-modal>
-          </a-checkbox-group>
 
 </template>
 
@@ -436,7 +438,8 @@ export default {
       EditDate:ref(false),             // 编辑显示状态
       DetaileDate:ref(false),          // 详情页显示状态
       MoreSelectData:ref(false),       // 更多查询显示状态
-      product_id:ref(null)
+      product_id:ref(null),
+
 
     })
     
