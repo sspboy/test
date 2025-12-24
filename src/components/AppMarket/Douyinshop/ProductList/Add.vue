@@ -339,12 +339,18 @@
                                 <!--规格值 开始-->
                                 <div style="width: 100%;clear: both; margin:4px 0 0 0;">
 
-                                <a-space v-for="(v_item, spec_value_index) in item.values" :key="v_item.index" style="margin:2px 4px 0 0;" align="baseline" >
+                                <a-space 
+                                    v-for="(v_item, spec_value_index) in item.values" 
+                                    :key="v_item.index" 
+                                    style="margin:2px 4px 0 0;" 
+                                    align="baseline"
+                                >
 
                                     <a-form-item 
                                         v-if="index === 0" 
                                         :name="[index, 'values', spec_value_index,'value_name']" 
-                                        :rules="{required: true, trigger: 'change', message:''}">
+                                        :rules="{required: true, trigger: 'change', message:''}"
+                                    >
 
                                         <div style="width: 200px;margin: 0 0 4px 0;">
                                             <a-input v-model:value="v_item.value_name" 
@@ -388,6 +394,7 @@
                                             allow-clear
                                             style="font-size: 12px;width: 200px;" 
                                         />
+
                                     </a-form-item>
 
                                     <MinusCircleOutlined @click="SPECS.removevalue(v_item, index)" style="margin: 0 5px 0 0;" />
@@ -1099,14 +1106,23 @@ export default defineComponent({
                     
                     return false
 
-                }else{
+                }else if(obj_number == 0){
 
-                SPECS.Obj.push({
-                    property_name:undefined,
-                    values:[{
-                        value_name:undefined,       // 值名称
-                        url:undefined           // 图片地址
-                    }],
+                    SPECS.Obj.push({
+                        property_name:undefined,
+                        values:[{
+                            value_name:undefined,   // 值名称
+                            url:undefined           // 图片地址
+                        }],
+                    })
+
+                }else if(obj_number >= 1){
+
+                    SPECS.Obj.push({
+                        property_name:undefined,
+                        values:[{
+                            value_name:undefined,       // 值名称
+                        }],
                     })
                 }
             },
@@ -1145,9 +1161,7 @@ export default defineComponent({
             },
 
             // 点击勾选
-            SpecImagState_change_fun:()=>{
-                SPECS.SpecImag = !!SPECS.SpecImag
-            },
+            SpecImagState_change_fun:()=>{SPECS.SpecImag = !!SPECS.SpecImag},
 
             // 选择规格图片
             add_img:(data)=>{
@@ -1159,86 +1173,6 @@ export default defineComponent({
             // 清除规格图片
             remove_img:(item)=>{
                 item.url = ''
-            },
-
-            // 获取规格上传对象
-            get_spec_obj:()=>{
-
-                // 规格未初始化
-                if(sku_formRef.value == undefined){
-                    tool.Fun_.message('error', '规格信息不能为空！');
-                    activeKey.value = '2'
-                    return false
-                }
-
-                // 验证规格
-                sku_formRef.value.validate().then(() => {
-
-                    var spec_list = toRaw(SPECS.Obj)  // 
-
-                    var spece_value_number = spec_list[0].values.length;// 主规格值 数量；；；
-
-                    var spec_img_list = [] // 规格图片列表
-
-                    // 迭代规格图片
-                    spec_list[0].values.forEach((obj, index)=>{
-
-                        var o_img_u = obj.url;
-
-                        if(o_img_u !== undefined && o_img_u !== ''){
-                            spec_img_list.push(obj.url)
-                        }
-
-                        // delete obj.url;  // 删除url键值
-
-                    })
-
-                    var s_img_number = spec_img_list.length; // 主规格值图片数量；；；
-
-                    // 如果需要上传图片
-                    if(SPECS.SpecImag){
-
-                        if(spece_value_number == s_img_number){
-
-                            // 规格图片:图片数量需要好与主规格值数量一直：
-                            var spec_pic = spec_img_list.join(',');
-
-                        }else{
-
-                            tool.Fun_.message('error', '规格图片需要填写，图片数量要与规格数量一致！');
-                            activeKey.value = '2'
-                            return false
-
-                        }
-                    }
-
-
-
-                    // 规格文案对象获取
-                    console.log('规格信息:', {
-                        "spec_pic": spec_pic,
-                        "spec_values":spec_list
-                    })
-
-
-                }).catch( error => {
-
-                    // 规格错误提示
-                    tool.Fun_.message('error', '规格信息不能为空！');
-                    activeKey.value = '2'
-                    return false
-
-                })
-
-                var specs = '颜色|红色,黑色^尺码|S,M';
-
-                var spec_info = {
-
-                    "spec_values":[{
-                            "property_name":"颜色",
-                            "values":[{"value_name":"粉色", "remark":"可爱的"}]
-                        }]
-                }
             },
 
             // 获取规格上传图片地址
@@ -1707,31 +1641,88 @@ export default defineComponent({
             // 验证基础信息::图片信息验证
             formRef.value.validate().then(() => {
 
-                // 标题
-                var res = toRaw(formState)
-                
-                // 基础信息
-                console.log('基础信息结果', res)
+                var res = toRaw(formState)// 标题
+                console.log('基础信息结果', res)// 基础信息
 
             }).catch(error => {
 
                 // console.log('error', error);
-
                 tool.Fun_.message('error',error.errorFields[0].errors[0]);
-                
                 activeKey.value = '1';
-                
-                throw '已终止'
+                throw '基础信息终止'
 
-            }).then(()=>{
+            }).then(()=>{// 规格文案和图片
 
-                SPECS.get_spec_obj(); // 规格文案
+                // 规格未初始化
+                if(sku_formRef.value == undefined){
 
-                // SPECS.get_sku_img(); // 规格图片
+                    tool.Fun_.message('error', '规格信息不能为空！');
 
-                var spec_pic = 'img_url,img_url,img_url'; // 规格图片
+                    activeKey.value = '2'
 
-                // 库存格式
+                    return
+
+                }
+
+                // 验证规格
+                sku_formRef.value.validate().then(() => {
+
+                    var spec_list = toRaw(SPECS.Obj)  // 
+
+                    var spece_value_number = spec_list[0].values.length;// 主规格值 数量;
+
+                    var spec_img_list = [] // 规格图片列表
+
+                    spec_list[0].values.forEach((obj, index)=>{// 迭代规格图片
+
+                        var o_img_u = obj.url;
+
+                        if(o_img_u !== undefined && o_img_u !== ''){
+                            spec_img_list.push(obj.url)
+                        }
+
+                    })
+
+                    var s_img_number = spec_img_list.length; // 主规格值图片数量;
+
+                    // 如果需要上传图片
+                    if(SPECS.SpecImag){
+
+                        if(spece_value_number == s_img_number){
+
+                            var spec_pic = spec_img_list.join(',');// 规格图片:图片数量需要好与主规格值数量一直
+
+                        }else{
+
+                            tool.Fun_.message('error', '规格图片需要填写，图片数量要与规格数量一致！');
+
+                            activeKey.value = '2';
+
+                            return ''
+                        }
+                    }
+
+                    var copy_list = structuredClone(spec_list)// 拷贝
+
+                    copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
+
+                    var result = {"spec_pic": spec_pic,"spec_values":copy_list}// 规格文案对象获取
+
+                    console.log(result)
+
+                }).catch( error => {
+
+                    tool.Fun_.message('error', '规格信息不能为空！');// 规格错误提示
+                    
+                    activeKey.value = '2';
+
+                    throw '规格终止'
+
+                })
+
+            }).then(()=>{// 库存格式
+
+                console.log('库存')
                 // var res = sku_list
                 // console.log(res.value)
                 // console.log('columns', res.value.columns)
