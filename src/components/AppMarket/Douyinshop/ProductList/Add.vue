@@ -300,7 +300,7 @@
                         </div>
                     </a-tab-pane>
 
-                    <a-tab-pane key="2" tab="规格&库存">
+                    <a-tab-pane key="2" tab="规格">
 
                         <a-divider orientation="left" orientation-margin="0px">
                             规格
@@ -435,7 +435,7 @@
                                 <template v-if="column.dataIndex === 'price'">
                                     <a-form-item 
                                         :name="['data', index, 'price']" 
-                                        :rules="{required: true, trigger: 'change'}"
+                                        :rules="{required: true, trigger: 'change', message:'价格不能为空'}"
                                         >
                                         <a-input-number 
                                             placeholder="输入价格" 
@@ -453,7 +453,7 @@
                                 <template v-if="column.dataIndex === 'stock_num'">
                                 <a-form-item 
                                     :name="['data', index, 'stock_num']" 
-                                    :rules="{required: true, trigger: 'change', message:''}"
+                                    :rules="{required: true, trigger: 'change', message:'库存不能为空'}"
                                 >
                                     <a-input-number 
                                         placeholder="输入库存" 
@@ -470,8 +470,7 @@
                                 
                                 <template v-if="column.dataIndex === 'code'">
                                     <a-form-item 
-                                        :name="['data', index, 'code']" 
-                                        :rules="{required: false, trigger: 'change', message:''}"
+                                        :name="['data', index, 'code']"
                                         >
                                         <a-input
                                             placeholder="商家编码"
@@ -495,7 +494,9 @@
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="3" tab="分类属性">
+                    <a-tab-pane key="3" tab="库存"></a-tab-pane>
+
+                    <a-tab-pane key="4" tab="分类属性">
                         
                         <a-divider orientation="left" orientation-margin="0px">分类</a-divider>
                         <p>
@@ -671,7 +672,7 @@
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="4" tab="描述详情">
+                    <a-tab-pane key="5" tab="描述详情">
 
                         <div style="margin: 0 0 10px 0;">
 
@@ -826,6 +827,7 @@ export default defineComponent({
         const Pic_Fun = {
 
             PicList:ref([]),
+
             // 删除图片
             del_pic:(index)=>{
                 Pic_Fun.PicList.value.splice(index, 1)
@@ -1076,6 +1078,20 @@ export default defineComponent({
             minimum_per_order:undefined,        // 每个用户每次下单至少购买的件数
 
         })
+        // 获取商品基础信息
+        const GetInfo = async()=>{
+
+           var res = await formRef.value.validate().then(() => {
+                var res = toRaw(formState)// 标题
+                return res
+            }).catch(error => {
+                // console.log('error', error);
+                tool.Fun_.message('error',error.errorFields[0].errors[0]);
+                activeKey.value = '1';
+                return false
+            })
+            return res
+        }
 
         // 规格库存
         const sku_formRef = ref();
@@ -1174,23 +1190,84 @@ export default defineComponent({
             remove_img:(item)=>{
                 item.url = ''
             },
+            get_specs_obj: async()=>{
 
-            // 获取规格上传图片地址
-            get_sku_img:()=>{
+                // 规格未初始化
+                if(sku_formRef.value == undefined){
 
-                // 所有图片容器
-                // console.log(toRaw(SPECS.Obj))
+                    tool.Fun_.message('error', '规格信息不能为空！');
 
-                // 图片需要全部填写，或不填写，不已允许;
-                return ''
+                    activeKey.value = '2'
+
+                    return false
+
+                }
+
+                // 验证规格
+                var res = await sku_formRef.value.validate().then(() => {
+
+                    var spec_list = toRaw(SPECS.Obj)  // 
+
+                    var spece_value_number = spec_list[0].values.length;// 主规格值 数量;
+
+                    var spec_img_list = [] // 规格图片列表
+
+                    spec_list[0].values.forEach((obj, index)=>{// 迭代规格图片
+
+                        var o_img_u = obj.url;
+
+                        if(o_img_u !== undefined && o_img_u !== ''){
+                            spec_img_list.push(obj.url)
+                        }
+
+                    })
+
+                    var s_img_number = spec_img_list.length; // 主规格值图片数量;
+
+                    // 如果需要上传图片
+                    if(SPECS.SpecImag){
+
+                        if(spece_value_number == s_img_number){
+
+                            var spec_pic = spec_img_list.join(',');// 规格图片:图片数量需要好与主规格值数量一直
+
+                        }else{
+
+                            tool.Fun_.message('error', '规格图片需要填写，图片数量要与规格数量一致！');
+
+                            activeKey.value = '2';
+
+                            return false
+                        }
+                    }
+
+                    var copy_list = structuredClone(spec_list)// 拷贝
+
+                    copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
+
+                    var result = {"spec_pic": spec_pic, "spec_values":copy_list}// 规格文案对象获取
+
+                    return result
+
+                }).catch( error => {
+
+                    tool.Fun_.message('error', '规格信息不能为空！');// 规格错误提示
+                    
+                    activeKey.value = '2';
+
+                    return false
+
+                })
+
+                return res
             },
+
             // 获取价格库存商家编码
 
         })
 
-        // 根据规格-->构造规格列表
+        // 根据规格-->构造价格、库存、商家编码；
         const skulistRef = ref()
-
         const sku_list = computed(()=>{
             
             // 提取sku的name数组
@@ -1332,6 +1409,19 @@ export default defineComponent({
             }) 
             
         })
+        const get_sku_list = async()=>{
+
+            var res = await skulistRef.value.validate().then(()=>{
+                return toRaw(sku_list.value)
+            }).catch(error => {
+                tool.Fun_.message('error',error.errorFields[0].errors[0]);
+                activeKey.value = '2';
+                return false
+            })
+
+            return res
+        }
+
 
         // 分类&属性
         const CATE = {
@@ -1497,6 +1587,13 @@ export default defineComponent({
 
             },
             // 验证分类&属性值
+            get_cate:()=>{
+                if(CATE.cate_name.length>0){
+                    console.log(CATE.cate_name)
+                }else{
+
+                }
+            }
         }
 
         // 描述详情
@@ -1606,30 +1703,30 @@ export default defineComponent({
         }
 
         // 确认按钮
-        const handleOk = () => {
+        const handleOk = async() => {
 
-            // if(!Pic_Fun.get()){// 主图为空时候
-            //     tool.Fun_.message('error','主图不能为空！')
-            //     activeKey.value = '1'
-            //     return ''
-            //     // throw '已终止'
-            // }else{ // 主图不为空
-            //     formState.pic = Pic_Fun.get();  // 主图-必填
-            //     console.log('主图', Pic_Fun.get())
-            // }
+            // 主图
+            if(Pic_Fun.get()){// 不为空
+                formState.pic = Pic_Fun.get();  // 主图-必填
+                console.log('主图', Pic_Fun.get())
+            }else{
+                tool.Fun_.message('error','主图不能为空！')
+                activeKey.value = '1'
+                return
+            }
 
-            // 白底图不为空时候
+            // 白底图
             if(whiteimg_Fun.get()){
                 formState.white_back_ground_pic_url = whiteimg_Fun.get();// 白底图：url(仅素材中心url有效)，白底图比例要求1:1
                 console.log('白底图', whiteimg_Fun.get())
             }
-            
-            // 长图不为空
+
+            // 长图
             if(Longimg_Fun.get()){
                 formState.long_pic_url = Longimg_Fun.get();// 长图
                 console.log('长图', Longimg_Fun.get())
             }
-            
+
             // 视频信息
             if(video_Fun.get()){
                 formState.material_video_id = video_Fun.get();// 视频
@@ -1638,157 +1735,36 @@ export default defineComponent({
                 console.log('视频素材id', material_video_id)
             }
 
-            // 验证基础信息::图片信息验证
-            formRef.value.validate().then(() => {
+            // 基础信息
+            var pro_info = await GetInfo();
+            if(pro_info){
+                console.log('基础',pro_info)
+            }else{
+                return
+            }
+            
+            // 验证规格信息
+            var specs_info = await SPECS.get_specs_obj()
+            if(specs_info){
+                console.log('规格',specs_info)
+            }else{
+                return
+            }
 
-                var res = toRaw(formState)// 标题
-                console.log('基础信息结果', res)// 基础信息
+            // 库存信息
+            var sku_list_obj = await get_sku_list()
+            if(sku_list_obj){
+                console.log('存库',sku_list_obj)
+            }else{
+                return
+            }
 
-            }).catch(error => {
+            // 分类&属性
+            CATE.get_cate()
 
-                // console.log('error', error);
-                tool.Fun_.message('error',error.errorFields[0].errors[0]);
-                activeKey.value = '1';
-                throw '基础信息终止'
+            // 描述详情
 
-            }).then(()=>{// 规格文案和图片
-
-                // 规格未初始化
-                if(sku_formRef.value == undefined){
-
-                    tool.Fun_.message('error', '规格信息不能为空！');
-
-                    activeKey.value = '2'
-
-                    return
-
-                }
-
-                // 验证规格
-                sku_formRef.value.validate().then(() => {
-
-                    var spec_list = toRaw(SPECS.Obj)  // 
-
-                    var spece_value_number = spec_list[0].values.length;// 主规格值 数量;
-
-                    var spec_img_list = [] // 规格图片列表
-
-                    spec_list[0].values.forEach((obj, index)=>{// 迭代规格图片
-
-                        var o_img_u = obj.url;
-
-                        if(o_img_u !== undefined && o_img_u !== ''){
-                            spec_img_list.push(obj.url)
-                        }
-
-                    })
-
-                    var s_img_number = spec_img_list.length; // 主规格值图片数量;
-
-                    // 如果需要上传图片
-                    if(SPECS.SpecImag){
-
-                        if(spece_value_number == s_img_number){
-
-                            var spec_pic = spec_img_list.join(',');// 规格图片:图片数量需要好与主规格值数量一直
-
-                        }else{
-
-                            tool.Fun_.message('error', '规格图片需要填写，图片数量要与规格数量一致！');
-
-                            activeKey.value = '2';
-
-                            return ''
-                        }
-                    }
-
-                    var copy_list = structuredClone(spec_list)// 拷贝
-
-                    copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
-
-                    var result = {"spec_pic": spec_pic,"spec_values":copy_list}// 规格文案对象获取
-
-                    console.log(result)
-
-                }).catch( error => {
-
-                    tool.Fun_.message('error', '规格信息不能为空！');// 规格错误提示
-                    
-                    activeKey.value = '2';
-
-                    throw '规格终止'
-
-                })
-
-            }).then(()=>{// 库存格式
-
-                console.log('库存')
-                // var res = sku_list
-                // console.log(res.value)
-                // console.log('columns', res.value.columns)
-                // console.log('data', res.value.data)
-                // console.log('o_data', res.value.o_data)
-
-                // 库存
-                var spec_prices_v2 = [
-                    {
-                        "sell_properties":[{"property_name":"颜色","value_name":"粉色"}],
-                        "sku_type":0,
-                        "stock_num":99,
-                        "price":10000
-                    }
-                ]
-
-            }).then(()=>{
-
-                // 属性 无品牌id则传596120136;
-                // var product_format_new = {
-                //     "property_id":[{"value":'value',"name":"property_name","diy_type":0}]
-                // }
-
-                // 分类属性
-                // var category_leaf_id = toRaw(CATE.cate_name.value);
-
-                // console.log('分类id',category_leaf_id)
-
-                // 分类不能为空
-                // if(category_leaf_id.length == 0){
-
-                //     tool.Fun_.message('error','商品分类不能为空！')
-
-                //     activeKey.value = '3'
-
-                //     throw '已终止'
-
-                // }else if(category_leaf_id.length > 0){
-                    
-                //     CATE.form_ref.value.validate().then(()=>{
-
-                //         console.log('属性', CATE.form_ref.value)
-
-                //     }).catch(error => {
-
-                //         tool.Fun_.message('error',error.errorFields[0].errors[0])
-
-                //         activeKey.value = '3'
-
-                //         throw '已终止'
-
-                //     }).then(()=>{
-
-                //         // 描述
-                //         var description = DES.get_img();
-                //         if(!description){
-                //             tool.Fun_.message('error','详情描述图片不能为空！')
-                //             activeKey.value = '4'
-                //         }
-                //     })
-                // }
-
-            })
-
-
-            // 仅保存false，保存+提审true
+            // 仅保存false 保存+提审true
             var commit = ''
 
             // 限购
