@@ -20,7 +20,7 @@
 
             <div style="width: 950px;margin: 0 auto;height: 100%;">
 
-                <a-tabs v-model:activeKey="activeKey">
+                <a-tabs v-model:activeKey="activeKey" @change="console.log(activeKey)">
 
                     <a-tab-pane key="1" tab="基础信息">
 
@@ -300,7 +300,7 @@
                         </div>
                     </a-tab-pane>
 
-                    <a-tab-pane key="2" tab="规格">
+                    <a-tab-pane key="2" tab="商品规格">
 
                         <a-divider orientation="left" orientation-margin="0px">
                             规格
@@ -412,6 +412,10 @@
 
                         </a-form>
 
+                    </a-tab-pane>
+
+                    <a-tab-pane key="3" tab="库存数量">
+
                         <!--库存开始-->
                         <a-divider orientation="left" orientation-margin="0px">库存</a-divider>
                         
@@ -419,10 +423,10 @@
                             
                             <a-table 
                                 :columns="sku_list.columns" 
-                                :data-source="sku_list.data" 
+                                :data-source="[]" 
                                 :pagination="false" 
                                 style="font-size: 12px;" 
-                                size="small" 
+                                size="small"
                                 bordered
                             >
 
@@ -493,8 +497,6 @@
                         <!--库存结束-->
 
                     </a-tab-pane>
-
-                    <a-tab-pane key="3" tab="库存"></a-tab-pane>
 
                     <a-tab-pane key="4" tab="分类属性">
                         
@@ -1094,7 +1096,7 @@ export default defineComponent({
         }
 
         // 规格库存
-        const sku_formRef = ref();
+        const sku_formRef = ref()
         const SPECS = reactive({
 
             SpecImag:true,// 是否添加规格图片
@@ -1266,8 +1268,9 @@ export default defineComponent({
 
         })
 
-        // 根据规格-->构造价格、库存、商家编码；
+        // 根据规格-->构造价格、库存、商家编码
         const skulistRef = ref()
+
         const sku_list = computed(()=>{
             
             // 提取sku的name数组
@@ -1381,8 +1384,10 @@ export default defineComponent({
             var get_old_data = () =>{
 
                 var name_list = get_name_sku_list()//名称列表
+                console.log(name_list)
 
                 var d_list = get_value_sku_list()// 值列表
+                console.log(d_list)
 
                 var data_list = []
 
@@ -1393,9 +1398,13 @@ export default defineComponent({
                     for(var i=0;i<name_list.length;i++){
                         data[name_list[i]] = y[i];
                     }
-                    data.price = y[y.length-2] === undefined? 0:y[y.length-2] + ''
+
+                    console.log(y)
+
+                    data.price = y[y.length-2] === undefined ? 0:y[y.length-2] + ''
                     data.stock_num = y[y.length-1] + ''
                     data_list.push(data)
+
                 }
 
                 return data_list
@@ -1405,10 +1414,10 @@ export default defineComponent({
             return reactive({
                 columns: get_colums(),
                 data: get_data(),
-                o_data:get_old_data()
             }) 
             
         })
+
         const get_sku_list = async()=>{
 
             var res = await skulistRef.value.validate().then(()=>{
@@ -1421,7 +1430,6 @@ export default defineComponent({
 
             return res
         }
-
 
         // 分类&属性
         const CATE = {
@@ -1706,14 +1714,14 @@ export default defineComponent({
         const handleOk = async() => {
 
             // 主图
-            if(Pic_Fun.get()){// 不为空
-                formState.pic = Pic_Fun.get();  // 主图-必填
-                console.log('主图', Pic_Fun.get())
-            }else{
-                tool.Fun_.message('error','主图不能为空！')
-                activeKey.value = '1'
-                return
-            }
+            // if(Pic_Fun.get()){// 不为空
+            //     formState.pic = Pic_Fun.get();  // 主图-必填
+            //     console.log('主图', Pic_Fun.get())
+            // }else{
+            //     tool.Fun_.message('error','主图不能为空！')
+            //     activeKey.value = '1'
+            //     return
+            // }
 
             // 白底图
             if(whiteimg_Fun.get()){
@@ -1736,12 +1744,12 @@ export default defineComponent({
             }
 
             // 基础信息
-            var pro_info = await GetInfo();
-            if(pro_info){
-                console.log('基础',pro_info)
-            }else{
-                return
-            }
+            // var pro_info = await GetInfo();
+            // if(pro_info){
+            //     console.log('基础',pro_info)
+            // }else{
+            //     return
+            // }
             
             // 验证规格信息
             var specs_info = await SPECS.get_specs_obj()

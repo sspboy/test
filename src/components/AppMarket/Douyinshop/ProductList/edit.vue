@@ -19,7 +19,6 @@
                 </a-tab-pane>
                 <a-tab-pane key="3" tab="规格">Content of Tab Pane 3</a-tab-pane>
                 <a-tab-pane key="4" tab="库存">Content of Tab Pane 3</a-tab-pane>
-
                 <a-tab-pane key="5" tab="分类&属性">Content of Tab Pane 3</a-tab-pane>
                 <a-tab-pane key="6" tab="描述详情">Content of Tab Pane 3</a-tab-pane>
               </a-tabs>
