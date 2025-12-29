@@ -20,7 +20,7 @@
 
             <div style="width: 950px;margin: 0 auto;height: 100%;">
 
-                <a-tabs v-model:activeKey="activeKey" @change="console.log(activeKey)">
+                <a-tabs v-model:activeKey="activeKey" @change="refesh_stock_number(activeKey)">
 
                     <a-tab-pane key="1" tab="基础信息">
 
@@ -419,13 +419,17 @@
                         <!--库存开始-->
                         <a-divider orientation="left" orientation-margin="0px">库存</a-divider>
                         
-                        <a-form ref="skulistRef" :model="sku_list" name="basic">
+                        <a-form 
+                            ref="skulistRef" 
+                            :model="skumodel" 
+                            name="basic"
+                        >
                             
                             <a-table 
-                                :columns="sku_list.columns" 
-                                :data-source="[]" 
-                                :pagination="false" 
-                                style="font-size: 12px;" 
+                                :columns="skumodel.skucolumns"
+                                :data-source="skumodel.skudatelist"
+                                :pagination="false"
+                                style="font-size: 12px;"
                                 size="small"
                                 bordered
                             >
@@ -437,8 +441,9 @@
                                 </template>
 
                                 <template v-if="column.dataIndex === 'price'">
-                                    <a-form-item 
-                                        :name="['data', index, 'price']" 
+
+                                    <a-form-item
+                                        :name="[ 'skudatelist', index, 'price']"
                                         :rules="{required: true, trigger: 'change', message:'价格不能为空'}"
                                         >
                                         <a-input-number 
@@ -456,7 +461,7 @@
 
                                 <template v-if="column.dataIndex === 'stock_num'">
                                 <a-form-item 
-                                    :name="['data', index, 'stock_num']" 
+                                    :name="['skudatelist', index, 'stock_num']"
                                     :rules="{required: true, trigger: 'change', message:'库存不能为空'}"
                                 >
                                     <a-input-number 
@@ -473,9 +478,7 @@
                                 </template>
                                 
                                 <template v-if="column.dataIndex === 'code'">
-                                    <a-form-item 
-                                        :name="['data', index, 'code']"
-                                        >
+                                    <a-form-item>
                                         <a-input
                                             placeholder="商家编码"
                                             autocomplete="off"
@@ -487,10 +490,6 @@
                                 </template>
                                 
                             </template>
-
-
-                            <!-- <template #title>规格列表</template>
-                            <template #footer>Footer</template> -->
                             
                             </a-table>
                         </a-form>
@@ -959,7 +958,7 @@ export default defineComponent({
             }
         }
 
-        // 视频
+        // 视频video
         const video_Fun={
 
             PicList:ref([]),
@@ -998,7 +997,7 @@ export default defineComponent({
             }
         }
 
-        // 标题基础信息
+        // 基础信息
         const formRef = ref();
 
         // 基础信息验证规则
@@ -1270,37 +1269,43 @@ export default defineComponent({
 
         // 根据规格-->构造价格、库存、商家编码
         const skulistRef = ref()
+        const skumodel = reactive({
+            skucolumns:[],
+            skudatelist:[]
+        })
 
-        const sku_list = computed(()=>{
+        const sku_list = {
             
             // 提取sku的name数组
-            var get_name_sku_list = () =>{
+            get_name_sku_list:() =>{
                 var name_list = []
                 var datalist = SPECS.Obj;
                 for(let i of datalist){
                     name_list.push(i.property_name)
                 }
                 return name_list
-            }
+            },
 
             // 提取-初始情况下-sku_价格、库存
-            var get_p_s_obj = () => {
+            get_p_s_obj:() => {
 
                 var res_obj = {}
                 for(let i of SPECS.Obj){
-                    for(let y of i.values){if(y.price != undefined){
-                        var p_s_obj = {}
-                        p_s_obj.price === undefined ? '':y.price
-                        p_s_obj.stock_num === undefined ? '':y.stock_num
-                        p_s_obj.code = y.code === undefined ? '':y.code
-                        res_obj[y.value] = p_s_obj
-                    }}
+                    for(let y of i.values){
+                        if(y.price != undefined){
+                            var p_s_obj = {}
+                            p_s_obj.price === undefined ? '':y.price
+                            p_s_obj.stock_num === undefined ? '':y.stock_num
+                            p_s_obj.code = y.code === undefined ? '':y.code
+                            res_obj[y.value] = p_s_obj
+                        }
+                    }
                 }
                 return res_obj
-            }
+            },
 
             // 笛卡尔积方法sku_value数组取值
-            var get_value_sku_list= () =>{
+            get_value_sku_list:() =>{
             
                 var res_list = []
 
@@ -1320,11 +1325,12 @@ export default defineComponent({
 
                 return d_list
 
-            }
+            },
 
             // comlum取值
-            var get_colums = () =>{
-                var name_list = get_name_sku_list()
+            get_colums:() =>{
+
+                var name_list = sku_list.get_name_sku_list()
                 var res_list = []
                 for(let i of name_list){
                     let c_obj = {}
@@ -1340,16 +1346,16 @@ export default defineComponent({
                 res_list.push(stock_num_obj)
                 res_list.push(code_obj)
                 return res_list
-            }
+            },
 
             // 规格表单data取值(实时)
-            var get_data = () =>{
+            get_data:() =>{
 
-                var p_s_obj = get_p_s_obj();
+                var p_s_obj = sku_list.get_p_s_obj();
 
-                var name_list = get_name_sku_list()//名称列表
+                var name_list = sku_list.get_name_sku_list()//名称列表
 
-                var d_list = get_value_sku_list()// 值列表
+                var d_list = sku_list.get_value_sku_list()// 值列表
 
                 var data_list = []
 
@@ -1366,28 +1372,29 @@ export default defineComponent({
                             data.price === undefined ? '':p_s_res.price
                             data.stock_num === undefined ? '':p_s_res.stock_num
                             data.code === undefined ? '':p_s_res.code
+                        }else{
+                            data.price = undefined
+                            data.stock_num = 0
                         }
 
                         data[name_list[i]] = y[i];
                     
                     }
-
                     data_list.push(data)
                     
                 }
 
                 return data_list
 
-            }
+            },
 
             // 规格表单data取值(实时)
-            var get_old_data = () =>{
+            get_old_data:() =>{
 
-                var name_list = get_name_sku_list()//名称列表
+                var name_list = sku_list.get_name_sku_list()//名称列表
                 console.log(name_list)
 
-                var d_list = get_value_sku_list()// 值列表
-                console.log(d_list)
+                var d_list = sku_list.get_value_sku_list()// 值列表
 
                 var data_list = []
 
@@ -1399,8 +1406,6 @@ export default defineComponent({
                         data[name_list[i]] = y[i];
                     }
 
-                    console.log(y)
-
                     data.price = y[y.length-2] === undefined ? 0:y[y.length-2] + ''
                     data.stock_num = y[y.length-1] + ''
                     data_list.push(data)
@@ -1411,18 +1416,16 @@ export default defineComponent({
 
             }
 
-            return reactive({
-                columns: get_colums(),
-                data: get_data(),
-            }) 
-            
-        })
+        }
 
+        // 库存获取
         const get_sku_list = async()=>{
 
             var res = await skulistRef.value.validate().then(()=>{
-                return toRaw(sku_list.value)
+                return sku_list.get_data()
+
             }).catch(error => {
+
                 tool.Fun_.message('error',error.errorFields[0].errors[0]);
                 activeKey.value = '2';
                 return false
@@ -1430,6 +1433,24 @@ export default defineComponent({
 
             return res
         }
+
+        // 刷新库存
+        const refesh_stock_number = (activate_key) =>{
+
+            // 选择的是库存tag;
+            if(activate_key == '3'){
+                var colums = sku_list.get_colums();
+                var data_list = sku_list.get_data();
+
+                console.log(colums)
+                console.log(data_list)
+
+                skumodel.skucolumns = colums
+                skumodel.skudatelist = data_list
+            }
+        }
+
+
 
         // 分类&属性
         const CATE = {
@@ -1839,8 +1860,10 @@ export default defineComponent({
             sku_formRef,
             SPECS,
             CATE,
-            sku_list,
-            skulistRef,
+            sku_list,       // 规格存储方法
+            skumodel,
+            refesh_stock_number,// 库存刷新事件
+            skulistRef,     // 库存必填方法
             simpleImage,
             // 描述详情
             editorRef,DES,
