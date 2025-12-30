@@ -431,6 +431,7 @@
                                 :pagination="false"
                                 style="font-size: 12px;"
                                 size="small"
+                                bordered
                             >
 
                             <template #bodyCell="{ column, text, record, index }">
@@ -444,7 +445,6 @@
                                     <a-form-item
                                         :name="['skudatelist', index, 'price']"
                                         :rules="{required: true, trigger: 'change', message:'价格不能为空'}"
-                                        style="margin-bottom: 0px;padding: 0px;"
                                         >
                                         <a-input-number 
                                             placeholder="输入价格" 
@@ -454,7 +454,7 @@
                                             :step="0.01"
                                             autocomplete="off"
                                             allow-clear
-                                            style="font-size: 12px;width: 100%;"/>
+                                            style="font-size: 12px;width: 100%;margin-top: 22px;"/>
                                     </a-form-item>
                                 </template>
 
@@ -462,7 +462,7 @@
                                 <a-form-item 
                                     :name="['skudatelist', index, 'stock_num']"
                                     :rules="{required: true, trigger: 'change', message:'库存不能为空'}"
-                                    style="margin-bottom: 0px;padding: 0px;"
+                                    :style="{ 'margin': '0 0 0px 0' }"
 
                                 >
                                     <a-input-number 
@@ -472,18 +472,18 @@
                                         v-model:value="record.stock_num" 
                                         autocomplete="off"
                                         allow-clear
-                                        style="font-size: 12px;width: 100%;"
+                                        style="font-size: 12px;width: 100%;margin-top: 22px;"
                                     />
                                 </a-form-item>
                                 </template>
                                 
                                 <template v-if="column.dataIndex === 'code'">
-                                    <a-form-item style="margin-bottom: 0px;padding: 0px;">
+                                    <a-form-item :style="{ 'margin': '0 0 0px 0' }">
                                         <a-input
                                             placeholder="商家编码"
                                             autocomplete="off"
                                             v-model:value="record.code" 
-                                            style="font-size: 12px;width: 100%;" />
+                                            style="font-size: 12px;width: 100%;margin-top: 22px;" />
                                     </a-form-item>
                                 </template>
                                 
