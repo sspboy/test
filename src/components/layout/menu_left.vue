@@ -1,6 +1,7 @@
 <template>
   <div>
-    <a-menu class="font_size_12"
+    <a-menu 
+      class="font_size_12"
       v-model:selectedKeys="state.key"
       mode="inline"
       theme="dark"
@@ -38,6 +39,7 @@ import {
   SettingOutlined,
   HomeOutlined,
   CopyOutlined,
+  FormOutlined,
   MenuFoldOutlined, 
   MenuUnfoldOutlined,
 } from '@ant-design/icons-vue';

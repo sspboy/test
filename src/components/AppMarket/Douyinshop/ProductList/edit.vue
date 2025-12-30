@@ -11,15 +11,15 @@
 
             <div style="width: 950px;margin: 0 auto;">
               <a-tabs v-model:activeKey="activeKey">
-                <a-tab-pane key="1" tab="主图&视频">
+                <a-tab-pane key="1" tab="主图视频">
                   Content of Tab Pane 1
                 </a-tab-pane>
                 <a-tab-pane key="2" tab="基础信息" force-render>
                   Content of Tab Pane 2
                 </a-tab-pane>
-                <a-tab-pane key="3" tab="规格">Content of Tab Pane 3</a-tab-pane>
-                <a-tab-pane key="4" tab="库存">Content of Tab Pane 3</a-tab-pane>
-                <a-tab-pane key="5" tab="分类&属性">Content of Tab Pane 3</a-tab-pane>
+                <a-tab-pane key="3" tab="商品规格">Content of Tab Pane 3</a-tab-pane>
+                <a-tab-pane key="4" tab="库存数量">Content of Tab Pane 3</a-tab-pane>
+                <a-tab-pane key="5" tab="分类属性">Content of Tab Pane 3</a-tab-pane>
                 <a-tab-pane key="6" tab="描述详情">Content of Tab Pane 3</a-tab-pane>
               </a-tabs>
               

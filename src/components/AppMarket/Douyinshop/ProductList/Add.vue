@@ -431,7 +431,6 @@
                                 :pagination="false"
                                 style="font-size: 12px;"
                                 size="small"
-                                bordered
                             >
 
                             <template #bodyCell="{ column, text, record, index }">
@@ -443,12 +442,12 @@
                                 <template v-if="column.dataIndex === 'price'">
 
                                     <a-form-item
-                                        :name="[ 'skudatelist', index, 'price']"
+                                        :name="['skudatelist', index, 'price']"
                                         :rules="{required: true, trigger: 'change', message:'价格不能为空'}"
+                                        style="margin-bottom: 0px;padding: 0px;"
                                         >
                                         <a-input-number 
                                             placeholder="输入价格" 
-                                            size="small" 
                                             v-model:value="record.price" 
                                             prefix="￥" 
                                             :min="0" 
@@ -463,10 +462,11 @@
                                 <a-form-item 
                                     :name="['skudatelist', index, 'stock_num']"
                                     :rules="{required: true, trigger: 'change', message:'库存不能为空'}"
+                                    style="margin-bottom: 0px;padding: 0px;"
+
                                 >
                                     <a-input-number 
                                         placeholder="输入库存" 
-                                        size="small" 
                                         :min="0"
                                         :max="999999999"
                                         v-model:value="record.stock_num" 
@@ -478,13 +478,11 @@
                                 </template>
                                 
                                 <template v-if="column.dataIndex === 'code'">
-                                    <a-form-item>
+                                    <a-form-item style="margin-bottom: 0px;padding: 0px;">
                                         <a-input
                                             placeholder="商家编码"
                                             autocomplete="off"
                                             v-model:value="record.code" 
-                                            size="small" 
-                                            allow-clear
                                             style="font-size: 12px;width: 100%;" />
                                     </a-form-item>
                                 </template>
@@ -1191,10 +1189,11 @@ export default defineComponent({
             remove_img:(item)=>{
                 item.url = ''
             },
+
             get_specs_obj: async()=>{
 
                 // 规格未初始化
-                if(sku_formRef.value == undefined){
+                if(sku_formRef.value === undefined){
 
                     tool.Fun_.message('error', '规格信息不能为空！');
 
@@ -1288,7 +1287,6 @@ export default defineComponent({
 
             // 提取-初始情况下-sku_价格、库存
             get_p_s_obj:() => {
-
                 var res_obj = {}
                 for(let i of SPECS.Obj){
                     for(let y of i.values){
@@ -1354,8 +1352,12 @@ export default defineComponent({
                 var p_s_obj = sku_list.get_p_s_obj();
 
                 var name_list = sku_list.get_name_sku_list()//名称列表
+                console.log('规格名称', name_list)
 
                 var d_list = sku_list.get_value_sku_list()// 值列表
+                console.log('规格值',d_list)
+
+                console.log('历史值',skumodel.skudatelist)
 
                 var data_list = []
 
@@ -1364,71 +1366,65 @@ export default defineComponent({
                     var data = {}
 
                     for(var i=0;i<name_list.length;i++){
+
                         var name = name_list[i]//名称
-                        var value = y[i]       // 值
+
+                        var value = y[i]// 值
 
                         var p_s_res = p_s_obj[value] // 价格库存关系匹配
+
                         if(p_s_res != undefined){     // 匹配成功
                             data.price === undefined ? '':p_s_res.price
                             data.stock_num === undefined ? '':p_s_res.stock_num
                             data.code === undefined ? '':p_s_res.code
-                        }else{
-                            data.price = undefined
-                            data.stock_num = 0
                         }
 
                         data[name_list[i]] = y[i];
                     
                     }
+
                     data_list.push(data)
                     
                 }
+                console.log('输出值',data_list)
 
                 return data_list
 
             },
 
-            // 规格表单data取值(实时)
-            get_old_data:() =>{
 
-                var name_list = sku_list.get_name_sku_list()//名称列表
-                console.log(name_list)
-
-                var d_list = sku_list.get_value_sku_list()// 值列表
-
-                var data_list = []
-
-                for(let y of d_list){
-
-                    var data = {}
-
-                    for(var i=0;i<name_list.length;i++){
-                        data[name_list[i]] = y[i];
-                    }
-
-                    data.price = y[y.length-2] === undefined ? 0:y[y.length-2] + ''
-                    data.stock_num = y[y.length-1] + ''
-                    data_list.push(data)
-
-                }
-
-                return data_list
-
-            }
 
         }
 
-        // 库存获取
+        // 库存验证
         const get_sku_list = async()=>{
 
+            // 库存未初始化
+            if(skulistRef.value === undefined){
+
+                tool.Fun_.message('error', '库存信息不能为空！');
+
+                refesh_stock_number('3') // 刷新库存
+
+                activeKey.value = '3'
+
+                return false
+
+            }
+
+            // 库存以及初始化
             var res = await skulistRef.value.validate().then(()=>{
-                return sku_list.get_data()
+
+                return skumodel.skudatelist
 
             }).catch(error => {
 
                 tool.Fun_.message('error',error.errorFields[0].errors[0]);
-                activeKey.value = '2';
+
+                activeKey.value = '3';
+
                 return false
+
             })
 
             return res
@@ -1436,15 +1432,11 @@ export default defineComponent({
 
         // 刷新库存
         const refesh_stock_number = (activate_key) =>{
-
+            
             // 选择的是库存tag;
             if(activate_key == '3'){
                 var colums = sku_list.get_colums();
                 var data_list = sku_list.get_data();
-
-                console.log(colums)
-                console.log(data_list)
-
                 skumodel.skucolumns = colums
                 skumodel.skudatelist = data_list
             }
@@ -1782,8 +1774,10 @@ export default defineComponent({
 
             // 库存信息
             var sku_list_obj = await get_sku_list()
+
             if(sku_list_obj){
-                console.log('存库',sku_list_obj)
+                console.log('存库',skumodel.skudatelist)
+
             }else{
                 return
             }
@@ -1860,12 +1854,13 @@ export default defineComponent({
             sku_formRef,
             SPECS,
             CATE,
-            sku_list,       // 规格存储方法
-            skumodel,
+            // --------------库存
+            sku_list,       // 库存操作方法
+            skumodel,       // 库存表格数据
             refesh_stock_number,// 库存刷新事件
             skulistRef,     // 库存必填方法
             simpleImage,
-            // 描述详情
+            // -------------描述详情
             editorRef,DES,
             // 提交，关闭
             handleOk,closed,
@@ -1887,6 +1882,6 @@ export default defineComponent({
 .Add_3_4_img{height: 132px;width: 99px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
 .Add_3_4_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
 .add_btn_class{width: 40px; margin:0 0 0 20px;}
-
+/* .ant-form-item{margin-bottom: 0px ! important} */
  
 </style>
