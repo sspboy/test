@@ -1350,48 +1350,56 @@ export default defineComponent({
             get_data:() =>{
 
                 var p_s_obj = sku_list.get_p_s_obj();
+                // console.log('初始规格', p_s_obj)
 
                 var name_list = sku_list.get_name_sku_list()//名称列表
-                console.log('规格名称', name_list)
+                // console.log('规格名称', name_list)
 
                 var d_list = sku_list.get_value_sku_list()// 值列表
-                console.log('规格值',d_list)
+                // console.log('规格值',d_list)
 
-                console.log('历史值',skumodel.skudatelist)
+                // console.log('历史值',skumodel.skudatelist)
+
+                var o_sku_v_obj = sku_list.load_old_sku(d_list, skumodel.skudatelist)// 历史数据匹配关系
 
                 var data_list = []
 
                 for(let y of d_list){
 
+                    var y_text_name = y.join('')
+
                     var data = {}
 
                     for(var i=0;i<name_list.length;i++){
 
-                        var name = name_list[i]//名称
-
-                        var value = y[i]// 值
-
-                        var p_s_res = p_s_obj[value] // 价格库存关系匹配
-
-                        if(p_s_res != undefined){     // 匹配成功
-                            data.price === undefined ? '':p_s_res.price
-                            data.stock_num === undefined ? '':p_s_res.stock_num
-                            data.code === undefined ? '':p_s_res.code
-                        }
-
                         data[name_list[i]] = y[i];
-                    
+
+                    }
+                    if(o_sku_v_obj[y_text_name] !== undefined &&o_sku_v_obj[y_text_name] !== ''){
+                            var o_obj = o_sku_v_obj[y_text_name]
+                            data.price = o_obj.price
+                            data.stock_num = o_obj.stock_num
+                            data.code = o_obj.code
                     }
 
                     data_list.push(data)
-                    
+
                 }
-                console.log('输出值',data_list)
 
                 return data_list
 
             },
 
+            // 规格历史值保留
+            load_old_sku:(sku_value_list, data)=>{
+                var d_list = sku_value_list// 值列表
+                var res_obj = {};
+                for(let i=0;i<d_list.length;i++){
+                    var name = d_list[i].join('')
+                    res_obj[name]=data[i]
+                }
+                return res_obj
+            }
 
 
         }
