@@ -67,7 +67,7 @@ export default defineComponent({
     const state = reactive({
       key:[],
       rootSubmenuKeys: [],  // 一级菜单
-      openKeys:[],          // 选中的一级菜单
+      openKeys:[],       // 选中的一级菜单
       selectedKeys: [],
     });
 
@@ -109,11 +109,20 @@ export default defineComponent({
     const handleClick = e => {
       let se_obj = e.keyPath
       let name = e.item.id
+      // 首页功能字符 introduction
       if(name != undefined){
         router.push('/' +  name);
         state.openKeys = [se_obj[0]]
         state.key = [se_obj[1]]
       }
+      // 自定义一级目录点击路径
+      var field = e.item.field;
+      if(field === 'introduction'){
+        // 去主页
+        router.push('/introduction')
+      }
+
+
     };
 
     const onOpenChange = openKeys => {

@@ -2,21 +2,18 @@
 
 <template>
   
-
   <!-- 动态渲染异步组件 -->
   <add_components v-if="PAGEDATA.AddDate" :data="PAGEDATA"/>
   <edit_components v-if="PAGEDATA.EditDate" :data="PAGEDATA"/>
   <detaile_components v-if="PAGEDATA.DetaileDate" :data="PAGEDATA"/>
-
   <more_select :data="PAGEDATA" @moer_select_callback="sift_select"/><!--更多筛选组件-->
-  <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
+
 
   <a-layout style="height: 100vh;width: 100vw;">
 
     <!--head 导航组件  开始-->
     <menu_head />
     <!--head 导航组件  结束-->
-
 
     <!--右侧内容部分 开始-->
     <a-layout>
@@ -38,8 +35,10 @@
         <!--条件查询组件 结束 -->
 
 
+
         <!--列表组件 开始 -->
         <a-flex :style="{height:PAGEDATA.innerHeight + 'px'}" class="FlexBox" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
+        <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
 
           <!--列表 浏览方式 -->
           <a-list
@@ -51,7 +50,7 @@
 
             <template #renderItem="{ item }">
 
-              <a-list-item style="padding:14px 0;">
+              <a-list-item style="padding:0px 0 14px 0;">
                   <a-list-item-meta>
                     <template #avatar>
                       <div class="cursor ListImg">
@@ -192,6 +191,7 @@
             </template>
 
           </a-list>
+  </a-checkbox-group>
 
         </a-flex>
         <!--列表组件 结束 -->
@@ -217,7 +217,6 @@
 
   </a-layout>
   
-  </a-checkbox-group>
 
 
 <!--确认删除-->
@@ -235,7 +234,7 @@ import { useStore } from 'vuex'
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
-import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined,CopyOutlined,ExclamationCircleFilled,EyeOutlined } from '@ant-design/icons-vue';
+import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined,CopyOutlined,ExclamationCircleFilled,EyeOutlined,PlusOutlined } from '@ant-design/icons-vue';
 
 
 // 筛选条件查询组件
@@ -255,6 +254,7 @@ export default {
   name: "ProductList",
   // 引用组件
   components: {
+    PlusOutlined,
         EyeOutlined,
         ExclamationCircleFilled,
         CopyOutlined,
@@ -680,7 +680,7 @@ export default {
 .title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}
 .list_span_one{height: 24px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 28px;padding: 8px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
-.FlexBox{overflow:auto; transition:height 0.5s ease;margin:4px 0 0 0;}
+.FlexBox{overflow:auto; transition:height 0s ease;margin:0;}
 
 
 .left_box{border-radius: 4px;display: block;width: 8px;height: 8px;float: left;margin: 6px 4px 0 0;}

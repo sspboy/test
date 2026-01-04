@@ -1,25 +1,30 @@
 <template>
 
     <!-- 自定义标题 -->
-    <div style="width: 100%;height: 28px;padding: 0 0 0 0;">
-                        
-        <a-row>
-            <a-col :span="20">
+    <div style="width: 100%;height: 40px;clear: both;" >
 
-                <a-form
-                    layout="inline"
-                     ref="formRef"
-                    :model="props.data.List_conditions"
-                    @finish="handleFinish"
-                >
-                <a-form-item style="width: 90px; margin: 0 10px 0 0;">
-                    <a-button type="primary" size="small" style="font-size: 12px;" @click="show_add">
-                        <PlusOutlined />
-                        新建商品
-                    </a-button>
-                </a-form-item>
+        <div style="width: 420px;float: left;">
+            <a-space>
+                <a-button type="primary" size="small" style="font-size: 12px;" @click="show_add">
+                    <PlusOutlined />
+                    新建商品
+                </a-button>
+                <a-button type="primary" class="font_size_12" size="small" ghost>在售商品</a-button>
+                <a-button type="primary" class="font_size_12" size="small" ghost>下架商品</a-button>
+                <a-button type="primary" class="font_size_12" size="small" @click="handleverify_exist_audit_reject_suggest" ghost>只看驳回商品</a-button>
 
-                <!-- <h3 style="padding: 3px 20px 0 0;">{{ props.data.title }}</h3> -->
+                <a-button type="primary" class="font_size_12" size="small" ghost>多ID查询</a-button>
+
+                <a-button type="primary" class="font_size_12" size="small" ghost>商家编码查询</a-button>
+            </a-space>
+        </div>
+        <div style="width: 800px;float: right;text-align: right;">
+            <a-form
+                layout="inline"
+                ref="formRef"
+                :model="props.data.List_conditions"
+                @finish="handleFinish"
+            >
 
                 <a-form-item name="product_type" style="width: 90px;">
                     <a-select
@@ -73,51 +78,41 @@
                     </a-select>
                 </a-form-item>
 
-            <a-form-item name="product_id">
-                <a-input
-                type="text" 
-                class="font_size_12"
-                style="padding: 2px;"
-                allowClear  
-                size="small"
-                v-model:value="props.data.List_conditions.product_id" 
-                placeholder="商品id查询"
-                />
-            </a-form-item>
-            <a-form-item name="title_key">
-                <a-input 
-                type="text" 
-                class="font_size_12"
-                style="padding: 2px;"
-                allowClear
-                placeholder="输入标题关键字" 
-                v-model:value="props.data.List_conditions.title_key" 
-                size="small"
-                />
-            </a-form-item>
+                <a-form-item name="product_id">
+                    <a-input
+                    type="text" 
+                    class="font_size_12"
+                    style="padding: 2px;"
+                    allowClear  
+                    size="small"
+                    v-model:value="props.data.List_conditions.product_id" 
+                    placeholder="商品id查询"
+                    />
+                </a-form-item>
+                
+                <a-form-item name="title_key">
+                    <a-input 
+                    type="text" 
+                    class="font_size_12"
+                    style="padding: 2px;"
+                    allowClear
+                    placeholder="输入标题关键字" 
+                    v-model:value="props.data.List_conditions.title_key" 
+                    size="small"
+                    />
+                </a-form-item>
 
-            <a-form-item>
-                <!-- <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
-                <EllipsisOutlined />
-                </a-button> -->
-                <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
-                <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
+                <a-form-item>
+                    <!-- <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
+                    <EllipsisOutlined />
+                    </a-button> -->
+                    <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
+                    <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
 
 
-            </a-form-item>
-                </a-form>
-            </a-col>
-            <a-col :span="4">
-                <div style="padding: 4px 0 0 0;">
-                <a-space>
-                    <a-button type="primary" class="font_size_12" size="small" @click="handleverify_exist_audit_reject_suggest" ghost>只看驳回商品</a-button>
-                    <a-button type="primary" class="font_size_12" size="small" ghost>多ID查询</a-button>
-                    <a-button type="primary" class="font_size_12" size="small" ghost>商家编码查询</a-button>
-                </a-space>
-                </div>
-            </a-col>
-        </a-row>
-
+                </a-form-item>
+            </a-form>
+        </div>
     </div>
 
     <!-- <a-button type="primary" size="small" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost>

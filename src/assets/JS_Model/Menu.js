@@ -26,6 +26,7 @@ export class Menu {
             for (var i=0;i<data.length;i++){
 
                 var m_obj = data[i]
+                // console.log(menu_list)
 
                 var child = m_obj.child;
 
@@ -51,9 +52,10 @@ export class Menu {
                     
                     menu_detaile_obj.children = child_list
 
-                }else {
+                }else { // 一级目录
 
-                    menu_detaile_obj.key = i.toString()
+                    menu_detaile_obj.key = i.toString() // key
+                    menu_detaile_obj.field = m_obj.field // field
 
                 }
 

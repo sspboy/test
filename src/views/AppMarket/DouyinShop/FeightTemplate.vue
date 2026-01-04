@@ -21,7 +21,6 @@
         
         <div style="height: 40px;">
             <a-row>
-
                 <a-col :span="4">
                     <a-button type="primary" size="small" style="font-size: 12px;" @click="feight_add.play">
                         <PlusOutlined />
