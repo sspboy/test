@@ -215,8 +215,6 @@ export default {
 
             load_page() // 初始化列表数据
             
-            console.log(count.value)
-
         })
 
         // 组件挂之后---请求数据===============================开始

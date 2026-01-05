@@ -3,7 +3,6 @@
     <!-- 自定义标题 -->
     <div style="width: 100%;height: 40px;clear: both;" >
 
-        <div style="width: 420px;float: left;">
             <a-space>
                 <a-button type="primary" size="small" style="font-size: 12px;" @click="show_add">
                     <PlusOutlined />
@@ -17,13 +16,13 @@
 
                 <a-button type="primary" class="font_size_12" size="small" ghost>商家编码查询</a-button>
             </a-space>
-        </div>
-        <div style="width: 800px;float: right;text-align: right;">
+<!--             
             <a-form
                 layout="inline"
                 ref="formRef"
                 :model="props.data.List_conditions"
                 @finish="handleFinish"
+                style="float: left;margin: -4px 0 0 0;"
             >
 
                 <a-form-item name="product_type" style="width: 90px;">
@@ -103,16 +102,15 @@
                 </a-form-item>
 
                 <a-form-item>
-                    <!-- <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
+                    <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
                     <EllipsisOutlined />
-                    </a-button> -->
+                    </a-button>
                     <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
                     <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
 
 
                 </a-form-item>
-            </a-form>
-        </div>
+            </a-form> -->
     </div>
 
     <!-- <a-button type="primary" size="small" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost>

@@ -35,10 +35,10 @@
         <!--条件查询组件 结束 -->
 
 
-
         <!--列表组件 开始 -->
         <a-flex :style="{height:PAGEDATA.innerHeight + 'px'}" class="FlexBox" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
-        <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
+        
+          <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
 
           <!--列表 浏览方式 -->
           <a-list
@@ -191,7 +191,7 @@
             </template>
 
           </a-list>
-  </a-checkbox-group>
+          </a-checkbox-group>
 
         </a-flex>
         <!--列表组件 结束 -->

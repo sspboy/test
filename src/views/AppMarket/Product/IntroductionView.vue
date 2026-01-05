@@ -438,10 +438,9 @@ export default {
         return reactive({
 
           title:'应用首页',
-          
           menudata:{       // 菜单选中配置
-            'key':'86',
-            'openKeys':'home',
+            'key':'1',
+            'openKeys':'introduction',
           },
           colum:[],           // 表头信息
           datalist:[],        // 列表信息

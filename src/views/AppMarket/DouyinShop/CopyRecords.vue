@@ -276,7 +276,7 @@ export default {
     const CL = new copylog.CopyLog()          // 表格操作方法
 
     const store = useStore();                 // 共享数据
-    console.log(store.state)
+    // console.log(store.state)
     const innerHeight = ref(window.innerHeight-245);// 初始化表格高度
     const loading = ref(true)                 // 初始化loading状态
     const PAGEDATA = reactive({

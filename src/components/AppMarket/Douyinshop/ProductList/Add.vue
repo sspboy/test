@@ -529,26 +529,23 @@
                                         </p>
                                         <p v-if="item.required == 1">
                                             <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
-                                            <a-input 
-                                                type="text" 
-                                                placeholder="请输入"
-                                                autoComplete="off"
-                                                allow-clear
-                                                v-model:value="CATE.format_formRef[item.property_id]"
-                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
-                                            />
+                                                <a-input 
+                                                    placeholder="请输入"
+                                                    autoComplete="off"
+                                                    v-model:value="CATE.format_formRef[item.property_id]"
+                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
+                                                    allow-clear
+                                                />
                                             </a-form-item>
                                         </p>
                                         <p v-else-if="item.required !== 1">
                                             <a-form-item :name="item.property_id">
                                             <a-input 
-                                                type="text" 
                                                 placeholder="请输入"
                                                 autoComplete="off"
-                                                allow-clear
                                                 v-model:value="CATE.format_formRef[item.property_id]"
                                                 @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
-
+                                                allow-clear
                                             />
                                             </a-form-item>
                                         </p>
@@ -1536,7 +1533,7 @@ export default defineComponent({
 
                 })
 
-                // console.log(CATE.format_formRef)
+                console.log(CATE.format_formRef)
 
                 CATE.format.value = res.data.data.data;
 
@@ -1554,8 +1551,9 @@ export default defineComponent({
                     
                     // 文本 text
                     if(type == 'text'){
-                        CATE.format_formRef[item.property_id] = {"value":0,"name":result_value,"diy_type":diy_type}
-                        // console.log({"value":0,"name":result_value,"diy_type":diy_type})
+                        CATE.format_formRef[item.property_id] = data
+                        // CATE.format_formRef[item.property_id] = {"value":0,"name":result_value,"diy_type":diy_type}
+                        console.log({"value":0,"name":result_value,"diy_type":diy_type})
                     }else if(type == 'select'){// 单选 select
 
                         var v_name = ''
@@ -1615,13 +1613,41 @@ export default defineComponent({
                 return r_name
 
             },
-            // 验证分类&属性值
+            // 获取分类
             get_cate:()=>{
-                if(CATE.cate_name.length>0){
-                    console.log(CATE.cate_name)
-                }else{
-
+                var cate_values = toRaw(CATE.cate_name.value)
+                // console.log(cate_values)
+                if(cate_values.length>0){// 分类不为空
+                    return cate_values
+                }else{ // 分类为空
+                    tool.Fun_.message('error', '商品分类不能为空！');
+                    activeKey.value = '4';
+                    return false
                 }
+            },
+            // 获取属性
+            get_format: async()=>{
+
+                var res = await CATE.form_ref.value?.validate().then(()=>{
+                    var f_obj = toRaw(CATE.format_formRef)
+                    Object.keys(f_obj).forEach(key => {
+                        if(f_obj[key] != undefined){
+                            console.log( key,':', f_obj[key])
+                        }
+                    }); // 清空
+
+                    return CATE.format_formRef
+
+                }).catch(error => {
+
+                    tool.Fun_.message('error',error.errorFields[0].errors[0]);
+
+                    activeKey.value = '4';
+
+                    return false
+                })
+
+                return res
             }
         }
 
@@ -1773,27 +1799,37 @@ export default defineComponent({
             // }
             
             // 验证规格信息
-            var specs_info = await SPECS.get_specs_obj()
-            if(specs_info){
-                console.log('规格',specs_info)
-            }else{
-                return
-            }
+            // var specs_info = await SPECS.get_specs_obj()
+            // if(specs_info){
+            //     console.log('规格',specs_info)
+            // }else{
+            //     return
+            // }
 
             // 库存信息
-            var sku_list_obj = await get_sku_list()
+            // var sku_list_obj = await get_sku_list()
 
-            if(sku_list_obj){
-                console.log('存库',skumodel.skudatelist)
+            // if(sku_list_obj){
+            //     console.log('存库',skumodel.skudatelist)
+            // }else{
+            //     return
+            // }
 
+            // 分类&属性
+            var cate_obj = CATE.get_cate()
+            if(cate_obj){
+                console.log('类目', cate_obj)
             }else{
+
                 return
             }
 
-            // 分类&属性
-            CATE.get_cate()
+            var format_obj = CATE.get_format();
+
 
             // 描述详情
+            var description_obj = DES.get_img();
+            console.log(description_obj)
 
             // 仅保存false 保存+提审true
             var commit = ''
