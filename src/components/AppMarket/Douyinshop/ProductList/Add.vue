@@ -1519,6 +1519,19 @@ export default defineComponent({
                 // 加载属性结构
                 data_list.forEach((obj,index)=>{
 
+                    // 添加品牌无品牌选项
+                    var property_name = obj.property_name
+                    if(property_name == '品牌'){
+                        var No_brand_obj = {
+                            "value_id": 596120136,
+                            "sequence": 0,
+                            "name": "无品牌",
+                            "value": "596120136"
+                        }
+                        obj.options.push(No_brand_obj)
+                    }
+                    // 无品牌添加结束
+
                     var type = obj.type;
 
                     if(type == 'select' || type == 'multi_select' || type == 'multi_value_measure'){
@@ -1533,7 +1546,7 @@ export default defineComponent({
 
                 })
 
-                console.log(CATE.format_formRef)
+                // console.log(CATE.format_formRef)
 
                 CATE.format.value = res.data.data.data;
 
@@ -1551,16 +1564,21 @@ export default defineComponent({
                     
                     // 文本 text
                     if(type == 'text'){
+
                         CATE.format_formRef[item.property_id] = data
                         // CATE.format_formRef[item.property_id] = {"value":0,"name":result_value,"diy_type":diy_type}
                         console.log({"value":0,"name":result_value,"diy_type":diy_type})
+
                     }else if(type == 'select'){// 单选 select
 
                         var v_name = ''
 
                         options.forEach((obj,index)=>{
+
                             if(obj.value_id == data){v_name = obj.name}
+
                         })
+
                         CATE.format_formRef[item.property_id] = {"value":data,"name":v_name,"diy_type":diy_type}
 
                     }else if(type == 'multi_select' || type == 'multi_value_measure'){ // 多选 'multi_select' & 'multi_value_measure'
@@ -1655,7 +1673,7 @@ export default defineComponent({
         const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
         const DES = {
             // 初始化
-            valueHtml:ref('<p></p>'),
+            valueHtml:ref(undefined),
             mode:ref('simple'),// 或 'simple' 'default'
             // 编辑器实例，必须用 shallowRef
             editorRef:shallowRef(),
@@ -1714,10 +1732,14 @@ export default defineComponent({
 
                 // 描述为空
                 if(editorRef.value == undefined){
+                    tool.Fun_.message('error', '描述详情不能为空！');
+                    activeKey.value = '5';
                     return false
                 }else {
                     var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
                     if(img_list.length == 0 || editorRef.value == undefined){
+                        tool.Fun_.message('error', '描述详情不能为空！');
+                        activeKey.value = '5';
                         return false
                     }else{
                         // 描述不为空
@@ -1761,14 +1783,14 @@ export default defineComponent({
         const handleOk = async() => {
 
             // 主图
-            // if(Pic_Fun.get()){// 不为空
-            //     formState.pic = Pic_Fun.get();  // 主图-必填
-            //     console.log('主图', Pic_Fun.get())
-            // }else{
-            //     tool.Fun_.message('error','主图不能为空！')
-            //     activeKey.value = '1'
-            //     return
-            // }
+            if(Pic_Fun.get()){// 不为空
+                formState.pic = Pic_Fun.get();  // 主图-必填
+                console.log('主图', Pic_Fun.get())
+            }else{
+                tool.Fun_.message('error','主图不能为空！')
+                activeKey.value = '1'
+                return
+            }
 
             // 白底图
             if(whiteimg_Fun.get()){
@@ -1791,45 +1813,51 @@ export default defineComponent({
             }
 
             // 基础信息
-            // var pro_info = await GetInfo();
-            // if(pro_info){
-            //     console.log('基础',pro_info)
-            // }else{
-            //     return
-            // }
+            var pro_info = await GetInfo();
+
+            if(pro_info){
+                // 正常获取
+                console.log('基础',pro_info)
+            }else{
+                return
+            }
             
             // 验证规格信息
-            // var specs_info = await SPECS.get_specs_obj()
-            // if(specs_info){
-            //     console.log('规格',specs_info)
-            // }else{
-            //     return
-            // }
+            var specs_info = await SPECS.get_specs_obj()
+            if(specs_info){
+                // 正常获取
+                console.log('规格',specs_info)
+            }else{
+                return
+            }
 
             // 库存信息
-            // var sku_list_obj = await get_sku_list()
+            var sku_list_obj = await get_sku_list()
 
-            // if(sku_list_obj){
-            //     console.log('存库',skumodel.skudatelist)
-            // }else{
-            //     return
-            // }
+            if(sku_list_obj){
+                // 正常获取
+                console.log('存库',skumodel.skudatelist)
+            }else{
+                return
+            }
 
             // 分类&属性
             var cate_obj = CATE.get_cate()
             if(cate_obj){
                 console.log('类目', cate_obj)
             }else{
-
                 return
             }
 
             var format_obj = CATE.get_format();
 
-
             // 描述详情
             var description_obj = DES.get_img();
-            console.log(description_obj)
+            if(description_obj){
+                console.log('描述详情', description_obj)
+            }else{
+                return
+            }
 
             // 仅保存false 保存+提审true
             var commit = ''
