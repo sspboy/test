@@ -10,7 +10,8 @@
       :openKeys="state.openKeys"
       @click="handleClick"
       @openChange="onOpenChange"
-    ></a-menu>
+    >
+    </a-menu>
 
   </div>
   <a-affix :offset-bottom="bottom" style="bottom: 18px;right:10px;position:absolute;">
@@ -96,7 +97,6 @@ export default defineComponent({
             state.rootSubmenuKeys.push(i.key)
 
           }
-
           return menu_data
 
         })
@@ -107,8 +107,10 @@ export default defineComponent({
 
     // 菜单点击事件===>路由
     const handleClick = e => {
+      
       let se_obj = e.keyPath
       let name = e.item.id
+      // console.log(se_obj)
       // 首页功能字符 introduction
       if(name != undefined){
         router.push('/' +  name);

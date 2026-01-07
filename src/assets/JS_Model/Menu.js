@@ -54,7 +54,7 @@ export class Menu {
 
                 }else { // 一级目录
 
-                    menu_detaile_obj.key = i.toString() // key
+                    menu_detaile_obj.key = m_obj.field // key
                     menu_detaile_obj.field = m_obj.field // field
 
                 }

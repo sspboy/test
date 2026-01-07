@@ -1078,8 +1078,15 @@ export default defineComponent({
         const GetInfo = async()=>{
 
            var res = await formRef.value.validate().then(() => {
+
                 var res = toRaw(formState)// 标题
+                
+                // Object.keys(res).forEach(key=>{
+                //     if(res.key === undefined){delete res.key} // 清除值为undefind的键值
+                // })
+
                 return res
+                
             }).catch(error => {
                 // console.log('error', error);
                 tool.Fun_.message('error',error.errorFields[0].errors[0]);
@@ -1779,13 +1786,14 @@ export default defineComponent({
             // console.log(formState.size_info_template_id)
         }
 
-        // 确认按钮
+        // 确认按钮===>>>获取产品信息+验证
         const handleOk = async() => {
+
+            var product_data_obj = {} // 商品上传JSON
 
             // 主图
             if(Pic_Fun.get()){// 不为空
-                formState.pic = Pic_Fun.get();  // 主图-必填
-                console.log('主图', Pic_Fun.get())
+                product_data_obj.pic = Pic_Fun.get()
             }else{
                 tool.Fun_.message('error','主图不能为空！')
                 activeKey.value = '1'
@@ -1794,22 +1802,22 @@ export default defineComponent({
 
             // 白底图
             if(whiteimg_Fun.get()){
-                formState.white_back_ground_pic_url = whiteimg_Fun.get();// 白底图：url(仅素材中心url有效)，白底图比例要求1:1
+                product_data_obj.white_back_ground_pic_url = whiteimg_Fun.get();// 白底图：url(仅素材中心url有效)，白底图比例要求1:1
                 console.log('白底图', whiteimg_Fun.get())
             }
 
             // 长图
             if(Longimg_Fun.get()){
-                formState.long_pic_url = Longimg_Fun.get();// 长图
+                product_data_obj.long_pic_url = Longimg_Fun.get();// 长图
                 console.log('长图', Longimg_Fun.get())
             }
 
             // 视频信息
             if(video_Fun.get()){
-                formState.material_video_id = video_Fun.get();// 视频
                 var video_obj = video_Fun.get()
                 var material_video_id = video_obj[0].material_id;
-                console.log('视频素材id', material_video_id)
+                product_data_obj.material_video_id = material_video_id;// 视频id
+                // console.log('视频素材id', material_video_id)
             }
 
             // 基础信息
@@ -1817,7 +1825,18 @@ export default defineComponent({
 
             if(pro_info){
                 // 正常获取
-                console.log('基础',pro_info)
+                product_data_obj.name = pro_info.name;                  // 标题-必填
+                product_data_obj.product_type = pro_info.product_type;  // 商品类型-必填
+                product_data_obj.recommend_remark = pro_info.recommend_remark;// 推荐语
+                product_data_obj.remark = pro_info.remark;              // 商家备注
+                product_data_obj.pay_type = pro_info.pay_type;          // 支付方式
+                product_data_obj.reduce_type = pro_info.reduce_type;    // 减库存类型
+                product_data_obj.mobile = pro_info.mobile;              // 电话
+                product_data_obj.commit = pro_info.commit;              // 提交方式
+                product_data_obj.freight_id = pro_info.freight_id.value;// 运费模板
+                // 尺码模板
+                console.log(product_data_obj)
+
             }else{
                 return
             }
@@ -1826,16 +1845,18 @@ export default defineComponent({
             var specs_info = await SPECS.get_specs_obj()
             if(specs_info){
                 // 正常获取
+                product_data_obj.specs_info = specs_info;
                 console.log('规格',specs_info)
             }else{
                 return
             }
 
             // 库存信息
-            var sku_list_obj = await get_sku_list()
+            var sku_list_obj = await get_sku_list();
 
             if(sku_list_obj){
                 // 正常获取
+                product_data_obj.spec_prices_v2 = sku_list_obj;
                 console.log('存库',skumodel.skudatelist)
             }else{
                 return
@@ -1844,6 +1865,7 @@ export default defineComponent({
             // 分类&属性
             var cate_obj = CATE.get_cate()
             if(cate_obj){
+                // 正常获取
                 console.log('类目', cate_obj)
             }else{
                 return
@@ -1854,6 +1876,7 @@ export default defineComponent({
             // 描述详情
             var description_obj = DES.get_img();
             if(description_obj){
+                // 正常获取
                 console.log('描述详情', description_obj)
             }else{
                 return
@@ -1864,7 +1887,7 @@ export default defineComponent({
 
             // 限购
 
-            // 商品上传
+            // 商品信息
             const pro_upload_json = {
 
                 "out_product_id":"19840228",
@@ -1913,6 +1936,17 @@ export default defineComponent({
         const closed = () =>{
 
             props.data.AddDate = !props.data.AddDate;
+
+        }
+
+        // 商品上传请求接口方法
+        const upload_product = (product_data) =>{
+
+            // 发送数据到接口
+
+            // 接口返回成功
+
+            // 接口返回失败
 
         }
 
