@@ -1736,14 +1736,16 @@ export default defineComponent({
             },
             // 获取图片
             get_img:()=>{
-
+                var img_list_res = []
                 // 描述为空
                 if(editorRef.value == undefined){
                     tool.Fun_.message('error', '描述详情不能为空！');
                     activeKey.value = '5';
                     return false
                 }else {
+
                     var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
+
                     if(img_list.length == 0 || editorRef.value == undefined){
                         tool.Fun_.message('error', '描述详情不能为空！');
                         activeKey.value = '5';
@@ -1752,9 +1754,10 @@ export default defineComponent({
                         // 描述不为空
                         // console.log(img_list)
                         img_list.forEach((obj,index)=>{
-                            console.log(obj,index)
+                            img_list_res.push(obj.src)
                         })
-                        return img_list
+
+                        return img_list_res.join('|')
                     }
                 }
             },
@@ -1834,9 +1837,7 @@ export default defineComponent({
                 product_data_obj.mobile = pro_info.mobile;              // 电话
                 product_data_obj.commit = pro_info.commit;              // 提交方式
                 product_data_obj.freight_id = pro_info.freight_id.value;// 运费模板
-                // 尺码模板
-                console.log(product_data_obj)
-
+                product_data_obj.size_info_template_id = pro_info.size_info_template_id.value// 尺码模板
             }else{
                 return
             }
@@ -1845,19 +1846,16 @@ export default defineComponent({
             var specs_info = await SPECS.get_specs_obj()
             if(specs_info){
                 // 正常获取
+                delete specs_info.spec_pic
                 product_data_obj.specs_info = specs_info;
-                console.log('规格',specs_info)
             }else{
                 return
             }
 
             // 库存信息
             var sku_list_obj = await get_sku_list();
-
             if(sku_list_obj){
-                // 正常获取
                 product_data_obj.spec_prices_v2 = sku_list_obj;
-                console.log('存库',skumodel.skudatelist)
             }else{
                 return
             }
@@ -1866,7 +1864,7 @@ export default defineComponent({
             var cate_obj = CATE.get_cate()
             if(cate_obj){
                 // 正常获取
-                console.log('类目', cate_obj)
+                product_data_obj.category_leaf_id = cate_obj.at(-1);
             }else{
                 return
             }
@@ -1877,60 +1875,16 @@ export default defineComponent({
             var description_obj = DES.get_img();
             if(description_obj){
                 // 正常获取
-                console.log('描述详情', description_obj)
+                product_data_obj.description = description_obj
             }else{
                 return
             }
+            
+            console.log(product_data_obj)
+            
+            upload_product(product_data_obj)// 上传商品
 
-            // 仅保存false 保存+提审true
-            var commit = ''
-
-            // 限购
-
-            // 商品信息
-            const pro_upload_json = {
-
-                "out_product_id":"19840228",
-
-                "product_type":0,
-
-                "category_leaf_id":22438,
-
-                "name":"测试玉兔逢春原创冬季",
-
-                "pic":"https://p3-aio.ecombdimg.com/obj/ecom-shop-material/webp_m_cf827a85c74f7e4c0f0096b9ec7e4464_sx_125536_www800-800",
-
-                "description":"https://p3-aio.ecombdimg.com/obj/ecom-shop-material/webp_m_cf827a85c74f7e4c0f0096b9ec7e4464_sx_125536_www800-800",
-
-                "pay_type":0,
-
-                "reduce_type":1,
-                
-                "freight_id":0,
-                
-                "mobile":"13888881818",
-
-                "commit":false,
-
-                "spec_info":{
-                    "spec_values":[
-                    {
-                        "property_name":"颜色",
-                        "values":[{"value_name":"粉色", "remark":"可爱的"}]
-                    }
-                ]},
-
-                "spec_prices_v2":[
-                    {
-                        "sell_properties":[{"property_name":"颜色","value_name":"粉色"}],
-                        "sku_type":0,
-                        "stock_num":99,
-                        "price":10000
-                    }
-                ]
-            }
-
-        };
+        }
 
         // 关闭新建商品按钮
         const closed = () =>{
@@ -1940,9 +1894,14 @@ export default defineComponent({
         }
 
         // 商品上传请求接口方法
-        const upload_product = (product_data) =>{
+        const upload_product = async (product_data) =>{
 
+            console.log(product_data)
+            
             // 发送数据到接口
+            var res = await tool.Http_.post(API.AppSrtoreAPI.dou_product.add, product_data)
+
+            console.log(res)
 
             // 接口返回成功
 

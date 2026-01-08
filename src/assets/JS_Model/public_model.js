@@ -138,6 +138,7 @@ export class A_Patch{
         // 抖音商品
         dou_product:{   
             "list":"api/douyin/product/list",                   // 商品列表
+            "add":"api/douyin/product/add",                     // 商品添加
             "detaile":"api/douyin/product/detaile",             // 商品详情
             "delete":"api/douyin/product/del",                  // 删除商品
             "edit":"api/douyin/product/edit",                   // 编辑商品
