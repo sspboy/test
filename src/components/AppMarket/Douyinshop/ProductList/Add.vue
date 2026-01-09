@@ -1427,7 +1427,29 @@ export default defineComponent({
             // 库存以及初始化
             var res = await skulistRef.value.validate().then(()=>{
 
-                return skumodel.skudatelist
+                var sku_list_res = skumodel.skudatelist;
+                var s_list = []
+                sku_list_res.forEach(obj=>{
+                    var o = {}
+                    var sell_obj = []
+
+                    Object.keys(obj).forEach(key=>{
+                        if(key !== 'stock_num' && key !== 'price' && key !== 'code'){
+                            var s_obj = {}
+                            s_obj.property_name = key;
+                            s_obj.value_name = obj[key]
+                            sell_obj.push(s_obj)
+                        }
+                    })
+
+                    o.sell_properties = sell_obj; //名称对象
+                    o.sku_type = 0;
+                    o.stock_num = obj.stock_num;
+                    o.price = obj.price;
+                    s_list.push(o)
+                })
+
+                return s_list
 
             }).catch(error => {
 
@@ -1847,7 +1869,7 @@ export default defineComponent({
             if(specs_info){
                 // 正常获取
                 delete specs_info.spec_pic
-                product_data_obj.specs_info = specs_info;
+                product_data_obj.spec_info = specs_info;
             }else{
                 return
             }
@@ -1855,7 +1877,9 @@ export default defineComponent({
             // 库存信息
             var sku_list_obj = await get_sku_list();
             if(sku_list_obj){
+
                 product_data_obj.spec_prices_v2 = sku_list_obj;
+            
             }else{
                 return
             }
