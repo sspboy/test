@@ -11,7 +11,6 @@
 
     <a-modal
       v-model:open="props.data.DetaileDate"
-      title="商品详情"
       width="100%"
       wrap-class-name="full-modal"
     >

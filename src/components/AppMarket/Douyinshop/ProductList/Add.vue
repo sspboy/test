@@ -1867,9 +1867,17 @@ export default defineComponent({
             // 验证规格信息
             var specs_info = await SPECS.get_specs_obj()
             if(specs_info){
+
+                // 规格图片
+                if(specs_info.spec_pic !== undefined){
+                    product_data_obj.spec_pic = specs_info.spec_pic;
+                    console.log(product_data_obj)
+                }
+
                 // 正常获取
                 delete specs_info.spec_pic
                 product_data_obj.spec_info = specs_info;
+
             }else{
                 return
             }
@@ -1920,16 +1928,24 @@ export default defineComponent({
         // 商品上传请求接口方法
         const upload_product = async (product_data) =>{
 
-            console.log(product_data)
+            // 按钮状态
+
+            // console.log(product_data)
             
             // 发送数据到接口
             var res = await tool.Http_.post(API.AppSrtoreAPI.dou_product.add, product_data)
 
             console.log(res)
 
-            // 接口返回成功
+            var code = res.data.code;
+            if(code === 10000 ){ // 接口返回成功
+                // 提示上传成功，刷新列表;
+                tool.Fun_.message('success','商品添加成功！')
+            }else{ // 接口返回失败
+                // 提示失败，返回失败原因;
+                tool.Fun_.message('error','商品添加失败！')
 
-            // 接口返回失败
+            }
 
         }
 

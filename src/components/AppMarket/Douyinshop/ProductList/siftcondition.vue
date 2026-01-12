@@ -10,10 +10,10 @@
                 </a-button>
                 <a-button type="primary" class="font_size_12" size="small" ghost>在售商品</a-button>
                 <a-button type="primary" class="font_size_12" size="small" ghost>下架商品</a-button>
+                <a-button type="primary" class="font_size_12" size="small" ghost>草稿箱</a-button>
+
                 <a-button type="primary" class="font_size_12" size="small" @click="handleverify_exist_audit_reject_suggest" ghost>只看驳回商品</a-button>
-
                 <a-button type="primary" class="font_size_12" size="small" ghost>多ID查询</a-button>
-
                 <a-button type="primary" class="font_size_12" size="small" ghost>商家编码查询</a-button>
             </a-space>
 <!--             
