@@ -1594,9 +1594,9 @@ export default defineComponent({
                     // 文本 text
                     if(type == 'text'){
 
-                        CATE.format_formRef[item.property_id] = data
+                        CATE.format_formRef[item.property_id] = [data]
                         // CATE.format_formRef[item.property_id] = {"value":0,"name":result_value,"diy_type":diy_type}
-                        console.log({"value":0,"name":result_value,"diy_type":diy_type})
+                        // console.log({"value":0,"name":result_value,"diy_type":diy_type})
 
                     }else if(type == 'select'){// 单选 select
 
@@ -1608,7 +1608,7 @@ export default defineComponent({
 
                         })
 
-                        CATE.format_formRef[item.property_id] = {"value":data,"name":v_name,"diy_type":diy_type}
+                        CATE.format_formRef[item.property_id] = [{"value":data,"name":v_name,"diy_type":diy_type}]
 
                     }else if(type == 'multi_select' || type == 'multi_value_measure'){ // 多选 'multi_select' & 'multi_value_measure'
 
@@ -1676,14 +1676,17 @@ export default defineComponent({
             get_format: async()=>{
 
                 var res = await CATE.form_ref.value?.validate().then(()=>{
+                    
                     var f_obj = toRaw(CATE.format_formRef)
+                    var f_res_obj = {}
                     Object.keys(f_obj).forEach(key => {
                         if(f_obj[key] != undefined){
-                            console.log( key,':', f_obj[key])
+                            // console.log( key,':', f_obj[key])
+                            f_res_obj[key] = f_obj[key]
                         }
                     }); // 清空
 
-                    return CATE.format_formRef
+                    return f_res_obj
 
                 }).catch(error => {
 
@@ -1892,16 +1895,20 @@ export default defineComponent({
                 return
             }
 
-            // 分类&属性
+            // 分类
             var cate_obj = CATE.get_cate()
             if(cate_obj){
-                // 正常获取
+                // 正常获取分类
                 product_data_obj.category_leaf_id = cate_obj.at(-1);
             }else{
                 return
             }
+            // 属性
+            var format_obj = await CATE.get_format();
+            if(format_obj){
+                product_data_obj.product_format_new = JSON.stringify(format_obj);
+            }
 
-            var format_obj = CATE.get_format();
 
             // 描述详情
             var description_obj = DES.get_img();
@@ -1938,12 +1945,13 @@ export default defineComponent({
             console.log(res)
 
             var code = res.data.code;
+            var sub_msg = res.data.sub_msg
             if(code === 10000 ){ // 接口返回成功
                 // 提示上传成功，刷新列表;
                 tool.Fun_.message('success','商品添加成功！')
             }else{ // 接口返回失败
                 // 提示失败，返回失败原因;
-                tool.Fun_.message('error','商品添加失败！')
+                tool.Fun_.message('error', sub_msg)
 
             }
 
