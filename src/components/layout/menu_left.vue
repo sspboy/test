@@ -122,8 +122,10 @@ export default defineComponent({
       if(field === 'introduction'){
         // 去主页
         router.push('/introduction')
+      }else if(field === 'batchedit'){
+        // 去批量修改
+        router.push('/batchedit')
       }
-
 
     };
 
