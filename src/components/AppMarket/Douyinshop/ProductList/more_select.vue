@@ -1,18 +1,13 @@
 <template>
 
 
-    <a-drawer :width="200" title="更多查询" placement="top" :open="props.data.MoreSelectData" @close="onClose" >
+    <a-drawer :width="600" title="更多查询" placement="right" :open="props.data.MoreSelectData" @close="onClose" >
 
-
-        <!-- <template #extra>
-            <a-button style="margin-right: 8px ;font-size:12px;" size="small" @click="onClose" >取消</a-button>
-            <a-button type="primary" size="small" style="font-size: 12px;" @click="handleOk">查询</a-button>
-        </template> -->
 
         <a-layout-content style="padding: 20px 100px 0 100px;height: 100%;">
 
             <a-row style="height: 80%;">
-                <a-col :span="8">
+                <a-col :span="24">
                     <div style="padding:0 20px;height: 68%;">
                         <a-textarea 
                         v-model:value="List_conditions.product_id" 
@@ -24,7 +19,7 @@
                         />
                     </div>
                 </a-col>
-                <a-col :span="8">
+                <a-col :span="24">
                     <div style="padding:0 20px;height: 68%;">
                         <a-textarea 
                             v-model:value="List_conditions.sku_codes" 
@@ -36,7 +31,7 @@
                         />
                     </div>
                 </a-col>
-                <a-col :span="8">
+                <a-col :span="24">
                     <p>
                         <a-row :gutter="16">
                             <a-col :span="8">

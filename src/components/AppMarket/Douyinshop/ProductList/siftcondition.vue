@@ -1,22 +1,15 @@
 <template>
 
     <!-- 自定义标题 -->
-    <div style="width: 100%;height: 40px;clear: both;" >
+    <div style="width: 1500px;height: 40px;clear: both;" >
 
             <a-space>
-                <a-button type="primary" size="small" style="font-size: 12px;" @click="show_add">
-                    <PlusOutlined />
-                    新建商品
-                </a-button>
-                <a-button type="primary" class="font_size_12" size="small" ghost>在售商品</a-button>
-                <a-button type="primary" class="font_size_12" size="small" ghost>下架商品</a-button>
-                <a-button type="primary" class="font_size_12" size="small" ghost>草稿箱</a-button>
-
+                
                 <a-button type="primary" class="font_size_12" size="small" @click="handleverify_exist_audit_reject_suggest" ghost>只看驳回商品</a-button>
                 <a-button type="primary" class="font_size_12" size="small" ghost>多ID查询</a-button>
                 <a-button type="primary" class="font_size_12" size="small" ghost>商家编码查询</a-button>
             </a-space>
-<!--             
+
             <a-form
                 layout="inline"
                 ref="formRef"
@@ -24,7 +17,12 @@
                 @finish="handleFinish"
                 style="float: left;margin: -4px 0 0 0;"
             >
-
+                <a-form-item>
+                    <a-button type="primary" size="small" style="font-size: 12px;" @click="show_add">
+                    <PlusOutlined />
+                    新建商品
+                </a-button>
+                </a-form-item>
                 <a-form-item name="product_type" style="width: 90px;">
                     <a-select
                         placeholder="商品类型"
@@ -110,12 +108,8 @@
 
 
                 </a-form-item>
-            </a-form> -->
+            </a-form>
     </div>
-
-    <!-- <a-button type="primary" size="small" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost>
-        <EllipsisOutlined />
-    </a-button> -->
         
     <!--条件查询组件 结束 -->
 
