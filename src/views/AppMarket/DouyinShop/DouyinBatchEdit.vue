@@ -16,7 +16,41 @@
 
         <a-layout-content class="content_border">
 
+            <a-divider orientation="left" orientation-margin="0px">基础信息</a-divider>
+
+            <a-row :gutter="[16,24]">
+                <a-col :span="3"><div class="gutter-box cursor">标题关键字</div></a-col>
+                <a-col :span="3"><div class="gutter-box cursor">推荐语</div></a-col>
+                <a-col :span="3"><div class="gutter-box cursor">品牌</div></a-col>
+                <a-col :span="3"><div class="gutter-box cursor">商品属性</div></a-col>
+                <a-col :span="3"><div class="gutter-box cursor">货号</div></a-col>
+                <a-col :span="3"><div class="gutter-box cursor">上架</div></a-col>
+                <a-col :span="3"><div class="gutter-box cursor">下架</div></a-col>
+                <a-col :span="3"><div class="gutter-box cursor">价格库存</div></a-col>
+                <a-col :span="3"><div class="gutter-box cursor">SKU编码</div></a-col>
+                <a-col :span="3"><div class="gutter-box cursor">标题关键字</div></a-col>
+
+            </a-row>
+            <a-divider orientation="left" orientation-margin="0px">基础信息</a-divider>
+
+            <a-row :gutter="[16,24]">
+                <a-col :span="3"><div class="gutter-box">跨类目属性</div></a-col>
+                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
+
+            </a-row>
+            <a-divider orientation="left" orientation-margin="0px">服务与履约</a-divider>
+
+
             <a-row>
+
+                
 
                 <a-col :span="8">
                     <h3 class="title_h">第一步：选择商品</h3>
@@ -528,4 +562,12 @@ export default {
 .bor_l{padding:20px 30px 0 30px;}
 .xiuga{padding: 20px 0 0 0;height: 280px;}
 .font_size_12{font-size: 12px;}
+.gutter-box {
+  background: #ffffff;
+  padding: 18px 8px;
+  border: 1px solid #c9c9c9;
+  border-radius: 6px;
+  text-align: center;
+  color: #0092ff;
+}
 </style>
