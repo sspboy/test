@@ -297,6 +297,182 @@
 
                                 </a-row>
                             </a-form>
+
+
+                        <!--分类开始-->
+                        <a-divider orientation="left" orientation-margin="0px">分类</a-divider>
+                        <p>
+                            <a-cascader
+
+                                style="width:100%"
+                                v-model:value="CATE.cate_name.value"
+                                :options="CATE.options.value"
+                                :load-data="CATE.loadData"
+                                @change="CATE.loadFormat"
+                                :allowClear="false"
+                                placeholder="选择分类"
+                            />
+                        </p>
+
+
+                        <!--属性开始-->
+                        <a-divider orientation="left" orientation-margin="0px">
+                            属性
+                        </a-divider>
+
+                        <a-form :ref="CATE.form_ref" :model="CATE.format_formRef">
+
+                            <a-row v-if="CATE.format.value.length !== 0" loading="true" :gutter="[16,6]">
+
+                                <a-col v-for="item in CATE.format.value" :span="6">
+                                    
+                                    <!--输入文本 required-->
+                                    <div v-if="item.type == 'text'">
+                                        <p>
+                                            {{ item.property_name }}
+                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                        </p>
+                                        <p v-if="item.required == 1">
+                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
+                                                <a-input 
+                                                    placeholder="请输入"
+                                                    autoComplete="off"
+                                                    v-model:value="CATE.format_formRef[item.property_id]"
+                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
+                                                    allow-clear
+                                                />
+                                            </a-form-item>
+                                        </p>
+                                        <p v-else-if="item.required !== 1">
+                                            <a-form-item :name="item.property_id">
+                                            <a-input 
+                                                placeholder="请输入"
+                                                autoComplete="off"
+                                                v-model:value="CATE.format_formRef[item.property_id]"
+                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
+                                                allow-clear
+                                            />
+                                            </a-form-item>
+                                        </p>
+
+                                    </div>
+
+                                    <!--单选-->
+                                    <div v-if="item.type == 'select'">
+                                        <p>
+                                            {{ item.property_name }}
+                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                        </p>
+
+                                        <p v-if="item.required ==1">
+                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
+                                                <a-select
+                                                    ref="select"
+                                                    v-model:value="CATE.format_formRef[item.property_id]"
+                                                    placeholder="请选择"
+                                                    allow-clear
+                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
+                                                    style="width: 120px;width: 100%;"
+                                                >
+                                                    <a-select-option v-for="opt in item.options" :value="opt.value_id" >
+                                                        {{ opt.name }}
+                                                    </a-select-option>
+                                                </a-select>
+                                            </a-form-item>
+                                        </p>
+
+                                        <p v-else-if="item.required !==1">
+                                            <a-form-item :name="item.property_id">
+                                                <a-select
+                                                    ref="select"
+                                                    v-model:value="CATE.format_formRef[item.property_id]"
+                                                    placeholder="请选择"
+                                                    allow-clear
+                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
+                                                    style="width: 120px;width: 100%;"
+                                                >
+                                                    <a-select-option v-for="opt in item.options" :value="opt.value_id" >
+                                                        {{ opt.name }}
+                                                    </a-select-option>
+                                                </a-select>
+                                            </a-form-item>
+                                        </p>
+                                    </div>
+
+                                    <!--多选-->
+                                    <div v-if="item.type == 'multi_select' || item.type == 'multi_value_measure'">
+                                        <p>
+                                            {{ item.property_name }}
+                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                        </p>
+                                        <p v-if="item.required == 1">
+
+                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
+
+                                            <a-select
+                                                ref="select"
+                                                v-model:value="CATE.format_formRef[item.property_id]"
+                                                placeholder="请选择"
+                                                mode="multiple"
+                                                :maxTagCount="1"
+                                                allow-clear
+                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
+                                                style="width: 120px;width: 100%;"
+                                            >
+                                                <a-select-option v-for="opt in item.options" :value="opt.value_id" :disabled="opt.disabled">
+                                                    {{ opt.name }}
+                                                </a-select-option>
+
+                                            </a-select>
+                                        </a-form-item>
+                                        </p>
+                                        <p v-if="item.required !==1">
+                                            <a-form-item :name="item.property_id">
+                                            <a-select
+                                                ref="select"
+                                                v-model:value="CATE.format_formRef[item.property_id]"
+                                                placeholder="请选择"
+                                                mode="multiple"
+                                                :maxTagCount="1"
+                                                allow-clear
+                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
+                                                style="width: 120px;width: 100%;"
+                                            >
+                                                <a-select-option v-for="opt in item.options" :value="opt.value_id" :disabled="opt.disabled">
+                                                    {{ opt.name }}
+                                                </a-select-option>
+                                            </a-select>
+                                            </a-form-item>
+                                        </p>
+                                    </div>
+
+                                    <!--时间戳-->
+                                    <div v-if="item.type == 'timestamp'">
+                                        <p>
+                                            {{ item.property_name }}
+                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                        </p>
+                                    </div>
+
+                                    <!--时间段-->
+                                    <div v-if="item.type == 'timerange'">
+                                        <p>
+                                            {{ item.property_name }}
+                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
+                                        </p>
+                                    </div>
+                                </a-col>
+                                
+                            </a-row>
+
+                            <p v-if="CATE.format.value.length == 0">
+                                <a-empty :image="simpleImage" />
+                            </p>
+
+                        </a-form>
+
+
+
                         </div>
                     </a-tab-pane>
 
@@ -492,179 +668,6 @@
                             </a-table>
                         </a-form>
                         <!--库存结束-->
-
-                    </a-tab-pane>
-
-                    <a-tab-pane key="4" tab="分类属性">
-                        
-                        <a-divider orientation="left" orientation-margin="0px">分类</a-divider>
-                        <p>
-                            <a-cascader
-
-                                style="width:100%"
-                                v-model:value="CATE.cate_name.value"
-                                :options="CATE.options.value"
-                                :load-data="CATE.loadData"
-                                @change="CATE.loadFormat"
-                                :allowClear="false"
-                                placeholder="选择分类"
-                            />
-                        </p>
-
-                        <a-divider orientation="left" orientation-margin="0px">
-                            属性
-                        </a-divider>
-
-                        <a-form :ref="CATE.form_ref" :model="CATE.format_formRef">
-
-                            <a-row v-if="CATE.format.value.length !== 0" loading="true" :gutter="[16,6]">
-
-                                <a-col v-for="item in CATE.format.value" :span="6">
-                                    
-                                    <!--输入文本 required-->
-                                    <div v-if="item.type == 'text'">
-                                        <p>
-                                            {{ item.property_name }}
-                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
-                                        </p>
-                                        <p v-if="item.required == 1">
-                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
-                                                <a-input 
-                                                    placeholder="请输入"
-                                                    autoComplete="off"
-                                                    v-model:value="CATE.format_formRef[item.property_id]"
-                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
-                                                    allow-clear
-                                                />
-                                            </a-form-item>
-                                        </p>
-                                        <p v-else-if="item.required !== 1">
-                                            <a-form-item :name="item.property_id">
-                                            <a-input 
-                                                placeholder="请输入"
-                                                autoComplete="off"
-                                                v-model:value="CATE.format_formRef[item.property_id]"
-                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
-                                                allow-clear
-                                            />
-                                            </a-form-item>
-                                        </p>
-
-                                    </div>
-
-                                    <!--单选-->
-                                    <div v-if="item.type == 'select'">
-                                        <p>
-                                            {{ item.property_name }}
-                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
-                                        </p>
-
-                                        <p v-if="item.required ==1">
-                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
-                                                <a-select
-                                                    ref="select"
-                                                    v-model:value="CATE.format_formRef[item.property_id]"
-                                                    placeholder="请选择"
-                                                    allow-clear
-                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
-                                                    style="width: 120px;width: 100%;"
-                                                >
-                                                    <a-select-option v-for="opt in item.options" :value="opt.value_id" >
-                                                        {{ opt.name }}
-                                                    </a-select-option>
-                                                </a-select>
-                                            </a-form-item>
-                                        </p>
-
-                                        <p v-else-if="item.required !==1">
-                                            <a-form-item :name="item.property_id">
-                                                <a-select
-                                                    ref="select"
-                                                    v-model:value="CATE.format_formRef[item.property_id]"
-                                                    placeholder="请选择"
-                                                    allow-clear
-                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
-                                                    style="width: 120px;width: 100%;"
-                                                >
-                                                    <a-select-option v-for="opt in item.options" :value="opt.value_id" >
-                                                        {{ opt.name }}
-                                                    </a-select-option>
-                                                </a-select>
-                                            </a-form-item>
-                                        </p>
-                                    </div>
-
-                                    <!--多选-->
-                                    <div v-if="item.type == 'multi_select' || item.type == 'multi_value_measure'">
-                                        <p>
-                                            {{ item.property_name }}
-                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
-                                        </p>
-                                        <p v-if="item.required == 1">
-
-                                            <a-form-item :name="item.property_id" :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]">
-
-                                            <a-select
-                                                ref="select"
-                                                v-model:value="CATE.format_formRef[item.property_id]"
-                                                placeholder="请选择"
-                                                mode="multiple"
-                                                :maxTagCount="1"
-                                                allow-clear
-                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
-                                                style="width: 120px;width: 100%;"
-                                            >
-                                                <a-select-option v-for="opt in item.options" :value="opt.value_id" :disabled="opt.disabled">
-                                                    {{ opt.name }}
-                                                </a-select-option>
-
-                                            </a-select>
-                                        </a-form-item>
-                                        </p>
-                                        <p v-if="item.required !==1">
-                                            <a-form-item :name="item.property_id">
-                                            <a-select
-                                                ref="select"
-                                                v-model:value="CATE.format_formRef[item.property_id]"
-                                                placeholder="请选择"
-                                                mode="multiple"
-                                                :maxTagCount="1"
-                                                allow-clear
-                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
-                                                style="width: 120px;width: 100%;"
-                                            >
-                                                <a-select-option v-for="opt in item.options" :value="opt.value_id" :disabled="opt.disabled">
-                                                    {{ opt.name }}
-                                                </a-select-option>
-                                            </a-select>
-                                            </a-form-item>
-                                        </p>
-                                    </div>
-
-                                    <!--时间戳-->
-                                    <div v-if="item.type == 'timestamp'">
-                                        <p>
-                                            {{ item.property_name }}
-                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
-                                        </p>
-                                    </div>
-
-                                    <!--时间段-->
-                                    <div v-if="item.type == 'timerange'">
-                                        <p>
-                                            {{ item.property_name }}
-                                            <span v-if="item.required ==1" style="color: red;">--必填</span>
-                                        </p>
-                                    </div>
-                                </a-col>
-                                
-                            </a-row>
-
-                            <p v-if="CATE.format.value.length == 0">
-                                <a-empty :image="simpleImage" />
-                            </p>
-
-                        </a-form>
 
                     </a-tab-pane>
 
@@ -1668,7 +1671,7 @@ export default defineComponent({
                     return cate_values
                 }else{ // 分类为空
                     tool.Fun_.message('error', '商品分类不能为空！');
-                    activeKey.value = '4';
+                    activeKey.value = '1';
                     return false
                 }
             },
@@ -1692,7 +1695,7 @@ export default defineComponent({
 
                     tool.Fun_.message('error',error.errorFields[0].errors[0]);
 
-                    activeKey.value = '4';
+                    activeKey.value = '1';
 
                     return false
                 })
@@ -1759,7 +1762,7 @@ export default defineComponent({
                 }
                 DES.valueHtml.value = DES.valueHtml.value + image_text + '</p>'
             },
-            // 获取图片
+            // 获取描述图片
             get_img:()=>{
                 var img_list_res = []
                 // 描述为空
@@ -1867,6 +1870,22 @@ export default defineComponent({
                 return
             }
             
+            // 分类
+            var cate_obj = CATE.get_cate()
+            if(cate_obj){
+                // 正常获取分类
+                product_data_obj.category_leaf_id = cate_obj.at(-1);
+            }else{
+                return
+            }
+            // 属性
+            var format_obj = await CATE.get_format();
+            if(format_obj){
+                product_data_obj.product_format_new = JSON.stringify(format_obj);
+            }
+
+
+
             // 验证规格信息
             var specs_info = await SPECS.get_specs_obj()
             if(specs_info){
@@ -1895,19 +1914,7 @@ export default defineComponent({
                 return
             }
 
-            // 分类
-            var cate_obj = CATE.get_cate()
-            if(cate_obj){
-                // 正常获取分类
-                product_data_obj.category_leaf_id = cate_obj.at(-1);
-            }else{
-                return
-            }
-            // 属性
-            var format_obj = await CATE.get_format();
-            if(format_obj){
-                product_data_obj.product_format_new = JSON.stringify(format_obj);
-            }
+
 
 
             // 描述详情

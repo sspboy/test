@@ -4,7 +4,6 @@
     <div style="width: 1500px;height: 40px;clear: both;" >
 
             <a-space>
-                
                 <a-button type="primary" class="font_size_12" size="small" @click="handleverify_exist_audit_reject_suggest" ghost>只看驳回商品</a-button>
                 <a-button type="primary" class="font_size_12" size="small" ghost>多ID查询</a-button>
                 <a-button type="primary" class="font_size_12" size="small" ghost>商家编码查询</a-button>
@@ -13,6 +12,7 @@
             <a-form
                 layout="inline"
                 ref="formRef"
+                autocomplete="off"
                 :model="props.data.List_conditions"
                 @finish="handleFinish"
                 style="float: left;margin: -4px 0 0 0;"
@@ -22,6 +22,9 @@
                     <PlusOutlined />
                     新建商品
                 </a-button>
+                </a-form-item>
+                <a-form-item>
+                    <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>全部商品</a-button>
                 </a-form-item>
                 <a-form-item name="product_type" style="width: 90px;">
                     <a-select
@@ -102,8 +105,8 @@
                 <a-form-item>
                     <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
                     <EllipsisOutlined />
+                    更多查询
                     </a-button>
-                    <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>重置</a-button>
                     <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
 
 

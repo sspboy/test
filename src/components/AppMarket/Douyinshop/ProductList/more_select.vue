@@ -36,13 +36,13 @@
                         <a-row :gutter="16">
                             <a-col :span="8">
                                 <a-select
-                                placeholder="商品类型"
-                                ref="select"
-                                v-model:value="List_conditions.product_type"
-                                :options="List_conditions.product_type_op"
-                                size="small"
-                                style="width:100%"
-                                allowClear 
+                                    placeholder="商品类型"
+                                    ref="select"
+                                    v-model:value="List_conditions.product_type"
+                                    :options="List_conditions.product_type_op"
+                                    size="small"
+                                    style="width:100%"
+                                    allowClear 
                                 >
                                 <a-select-option value="0">普通商品</a-select-option>
                                 <a-select-option value="1">新客商品</a-select-option>

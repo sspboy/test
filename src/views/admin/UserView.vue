@@ -40,8 +40,23 @@
                 </a-button>
               </a-col>
               <a-col :span="12" :order="2">
-                <a-input placeholder="输入用户id查询" size="small" style="font-size:12px;width: 140px;margin: 0 10px 0 0;padding: 2px;" v-model:value="serch_id"></a-input>
-                <a-button type="primary" size="small" style="font-size:12px;" @click="Select_user">查询</a-button>
+                <a-form
+                  layout="inline"
+                  :model="select_form_State"
+                  @finish="Select_user"
+                  @finishFailed="handleFinishFailed"
+                >
+                  <a-form-item>
+                    <a-input placeholder="用户id查询" v-model:value="select_form_State.id" style="font-size:12px;"/>
+                  </a-form-item>
+                  <a-form-item>
+                    <a-input placeholder="用户昵称" v-model:value="select_form_State.nickname" style="font-size:12px;"/>
+                  </a-form-item>
+                  <a-form-item>                
+                    <a-button type="primary" size="small" style="font-size:12px;" html-type="submit">查询</a-button>
+                  </a-form-item>
+                </a-form>
+
               </a-col>
               <a-col :span="6" :order="3"></a-col>
             </a-row>
@@ -248,16 +263,19 @@ export default {
       TO.message.url = API.AdminAPI.user.list
 
       TO.actions.list(message,(res)=>{
-
-        TO.user.add_colum(res)        // 添加表头
-
         // 页面赋值
         // console.log(res)
+        TO.user.add_colum(res)        // 添加表头
         PAGEDATA.colum = res.colum
-        PAGEDATA.datalist = res.data
+        if(res.data !== "None"){
+          PAGEDATA.datalist = res.data
+        } else{
+          PAGEDATA.datalist = []
+        }
         PAGEDATA.total_number =res.total_number
-
         loading.value = false // loading 状态关闭
+        
+
 
       })
     }
@@ -302,39 +320,69 @@ export default {
       DELDATA.open = true;
     }
 
-    // id搜索用户信息
-    const serch_id = ref(undefined)
+    // 搜索用户信息
+    const select_form_State = reactive({
+      id: undefined, // 用户id
+      nickname: undefined,// 昵称
+    });
 
-    const Select_user=()=>{
-      
-      var s_value = serch_id.value
-      
-      if(s_value !== undefined && s_value !== ''){
-        
-        loading.value = true    // 开启loading状态
-
-        let message = {}
-
-        message.page = TO.message.page;
-        message.page_size = TO.message.page_size;
-        // 刷新页面查询条件
-        message.condition = [{
+    // 转义条件方法
+    const condition_fun=(formdata)=>{
+      var res = {
           type:"where",
-          condition:[{'column_name':'id','value': s_value, 'operator':'='}]
-        },
-        {
-            type: "orderby",
-            condition: [{'column_name': 'create_time', 'value': 'DESC',}]
-          }]
-
-        // 请求列表
-        Get_list(message)
-
-      }else{
-        // 输入值不对
+          condition:[]
       }
+      Object.keys(formdata).forEach(key=>{
+        console.log(formdata[key])
+        var value = formdata[key];
+        if(value !== undefined && value !== ''){
+          res.condition.push({'column_name':key,'value':value,'operator':'='})
+        }
+      })
+      if(res.condition.length > 0){
+        return res;
+      } else{
+        return false
+      }
+      
     }
 
+    // 查询方法
+    const Select_user=values=>{
+      
+      console.log(values, select_form_State);
+      
+      var s_value = condition_fun(select_form_State)
+
+      loading.value = true    // 开启loading状态
+
+      let message = {}
+
+      message.page = TO.message.page;
+
+      message.page_size = TO.message.page_size;
+
+      // 刷新页面查询条件
+      message.condition = [
+        {
+          type: "orderby",
+          condition: [{'column_name': 'create_time', 'value': 'DESC',}]
+        }
+      ]
+
+      if(s_value){
+        message.condition.push(s_value)
+      }
+
+      // 请求列表
+      Get_list(message)
+
+    }
+
+    // 查询报错
+    const handleFinishFailed = errors => {
+      console.log(errors);
+    };
 
     return {
       store,
@@ -349,7 +397,8 @@ export default {
       Del_Fun,
       receive,
       Select_user,
-      serch_id
+      select_form_State,
+      handleFinishFailed
     };
 
 

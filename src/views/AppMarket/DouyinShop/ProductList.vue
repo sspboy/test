@@ -29,18 +29,15 @@
       <a-layout-content class="content_border">
   
         <!--条件查询组件 开始 -->
-
         <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
-
         <!--条件查询组件 结束 -->
 
 
         <!--列表组件 开始 -->
-        <a-flex :style="{height:PAGEDATA.innerHeight + 'px'}" class="FlexBox" :justify="PAGEDATA.justify" :align="PAGEDATA.align">
         
-          <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
-
+          <div :style="{height:PAGEDATA.innerHeight + 'px','overflow-y':'auto','overflow-x':'hidden'}">
           <!--列表 浏览方式 -->
+          <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
           <a-list
             :data-source="PAGEDATA.datalist" 
             :loading="PAGEDATA.loading" 
@@ -48,152 +45,151 @@
             size="default"
             :split="true">            
 
-            <template #renderItem="{ item }">
+              <template #renderItem="{ item }">
 
-              <a-list-item style="padding:0px 0 14px 0;">
-                  <a-list-item-meta>
-                    <template #avatar>
-                      <div class="cursor ListImg">
-                        <a-image 
-                        :src="item.img"
-                        alt="" 
-                        style="width: 100%;height: 100%;border-radius: 5px;" />
-                      </div>
-                    </template>
+                <a-list-item style="padding:10px 0 14px 0;">
+                    <a-list-item-meta>
+                      <template #avatar>
+                        <div class="cursor ListImg">
+                          <a-image 
+                          :src="item.img"
+                          alt="" 
+                          style="width: 100%;height: 100%;border-radius: 5px;" />
+                        </div>
+                      </template>
 
-                    <template #title>
-                      <a-row>
-                        <a-col :span="18">
-                          <div class="title_div_box">
-                                <a-checkbox :value="item.product_id"></a-checkbox>
-                                <a href="#" style="color:black;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
-                          </div>
-
-                          <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
-                            <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
-                              <a-tooltip placement="top">
-                                <template #title>
-                                  <span class="font_size_12">{{ item.product_id }}</span>
-                                </template>
-
-                                商品ID- <CopyOutlined />
-
-
-                              </a-tooltip>
+                      <template #title>
+                        <a-row>
+                          <a-col :span="18">
+                            <div class="title_div_box">
+                                  <a-checkbox :value="item.product_id"></a-checkbox>
+                                  <a href="#" style="color:black;margin: 0 0 0 10px;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
                             </div>
 
-                            <div class="title_text_span">
-                              {{ Profun.Field_translation.product_type_info(item.product_type) }}
-                            </div>
+                            <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
+                              <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
+                                <a-tooltip placement="top">
+                                  <template #title>
+                                    <span class="font_size_12">{{ item.product_id }}</span>
+                                  </template>
 
-                            <div class="title_text_span">
-                              <span class="left_box status_0" v-if="item.status == 0"></span>
-                              <span class="left_box status_1" v-if="item.status == 1"></span>
-                              <span class="left_box status_2" v-if="item.status == 2"></span>
-
-                              {{ Profun.Field_translation.product_status(item.status) }}
-                            </div>
-                            
-                            <div class="title_text_span">
-                              <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
-                              <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
-                              <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
-                              <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
-                              <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
-                              <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
-
-                              {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
-
-                                  <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
-
-                                    <a-tooltip placement="top">
-
-                                          <template  #title>
-                                            
-                                            <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
-                                              驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
-                                            </div>
-
-                                          </template>
-
-                                          <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
-
-                                        </a-tooltip>
-                                  </span>
-                                  <span class="font_size_12" v-else>
-                                  </span>
+                                  商品ID- <CopyOutlined />
 
 
-                            </div>
-                            <div class="title_text_span cursor">
-                              <a-tooltip placement="top">
-                                <template  #title>
-                                  <span class="font_size_12">
-                                    {{ Profun.Field_translation.product_cate_name_info(item.category_detail).full_cate }}
-                                  </span>
-                                </template>
-                                {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
-                              </a-tooltip>
-                            </div>
-                            <div class="title_text_span">销量{{ item.sell_num }}</div>
+                                </a-tooltip>
+                              </div>
 
-                          </a-space>
+                              <div class="title_text_span">
+                                {{ Profun.Field_translation.product_type_info(item.product_type) }}
+                              </div>
 
-                          <div>
-                          <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
-                                  <div class="font_size_12" v-if="item.need_check_out">
-                                    <CloseSquareOutlined style="color:#eb2f96;" />  需要核销 
-                                  </div>
-                                  <div class="font_size_12" v-else>
-                                    <CheckSquareOutlined style="color:#52c41a;" /> 无需核销
-                                  </div>
-                                  <div class="font_size_12" v-if="item.can_combine"> 
-                                    <CheckSquareOutlined style="color:#52c41a;" /> 可以搭配 
-                                  </div>
-                                  <div class="font_size_12 cursor" v-else> 
+                              <div class="title_text_span">
+                                <span class="left_box status_0" v-if="item.status == 0"></span>
+                                <span class="left_box status_1" v-if="item.status == 1"></span>
+                                <span class="left_box status_2" v-if="item.status == 2"></span>
+
+                                {{ Profun.Field_translation.product_status(item.status) }}
+                              </div>
+                              
+                              <div class="title_text_span">
+                                <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
+                                <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
+                                <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
+                                <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
+                                <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
+                                <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
+
+                                {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
+
+                                    <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
+
                                       <a-tooltip placement="top">
-                                          <template  #title>
-                                            <span class="font_size_12">
-                                              {{ item.can_not_combine_reason }}
-                                            </span>
-                                          </template>
-                                          <CloseSquareOutlined style="color:#eb2f96;" /> 不可搭配 
-                                        </a-tooltip>
-                                  </div>
-                                  <div class="list_span_one">
-                                    <a-space>
-                                    <span class="font_size_12">
-                                      创建时间：{{ moment.unix(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}
+
+                                            <template  #title>
+                                              
+                                              <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
+                                                驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
+                                              </div>
+
+                                            </template>
+
+                                            <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
+
+                                          </a-tooltip>
                                     </span>
-                                    <span class="font_size_12">
-                                      更新时间：{{ moment.unix(item.update_time).format('YYYY-MM-DD HH:mm:ss') }}
+                                    <span class="font_size_12" v-else>
                                     </span>
-                                    </a-space>
-                                  </div>
-                          </a-space>
-                          </div>
-                        </a-col>
-                      </a-row>
+
+
+                              </div>
+                              <div class="title_text_span cursor">
+                                <a-tooltip placement="top">
+                                  <template  #title>
+                                    <span class="font_size_12">
+                                      {{ Profun.Field_translation.product_cate_name_info(item.category_detail).full_cate }}
+                                    </span>
+                                  </template>
+                                  {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
+                                </a-tooltip>
+                              </div>
+                              <div class="title_text_span">销量{{ item.sell_num }}</div>
+
+                            </a-space>
+
+                            <div>
+                            <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
+                                    <div class="font_size_12" v-if="item.need_check_out">
+                                      <CloseSquareOutlined style="color:#eb2f96;" />  需要核销 
+                                    </div>
+                                    <div class="font_size_12" v-else>
+                                      <CheckSquareOutlined style="color:#52c41a;" /> 无需核销
+                                    </div>
+                                    <div class="font_size_12" v-if="item.can_combine"> 
+                                      <CheckSquareOutlined style="color:#52c41a;" /> 可以搭配 
+                                    </div>
+                                    <div class="font_size_12 cursor" v-else> 
+                                        <a-tooltip placement="top">
+                                            <template  #title>
+                                              <span class="font_size_12">
+                                                {{ item.can_not_combine_reason }}
+                                              </span>
+                                            </template>
+                                            <CloseSquareOutlined style="color:#eb2f96;" /> 不可搭配 
+                                          </a-tooltip>
+                                    </div>
+                                    <div class="list_span_one">
+                                      <a-space>
+                                      <span class="font_size_12">
+                                        创建时间：{{ moment.unix(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}
+                                      </span>
+                                      <span class="font_size_12">
+                                        更新时间：{{ moment.unix(item.update_time).format('YYYY-MM-DD HH:mm:ss') }}
+                                      </span>
+                                      </a-space>
+                                    </div>
+                            </a-space>
+                            </div>
+                          </a-col>
+                        </a-row>
+
+                      </template>
+
+                    </a-list-item-meta>
+
+                    <template #actions>
+                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看</a>
+                        <a class="font_size_12" @click="showEdit(item.product_id)"><edit-outlined /> 编辑</a>
+                        <a style="margin:0 30px 0 0;" class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除</a>
 
                     </template>
 
-                  </a-list-item-meta>
+                </a-list-item>
 
-                  <template #actions>
-                      <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看</a>
-                      <a class="font_size_12" @click="showEdit(item.product_id)"><edit-outlined /> 编辑</a>
-                      <a style="margin:0 30px 0 0;" class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除</a>
-
-                  </template>
-
-              </a-list-item>
-
-            </template>
+              </template>
 
           </a-list>
           </a-checkbox-group>
-
-        </a-flex>
+          </div>
         <!--列表组件 结束 -->
 
 
@@ -680,7 +676,7 @@ export default {
 .title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}
 .list_span_one{height: 24px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 28px;padding: 8px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
-.FlexBox{overflow:auto; transition:height 0s ease;margin:0;}
+.FlexBox{overflow:auto; transition:height 0s ease;margin:0;padding:200px 0 0 0;}
 
 
 .left_box{border-radius: 4px;display: block;width: 8px;height: 8px;float: left;margin: 6px 4px 0 0;}

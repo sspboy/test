@@ -178,6 +178,7 @@ export default {
     const tool = new TOOL.TOOL()            // 工具方法
     const API = new utils.A_Patch()         // 请求接口地址合集
     // 组件挂之后---请求数据===============================开始
+
     // 定义一个函数来处理窗口大小变化 ==
     const handleResize = () => {
       PAGEDATA.innerHeight = window.innerHeight - 180; // 作为表格自适应高度
@@ -255,10 +256,8 @@ export default {
           PAGEDATA.total_number = 0
 
         }else{
-
             setTimeout(() => {
                 PAGEDATA.loading = false;
-
                 PAGEDATA.justify = 'start';
                 PAGEDATA.align = 'start';
                 // 请求数据不为空
