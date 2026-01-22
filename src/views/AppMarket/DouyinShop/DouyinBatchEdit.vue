@@ -14,38 +14,51 @@
         </a-layout-sider>
         <!--左侧 菜单组件  结束-->
 
+      <!-- 组织架构 开始 -->
+      <a-layout-sider style="background-color: #001529;height: 100%;padding: 6px 4px 0 0;">
+
+        <div class="box-left">
+
+            <a-divider orientation="center">基础信息</a-divider>
+
+            <a-row :gutter="[6,6]" justify="space-around">
+                <a-col :span="12"><div class="gutter-box cursor">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor">推荐语</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor">品牌</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor">商品属性</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor">货号</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor">上架</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor">下架</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor">价格库存</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor">SKU编码</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor">标题关键字</div></a-col>
+            </a-row>
+
+            <a-divider orientation="center">其他信息</a-divider>
+
+            <a-row :gutter="[6,6]">
+                <a-col :span="12"><div class="gutter-box">跨类目属性</div></a-col>
+                <a-col :span="12"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box">标题关键字</div></a-col>
+
+            </a-row>
+            <a-divider orientation="center" >服务与履约</a-divider>
+        </div>
+
+      </a-layout-sider>
+      <!-- 组织架构 结束 -->
+
+
         <a-layout-content class="content_border">
 
-            <a-divider orientation="left" orientation-margin="0px">基础信息</a-divider>
 
-            <a-row :gutter="[16,24]">
-                <a-col :span="3"><div class="gutter-box cursor">标题关键字</div></a-col>
-                <a-col :span="3"><div class="gutter-box cursor">推荐语</div></a-col>
-                <a-col :span="3"><div class="gutter-box cursor">品牌</div></a-col>
-                <a-col :span="3"><div class="gutter-box cursor">商品属性</div></a-col>
-                <a-col :span="3"><div class="gutter-box cursor">货号</div></a-col>
-                <a-col :span="3"><div class="gutter-box cursor">上架</div></a-col>
-                <a-col :span="3"><div class="gutter-box cursor">下架</div></a-col>
-                <a-col :span="3"><div class="gutter-box cursor">价格库存</div></a-col>
-                <a-col :span="3"><div class="gutter-box cursor">SKU编码</div></a-col>
-                <a-col :span="3"><div class="gutter-box cursor">标题关键字</div></a-col>
 
-            </a-row>
-            <a-divider orientation="left" orientation-margin="0px">基础信息</a-divider>
-
-            <a-row :gutter="[16,24]">
-                <a-col :span="3"><div class="gutter-box">跨类目属性</div></a-col>
-                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
-                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
-                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
-                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
-                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
-                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
-                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
-                <a-col :span="3"><div class="gutter-box">标题关键字</div></a-col>
-
-            </a-row>
-            <a-divider orientation="left" orientation-margin="0px">服务与履约</a-divider>
 
 
             <a-row>
@@ -550,8 +563,6 @@ export default {
       list,
       onLoadMore,
 
-
-
     }
     }
 }
@@ -564,10 +575,11 @@ export default {
 .font_size_12{font-size: 12px;}
 .gutter-box {
   background: #ffffff;
-  padding: 18px 8px;
+  padding: 12px 8px;
   border: 1px solid #c9c9c9;
-  border-radius: 6px;
+  border-radius: 4px;
   text-align: center;
   color: #0092ff;
 }
+.box-left{background-color: white;height: 100%;overflow-x:scroll;width: 100%;white-space:nowrap;border-top-left-radius: 5px;border-top-right-radius: 5px;padding: 0 6px;}
 </style>
