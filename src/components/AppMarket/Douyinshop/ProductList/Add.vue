@@ -27,11 +27,11 @@
                         <a-row>
 
                             <!----主图--pic-->
-                            <a-col :span="16">
+                            <a-col :span="24">
 
-                                <a-divider orientation="left" orientation-margin="0px">主图</a-divider>
+                                <!-- <a-divider orientation="left" orientation-margin="0px">主图</a-divider> -->
 
-                                <div style="width: 100%; height: 120px;">
+                                <div style="width: 100%; height: 120px;margin-top: 20px;">
 
                                     <p class="img_pic" v-for="(item,index) in Pic_Fun.PicList.value">
 
@@ -53,115 +53,13 @@
                                         class="cursor Add_img"
                                         v-if="Pic_Fun.PicList.value.length < 5"
                                         >
-                                        <a-flex justify="center" align="center" style="height: 100%;">
-                                            <PlusOutlined />
+                                        <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                                            +主图
                                         </a-flex>
                                     </p>
 
                                 </div>
 
-                            </a-col>
-                            
-                            <!--白底图 -- white_back_ground_pic_url -->
-                            <a-col :span="8">
-                                <a-divider orientation="left" orientation-margin="0px">白底图</a-divider>
-                                
-                                <div style="width: 100%;height:120px;">
-
-                                    <p class="img_pic" v-for="item in whiteimg_Fun.PicList.value">
-
-                                        <a-image :src="item.byte_url" />
-
-                                        <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="whiteimg_Fun.del"> 
-                                                <DeleteOutlined />
-                                            </a-button>
-                                        </span>
-                                    </p>
-
-                                    <!--添加按钮-->
-                                    <p 
-                                        @click="PAGEDATA.change_material_type('white_img')" 
-                                        class="cursor Add_img"
-                                        v-if="whiteimg_Fun.PicList.value < 1"
-                                    >
-                                        <a-flex justify="center" align="center" style="height: 100%;">
-                                            <PlusOutlined />
-                                        </a-flex>
-                                    </p>
-
-                                </div>
-                            </a-col>
-
-                        </a-row>
-                        
-                        <a-row>
-
-                            <!--3比4长图 -- long_pic_url -->
-                            <a-col :span="16">
-                                <a-divider 
-                                    orientation="left" 
-                                    orientation-margin="0px"
-                                >
-                                    3:4长图 
-                                </a-divider>
-
-                                <div style="width: 100%;height: 160px;">
-
-                                    <p class="img_3_4_pic" v-for="(item,index) in Longimg_Fun.PicList.value">
-                                        
-                                        <a-image :height="110" :src="item.byte_url" />
-
-                                        <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="Longimg_Fun.del(index)"> 
-                                                <DeleteOutlined />
-                                            </a-button>
-                                        </span>
-                                    </p>
-
-
-                                    <!--添加按钮-->
-                                    <p 
-                                        @click="PAGEDATA.change_material_type('long_img_List')" 
-                                        class="cursor Add_3_4_img"
-                                        v-if="Longimg_Fun.PicList.value.length < 5"
-                                    >
-                                        <a-flex justify="center" align="center" style="height: 100%;">
-                                            <PlusOutlined />
-                                        </a-flex>
-                                    </p>
-
-                                </div>
-
-                            </a-col>
-
-                            <!--视频 -- material_video_id -->
-                            <a-col :span="8">
-
-                                <a-divider orientation="left" orientation-margin="0px">视频</a-divider>
-
-                                <div style="width: 100%;height:120px;">
-
-                                    <p class="img_3_4_pic" v-for="item in video_Fun.PicList.value">
-                                        <a-image :height="110" :src="item.video_info.video_cover_url" />
-                                        <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                                            <a-button type="text" size="small" @click="video_Fun.del"> 
-                                                <DeleteOutlined />
-                                            </a-button>
-                                        </span>
-                                    </p>
-
-                                    <!--添加按钮-->
-                                    <p 
-                                        @click="PAGEDATA.change_material_type('video_info')" 
-                                        class="cursor Add_3_4_img"
-                                        v-if="video_Fun.PicList.value.length < 1"
-                                    >
-                                        <a-flex justify="center" align="center" style="height: 100%;">
-                                            <PlusOutlined />
-                                        </a-flex>
-                                    </p>
-                                </div>
                             </a-col>
 
                         </a-row>
@@ -171,7 +69,7 @@
                             orientation="left" 
                             orientation-margin="0px"
                         >
-                            基础信息
+                            必填信息
                         </a-divider>
 
                         <div style="width: 100%;">
@@ -205,26 +103,6 @@
                                     </a-col>
 
                                     <a-col :span="8">
-                                        <a-form-item
-                                            label="推荐语"
-                                            name="recommend_remark"
-                                        >
-                                            <a-input v-model:value="formState.recommend_remark" 
-                                            autoComplete="off" 
-                                            show-count :maxlength="30" 
-                                            placeholder="输入商品推荐语"
-                                            />
-                                        </a-form-item>
-                                    </a-col>
-                                    <a-col :span="8">
-                                        <a-form-item
-                                            label="商家备注"
-                                            name="remark"
-                                        >
-                                            <a-input v-model:value="formState.remark" autoComplete="off" placeholder="商家可见备注"  show-count :maxlength="30" />
-                                        </a-form-item>
-                                    </a-col>
-                                    <a-col :span="8">
                                         <a-form-item 
                                             label="支付方式" 
                                             name="pay_type"
@@ -239,7 +117,7 @@
                                     
                                     <a-col :span="8">
                                         <a-form-item 
-                                            label="减库存类型" 
+                                            label="库存类型" 
                                             name="reduce_type"
                                         >
                                             <a-select v-model:value="formState.reduce_type" placeholder="选择方式">
@@ -283,6 +161,34 @@
                                         </a-form-item>                                    
                                     </a-col>
 
+                                    <!--非必填信息-->
+                                    <a-divider 
+                                        orientation="left" 
+                                        orientation-margin="8px"
+                                    >
+                                        非必填项
+                                    </a-divider>
+
+                                    <a-col :span="8">
+                                        <a-form-item
+                                            label="推荐语"
+                                            name="recommend_remark"
+                                        >
+                                            <a-input v-model:value="formState.recommend_remark" 
+                                            autoComplete="off" 
+                                            show-count :maxlength="30" 
+                                            placeholder="输入商品推荐语"
+                                            />
+                                        </a-form-item>
+                                    </a-col>
+                                    <a-col :span="8">
+                                        <a-form-item
+                                            label="商家备注"
+                                            name="remark"
+                                        >
+                                            <a-input v-model:value="formState.remark" autoComplete="off" placeholder="商家可见备注"  show-count :maxlength="30" />
+                                        </a-form-item>
+                                    </a-col>
                                     <a-col :span="8">
                                         <a-form-item
                                             label="尺码模板"
@@ -300,24 +206,43 @@
 
 
                         <!--分类开始-->
-                        <a-divider orientation="left" orientation-margin="0px">分类</a-divider>
+                        <a-divider orientation="left" orientation-margin="0px">预测分类</a-divider>
                         <p>
-                            <a-cascader
+                            <a-button 
+                            type="dashed" 
+                            @click="CATE.Check_Cate(formState)"
+                            :loading="CATE.predict_status.value"
+                            >点击预测商品类目
+                            </a-button>
+                            <a-select 
+                                ref="select"
+                                v-model:value="CATE.cate_value.value" 
+                                placeholder="请选择推荐类目" 
+                                :disabled="false"
+                                :options="CATE.options.value"
+                                style="width: 200px; margin-left: 10px;"
+                            >
+                            </a-select>
+                            <span style="margin-left:10px;font-size:12px;">PS:预测分类需要填写【商品标题】、【主图】后获取系统推荐的类目、以及商品属性;</span>
 
-                                style="width:100%"
+
+                            <!-- <a-cascader
+                                style="width:70% ;margin-left: 10px;"
                                 v-model:value="CATE.cate_name.value"
                                 :options="CATE.options.value"
                                 :load-data="CATE.loadData"
                                 @change="CATE.loadFormat"
                                 :allowClear="false"
                                 placeholder="选择分类"
-                            />
+                            /> -->
+
+
                         </p>
 
 
                         <!--属性开始-->
                         <a-divider orientation="left" orientation-margin="0px">
-                            属性
+                            商品属性
                         </a-divider>
 
                         <a-form :ref="CATE.form_ref" :model="CATE.format_formRef">
@@ -470,10 +395,116 @@
                             </p>
 
                         </a-form>
-
-
-
                         </div>
+
+
+
+                    </a-tab-pane>
+
+                    <a-tab-pane key="0" tab="图片视频">
+
+
+                        <a-row>
+                            <!--白底图 -- white_back_ground_pic_url -->
+                            <a-col :span="24">
+                                <a-divider orientation="left" orientation-margin="0px">白底图</a-divider>
+                                
+                                <div style="width: 100%;height:120px;">
+
+                                    <p class="img_pic" v-for="item in whiteimg_Fun.PicList.value">
+
+                                        <a-image :src="item.byte_url" />
+
+                                        <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
+                                            <a-button type="text" size="small" @click="whiteimg_Fun.del"> 
+                                                <DeleteOutlined />
+                                            </a-button>
+                                        </span>
+                                    </p>
+
+                                    <!--添加按钮-->
+                                    <p 
+                                        @click="PAGEDATA.change_material_type('white_img')" 
+                                        class="cursor Add_img"
+                                        v-if="whiteimg_Fun.PicList.value < 1"
+                                    >
+                                        <a-flex justify="center" align="center" style="height: 100%;">
+                                            +
+                                        </a-flex>
+                                    </p>
+
+                                </div>
+                            </a-col>
+
+                            <!--3比4长图 -- long_pic_url -->
+                            <a-col :span="16">
+                                <a-divider 
+                                    orientation="left" 
+                                    orientation-margin="0px"
+                                >
+                                    3:4长图 
+                                </a-divider>
+
+                                <div style="width: 100%;height: 160px;">
+
+                                    <p class="img_3_4_pic" v-for="(item,index) in Longimg_Fun.PicList.value">
+                                        
+                                        <a-image :height="110" :src="item.byte_url" />
+
+                                        <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
+                                            <a-button type="text" size="small" @click="Longimg_Fun.del(index)"> 
+                                                <DeleteOutlined />
+                                            </a-button>
+                                        </span>
+                                    </p>
+
+
+                                    <!--添加按钮-->
+                                    <p 
+                                        @click="PAGEDATA.change_material_type('long_img_List')" 
+                                        class="cursor Add_3_4_img"
+                                        v-if="Longimg_Fun.PicList.value.length < 5"
+                                    >
+                                        <a-flex justify="center" align="center" style="height: 100%;">
+                                            +
+                                        </a-flex>
+                                    </p>
+
+                                </div>
+
+                            </a-col>
+
+                            <!--视频 -- material_video_id -->
+                            <a-col :span="8">
+
+                                <a-divider orientation="left" orientation-margin="0px">视频</a-divider>
+
+                                <div style="width: 100%;height:120px;">
+
+                                    <p class="img_3_4_pic" v-for="item in video_Fun.PicList.value">
+                                        <a-image :height="110" :src="item.video_info.video_cover_url" />
+                                        <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
+                                            <a-button type="text" size="small" @click="video_Fun.del"> 
+                                                <DeleteOutlined />
+                                            </a-button>
+                                        </span>
+                                    </p>
+
+                                    <!--添加按钮-->
+                                    <p 
+                                        @click="PAGEDATA.change_material_type('video_info')" 
+                                        class="cursor Add_3_4_img"
+                                        v-if="video_Fun.PicList.value.length < 1"
+                                    >
+                                        <a-flex justify="center" align="center" style="height: 100%;">
+                                            +
+                                        </a-flex>
+                                    </p>
+                                </div>
+                            </a-col>
+
+                        </a-row>
+
                     </a-tab-pane>
 
                     <a-tab-pane key="2" tab="商品规格">
@@ -705,7 +736,6 @@
                             />
                         </div>
                     </a-tab-pane>
-
                 </a-tabs>
 
             </div>
@@ -768,10 +798,11 @@ export default defineComponent({
 
         // 分类信息初始化
         onMounted(() => {
-            tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
-                let obj_list = res.data.data
-                CATE.options.value = CATE.get_cate_list(obj_list)
-            })
+            // 请求商品分类
+            // tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
+            //     let obj_list = res.data.data
+            //     CATE.options.value = CATE.get_cate_list(obj_list)
+            // })
         })
 
         // 添加商品配置
@@ -1485,8 +1516,16 @@ export default defineComponent({
         const CATE = {
 
             cate_name:ref([]),          // 分类
-
-            options:ref([]),            // 分类选项
+            predict_status:ref(false),  // 预测按钮状态
+            cate_value:ref(undefined),// 选中分类
+            options:ref([{
+    value: 'jack',
+    label: 'Jack',
+  },
+  {
+    value: 'lucy',
+    label: 'Lucy',
+  },]),            // 分类选项
 
             select_loading:ref(false),  // 加载状态
 
@@ -1701,7 +1740,102 @@ export default defineComponent({
                 })
 
                 return res
-            }
+            },
+            // 类目预测
+            Check_Cate:async(formdata)=>{
+                
+                var name = formdata.name; // 标题
+                var pic = Pic_Fun.get(); // 主图
+
+                CATE.predict_status.value = true;
+
+                // 判断标题是否为空
+                if(name == undefined || name == ''){ 
+                    tool.Fun_.message('error', '预测类目>标题不能为空！');
+                    CATE.predict_status.value = false;
+                    return false
+                }
+
+                // 判断主图是否为空
+                if(!pic){
+                    tool.Fun_.message('error', '预测类目>商品主图不能为空！');
+                    CATE.predict_status.value = false;
+                    return false
+                }
+                // 迭代图片数组格式
+                var pic_list = pic.split('|');
+                pic_list.forEach((obj,index)=>{
+                    pic_list[index] = {"url":obj}
+                })
+
+                // 请求接口
+                var res = await axios.post(API.AppSrtoreAPI.dou_product.cate_predict,{
+                    "scene":"category_infer",
+                    // "scene":"smart_publish",
+                    "pic":pic_list,
+                    "name":name
+                })
+
+                var categoryDetails = res.data.data.categoryDetails;
+
+                if(categoryDetails.length >0){
+
+                    var cate_list = []
+
+                    categoryDetails.forEach((obj,index)=>{
+
+                        CATE.de_cate_detaile(obj) // 迭代预测类目选项obj
+
+                        // cate_list.push(obj.categoryName)
+
+                    })
+
+                    tool.Fun_.message('success', '预测类目成功！');
+
+                    CATE.cate_name.value = cate_list
+                
+                    CATE.predict_status.value = false;
+
+
+                }else{
+                    tool.Fun_.message('error', '预测类目失败，请更换主图或标题！');
+                    CATE.predict_status.value = false;
+                    return false
+                }
+            },
+            // 迭代预测类目选项obj
+            de_cate_detaile:(obj)=>{
+                var cate_obj = {}
+                var qualification_status = obj.qualification_status; // 类目资质qualification_status: 0-有资质；1-资质过期；2-无资质// disabled: true,
+                var category_detail = obj.category_detail;           // 类目信息
+
+
+                let first_cname = category_detail.first_cname;
+                let second_cname = category_detail.second_cname;
+                let third_cname = category_detail.third_cname;
+                let fourth_cname = category_detail.fourth_cname;
+
+                let first_cid = category_detail.first_cid;
+                let second_cid = category_detail.second_cid;
+                let third_cid = category_detail.third_cid;
+                let fourth_cid = category_detail.fourth_cid;
+                
+                var value_id_list = [first_cid,second_cid,third_cid,fourth_cid];
+                var value_label_list = [first_cname,second_cname,third_cname,fourth_cname];
+                value_id_list.forEach((id,index)=>{
+                    if(id == 0){
+                        value_id_list = value_id_list.slice(0, index)
+                        value_label_list = value_label_list.slice(0, index)
+                    }
+                })
+                
+                console.log(value_id_list)
+                console.log(value_label_list)
+                if(qualification_status !== 0){
+                    cate_obj.disabled = true
+                }
+                return cate_obj
+            }   
         }
 
         // 描述详情
@@ -1973,6 +2107,7 @@ export default defineComponent({
             formRef,
             sku_formRef,
             SPECS,
+            // -------------分类属性
             CATE,
             // --------------库存
             sku_list,       // 库存操作方法
@@ -1994,7 +2129,7 @@ export default defineComponent({
 
 </script>
 <style scoped>
-.content{padding: 0;margin: 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 90vh;}
+.content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 90vh;}
 .img_pic{height: 100px;width: 100px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
 .img_3_4_pic{height: 132px;width: 99px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
 .Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}

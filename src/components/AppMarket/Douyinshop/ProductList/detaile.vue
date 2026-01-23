@@ -955,7 +955,7 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-.content{padding: 0;margin: 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 88vh;}
+.content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 88vh;}
 .head_title_img{height: 140px;width: 100%;}
 .zhenduan{width: 100%;height:140px;}
 .top_img_box{height: 304px; width: 100%;}
