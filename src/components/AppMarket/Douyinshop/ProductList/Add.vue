@@ -200,30 +200,38 @@
                                             </a-input-group>
                                         </a-form-item>                                    
                                     </a-col>
-
                                 </a-row>
                             </a-form>
 
 
                         <!--分类开始-->
-                        <a-divider orientation="left" orientation-margin="0px">预测分类</a-divider>
-                        <p>
-                            <a-button 
+                        <a-divider orientation="left" orientation-margin="0px">
+                            商品分类
+                        <a-button 
                             type="dashed" 
+                            size="small"
                             @click="CATE.Check_Cate(formState)"
                             :loading="CATE.predict_status.value"
-                            >点击预测商品类目
+                            style="margin-left: 10px;"
+                            >点击预测商品分类
                             </a-button>
+                        </a-divider>
+                        <p>
+                            
                             <a-select 
                                 ref="select"
                                 v-model:value="CATE.cate_value.value" 
                                 placeholder="请选择推荐类目" 
-                                :disabled="false"
+                                :disabled="CATE.select_loading.value"
                                 :options="CATE.options.value"
-                                style="width: 200px; margin-left: 10px;"
+                                @change="CATE.loadFormat"
+                                style="width: 400px;"
                             >
                             </a-select>
-                            <span style="margin-left:10px;font-size:12px;">PS:预测分类需要填写【商品标题】、【主图】后获取系统推荐的类目、以及商品属性;</span>
+                            
+                            <span style="margin-left:10px;font-size:12px;">
+                                PS:需要填写【标题】、【主图】后获取系统推荐的类目、以及属性;
+                            </span>
 
 
                             <!-- <a-cascader
@@ -243,8 +251,22 @@
                         <!--属性开始-->
                         <a-divider orientation="left" orientation-margin="0px">
                             商品属性
+                            <a-button 
+                            type="dashed"
+                            size="small"
+                            style="margin-left: 10px;"
+                            >点击预测商品属性
+                            </a-button>
+                            <a-button 
+                            type="dashed"
+                            size="small"
+                            style="margin-left: 10px;"
+                            >清空属性
+                            </a-button>
                         </a-divider>
+                        <div>
 
+                        </div>
                         <a-form :ref="CATE.form_ref" :model="CATE.format_formRef">
 
                             <a-row v-if="CATE.format.value.length !== 0" loading="true" :gutter="[16,6]">
@@ -402,7 +424,6 @@
                     </a-tab-pane>
 
                     <a-tab-pane key="0" tab="图片视频">
-
 
                         <a-row>
                             <!--白底图 -- white_back_ground_pic_url -->
@@ -1516,18 +1537,15 @@ export default defineComponent({
         const CATE = {
 
             cate_name:ref([]),          // 分类
-            predict_status:ref(false),  // 预测按钮状态
-            cate_value:ref(undefined),// 选中分类
-            options:ref([{
-    value: 'jack',
-    label: 'Jack',
-  },
-  {
-    value: 'lucy',
-    label: 'Lucy',
-  },]),            // 分类选项
 
-            select_loading:ref(false),  // 加载状态
+            predict_status:ref(false),  // 预测按钮状态
+            select_loading:ref(true),  // 预测选项状态
+
+            cate_value:ref(undefined),  // 选中分类
+
+            options:ref([]),            // 分类选项
+
+            
 
             // 商品属性结构数据：：渲染表单格式
             format:ref([]),
@@ -1575,13 +1593,14 @@ export default defineComponent({
             // 请求属性:加载到列表
             loadFormat:async()=>{
 
-                // console.log(CATE.cate_name.value.at(-1)) // 数组最后一个值
 
-                var cate_id = CATE.cate_name.value.at(-1)
+                var cate_id = CATE.cate_value.value
 
                 var res = await axios.post(API.AppSrtoreAPI.dou_product.format, {
                     "category_leaf_id":cate_id
                 })
+
+                console.log(res) // 数组最后一个值
 
                 var data_list = res.data.data.data;
 
@@ -1704,9 +1723,9 @@ export default defineComponent({
             },
             // 获取分类
             get_cate:()=>{
-                var cate_values = toRaw(CATE.cate_name.value)
-                // console.log(cate_values)
-                if(cate_values.length>0){// 分类不为空
+                var cate_values = toRaw(CATE.cate_value.value)
+                console.log(cate_values)
+                if(cate_values > 0){// 分类不为空
                     return cate_values
                 }else{ // 分类为空
                     tool.Fun_.message('error', '商品分类不能为空！');
@@ -1784,18 +1803,22 @@ export default defineComponent({
 
                     categoryDetails.forEach((obj,index)=>{
 
-                        CATE.de_cate_detaile(obj) // 迭代预测类目选项obj
+                        var op = CATE.de_cate_detaile(obj) // 迭代预测类目选项obj
 
-                        // cate_list.push(obj.categoryName)
+                        cate_list.push(op)
+
 
                     })
 
                     tool.Fun_.message('success', '预测类目成功！');
 
-                    CATE.cate_name.value = cate_list
-                
-                    CATE.predict_status.value = false;
+                    CATE.options.value = cate_list;
+                    CATE.cate_value.value = cate_list[0].value; // 下拉选择赋值
 
+                    CATE.predict_status.value = false; // 按钮load状态停止
+                    CATE.select_loading.value = false; // 下拉禁用状态停止
+
+                    CATE.loadFormat();// 加载对应商品属性
 
                 }else{
                     tool.Fun_.message('error', '预测类目失败，请更换主图或标题！');
@@ -1805,6 +1828,7 @@ export default defineComponent({
             },
             // 迭代预测类目选项obj
             de_cate_detaile:(obj)=>{
+
                 var cate_obj = {}
                 var qualification_status = obj.qualification_status; // 类目资质qualification_status: 0-有资质；1-资质过期；2-无资质// disabled: true,
                 var category_detail = obj.category_detail;           // 类目信息
@@ -1819,8 +1843,9 @@ export default defineComponent({
                 let second_cid = category_detail.second_cid;
                 let third_cid = category_detail.third_cid;
                 let fourth_cid = category_detail.fourth_cid;
-                
+                // ids
                 var value_id_list = [first_cid,second_cid,third_cid,fourth_cid];
+                // 名称
                 var value_label_list = [first_cname,second_cname,third_cname,fourth_cname];
                 value_id_list.forEach((id,index)=>{
                     if(id == 0){
@@ -1829,11 +1854,13 @@ export default defineComponent({
                     }
                 })
                 
-                console.log(value_id_list)
-                console.log(value_label_list)
+                cate_obj.value = value_id_list.at(-1)
+                cate_obj.label = value_label_list.join('>')
+                // 判断资质是否过期
                 if(qualification_status !== 0){
                     cate_obj.disabled = true
                 }
+
                 return cate_obj
             }   
         }
@@ -2008,14 +2035,17 @@ export default defineComponent({
             var cate_obj = CATE.get_cate()
             if(cate_obj){
                 // 正常获取分类
-                product_data_obj.category_leaf_id = cate_obj.at(-1);
+                product_data_obj.category_leaf_id = cate_obj;
             }else{
                 return
             }
+
             // 属性
             var format_obj = await CATE.get_format();
             if(format_obj){
                 product_data_obj.product_format_new = JSON.stringify(format_obj);
+            }else{
+                return
             }
 
 
@@ -2047,9 +2077,6 @@ export default defineComponent({
             }else{
                 return
             }
-
-
-
 
             // 描述详情
             var description_obj = DES.get_img();

@@ -22,31 +22,33 @@
             <a-divider orientation="center" class="font_size_12">基础信息</a-divider>
 
             <a-row :gutter="[6,6]" justify="space-around">
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">主图</div></a-col>
                 <a-col :span="12"><div class="gutter-box cursor font_size_12">推荐语</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">备注</div></a-col>
                 <a-col :span="12"><div class="gutter-box cursor font_size_12">品牌</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">商品属性</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">属性</div></a-col>
                 <a-col :span="12"><div class="gutter-box cursor font_size_12">货号</div></a-col>
                 <a-col :span="12"><div class="gutter-box cursor font_size_12">上架</div></a-col>
                 <a-col :span="12"><div class="gutter-box cursor font_size_12">下架</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">价格库存</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">价格</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">库存</div></a-col>
                 <a-col :span="12"><div class="gutter-box cursor font_size_12">SKU编码</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
             </a-row>
 
             <a-divider orientation="center" class="font_size_12">其他信息</a-divider>
 
             <a-row :gutter="[6,6]">
                 <a-col :span="12"><div class="gutter-box cursor font_size_12">跨类目属性</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题关键字</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">尺码模板</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">运费模板</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">发货模式</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">售后服务</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">限购策略</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">商品资质</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">删除商品</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">详情描述</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12">商家编码</div></a-col>
 
             </a-row>
             <a-divider orientation="center" class="font_size_12">服务与履约</a-divider>
@@ -57,10 +59,6 @@
 
 
         <a-layout-content class="content_border">
-
-
-
-
 
             <a-row>
 
