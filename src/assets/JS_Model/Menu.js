@@ -1,6 +1,7 @@
 /** 导航菜单类 **/
 import {h} from "vue";
 import {
+    ReconciliationOutlined,
     CodeOutlined, 
     SettingOutlined,
   UserOutlined,
@@ -99,6 +100,7 @@ export class Menu {
                 'RobotOutlined':() => h(RobotOutlined),
                 'CopyOutlined':() => h(CopyOutlined),
                 'FormOutlined':() => h(FormOutlined),
+                'ReconciliationOutlined':()=>h(ReconciliationOutlined)
                 
             }
         }

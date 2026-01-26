@@ -23,7 +23,13 @@
                 <a-tabs v-model:activeKey="activeKey" @change="refesh_stock_number(activeKey)">
 
                     <a-tab-pane key="1" tab="基础信息">
-
+                        <!--基本信息-->
+                        <a-divider 
+                            orientation="left" 
+                            orientation-margin="0px"
+                        >
+                            必填信息
+                        </a-divider>
                         <a-row>
 
                             <!----主图--pic-->
@@ -31,7 +37,7 @@
 
                                 <!-- <a-divider orientation="left" orientation-margin="0px">主图</a-divider> -->
 
-                                <div style="width: 100%; height: 120px;margin-top: 20px;">
+                                <div style="width: 100%; height: 120px;margin: 10px 0 40px 0;">
 
                                     <p class="img_pic" v-for="(item,index) in Pic_Fun.PicList.value">
 
@@ -64,13 +70,7 @@
 
                         </a-row>
 
-                        <!--基本信息-->
-                        <a-divider 
-                            orientation="left" 
-                            orientation-margin="0px"
-                        >
-                            必填信息
-                        </a-divider>
+
 
                         <div style="width: 100%;">
 
@@ -207,17 +207,15 @@
                         <!--分类开始-->
                         <a-divider orientation="left" orientation-margin="0px">
                             商品分类
-                        <a-button 
-                            type="dashed" 
-                            size="small"
-                            @click="CATE.Check_Cate(formState)"
-                            :loading="CATE.predict_status.value"
-                            style="margin-left: 10px;"
-                            >点击预测商品分类
-                            </a-button>
+
                         </a-divider>
-                        <p>
-                            
+                        <p style="margin-bottom: 30px;">
+                            <a-button 
+                                type="dashed" 
+                                @click="CATE.Check_Cate(formState)"
+                                :loading="CATE.predict_status.value"
+                                >点击预测商品分类
+                            </a-button>
                             <a-select 
                                 ref="select"
                                 v-model:value="CATE.cate_value.value" 
@@ -225,7 +223,7 @@
                                 :disabled="CATE.select_loading.value"
                                 :options="CATE.options.value"
                                 @change="CATE.loadFormat"
-                                style="width: 400px;"
+                                style="width: 400px;margin-left: 10px;"
                             >
                             </a-select>
                             
@@ -255,12 +253,14 @@
                             type="dashed"
                             size="small"
                             style="margin-left: 10px;"
-                            >点击预测商品属性
+                            @click="CATE.Ceck_format"
+                            >智能预测填充属性
                             </a-button>
                             <a-button 
                             type="dashed"
                             size="small"
                             style="margin-left: 10px;"
+                            @click="CATE.Clear_format"
                             >清空属性
                             </a-button>
                         </a-divider>
@@ -285,7 +285,6 @@
                                                     placeholder="请输入"
                                                     autoComplete="off"
                                                     v-model:value="CATE.format_formRef[item.property_id]"
-                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
                                                     allow-clear
                                                 />
                                             </a-form-item>
@@ -296,7 +295,6 @@
                                                 placeholder="请输入"
                                                 autoComplete="off"
                                                 v-model:value="CATE.format_formRef[item.property_id]"
-                                                @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
                                                 allow-clear
                                             />
                                             </a-form-item>
@@ -318,7 +316,6 @@
                                                     v-model:value="CATE.format_formRef[item.property_id]"
                                                     placeholder="请选择"
                                                     allow-clear
-                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
                                                     style="width: 120px;width: 100%;"
                                                 >
                                                     <a-select-option v-for="opt in item.options" :value="opt.value_id" >
@@ -335,7 +332,6 @@
                                                     v-model:value="CATE.format_formRef[item.property_id]"
                                                     placeholder="请选择"
                                                     allow-clear
-                                                    @change="CATE.dis_ops(item, CATE.format_formRef[item.property_id])"
                                                     style="width: 120px;width: 100%;"
                                                 >
                                                     <a-select-option v-for="opt in item.options" :value="opt.value_id" >
@@ -418,8 +414,6 @@
 
                         </a-form>
                         </div>
-
-
 
                     </a-tab-pane>
 
@@ -818,13 +812,7 @@ export default defineComponent({
         const activeKey = ref('1');             // 默认选项卡
 
         // 分类信息初始化
-        onMounted(() => {
-            // 请求商品分类
-            // tool.Http_.post(API.AppSrtoreAPI.dou_product.cate, {"cid":0}).then(res=>{
-            //     let obj_list = res.data.data
-            //     CATE.options.value = CATE.get_cate_list(obj_list)
-            // })
-        })
+        onMounted(() => {})
 
         // 添加商品配置
         const PAGEDATA=reactive({
@@ -1593,14 +1581,12 @@ export default defineComponent({
             // 请求属性:加载到列表
             loadFormat:async()=>{
 
-
                 var cate_id = CATE.cate_value.value
 
+                // 请求类目对应的属性值
                 var res = await axios.post(API.AppSrtoreAPI.dou_product.format, {
                     "category_leaf_id":cate_id
                 })
-
-                console.log(res) // 数组最后一个值
 
                 var data_list = res.data.data.data;
 
@@ -1636,8 +1622,6 @@ export default defineComponent({
 
                 })
 
-                // console.log(CATE.format_formRef)
-
                 CATE.format.value = res.data.data.data;
 
             },
@@ -1652,36 +1636,7 @@ export default defineComponent({
                     var options = item.options; // 选项
                     var diy_type = item.diy_type; // 是否支撑自定义
                     
-                    // 文本 text
-                    if(type == 'text'){
-
-                        CATE.format_formRef[item.property_id] = [data]
-                        // CATE.format_formRef[item.property_id] = {"value":0,"name":result_value,"diy_type":diy_type}
-                        // console.log({"value":0,"name":result_value,"diy_type":diy_type})
-
-                    }else if(type == 'select'){// 单选 select
-
-                        var v_name = ''
-
-                        options.forEach((obj,index)=>{
-
-                            if(obj.value_id == data){v_name = obj.name}
-
-                        })
-
-                        CATE.format_formRef[item.property_id] = [{"value":data,"name":v_name,"diy_type":diy_type}]
-
-                    }else if(type == 'multi_select' || type == 'multi_value_measure'){ // 多选 'multi_select' & 'multi_value_measure'
-
-                        // 迭代选中值
-                        var res_lisr = []
-                        result_value.forEach((obj,index)=>{
-                            var r_name = CATE.select_name(obj,options)
-                            var r_obj = {"value":obj,"name":r_name,"diy_type":diy_type}
-                            res_lisr.push(r_obj)
-                        })
-
-                        CATE.format_formRef[item.property_id] = res_lisr
+                    if(type == 'multi_select' || type == 'multi_value_measure'){ // 多选 'multi_select' & 'multi_value_measure'
 
                         // 选中值--超过限制
                         if(result_value.length >= multi_select_max){
@@ -1724,7 +1679,6 @@ export default defineComponent({
             // 获取分类
             get_cate:()=>{
                 var cate_values = toRaw(CATE.cate_value.value)
-                console.log(cate_values)
                 if(cate_values > 0){// 分类不为空
                     return cate_values
                 }else{ // 分类为空
@@ -1736,16 +1690,22 @@ export default defineComponent({
             // 获取属性
             get_format: async()=>{
 
+                // 验证是否必填全部填写
                 var res = await CATE.form_ref.value?.validate().then(()=>{
                     
-                    var f_obj = toRaw(CATE.format_formRef)
+                    var selected_mat = toRaw(CATE.format_formRef)// 选中的属性
+                    var show_mat= toRaw(CATE.format.value)      // 当前展示的属性
+                    console.log('选中的属性', selected_mat) 
+                    console.log('当前展示的属性', show_mat)
+
                     var f_res_obj = {}
-                    Object.keys(f_obj).forEach(key => {
-                        if(f_obj[key] != undefined){
-                            // console.log( key,':', f_obj[key])
-                            f_res_obj[key] = f_obj[key]
+                    show_mat.forEach(obj => {
+                        let property_id = obj.property_id;
+                        if(selected_mat[property_id] !== undefined){
+                           var result_list = CATE.de_format_detail(obj, selected_mat[property_id])
+                           f_res_obj[property_id] = result_list
                         }
-                    }); // 清空
+                    });
 
                     return f_res_obj
 
@@ -1759,6 +1719,45 @@ export default defineComponent({
                 })
 
                 return res
+            },
+            // 转移属性格式
+            de_format_detail:(item, data)=>{
+                let property_id = item.property_id;
+                let type = item.type; // 类别
+                let result_value = data; // 选中的值
+                let multi_select_max = item.multi_select_max;
+                let options = item.options; // 选项
+                let diy_type = item.diy_type; // 是否支撑自定义
+
+                // 文本 text
+                if(type == 'text'){
+                    var result = [{"value":0,"name":result_value,"diy_type":diy_type}]
+                    console.log(result)
+                    return result
+                }else if(type == 'select'){// 单选 select
+                    // 单选 [{"value":data,"name":v_name,"diy_type":diy_type}]
+                    var v_name = ''
+                    options.forEach((obj,index)=>{
+                        if(obj.value_id == data){v_name = obj.name}
+                    })
+                    var result = [{"value":data,"name":v_name,"diy_type":diy_type}]
+                    console.log(result)
+                    return result
+
+                }else if(type == 'multi_select' || type == 'multi_value_measure'){
+                    // 多选// 迭代选中值
+                    var res_lisr = []
+                    // 如果不是数组类型转换为数组
+                    if(!Array.isArray(result_value)){result_value = [result_value]}
+                    result_value.forEach((obj,index)=>{
+                        var r_name = CATE.select_name(obj,options)
+                        var r_obj = {"value":obj,"name":r_name,"diy_type":diy_type}
+                        res_lisr.push(r_obj)
+                    })
+                    console.log(res_lisr);
+                    return res_lisr
+
+                }
             },
             // 类目预测
             Check_Cate:async(formdata)=>{
@@ -1777,7 +1776,7 @@ export default defineComponent({
 
                 // 判断主图是否为空
                 if(!pic){
-                    tool.Fun_.message('error', '预测类目>商品主图不能为空！');
+                    tool.Fun_.message('error', '预测分类>商品主图不能为空！');
                     CATE.predict_status.value = false;
                     return false
                 }
@@ -1807,21 +1806,22 @@ export default defineComponent({
 
                         cate_list.push(op)
 
-
                     })
 
-                    tool.Fun_.message('success', '预测类目成功！');
+                    tool.Fun_.message('success', '预测分类成功！');
 
                     CATE.options.value = cate_list;
                     CATE.cate_value.value = cate_list[0].value; // 下拉选择赋值
 
+                    CATE.loadFormat();// 加载对应商品属性
+                    
+                    CATE.Ceck_format()// 迭代预测的属性到页面
+
                     CATE.predict_status.value = false; // 按钮load状态停止
                     CATE.select_loading.value = false; // 下拉禁用状态停止
 
-                    CATE.loadFormat();// 加载对应商品属性
-
                 }else{
-                    tool.Fun_.message('error', '预测类目失败，请更换主图或标题！');
+                    tool.Fun_.message('error', '预测分类失败，请更换主图或标题！');
                     CATE.predict_status.value = false;
                     return false
                 }
@@ -1862,7 +1862,42 @@ export default defineComponent({
                 }
 
                 return cate_obj
-            }   
+            },
+            // 预测属性：填充到页面
+            Ceck_format:async()=>{
+
+                var c_id = CATE.cate_value.value // id
+                if(c_id == undefined || c_id == ''){
+                    tool.Fun_.message('error', '需要分类才能预测');
+                    return
+                }
+                var pic = Pic_Fun.get().split('|'); // 主图
+                var title_name = formState.name; // 标题
+
+                // 请求接口
+                var res = await axios.post(API.AppSrtoreAPI.dou_product.format_recommend,{
+                    "category_id":c_id,// 类目id-必填
+                    "img_urls":pic,// 商品图片-非必填
+                    "name":title_name// 商品标题-非必填
+                })
+                var checkformat_result_list = res.data.data.properties;
+                checkformat_result_list.forEach(obj=>{
+                    console.log(obj)
+                    var property_id = obj.property_id;
+                    var property_values_id = obj.property_values[0].value_id;
+                    Object.keys(CATE.format_formRef).forEach(key=>{
+                        if(key == property_id && property_values_id !== 0)(
+                            CATE.format_formRef[key] = property_values_id
+                        )
+                    })
+                })
+            },
+            // 清空商品属性
+            Clear_format:()=>{
+                Object.keys(CATE.format_formRef).forEach(key=>{
+                    CATE.format_formRef[key] = undefined
+                })
+            }
         }
 
         // 描述详情
@@ -2042,6 +2077,7 @@ export default defineComponent({
 
             // 属性
             var format_obj = await CATE.get_format();
+            console.log(format_obj)
             if(format_obj){
                 product_data_obj.product_format_new = JSON.stringify(format_obj);
             }else{
@@ -2087,7 +2123,7 @@ export default defineComponent({
                 return
             }
             
-            console.log(product_data_obj)
+            // console.log(product_data_obj)
             
             upload_product(product_data_obj)// 上传商品
 
@@ -2115,8 +2151,12 @@ export default defineComponent({
             var code = res.data.code;
             var sub_msg = res.data.sub_msg
             if(code === 10000 ){ // 接口返回成功
+                
                 // 提示上传成功，刷新列表;
                 tool.Fun_.message('success','商品添加成功！')
+                closed() // 关闭新建商品
+                // 刷新列表
+
             }else{ // 接口返回失败
                 // 提示失败，返回失败原因;
                 tool.Fun_.message('error', sub_msg)

@@ -302,7 +302,7 @@ export default {
 
     const PAGEDATA = reactive({
       title:'批量修改',
-      menudata:{'key':'92','openKeys':'douyinshop'},            // 菜单选中配置
+      menudata:{'key':'92','openKeys':'batchedit'},            // 菜单选中配置
         List_conditions:{
         page:1
       }
