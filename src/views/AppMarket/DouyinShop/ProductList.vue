@@ -3,7 +3,7 @@
 <template>
   
   <!-- 动态渲染异步组件 -->
-  <add_components v-if="PAGEDATA.AddDate" :data="PAGEDATA"/>
+  <add_components v-if="PAGEDATA.AddDate" :data="PAGEDATA" @add_call_back="add_call_back"/>
   <edit_components v-if="PAGEDATA.EditDate" :data="PAGEDATA"/>
   <detaile_components v-if="PAGEDATA.DetaileDate" :data="PAGEDATA"/>
   <more_select :data="PAGEDATA" @moer_select_callback="sift_select"/><!--更多筛选组件-->
@@ -177,10 +177,12 @@
                     </a-list-item-meta>
 
                     <template #actions>
-                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看</a>
-                        <a class="font_size_12" @click="showEdit(item.product_id)"><edit-outlined /> 编辑</a>
+                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 详情</a>
+                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 图片</a>
+                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 尺码</a>
+                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 规格库存</a>
+                        <a class="font_size_12" @click="edit_douyinshop_product(item.product_id)"><edit-outlined /> 抖店编辑</a>
                         <a style="margin:0 30px 0 0;" class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除</a>
-
                     </template>
 
                 </a-list-item>
@@ -320,13 +322,14 @@ export default {
       loading:true,         // 列表load状态
       justify:'center',     // 列表内容对齐：loading加载居中设定
       align:'center',       // 列表内容对齐：loading加载居中设定
-
-      List_conditions:reactive({     // 默认查询配置
+      // 查询组件配置
+      List_conditions:reactive({
 
         "page":1,            // 当前页面
         "size":10,           // 显示数量
 
         "product_type":ref(undefined),    // 商品类型
+
         "product_type_op":[
           {
             "label":"普通商品",
@@ -355,6 +358,7 @@ export default {
         ],
 
         "status":ref(undefined),         //  在线状态
+
         "status_op":[
           {
             "label":"在线",
@@ -372,6 +376,7 @@ export default {
         ],
 
         "check_status":ref(undefined),   // 审核状态
+
         "check_status_op":[
           {
             "label":"未提交",
@@ -442,39 +447,35 @@ export default {
     // 查询条件初始化====默认配置
     const FromData = ref({
 
-        "page":1,
-
-        "size":10,
-
         // "status":0,         //  0-在线；1-下线；2-删除；
         // "check_status":3,   // 1-未提交；2-待审核；3-审核通过；4-审核未通过；5-封禁；7-审核通过待上架；
-        
-        "can_combine_product":true, // 是否可搭配
 
+        // 固定查询字段
+        "page":1,
+        "size":10,
+        "can_combine_product":true, // 是否可搭配
         // 查询option
         "lookup_option":{
           "need_name_affix":true,       // 是否需要获取标题前后缀
-          "need_title_limit":true,      //是否需要获取商品标题长度限制规则
+          "need_title_limit":true,      // 是否需要获取商品标题长度限制规则
         },
-        
         "need_rectification_info":true, // 是否需要自动整改信息
 
     })
 
-    // 翻页查询条件
+    // 翻页查询条件配置:每次翻页只需替换 page size即可
     const navData=ref({
 
         "page":1,
         "size":10,
 
-        "can_combine_product":true, // 是否可搭配
-
+        // 固定查询字段
+        "can_combine_product":true,     // 是否可搭配
         // 查询option
         "lookup_option":{
           "need_name_affix":true,       // 是否需要获取标题前后缀
           "need_title_limit":true,      //是否需要获取商品标题长度限制规则
         },
-
         "need_rectification_info":true, // 是否需要自动整改信息
     })
 
@@ -528,30 +529,60 @@ export default {
 
     // 【查询组件 回调方法】========================================开始
     const sift_select = (data)=>{
-      
+      console.log(data)
       PAGEDATA.List_conditions.page = 1 // 初始化翻页
-
       if(data == true){   // 重置刷新列表
 
-        navData.value = FromData.value;
-
-        loadproductData(FromData.value);
+        loadproductData(FromData.value); // 加载列表数据
       
-      }else if(data == 'suggest'){ // 只看驳回
+      }else if(data == 'Reject'){ // 驳回商品
+        navData.value = {...FromData.value}; // 重置查询条件
         navData.value.query_options = {
-                "exist_audit_reject_suggest":true,
-                "need_audit_reject_suggest":true
+          "exist_audit_reject_suggest":true,
+          "need_audit_reject_suggest":true
         }
-        
-        // console.log(navData.value)
-
         loadproductData(navData.value);
-      }else{ // 查询按钮
-
+      }else if(data == 'Draft'){ // 草稿箱商品
+        navData.value = {...FromData.value};
+        navData.value.check_status = 1;
+        navData.value.status = 0;
+        loadproductData(navData.value);
+      }else if(data == 'All'){ // 全部商品
+        loadproductData(FromData.value);
+      }else if(data == 'OnSale'){ // 售卖中商品
+        navData.value = {...FromData.value};
+        navData.value.status = 0;
+        navData.value.check_status = 3;
+        loadproductData(navData.value);
+      }else if(data == 'UnderReview'){ // 审核中商品
+        navData.value = {...FromData.value};
+        navData.value.check_status = 2;
+        loadproductData(navData.value);
+      }else if(data == 'RecycleBin'){ // 回收站商品
+        navData.value = {...FromData.value};
+        navData.value.status = 2;
+        navData.value.check_status = 1;
+        loadproductData(navData.value);
+      }else if(data == 'WareHouse'){ // 仓库中商品
+        navData.value = {...FromData.value};
+        navData.value.status = 1;
+        navData.value.check_status = 7;
+        loadproductData(navData.value);
+      }else if(data == 'Pass'){ // 审核通过商品
+        navData.value = {...FromData.value};
+        navData.value.status = 1;
+        navData.value.check_status = 3;
+        console.log(navData.value)
+        loadproductData(navData.value);
+      }else if(data == 'Ban'){ // 封禁商品
+        navData.value = {...FromData.value};
+        navData.value.status = 1;
+        navData.value.check_status = 5;
+        loadproductData(navData.value);
+      }
+      else{ // 查询按钮
         navData.value = data;// 查询条件到翻页使用
-
         loadproductData(navData.value);
-
       }
     }
     // 【查询组件 回调方法】========================================结束
@@ -643,6 +674,17 @@ export default {
 
     // 【批量删除】
 
+    // 去抖店后台编辑商品
+    const edit_douyinshop_product = (product_id)=>{
+      const douyinshop_edit_url = "https://fxg.jinritemai.com/ffa/g/create?product_id=" + product_id;
+      window.open(douyinshop_edit_url, '_blank');
+    }
+
+    // 新建商品回调刷新列表
+    const add_call_back = ()=>{
+      loadproductData(FromData.value)
+    }
+
 
 
 
@@ -659,7 +701,9 @@ export default {
       showEdit,
       showDetaile,
       deldata,
-      check_list
+      check_list,
+      add_call_back,
+      edit_douyinshop_product
 
     }
 

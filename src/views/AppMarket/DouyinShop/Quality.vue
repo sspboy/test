@@ -25,6 +25,7 @@
                             v-model:value="conditionData.data_type" 
                             button-style="solid" 
                             class="font_size_12"
+                            size="small"
                             @change="Tabchange"
                             >
                             <a-radio-button value="0" class="font_size_12">待诊断</a-radio-button>

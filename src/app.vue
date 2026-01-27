@@ -48,7 +48,10 @@ html{margin: 0px; padding: 0px;font-size: 12px;overflow: hidden;}
 .ant-checkbox + span {font-size: 12px !important;}
 /**model对话框报错设置**/
 div[aria-hidden="true"]{display: none !important;}
-
+/**暂无数据高度100%**/
+.ant-spin-nested-loading {height: 100% !important;}
+.ant-spin-container{height: 100% !important;}
+.ant-list-empty-text{height: 70% !important;display: flex;align-items: center;justify-content: center;}
 /* 定义滚动条样式 */
 ::-webkit-scrollbar {
   width: 6px; /* 滚动条宽度 */

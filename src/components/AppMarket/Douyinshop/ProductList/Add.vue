@@ -2155,7 +2155,7 @@ export default defineComponent({
                 // 提示上传成功，刷新列表;
                 tool.Fun_.message('success','商品添加成功！')
                 closed() // 关闭新建商品
-                // 刷新列表
+                ctx.emit('add_call_back')// 刷新列表
 
             }else{ // 接口返回失败
                 // 提示失败，返回失败原因;

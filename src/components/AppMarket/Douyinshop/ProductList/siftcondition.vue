@@ -3,12 +3,6 @@
     <!-- 自定义标题 -->
     <div style="width: 1500px;height: 40px;clear: both;" >
 
-            <a-space>
-                <a-button type="primary" class="font_size_12" size="small" @click="handleverify_exist_audit_reject_suggest" ghost>只看驳回商品</a-button>
-                <a-button type="primary" class="font_size_12" size="small" ghost>多ID查询</a-button>
-                <a-button type="primary" class="font_size_12" size="small" ghost>商家编码查询</a-button>
-            </a-space>
-
             <a-form
                 layout="inline"
                 ref="formRef"
@@ -24,8 +18,19 @@
                 </a-button>
                 </a-form-item>
                 <a-form-item>
-                    <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="resh_condition" ghost>全部商品</a-button>
+                    <a-radio-group v-model:value="RadioValue" size="small" @change="handle_menu_change">
+                        <a-radio-button value="All" style="font-size: 12px;">全部商品</a-radio-button>
+                        <a-radio-button value="OnSale" style="font-size: 12px;">售卖中</a-radio-button>
+                        <a-radio-button value="WareHouse" style="font-size: 12px;">已下架</a-radio-button>
+                        <a-radio-button value="Ban" style="font-size: 12px;">已封禁</a-radio-button>
+                        <a-radio-button value="UnderReview" style="font-size: 12px;">审核中</a-radio-button>
+                        <a-radio-button value="Reject" style="font-size: 12px;">审核驳回</a-radio-button>
+                        <a-radio-button value="Pass" style="font-size: 12px;">审核通过</a-radio-button>
+                        <a-radio-button value="Draft" style="font-size: 12px;">草稿箱</a-radio-button>
+                        <a-radio-button value="RecycleBin" style="font-size: 12px;">回收站</a-radio-button>
+                    </a-radio-group>
                 </a-form-item>
+
                 <a-form-item name="product_type" style="width: 90px;">
                     <a-select
                         placeholder="商品类型"
@@ -104,8 +109,7 @@
 
                 <a-form-item>
                     <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
-                    <EllipsisOutlined />
-                    更多查询
+                    更多<EllipsisOutlined />
                     </a-button>
                     <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
 
@@ -151,7 +155,7 @@ export default defineComponent({
         const API = new utils.A_Patch()         // 请求接口地址合集
         const ProList = new PL.ProductList_fun()     // 批量修改方法
         const tool = new TOOL.TOOL()            // 工具方法
-
+        const RadioValue = ref('All');            // 列表导航单选框默认值
         // 查询组件信息配置
         const page_config= reactive({
             page_title:'页面标题',
@@ -187,10 +191,30 @@ export default defineComponent({
             props.data.AddDate = true;
         }
 
-        // 只看驳回商品
-        const handleverify_exist_audit_reject_suggest = () =>{
-            ctx.emit('sift_callback', 'suggest')
+        // 列表菜单切换方法
+        const handle_menu_change = (e) => {
+            if(RadioValue.value == 'All'){// 全部商品
+                ctx.emit('sift_callback', 'All')
+            }else if(RadioValue.value == 'OnSale'){// 在线售卖中
+                ctx.emit('sift_callback', 'OnSale')
+            }else if(RadioValue.value == 'UnderReview'){// 审核中
+                ctx.emit('sift_callback', 'UnderReview')
+            }else if(RadioValue.value == 'Draft'){// 草稿箱
+                ctx.emit('sift_callback', 'Draft')
+            }else if(RadioValue.value == 'Reject'){// 驳回商品
+                ctx.emit('sift_callback', 'Reject')
+            }else if(RadioValue.value == 'RecycleBin'){// 回收站
+                ctx.emit('sift_callback', 'RecycleBin')
+            }else if(RadioValue.value == 'WareHouse'){// 仓库中
+                ctx.emit('sift_callback', 'WareHouse')
+            }else if(RadioValue.value == 'Ban'){// 已封禁
+                ctx.emit('sift_callback', 'Ban')
+            }else if(RadioValue.value == 'Pass'){// 审核通过
+                ctx.emit('sift_callback', 'Pass')
+            }
         }
+
+
 
     return {
         formRef,
@@ -200,7 +224,8 @@ export default defineComponent({
         handleFinish,
         onOpen_select,
         show_add,
-        handleverify_exist_audit_reject_suggest
+        RadioValue,
+        handle_menu_change
         }
     }
 
