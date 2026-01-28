@@ -175,6 +175,7 @@ export default defineComponent({
         // 查询按钮方法
         const handleFinish = values => {
             const submit_obj = ProList.FromDataverify(values) // 验证表单字段是否为空或是否正确
+            RadioValue.value = '';// 重置导航按钮
             ctx.emit('sift_callback', submit_obj)
         };
 

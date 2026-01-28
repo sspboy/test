@@ -200,6 +200,44 @@
                                             </a-input-group>
                                         </a-form-item>                                    
                                     </a-col>
+                                    <a-col :span="8">
+                                        <a-form-item
+                                            label="用户每次下单限购件数"
+                                            name="maximum_per_order"
+                                        >
+                                            <a-input-number 
+                                                placeholder="请输入数字" 
+                                                style="width: calc(100%);" 
+                                                v-model:value="formState.maximum_per_order" 
+                                                :min="1" :max="1000000" 
+                                                />
+
+                                        </a-form-item>
+                                    </a-col>
+                                    <a-col :span="8">
+                                        <a-form-item
+                                            label="每个用户累计限购件数"
+                                            name="limit_per_buyer"
+                                        >
+                                            <a-input-number 
+                                                placeholder="请输入数字" 
+                                                style="width: calc(100%);" 
+                                                v-model:value="formState.limit_per_buyer" 
+                                                :min="1" :max="1000000" />
+
+                                        </a-form-item>
+                                    </a-col>
+                                    <a-col :span="8">
+                                        <a-form-item
+                                            label="用户每次下单至少购买件数"
+                                            name="minimum_per_order"
+                                        >
+                                            <a-input-number placeholder="请输入数字"
+                                             v-model:value="formState.minimum_per_order"
+                                            :min="1" :max="1000000" />
+
+                                        </a-form-item>
+                                    </a-col>
                                 </a-row>
                             </a-form>
 
@@ -1098,24 +1136,26 @@ export default defineComponent({
                     trigger: 'change',
             }]
         }
-
+        // 基础信息表单数据
         const formState = reactive({
             product_type:'0',               // 商品类别
             mobile:'18888888888',           // 客服电话
             name:undefined,                 // 商品标题
-
-            recommend_remark:undefined,     // 推荐语
+            recommend_remark:undefined,     // 推荐语：不能含emoj表情
             pay_type:'1',                   // 支付类型
             reduce_type:'1',                // 减库存类型
             freight_id:{"name":"包邮","value":0},           // 运费模板
             size_info_template_id:{"name":undefined,"value":undefined},// 尺码模板
             commit:'false',                 // 提交
             remark:undefined,               // 商家备注
-
+            // 限购
             limit_per_buyer:undefined,          // 每个用户累计限购件数
             maximum_per_order:undefined,        // 每个用户每次下单限购件数
             minimum_per_order:undefined,        // 每个用户每次下单至少购买的件数
-
+            // 导购短标题
+            short_product_name:undefined,
+            // 售后保障-7天无理由 "after_sale_service":"{\"supply_day_return_selector\":\"7-0\"}" 
+            after_sale_service:0,
         })
         // 获取商品基础信息
         const GetInfo = async()=>{

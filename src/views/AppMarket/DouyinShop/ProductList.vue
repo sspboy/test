@@ -48,6 +48,7 @@
               <template #renderItem="{ item }">
 
                 <a-list-item style="padding:10px 0 14px 0;">
+
                     <a-list-item-meta>
                       <template #avatar>
                         <div class="cursor ListImg">
@@ -73,7 +74,7 @@
                                     <span class="font_size_12">{{ item.product_id }}</span>
                                   </template>
 
-                                  商品ID- <CopyOutlined />
+                                  ID-<CopyOutlined />
 
 
                                 </a-tooltip>
@@ -177,12 +178,23 @@
                     </a-list-item-meta>
 
                     <template #actions>
-                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 详情</a>
-                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 图片</a>
-                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 尺码</a>
-                        <a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 规格库存</a>
-                        <a class="font_size_12" @click="edit_douyinshop_product(item.product_id)"><edit-outlined /> 抖店编辑</a>
-                        <a style="margin:0 30px 0 0;" class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除</a>
+                      <div style="height: 60px;width: 260px;">
+                        <a-row justify="center" align="middle" style="height: 100%;">
+                          <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看详情</a></a-col>
+                          <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 图片预览</a></a-col>
+                          <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 尺码模板</a></a-col>
+                          <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 规格库存</a></a-col>
+                          <a-col :span="8"><a class="font_size_12" @click="edit_douyinshop_product(item.product_id)"><edit-outlined /> 抖店编辑</a></a-col>
+                          <a-col :span="8"><a class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除回收</a></a-col>
+                        </a-row>
+
+                        
+                        
+                        
+
+                      </div>
+
+
                     </template>
 
                 </a-list-item>
