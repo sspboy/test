@@ -88,7 +88,6 @@
                                 <span class="left_box status_0" v-if="item.status == 0"></span>
                                 <span class="left_box status_1" v-if="item.status == 1"></span>
                                 <span class="left_box status_2" v-if="item.status == 2"></span>
-
                                 {{ Profun.Field_translation.product_status(item.status) }}
                               </div>
                               
@@ -133,7 +132,22 @@
                                   {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
                                 </a-tooltip>
                               </div>
+
                               <div class="title_text_span">销量{{ item.sell_num }}</div>
+
+                              <!--商品状态判断-->
+                              <div>
+                                <span v-if="item.status == 0 && item.check_status == 1"><a-tag color="blue" :bordered="false">草稿</a-tag></span>
+                                <span v-else-if="item.status == 0 && item.check_status == 3"><a-tag color="green" :bordered="false">售卖中</a-tag></span>
+                                <span v-else-if="item.status == 1 && item.check_status == 7"><a-tag color="red" :bordered="false">已下架</a-tag></span>
+                                <span v-else-if="item.status == 0 && item.check_status == 2"><a-tag color="orange" :bordered="false">审核中</a-tag></span>
+                                <span v-else-if="item.check_status == 7"><a-tag color="red" :bordered="false">审核通过</a-tag></span>
+                                <span v-else-if="item.status == 2 && item.check_status == 1"><a-tag :bordered="false">回收站</a-tag></span>
+                                <span v-else-if="item.check_status == 4"><a-tag :bordered="false">驳回</a-tag></span>
+
+
+                                {{ item.status }}-{{ item.check_status }}
+                              </div>
 
                             </a-space>
 
@@ -446,7 +460,6 @@ export default {
       }),
 
       innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
-
       AddDate:ref(false),              // 新建显示状态
       EditDate:ref(false),             // 编辑显示状态
       DetaileDate:ref(false),          // 详情页显示状态
@@ -549,10 +562,12 @@ export default {
       
       }else if(data == 'Reject'){ // 驳回商品
         navData.value = {...FromData.value}; // 重置查询条件
-        navData.value.query_options = {
-          "exist_audit_reject_suggest":true,
-          "need_audit_reject_suggest":true
-        }
+        // navData.value.query_options = {
+        //   "exist_audit_reject_suggest":true,
+        //   "need_audit_reject_suggest":true
+        // }
+        navData.value.status = 0;
+        navData.value.check_status = 4;
         loadproductData(navData.value);
       }else if(data == 'Draft'){ // 草稿箱商品
         navData.value = {...FromData.value};
@@ -568,6 +583,7 @@ export default {
         loadproductData(navData.value);
       }else if(data == 'UnderReview'){ // 审核中商品
         navData.value = {...FromData.value};
+        navData.value.status = 0;
         navData.value.check_status = 2;
         loadproductData(navData.value);
       }else if(data == 'RecycleBin'){ // 回收站商品
@@ -575,16 +591,14 @@ export default {
         navData.value.status = 2;
         navData.value.check_status = 1;
         loadproductData(navData.value);
-      }else if(data == 'WareHouse'){ // 仓库中商品
+      }else if(data == 'WareHouse'){ // 已下架商品
         navData.value = {...FromData.value};
         navData.value.status = 1;
         navData.value.check_status = 7;
         loadproductData(navData.value);
       }else if(data == 'Pass'){ // 审核通过商品
         navData.value = {...FromData.value};
-        navData.value.status = 1;
-        navData.value.check_status = 3;
-        console.log(navData.value)
+        navData.value.check_status = 7;
         loadproductData(navData.value);
       }else if(data == 'Ban'){ // 封禁商品
         navData.value = {...FromData.value};

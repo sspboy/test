@@ -24,20 +24,13 @@
 
                     <a-tab-pane key="1" tab="基础信息">
                         <!--基本信息-->
-                        <a-divider 
-                            orientation="left" 
-                            orientation-margin="0px"
-                        >
-                            必填信息
-                        </a-divider>
                         <a-row>
-
                             <!----主图--pic-->
                             <a-col :span="24">
 
                                 <!-- <a-divider orientation="left" orientation-margin="0px">主图</a-divider> -->
 
-                                <div style="width: 100%; height: 120px;margin: 10px 0 40px 0;">
+                                <div style="width: 100%; height: 120px;margin: 20px 0 30px 0;">
 
                                     <p class="img_pic" v-for="(item,index) in Pic_Fun.PicList.value">
 
@@ -143,8 +136,8 @@
                                             name="commit"
                                         >
                                             <a-select v-model:value="formState.commit" placeholder="选择方式">
-                                                <a-select-option value="true">保存+提审</a-select-option>
-                                                <a-select-option value="false">仅保存</a-select-option>
+                                                <a-select-option value="true">提交线上售卖</a-select-option>
+                                                <a-select-option value="false">放入草稿箱</a-select-option>
                                             </a-select>
                                         </a-form-item>
                                     </a-col>
@@ -162,12 +155,19 @@
                                     </a-col>
 
                                     <!--非必填信息-->
-                                    <a-divider 
-                                        orientation="left" 
-                                        orientation-margin="8px"
-                                    >
-                                        非必填项
-                                    </a-divider>
+
+                                    <a-col :span="8">
+                                        <a-form-item
+                                            label="导购标题"
+                                            name="short_product_name"
+                                        >
+                                            <a-input v-model:value="formState.short_product_name" 
+                                            autoComplete="off" 
+                                            show-count :maxlength="24" 
+                                            placeholder="输入商品导购短标题"
+                                            />
+                                        </a-form-item>
+                                    </a-col>
 
                                     <a-col :span="8">
                                         <a-form-item
@@ -200,13 +200,37 @@
                                             </a-input-group>
                                         </a-form-item>                                    
                                     </a-col>
+                                    <a-col :span="8" >
+                                        <a-form-item 
+                                            label="售后服务" 
+                                            name="after_sale_service"
+                                        >
+                                            <a-select v-model:value="formState.after_sale_service" placeholder="选择方式">
+                                                <a-select-option value="1">支持7天无理由</a-select-option>
+                                                <a-select-option value="0">不支持7天无理由</a-select-option>
+                                            </a-select>
+                                        </a-form-item>
+                                    </a-col>
+                                    <a-col :span="8" ></a-col>
                                     <a-col :span="8">
                                         <a-form-item
-                                            label="用户每次下单限购件数"
+                                            label="最少购买"
+                                            name="minimum_per_order"
+                                        >
+                                            <a-input-number placeholder="用户每次下单最少限购件数"
+                                            style="width: calc(100%);"
+                                             v-model:value="formState.minimum_per_order"
+                                            :min="1" :max="1000000" />
+
+                                        </a-form-item>
+                                    </a-col>
+                                    <a-col :span="8">
+                                        <a-form-item
+                                            label="最多购买"
                                             name="maximum_per_order"
                                         >
                                             <a-input-number 
-                                                placeholder="请输入数字" 
+                                                placeholder="用户每次下单最多限购件数" 
                                                 style="width: calc(100%);" 
                                                 v-model:value="formState.maximum_per_order" 
                                                 :min="1" :max="1000000" 
@@ -216,28 +240,18 @@
                                     </a-col>
                                     <a-col :span="8">
                                         <a-form-item
-                                            label="每个用户累计限购件数"
+                                            label="累计限购"
                                             name="limit_per_buyer"
                                         >
                                             <a-input-number 
-                                                placeholder="请输入数字" 
-                                                style="width: calc(100%);" 
+                                                placeholder="每个用户累计限购件数" 
+                                                style="width: calc(100%);"
                                                 v-model:value="formState.limit_per_buyer" 
                                                 :min="1" :max="1000000" />
 
                                         </a-form-item>
                                     </a-col>
-                                    <a-col :span="8">
-                                        <a-form-item
-                                            label="用户每次下单至少购买件数"
-                                            name="minimum_per_order"
-                                        >
-                                            <a-input-number placeholder="请输入数字"
-                                             v-model:value="formState.minimum_per_order"
-                                            :min="1" :max="1000000" />
-
-                                        </a-form-item>
-                                    </a-col>
+                                    
                                 </a-row>
                             </a-form>
 
@@ -840,8 +854,9 @@ export default defineComponent({
     props: {
         data:{typr:Object}
     },
+    // ✅ 必须添加 emits 声明:指定该组件可能会触发的事件
+    emits: ['add_call_back'],
     setup(props,ctx) {
-
         const tool = new TOOL.TOOL()            // 工具方法
         const TO = new TABLE.TableOperate()     // 表格操作方法
         const API = new utils.A_Patch()         // 请求接口地址合集
@@ -1155,7 +1170,8 @@ export default defineComponent({
             // 导购短标题
             short_product_name:undefined,
             // 售后保障-7天无理由 "after_sale_service":"{\"supply_day_return_selector\":\"7-0\"}" 
-            after_sale_service:0,
+            after_sale_service:"1"
+            
         })
         // 获取商品基础信息
         const GetInfo = async()=>{
