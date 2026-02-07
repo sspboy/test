@@ -141,12 +141,9 @@
                                 <span v-else-if="item.status == 0 && item.check_status == 3"><a-tag color="green" :bordered="false">售卖中</a-tag></span>
                                 <span v-else-if="item.status == 1 && item.check_status == 7"><a-tag color="red" :bordered="false">已下架</a-tag></span>
                                 <span v-else-if="item.status == 0 && item.check_status == 2"><a-tag color="orange" :bordered="false">审核中</a-tag></span>
-                                <span v-else-if="item.check_status == 7"><a-tag color="red" :bordered="false">审核通过</a-tag></span>
                                 <span v-else-if="item.status == 2 && item.check_status == 1"><a-tag :bordered="false">回收站</a-tag></span>
                                 <span v-else-if="item.check_status == 4"><a-tag :bordered="false">驳回</a-tag></span>
-
-
-                                {{ item.status }}-{{ item.check_status }}
+                                <span v-else-if="item.status == 0 && item.check_status == 5"><a-tag :bordered="false">封禁中</a-tag></span>
                               </div>
 
                             </a-space>
@@ -554,8 +551,9 @@ export default {
 
     // 【查询组件 回调方法】========================================开始
     const sift_select = (data)=>{
-      console.log(data)
+      
       PAGEDATA.List_conditions.page = 1 // 初始化翻页
+
       if(data == true){   // 重置刷新列表
 
         loadproductData(FromData.value); // 加载列表数据
@@ -575,6 +573,7 @@ export default {
         navData.value.status = 0;
         loadproductData(navData.value);
       }else if(data == 'All'){ // 全部商品
+        navData.value = {...FromData.value}; // 重置查询条件
         loadproductData(FromData.value);
       }else if(data == 'OnSale'){ // 售卖中商品
         navData.value = {...FromData.value};
@@ -596,13 +595,9 @@ export default {
         navData.value.status = 1;
         navData.value.check_status = 7;
         loadproductData(navData.value);
-      }else if(data == 'Pass'){ // 审核通过商品
-        navData.value = {...FromData.value};
-        navData.value.check_status = 7;
-        loadproductData(navData.value);
       }else if(data == 'Ban'){ // 封禁商品
         navData.value = {...FromData.value};
-        navData.value.status = 1;
+        navData.value.status = 0;
         navData.value.check_status = 5;
         loadproductData(navData.value);
       }

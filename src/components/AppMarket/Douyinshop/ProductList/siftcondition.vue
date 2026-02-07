@@ -19,13 +19,14 @@
                 </a-form-item>
                 <a-form-item>
                     <a-radio-group v-model:value="RadioValue" size="small" @change="handle_menu_change">
-                        <a-radio-button value="All" style="font-size: 12px;">全部商品</a-radio-button>
+                        <a-radio-button value="All" style="font-size: 12px;">全部</a-radio-button>
                         <a-radio-button value="OnSale" style="font-size: 12px;">售卖中</a-radio-button>
                         <a-radio-button value="WareHouse" style="font-size: 12px;">已下架</a-radio-button>
                         <a-radio-button value="Ban" style="font-size: 12px;">已封禁</a-radio-button>
                         <a-radio-button value="UnderReview" style="font-size: 12px;">审核中</a-radio-button>
-                        <a-radio-button value="Reject" style="font-size: 12px;">审核驳回</a-radio-button>
-                        <a-radio-button value="Pass" style="font-size: 12px;">审核通过</a-radio-button>
+                        <a-radio-button value="Reject" style="font-size: 12px;">驳回</a-radio-button>
+                    </a-radio-group>
+                    <a-radio-group v-model:value="RadioValue" size="small" style="margin-left: 16px;" @change="handle_menu_change">
                         <a-radio-button value="Draft" style="font-size: 12px;">草稿箱</a-radio-button>
                         <a-radio-button value="RecycleBin" style="font-size: 12px;">回收站</a-radio-button>
                     </a-radio-group>
@@ -109,7 +110,7 @@
 
                 <a-form-item>
                     <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 6px;" @click="onOpen_select" ghost>
-                    更多<EllipsisOutlined />
+                    更多
                     </a-button>
                     <a-button type="primary" class="font_size_12" size="small" style="font-size: 12px;float: right;margin:0 0 0 0;" html-type="submit">查询</a-button>
 
@@ -210,8 +211,6 @@ export default defineComponent({
                 ctx.emit('sift_callback', 'WareHouse')
             }else if(RadioValue.value == 'Ban'){// 已封禁
                 ctx.emit('sift_callback', 'Ban')
-            }else if(RadioValue.value == 'Pass'){// 审核通过
-                ctx.emit('sift_callback', 'Pass')
             }
         }
 
