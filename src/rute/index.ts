@@ -181,9 +181,9 @@ const routes = [
         }
     },
     {
-        path: '/batchedit',
-        name: 'batchedit',
-        component: () => import('../views/AppMarket/DouyinShop/DouyinBatchEdit.vue'),    // 视图文件
+        path: '/CreatTask',
+        name: 'CreatTask',
+        component: () => import('../views/AppMarket/DouyinShop/CreatTask.vue'),    // 视图文件
         meta:{
             title:'批量修改',
         }

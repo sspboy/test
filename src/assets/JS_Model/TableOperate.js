@@ -226,7 +226,7 @@ export class TableOperate{
 
             try{
 
-                await axios.post(this.message.url,data).then((response)=> {
+                await axios.post(this.message.url,data,{timeout: 10000}).then((response)=> {
 
                     callback(response.data)
 
@@ -505,6 +505,7 @@ export class TableOperate{
     }
     // 菜单表头
     menu={
+
         add_colum:(resdata)=>{
             
             var D = new Depart()
@@ -571,7 +572,7 @@ export class TableOperate{
             resdata.colum.push(op) // 添加操作按钮
             this.message.page = 1
             this.message.page_size = 100
-        }
+        },
     }
     // 版本表头
     version = {

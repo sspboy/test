@@ -22,9 +22,14 @@
         <div style="height: 40px;">
             <a-row>
                 <a-col :span="4">
+                    <!--导航收起按钮-->
+                  <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('menu/change')}">
+                    <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
+                    <menu-fold-outlined v-else class="trigger" />
+                  </a-button>
                     <a-button type="primary" size="small" style="font-size: 12px;" @click="feight_add.play">
                         <PlusOutlined />
-                        新建运费模板
+                        新建运费
                     </a-button>
                 </a-col>
                 <a-col offset="12" :span="8">
@@ -120,7 +125,7 @@
 </template>
 <script>
 import { defineComponent,ref,reactive,onMounted,h,nextTick,onUnmounted } from 'vue';
-import { PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
+import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
 
 import { useStore } from 'vuex'
 
@@ -136,6 +141,8 @@ export default {
 
 
     components:{
+        MenuFoldOutlined, 
+        MenuUnfoldOutlined,
         EyeOutlined,
         PlusOutlined,
         DeleteOutlined,

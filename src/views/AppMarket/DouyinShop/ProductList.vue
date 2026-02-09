@@ -316,7 +316,7 @@ export default {
     // 在组件挂载时添加事件监听器
     onMounted(() => {
         window.addEventListener('resize', handleResize);// 窗口变换时候
-        loadproductData(FromData.value)
+        loadproductData(FromData.value,'all')
     });
 
     // 在组件卸载时移除事件监听器
@@ -345,6 +345,17 @@ export default {
       loading:true,         // 列表load状态
       justify:'center',     // 列表内容对齐：loading加载居中设定
       align:'center',       // 列表内容对齐：loading加载居中设定
+
+      allNumber:"",         // 全部数量
+      OnSaleNumber:"",      // 售卖中数量
+      UnderReviewNumber:"", // 审核中数量
+      RejectNumber:"",      // 驳回数量
+      WareHouseNumber:"",   // 已下架数量
+      BanNumber:"",         // 封禁数量
+
+      DraftNumber:"",       // 草稿箱数量
+      RecycleBinNumber:"",  // 回收站数量
+
       // 查询组件配置
       List_conditions:reactive({
 
@@ -502,7 +513,7 @@ export default {
     })
 
     // 请求商品列表接口数据
-    const loadproductData = async(data) => {
+    const loadproductData = async(data,number_type='null') => {
 
         PAGEDATA.loading = true;
 
@@ -530,6 +541,24 @@ export default {
             PAGEDATA.total_number = total;
           }, 100);
         }
+        // 数量统计
+        if(number_type == 'all'){
+          PAGEDATA.allNumber = total;
+        }else if(number_type == 'OnSale'){
+          PAGEDATA.OnSaleNumber = total;
+        }else if(number_type == 'UnderReview'){
+          PAGEDATA.UnderReviewNumber = total;
+        }else if(number_type == 'Reject'){
+          PAGEDATA.RejectNumber = total;
+        }else if(number_type == 'WareHouse'){
+          PAGEDATA.WareHouseNumber = total;
+        }else if(number_type == 'Ban'){
+          PAGEDATA.BanNumber = total;
+        }else if(number_type == 'Draft'){
+          PAGEDATA.DraftNumber = total;
+        }else if(number_type == 'RecycleBin'){
+          PAGEDATA.RecycleBinNumber = total;
+        }
     }
 
     // 【翻页-组件 回调方法】========================================开始
@@ -551,55 +580,49 @@ export default {
 
     // 【查询组件 回调方法】========================================开始
     const sift_select = (data)=>{
-      
+
       PAGEDATA.List_conditions.page = 1 // 初始化翻页
 
       if(data == true){   // 重置刷新列表
-
-        loadproductData(FromData.value); // 加载列表数据
-      
+        loadproductData(FromData.value,'all'); // 加载列表数据
       }else if(data == 'Reject'){ // 驳回商品
         navData.value = {...FromData.value}; // 重置查询条件
-        // navData.value.query_options = {
-        //   "exist_audit_reject_suggest":true,
-        //   "need_audit_reject_suggest":true
-        // }
         navData.value.status = 0;
         navData.value.check_status = 4;
-        loadproductData(navData.value);
+        loadproductData(navData.value,'Reject');
       }else if(data == 'Draft'){ // 草稿箱商品
         navData.value = {...FromData.value};
         navData.value.check_status = 1;
         navData.value.status = 0;
-        loadproductData(navData.value);
+        loadproductData(navData.value,'Draft');
       }else if(data == 'All'){ // 全部商品
         navData.value = {...FromData.value}; // 重置查询条件
-        loadproductData(FromData.value);
+        loadproductData(navData.value,'all');
       }else if(data == 'OnSale'){ // 售卖中商品
         navData.value = {...FromData.value};
         navData.value.status = 0;
         navData.value.check_status = 3;
-        loadproductData(navData.value);
+        loadproductData(navData.value,'OnSale');
       }else if(data == 'UnderReview'){ // 审核中商品
         navData.value = {...FromData.value};
         navData.value.status = 0;
         navData.value.check_status = 2;
-        loadproductData(navData.value);
+        loadproductData(navData.value,'UnderReview');
       }else if(data == 'RecycleBin'){ // 回收站商品
         navData.value = {...FromData.value};
         navData.value.status = 2;
         navData.value.check_status = 1;
-        loadproductData(navData.value);
+        loadproductData(navData.value,'RecycleBin');
       }else if(data == 'WareHouse'){ // 已下架商品
         navData.value = {...FromData.value};
         navData.value.status = 1;
         navData.value.check_status = 7;
-        loadproductData(navData.value);
+        loadproductData(navData.value,'WareHouse');
       }else if(data == 'Ban'){ // 封禁商品
         navData.value = {...FromData.value};
         navData.value.status = 0;
         navData.value.check_status = 5;
-        loadproductData(navData.value);
+        loadproductData(navData.value,'Ban');
       }
       else{ // 查询按钮
         navData.value = data;// 查询条件到翻页使用

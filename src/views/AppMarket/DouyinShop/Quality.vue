@@ -205,7 +205,7 @@ export default {
 
             menudata:{       // 菜单选中配置
                 'key':'95',
-                'openKeys':'douyinshop',
+                'openKeys':'Refine',
                 },
             loading:true,         // 列表load状态
             justify:'center',     // 列表内容对齐：loading加载居中设定

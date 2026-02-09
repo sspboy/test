@@ -1,13 +1,16 @@
 /** 导航菜单类 **/
 import {h} from "vue";
 import {
-    ReconciliationOutlined,
+    PictureOutlined, // 图片图标
+    MedicineBoxOutlined, // 药箱图标
+    FieldTimeOutlined,// 时间图标
+    ReconciliationOutlined,// 对账图标
     CodeOutlined, 
-    SettingOutlined,
-  UserOutlined,
-  MenuOutlined,
-  BarsOutlined,
-  AccountBookOutlined,
+    SettingOutlined,// 设置图标
+    UserOutlined,// 用户图标
+    MenuOutlined,
+    BarsOutlined,
+    AccountBookOutlined,
     ShopOutlined,
     HomeOutlined,
     RobotOutlined,
@@ -100,7 +103,10 @@ export class Menu {
                 'RobotOutlined':() => h(RobotOutlined),
                 'CopyOutlined':() => h(CopyOutlined),
                 'FormOutlined':() => h(FormOutlined),
-                'ReconciliationOutlined':()=>h(ReconciliationOutlined)
+                'ReconciliationOutlined':()=>h(ReconciliationOutlined),
+                'FieldTimeOutlined':()=>h(FieldTimeOutlined),
+                'MedicineBoxOutlined':() => h(MedicineBoxOutlined),
+                'PictureOutlined':() => h(PictureOutlined)
                 
             }
         }

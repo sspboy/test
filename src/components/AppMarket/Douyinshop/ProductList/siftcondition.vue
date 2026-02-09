@@ -2,7 +2,7 @@
 
     <!-- 自定义标题 -->
     <div style="width: 1500px;height: 40px;clear: both;" >
-
+            
             <a-form
                 layout="inline"
                 ref="formRef"
@@ -11,6 +11,13 @@
                 @finish="handleFinish"
                 style="float: left;margin: -4px 0 0 0;"
             >
+            <a-form-item>
+                <!--导航收起按钮-->
+                  <a-button type="primary" size="small" style="font-size: 12px;" @click="() => {store.commit('menu/change')}">
+                    <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
+                    <menu-fold-outlined v-else class="trigger" />
+                  </a-button>
+            </a-form-item>
                 <a-form-item>
                     <a-button type="primary" size="small" style="font-size: 12px;" @click="show_add">
                     <PlusOutlined />
@@ -19,16 +26,16 @@
                 </a-form-item>
                 <a-form-item>
                     <a-radio-group v-model:value="RadioValue" size="small" @change="handle_menu_change">
-                        <a-radio-button value="All" style="font-size: 12px;">全部</a-radio-button>
-                        <a-radio-button value="OnSale" style="font-size: 12px;">售卖中</a-radio-button>
-                        <a-radio-button value="WareHouse" style="font-size: 12px;">已下架</a-radio-button>
-                        <a-radio-button value="Ban" style="font-size: 12px;">已封禁</a-radio-button>
-                        <a-radio-button value="UnderReview" style="font-size: 12px;">审核中</a-radio-button>
-                        <a-radio-button value="Reject" style="font-size: 12px;">驳回</a-radio-button>
+                        <a-radio-button value="All" style="font-size: 12px;">全部 {{ props.data.allNumber }}</a-radio-button>
+                        <a-radio-button value="OnSale" style="font-size: 12px;">售卖中 {{ props.data.OnSaleNumber }}</a-radio-button>
+                        <a-radio-button value="WareHouse" style="font-size: 12px;">已下架 {{ props.data.WareHouseNumber }}</a-radio-button>
+                        <a-radio-button value="Ban" style="font-size: 12px;">已封禁 {{ props.data.BanNumber }}</a-radio-button>
+                        <a-radio-button value="UnderReview" style="font-size: 12px;">审核中 {{ props.data.UnderReviewNumber }}</a-radio-button>
+                        <a-radio-button value="Reject" style="font-size: 12px;">驳回 {{ props.data.RejectNumber }}</a-radio-button>
                     </a-radio-group>
                     <a-radio-group v-model:value="RadioValue" size="small" style="margin-left: 16px;" @change="handle_menu_change">
-                        <a-radio-button value="Draft" style="font-size: 12px;">草稿箱</a-radio-button>
-                        <a-radio-button value="RecycleBin" style="font-size: 12px;">回收站</a-radio-button>
+                        <a-radio-button value="Draft" style="font-size: 12px;">草稿箱 {{ props.data.DraftNumber }}</a-radio-button>
+                        <a-radio-button value="RecycleBin" style="font-size: 12px;">回收站 {{ props.data.RecycleBinNumber }}</a-radio-button>
                     </a-radio-group>
                 </a-form-item>
 
@@ -127,16 +134,19 @@
 
 <script>
 import { defineComponent,ref,reactive,onMounted } from 'vue';
-import { CopyOutlined,EllipsisOutlined,UnorderedListOutlined,TableOutlined,PlusOutlined} from '@ant-design/icons-vue';
+import { MenuFoldOutlined, MenuUnfoldOutlined,CopyOutlined,EllipsisOutlined,UnorderedListOutlined,TableOutlined,PlusOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as PL from '@/assets/douyinshop/ProductList';
+import { useStore } from 'vuex'
 
 export default defineComponent({
 
     name: "Siftcondition",  // 筛选条件查询组件
     // 引用组件
     components: {
+        MenuFoldOutlined, 
+        MenuUnfoldOutlined,
         TableOutlined,
         UnorderedListOutlined,
         CopyOutlined,
@@ -152,6 +162,7 @@ export default defineComponent({
     },
 
     setup(props, ctx) {
+    const store = useStore();// 共享数据
 
         const API = new utils.A_Patch()         // 请求接口地址合集
         const ProList = new PL.ProductList_fun()     // 批量修改方法
@@ -195,28 +206,28 @@ export default defineComponent({
 
         // 列表菜单切换方法
         const handle_menu_change = (e) => {
-            if(RadioValue.value == 'All'){// 全部商品
+            if(RadioValue.value == 'All'){              // 1全部商品
                 ctx.emit('sift_callback', 'All')
-            }else if(RadioValue.value == 'OnSale'){// 在线售卖中
+            }else if(RadioValue.value == 'OnSale'){     // 2在线售卖
                 ctx.emit('sift_callback', 'OnSale')
-            }else if(RadioValue.value == 'UnderReview'){// 审核中
+            }else if(RadioValue.value == 'UnderReview'){// 3审核中
                 ctx.emit('sift_callback', 'UnderReview')
-            }else if(RadioValue.value == 'Draft'){// 草稿箱
-                ctx.emit('sift_callback', 'Draft')
-            }else if(RadioValue.value == 'Reject'){// 驳回商品
+            }else if(RadioValue.value == 'Reject'){     // 5驳回商品
                 ctx.emit('sift_callback', 'Reject')
-            }else if(RadioValue.value == 'RecycleBin'){// 回收站
-                ctx.emit('sift_callback', 'RecycleBin')
-            }else if(RadioValue.value == 'WareHouse'){// 仓库中
+            }else if(RadioValue.value == 'WareHouse'){  // 7已下架
                 ctx.emit('sift_callback', 'WareHouse')
-            }else if(RadioValue.value == 'Ban'){// 已封禁
+            }else if(RadioValue.value == 'Ban'){        // 8已封禁
                 ctx.emit('sift_callback', 'Ban')
+            }else if(RadioValue.value == 'Draft'){      // 4草稿箱
+                ctx.emit('sift_callback', 'Draft')
+            }else if(RadioValue.value == 'RecycleBin'){ // 6回收站
+                ctx.emit('sift_callback', 'RecycleBin')
             }
         }
 
 
-
     return {
+        store,
         formRef,
         page_config,
         props,

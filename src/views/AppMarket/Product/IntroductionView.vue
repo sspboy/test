@@ -78,7 +78,7 @@
           </a-col>
 
           <a-col :span="6">
-              <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }" @click="router.push('/batchedit')">
+              <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }" @click="router.push('/CreatTask')">
                   <a-flex justify="space-between">
                     
                     <CodeTwoTone class="icoStyle"/>
@@ -97,13 +97,15 @@
         </a-row>
 
         <a-row>
-          <a-col :span="24">
+          <a-col :span="20">
+
             <div class="ZhenduanTitle">
-                <a-space style="float: left;" :size="10">
+
+                <a-space :size="10">
                   <div class="font_size_12 task_sty" style="width:100px;margin: 4px 0 0 4px;font-weight: bold;">
                     <a-skeleton active :paragraph="{ rows: 1 }" :title="false" :loading="QualityTask.load_vife">
                     <span style="display: block;height: 26px;line-height: 18px;">
-                      <a href="#" @click="router.push('/quality');"> <DashboardOutlined /> 诊断中心>> </a>
+                       <DashboardOutlined /> 诊断中心
                     </span>
                     </a-skeleton>
                   </div>
@@ -131,8 +133,14 @@
                         <span style="display: block;height: 26px;line-height: 18px;">任务id --{{ QualityTask.task_id }}</span>
                     </a-skeleton>
                   </div>
-
                 </a-space>
+            </div>
+          </a-col>
+          <a-col :span="4">
+            <div class="ZhenduanTitle">
+                  <div class="font_size_12" style="text-align: right;width: 100%;margin: 6px 0 0 0;height: 26px;padding-right: 10px;">
+                        <span style="display: block;height: 26px;line-height: 32px;"><a @click="router.push('/quality');">去诊断>></a></span>
+                  </div>
             </div>
           </a-col>
         </a-row>
@@ -339,17 +347,6 @@
 
       <!--内容右侧 开始-->
       <a-layout-sider style="background-color: #fff;margin: 6px 0 0 0;" width='300px'>
-
-        <div class="RightMiniBox">
-          <h4><MehFilled style="color:dimgray;"/> 会员信息</h4>
-          <div class="font_size_12" style="padding: 8px 0 0 0;">
-            <a-row :gutter="[12, 12]">
-              <a-col :span="24">头像：用户名称</a-col>
-              <a-col :span="24">店铺名称：大飒飒</a-col>
-              <a-col :span="24">所属版本：基础版</a-col>
-            </a-row>
-          </div>
-        </div>
 
         <div class="RightMiniBox">
           <h4><QuestionCircleFilled style="color:dimgray;"/> 帮助中心</h4>

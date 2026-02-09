@@ -69,6 +69,14 @@
               </template>
               <!--定义操作按钮 结束-->
 
+              <!--定义操作按钮 开始-->
+              <template v-if="column.key === '6'">
+                  <span v-for="value in JSON.parse(record.function_info)">
+                    <span>{{ value.label }}-</span>
+                  </span>
+              </template>
+              <!--定义操作按钮 结束-->
+
             </template>
 
           </a-table>
@@ -214,7 +222,7 @@ export default {
     });
     // 在组件卸载时移除事件监听器
     onUnmounted(() => {
-    window.removeEventListener('resize', handleResize);
+      window.removeEventListener('resize', handleResize);
     });
 
 
@@ -270,7 +278,9 @@ export default {
       })
     }
 
+
     return {
+      
       store,
       loading,
       innerHeight,
@@ -282,7 +292,7 @@ export default {
       Add_fun,
       Edit_fun,
       Del_fun,
-      rowSelection
+      rowSelection,
     }
   }
 }

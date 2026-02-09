@@ -24,11 +24,15 @@
 
         <div style="height: 40px;">
             <a-row>
-
-                <a-col :span="4">
+                <a-col :span="4" >
+                    <!--导航收起按钮-->
+                  <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('menu/change')}">
+                    <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
+                    <menu-fold-outlined v-else class="trigger" />
+                  </a-button>
                     <a-button type="primary" size="small" @click="PAGEDATA.ADDtemplate">
                         <PlusOutlined />
-                        新建尺码模板
+                        新建尺码
                     </a-button>
                 </a-col>
                 <a-col offset="12" :span="8">
@@ -118,7 +122,7 @@
 <script>
 import { defineComponent,ref,reactive,onMounted,h,nextTick,onUnmounted,defineAsyncComponent } from 'vue';
 import { useStore } from 'vuex'
-import { PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
+import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
 
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
@@ -131,6 +135,8 @@ export default {
     name:"SizeTemplate",
 
     components:{
+        MenuFoldOutlined, 
+        MenuUnfoldOutlined,
         EyeOutlined,
         PlusOutlined,
         DeleteOutlined,
