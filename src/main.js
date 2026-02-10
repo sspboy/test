@@ -7,7 +7,7 @@ import store from '/src/staore'         // 全局数据状态共享
 import 'css-doodle' // css 特效模块
 import vue3videoPlay from 'vue3-video-play' // 引入视频组件
 import 'vue3-video-play/dist/style.css' // 引入视频css
-
+// 全局样式（仅 Tailwind components/utilities，无 base）
 // 页面标题设置---开始
 router.beforeEach((to, from, next) => {
   /* 路由发生变化修改页面title */

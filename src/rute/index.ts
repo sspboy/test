@@ -26,9 +26,6 @@ const routes = [
         name: 'User',
         // 路由守卫,用做前端鉴权访问路由
         beforeEnter: (to, from) => {
-            // console.log(from)
-            // console.log(to)
-            // reject the navigation
             return true
         },
         component: () => import('../views/admin/UserView.vue'),   // 视图文件
@@ -142,7 +139,7 @@ const routes = [
     {
         path: '/quality',
         name: 'quality',
-        component: () => import('../views/AppMarket/DouyinShop/Quality.vue'),    // 视图文件
+        component: () => import('../views/AppMarket/Refine/Quality.vue'),    // 视图文件
         meta:{
             title:'诊断中心',
         }
@@ -181,11 +178,83 @@ const routes = [
         }
     },
     {
-        path: '/CreatTask',
-        name: 'CreatTask',
-        component: () => import('../views/AppMarket/DouyinShop/CreatTask.vue'),    // 视图文件
+        path: '/creatTask',
+        name: 'creatTask',
+        component: () => import('../views/AppMarket/BatchEditTask/CreatTask.vue'),    // 视图文件
         meta:{
-            title:'批量修改',
+            title:'新建任务',
+        }
+    },
+    {
+        path: '/operationlog',
+        name: 'operationlog',
+        component: () => import('../views/AppMarket/BatchEditTask/Operationlog.vue'),    // 视图文件
+        meta:{
+            title:'任务记录',
+        }
+    },
+    {
+        path: '/editlog',
+        name: 'editlog',
+        component: () => import('../views/AppMarket/BatchEditTask/Editlog.vue'),    // 视图文件
+        meta:{
+            title:'任务明细',
+        }
+    },
+    {
+        path: '/listinganddelisting',
+        name: 'listinganddelisting',
+        component: () => import('../views/AppMarket/TimeTask/Listinganddelisting.vue'),    // 视图文件
+        meta:{
+            title:'定时上下架',
+        }
+    },
+    {
+        path: '/clearNullSales',
+        name: 'clearNullSales',
+        component: () => import('../views/AppMarket/TimeTask/ClearNullSales.vue'),    // 视图文件
+        meta:{
+            title:'清空无销量商品',
+        }
+    },
+    {
+        path: '/clearNullTraffic',
+        name: 'clearNullTraffic',
+        component: () => import('../views/AppMarket/TimeTask/ClearNullTraffic.vue'),    // 视图文件
+        meta:{
+            title:'清空无流量商品',
+        }
+    },
+    {
+        path: '/lowcostdetection',
+        name: 'lowcostdetection',
+        component: () => import('../views/AppMarket/Refine/Lowcostdetection.vue'),    // 视图文件
+        meta:{
+            title:'低价检测',
+        }
+    },
+    {
+        path: '/bugworddetection',
+        name: 'bugworddetection',
+        component: () => import('../views/AppMarket/Refine/Bugworddetection.vue'),    // 视图文件
+        meta:{
+            title:'违禁词检测',
+        }
+    },
+    {
+        path: '/cateerror',
+        name: 'cateerror',
+        component: () => import('../views/AppMarket/Refine/Cateerror.vue'),    // 视图文件
+        meta:{
+            title:'类目错放',
+        }
+    },
+    {
+        path: '/moreShopManagement',
+        name: 'moreShopManagement',
+        component: () => import('../views/AppMarket/FunctionSettings/MoreShopManagement.vue'),    // 视图文件
+        meta:{
+            title:'多店管理',
         }
     },
     {
@@ -194,6 +263,22 @@ const routes = [
         component: () => import('../views/AppMarket/Product/IntroductionView.vue'),    // 视图文件
         meta:{
             title:'产品介绍',
+        }
+    },
+    {
+        path: '/Whitebackgroundimage',
+        name: 'Whitebackgroundimage',
+        component: () => import('../views/AppMarket/ImageEdit/white_background_image.vue'),    // 视图文件
+        meta:{
+            title:'白底图',
+        }
+    },
+    {
+        path: '/Sizeoptimization',
+        name: 'Sizeoptimization',
+        component: () => import('../views/AppMarket/ImageEdit/Size_optimization.vue'),    // 视图文件
+        meta:{
+            title:'尺寸优化',
         }
     },
     {   // 404 报错页面
