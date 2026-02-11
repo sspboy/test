@@ -1,7 +1,6 @@
 <template>
 
     <!-- 自定义标题 -->
-    <div style="width: 1500px;height: 40px;clear: both;" >
             
             <a-form
                 layout="inline"
@@ -30,6 +29,7 @@
                         <a-radio-button value="OnSale" style="font-size: 12px;">售卖中 {{ props.data.OnSaleNumber }}</a-radio-button>
                         <a-radio-button value="WareHouse" style="font-size: 12px;">已下架 {{ props.data.WareHouseNumber }}</a-radio-button>
                         <a-radio-button value="Ban" style="font-size: 12px;">已封禁 {{ props.data.BanNumber }}</a-radio-button>
+                        <a-radio-button value="Waitreview" style="font-size: 12px;">待审核 {{ props.data.WaitreviewNumber }}</a-radio-button>
                         <a-radio-button value="UnderReview" style="font-size: 12px;">审核中 {{ props.data.UnderReviewNumber }}</a-radio-button>
                         <a-radio-button value="Reject" style="font-size: 12px;">驳回 {{ props.data.RejectNumber }}</a-radio-button>
                     </a-radio-group>
@@ -124,7 +124,6 @@
 
                 </a-form-item>
             </a-form>
-    </div>
         
     <!--条件查询组件 结束 -->
 
@@ -210,6 +209,8 @@ export default defineComponent({
                 ctx.emit('sift_callback', 'All')
             }else if(RadioValue.value == 'OnSale'){     // 2在线售卖
                 ctx.emit('sift_callback', 'OnSale')
+            }else if(RadioValue.value == 'Waitreview'){// 3待审核
+                ctx.emit('sift_callback', 'Waitreview')
             }else if(RadioValue.value == 'UnderReview'){// 3审核中
                 ctx.emit('sift_callback', 'UnderReview')
             }else if(RadioValue.value == 'Reject'){     // 5驳回商品

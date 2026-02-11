@@ -208,23 +208,23 @@ import nav_pagination from "@/components/nav_pagination.vue";
 
 
 // 编辑组件
-import Edit_title from "@/components/AppMarket/Douyinshop/edittitle.vue";
-import Edit_pic from "@/components/AppMarket/Douyinshop/editpic.vue";
-import Edit_SKU from "@/components/AppMarket/Douyinshop/editSKU.vue";
-import Edit_format from "@/components/AppMarket/Douyinshop/editformat.vue";
-import Edit_class from "@/components/AppMarket/Douyinshop/editclass.vue";
-import Edit_white_image from "@/components/AppMarket/Douyinshop/editwhiteimage.vue";
-import Edit_des from "@/components/AppMarket/Douyinshop/editdes.vue";
-import Edit_upload_image from "@/components/AppMarket/Douyinshop/edituploadimage.vue";
-import Edit_reduce_type from "@/components/AppMarket/Douyinshop/editreducetype.vue";
-import Edit_commit from "@/components/AppMarket/Douyinshop/editcommit.vue";
-import Edit_product_type from "@/components/AppMarket/Douyinshop/editproducttype.vue";
-import Edit_mobile from "@/components/AppMarket/Douyinshop/editmobile.vue";
+import Edit_title from "@/components/AppMarket/copyProduct/edittitle.vue";
+import Edit_pic from "@/components/AppMarket/copyProduct/editpic.vue";
+import Edit_SKU from "@/components/AppMarket/copyProduct/editSKU.vue";
+import Edit_format from "@/components/AppMarket/copyProduct/editformat.vue";
+import Edit_class from "@/components/AppMarket/copyProduct/editclass.vue";
+import Edit_white_image from "@/components/AppMarket/copyProduct/editwhiteimage.vue";
+import Edit_des from "@/components/AppMarket/copyProduct/editdes.vue";
+import Edit_upload_image from "@/components/AppMarket/copyProduct/edituploadimage.vue";
+import Edit_reduce_type from "@/components/AppMarket/copyProduct/editreducetype.vue";
+import Edit_commit from "@/components/AppMarket/copyProduct/editcommit.vue";
+import Edit_product_type from "@/components/AppMarket/copyProduct/editproducttype.vue";
+import Edit_mobile from "@/components/AppMarket/copyProduct/editmobile.vue";
 
 
 
 // 删除组件
-import Model_del from '@/components/AppMarket/Douyinshop/Modeldel.vue';
+import Model_del from '@/components/AppMarket/copyProduct/Modeldel.vue';
 // 筛选条件查询组件
 import Siftcondition from '@/components/AppMarket/Douyinshop/ProductList/siftcondition.vue';
 
@@ -376,7 +376,7 @@ export default {
 
       TO.actions.list(message,(res)=>{
         
-        console.log(res)
+        // console.log(res)
         
         TO.copylog.add_colum(res)        // 添加表头
 

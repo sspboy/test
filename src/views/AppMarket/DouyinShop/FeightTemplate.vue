@@ -45,7 +45,7 @@
         <div :style="{height:PAGEDATA.innerHeight + 'px'}" class="content_list">
 
             <a-list
-                :grid="{ gutter: 0, column: 4 }"
+                :grid="{ gutter: 0, column: 5 }"
                 size="default"
                 :loading="initLoading"
                 :data-source="list"
@@ -57,8 +57,16 @@
                     <a-card size="small" style="margin:0px 10px 10px 0;font-size: 12px;">
 
                         <template #title>
-                            <span class="font_size_12">{{ item.template.template_name }}</span>
+                            <span class="font_size_12">名称：{{ item.template.template_name }}</span>
                         </template>
+                        
+                        ID: {{ item.template.id }}
+                        
+                        计价方式：{{ item.template.calculate_type }}
+
+                        类型：{{ item.template.rule_type }}
+
+
                         <template #actions>
                             <EyeOutlined @click="feight_detail.play(item)"/>
                             <edit-outlined @click="feight_update.play(item)"/>
@@ -67,15 +75,11 @@
                     </a-card>
                 </template>
 
-                <template #loadMore>
-                    <div style="height: 50px;padding: 20px 0 0 0;width: 100%;text-align: center;">
-                        <a-button @click="onLoadMore" size="small" style="font-size: 12px;" :loading="loading">加载更多</a-button>
-                    </div>
-                </template>
-
             </a-list>
                         
         </div>
+        <!-- 分页组件 -->
+        <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
 
       </a-layout-content>
 
@@ -93,6 +97,7 @@
   >
     <p>运费尺码模板</p>
 </a-drawer>
+
 <!-- 详情运费模板 -->
 <a-drawer
     v-model:open="feight_detail.open"
@@ -103,6 +108,13 @@
     placement="right"
   >
     <p>运费模板详情</p>
+    <p>运费模板id</p>
+    <p>运费模板名称</p>
+    <p>计价方式</p>
+    <p>快递方式</p>
+    <p>模板类型</p>
+    <p>固定运费金额(单位:分)</p>
+
 </a-drawer>
 <!-- 运费模板更新 -->
 <a-drawer
@@ -126,6 +138,7 @@
 <script>
 import { defineComponent,ref,reactive,onMounted,h,nextTick,onUnmounted } from 'vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined,PlusOutlined,EditOutlined,EllipsisOutlined,DeleteOutlined,EyeOutlined } from '@ant-design/icons-vue';
+import nav_pagination from "@/components/nav_pagination.vue";
 
 import { useStore } from 'vuex'
 
@@ -150,6 +163,7 @@ export default {
         EllipsisOutlined,
         menu_left,
         menu_head,
+        nav_pagination
     },
     setup(props) {
 
@@ -162,9 +176,12 @@ export default {
                 'openKeys':'douyinshop' // 一级菜单
             },
 
-            innerHeight:ref(window.innerHeight-150),// 初始化表格高度
-            List_conditions:ref({
-                page:1
+            innerHeight:ref(window.innerHeight-180),// 初始化表格高度
+            // 默认条件
+            total_number:0,// 内容总数
+            List_conditions:reactive({
+                "page":0,
+                "size":10, 
             })
         })
         const tool = new TOOL.TOOL()            // 工具方法
@@ -178,12 +195,13 @@ export default {
         const total_num = ref(0); // 数据总条数
         const data = ref([]); // 初始化数据对象
         const list = ref([]);
-
         const loading = ref(false);
+
         // 组件挂之后---请求数据===============================开始
+
         // 定义一个函数来处理窗口大小变化 ==
         const handleResize = () => {
-            PAGEDATA.innerHeight = window.innerHeight - 150; // 作为表格自适应高度
+            PAGEDATA.innerHeight = window.innerHeight - 180; // 作为表格自适应高度
         };
 
         // 在组件卸载时移除事件监听器
@@ -195,68 +213,59 @@ export default {
         
         onMounted(() => {
 
-            const first_Data = {
-                "page":count.value,
-                "size":12, 
-            }
-
-          tool.Http_.post(API.AppSrtoreAPI.freight.list, first_Data).then(res=>{
-              
-            var datarespone = res.data.data;// 数据对象
-            var total_num = datarespone.Count; // 数据总条数
-            var List = datarespone.List; // 列表数据
-
-            initLoading.value = false;
-            console.log('运费模板',List)
-
-            data.value = List;
-
-            list.value = List;
-
-          })
+            window.addEventListener('resize', handleResize);// 窗口变换时候
+            load_page(navData.value) // 初始化列表数据
 
         })
 
+        // 翻页查询条件配置:每次翻页只需替换 page size 即可
+        const navData = ref({
+            "page":0,
+            "size":10, 
+        })
 
         // 加载更多数据
-        const onLoadMore = () => {
+        const load_page = (data) => {
 
             loading.value = true;
 
-            count.value = count.value + 1;
+            tool.Http_.post(API.AppSrtoreAPI.freight.list, data).then(res=>{
 
-            const get_more_data = {
-                "page":count.value,
-                "size":12, 
-            }
-
-            tool.Http_.post(API.AppSrtoreAPI.freight.list, get_more_data).then(res=>{
+                var datalist = res.data.data.List;// 数据列表
+                var Count = res.data.data.Count;// 数据总条数
+                // console.log("请求数据",res)
                 
-                if(res.data.data == "None"){ // 请求数据为空
+                PAGEDATA.total_number = Count;// 数据总条数
+                
+                if(datalist.length === 0){ // 请求数据为空
 
-                    list.value = data.value;
-
-                    loading.value = false;
+                    initLoading.value = false;
 
                     return tool.Fun_.message('info','没有更多数据了') // 提示信息
                 
                 }else{ // 请求数据不为空
 
-                    const newData = data.value.concat(res.data.data.List);
+                    list.value = datalist;
 
-                    data.value = newData;
-
-                    list.value = newData;
-
-                    nextTick(() => {
-                        window.dispatchEvent(new Event('resize'));
-                    });
-                    
-                    loading.value = false;
+                    initLoading.value = false;
 
                 }
             })
         };
+
+        // 【翻页-组件 回调方法】========================================开始
+        const page_turning = (data)=>{
+
+            navData.value.page = data.page-1;
+            
+            navData.value.size = data.page_size;
+            
+            initLoading.value = true;
+
+            load_page(navData.value)
+
+        }
+        // 【查询组件 回调方法】========================================结束
 
         // 新建运费详情
         const feight_add = reactive({
@@ -307,11 +316,12 @@ export default {
           initLoading,
           loading,
           list,
-          onLoadMore,
+          load_page,
           feight_update,
           feight_delete,
           feight_add,
           feight_detail,
+          page_turning
         }
     }
 

@@ -584,10 +584,15 @@
                     <div v-for="(val,index) in item.reject_reason_list" :key="index">
 
                             <div v-if="item.type == 'description_pic'">
-                                <p style="font-size: 12px;">{{ val.reason_text }}</p>
+
+                                <p v-html="val.reason_text" style="font-size: 12px;line-height: 28px;"></p>
+                                <a-space align="end" :size="10">
+
                                 <span v-for="(img,index) in val.reject_img_list" :key="index">
                                     <a-image :src="img.url" width="100px" height="100px"></a-image>
                                 </span>
+                                </a-space>
+
                             </div>
 
                             <div v-else-if="item.type == 'name'">
@@ -596,10 +601,11 @@
                             
                             <div v-else-if="item.type == 'product_pic'">
                                 <p v-html="val.reason_text" style="font-size: 12px;line-height: 28px;"></p>
-
+                                <a-space align="end" :size="10">
                                 <span v-for="(img,index) in val.reject_img_list" :key="index">
                                     <a-image :src="img.url" width="100px" height="100px"></a-image>
                                 </span>
+                                </a-space>
                             </div>
 
                             <div v-else-if="item.type == 'product_format'">
@@ -607,7 +613,7 @@
                             </div>
 
                             <div v-else>
-                                <p style="font-size: 12px;line-height: 28px;">{{ val.reason_text }}</p>
+                                <p v-html="val.reason_text" style="font-size: 12px;line-height: 28px;"></p>
                             </div>
 
                     </div>
@@ -692,6 +698,7 @@ export default defineComponent({
         // 查看审核驳回
         const showreject = () => {
             reject_info.open = true;
+            console.log(reject_info.records_list)
         };
 
         // 商品视频

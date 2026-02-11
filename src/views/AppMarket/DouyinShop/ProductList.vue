@@ -28,11 +28,11 @@
       <!--右侧 内容组件  开始-->
       <a-layout-content class="content_border">
   
-        <!--条件查询组件 开始 -->
-        <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
+        <!--条件查询组件 开始 -->        
+        <div style="width: 100%;overflow: hidden;">
+          <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
+        </div>
         <!--条件查询组件 结束 -->
-
-
         <!--列表组件 开始 -->
         
           <div :style="{height:PAGEDATA.innerHeight + 'px','overflow-y':'auto','overflow-x':'hidden'}">
@@ -138,14 +138,15 @@
                               <!--商品状态判断-->
                               <div>
                                 <span v-if="item.status == 0 && item.check_status == 1"><a-tag color="blue" :bordered="false">草稿</a-tag></span>
-                                <span v-else-if="item.status == 0 && item.check_status == 3"><a-tag color="green" :bordered="false">售卖中</a-tag></span>
-                                <span v-else-if="item.status == 1 && item.check_status == 7"><a-tag color="red" :bordered="false">已下架</a-tag></span>
+                                <span v-else-if="item.status == 0 && item.check_status == 3"><a-tag color="#87d068">售卖中</a-tag></span>
+                                <span v-else-if="item.status == 1 && item.check_status == 7"><a-tag color="#999999">已下架</a-tag></span>
+                                <span v-else-if="item.status == 1 && item.check_status == 1"><a-tag color="orange" :bordered="false">待审核</a-tag></span>
                                 <span v-else-if="item.status == 0 && item.check_status == 2"><a-tag color="orange" :bordered="false">审核中</a-tag></span>
                                 <span v-else-if="item.status == 2 && item.check_status == 1"><a-tag :bordered="false">回收站</a-tag></span>
-                                <span v-else-if="item.check_status == 4"><a-tag :bordered="false">驳回</a-tag></span>
+                                <span v-else-if="item.check_status == 4"><a-tag color="#f50">驳回</a-tag></span>
                                 <span v-else-if="item.status == 0 && item.check_status == 5"><a-tag :bordered="false">封禁中</a-tag></span>
                               </div>
-
+                              <!-- {{ item.status }}-{{ item.check_status }} -->
                             </a-space>
 
                             <div>
@@ -348,6 +349,7 @@ export default {
 
       allNumber:"",         // 全部数量
       OnSaleNumber:"",      // 售卖中数量
+      WaitreviewNumber:"",    // 待审核数量
       UnderReviewNumber:"", // 审核中数量
       RejectNumber:"",      // 驳回数量
       WareHouseNumber:"",   // 已下架数量
@@ -546,6 +548,8 @@ export default {
           PAGEDATA.allNumber = total;
         }else if(number_type == 'OnSale'){
           PAGEDATA.OnSaleNumber = total;
+        }else if(number_type == 'Waitreview'){
+          PAGEDATA.WaitreviewNumber = total;
         }else if(number_type == 'UnderReview'){
           PAGEDATA.UnderReviewNumber = total;
         }else if(number_type == 'Reject'){
@@ -603,6 +607,11 @@ export default {
         navData.value.status = 0;
         navData.value.check_status = 3;
         loadproductData(navData.value,'OnSale');
+      }else if(data == 'Waitreview'){ // 待审核商品
+        navData.value = {...FromData.value};
+        navData.value.status = 1;
+        navData.value.check_status = 1;
+        loadproductData(navData.value,'Waitreview');
       }else if(data == 'UnderReview'){ // 审核中商品
         navData.value = {...FromData.value};
         navData.value.status = 0;

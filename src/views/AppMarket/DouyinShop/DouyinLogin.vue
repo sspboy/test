@@ -1,3 +1,5 @@
+
+<!---授权跳转页面， 进入应用主页-->
 <template>
   <a-row>
     <a-col :span="12" :offset="6" style="text-align:center;margin-top: 20%;">
@@ -14,10 +16,6 @@
             <p class="font_size_12">将在 {{s_time.seconds}} 秒后进入</p>
             </div>
         </div>
-
-        
-
-
     </a-col>
   </a-row>
 
