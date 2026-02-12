@@ -211,7 +211,17 @@
                                             </a-select>
                                         </a-form-item>
                                     </a-col>
-                                    <a-col :span="8" ></a-col>
+                                    <a-col :span="8">
+                                        <a-form-item 
+                                            label="发货模式" 
+                                            name="presell_type"
+                                        >
+                                            <a-select v-model:value="formState.presell_type" placeholder="选择方式">
+                                                <a-select-option value="0">现货发货</a-select-option>
+                                            </a-select>
+                                        </a-form-item>
+
+                                    </a-col>
                                     <a-col :span="8">
                                         <a-form-item
                                             label="最少购买"
@@ -257,10 +267,7 @@
 
 
                         <!--分类开始-->
-                        <a-divider orientation="left" orientation-margin="0px">
-                            商品分类
-
-                        </a-divider>
+                        <a-divider orientation="left" orientation-margin="0px">商品分类</a-divider>
                         <p style="margin-bottom: 30px;">
                             <a-button 
                                 type="dashed" 
@@ -813,7 +820,7 @@
         <a-affix :offset-bottom="1">
             <div style="width: 950px;margin: 0 auto;text-align: center;padding: 10px 0 0 0;">
                 <a-space align="end" style="height: 100%;">
-                    <a-button type="primary" @click="handleOk">提交</a-button>
+                    <a-button type="primary" @click="handleOk" :loading="PAGEDATA.upload_product_loading">提交</a-button>
                     <a-button @click="closed">取消</a-button>
                 </a-space>
             </div>
@@ -913,6 +920,8 @@ export default defineComponent({
             chang_freighttemplate:()=>{
                 PAGEDATA.freighttemplate_open = true;
             },
+            // 上传按钮状态
+            upload_product_loading:ref(false)
         })
 
         // 主图对象
@@ -1163,6 +1172,8 @@ export default defineComponent({
             size_info_template_id:{"name":undefined,"value":undefined},// 尺码模板
             commit:'false',                 // 提交
             remark:undefined,               // 商家备注
+            presell_type:"0",         // 发货模式
+            presell_delay_time:undefined,   // 预售发货时间
             // 限购
             limit_per_buyer:undefined,          // 每个用户累计限购件数
             maximum_per_order:undefined,        // 每个用户每次下单限购件数
@@ -1179,7 +1190,6 @@ export default defineComponent({
            var res = await formRef.value.validate().then(() => {
 
                 var res = toRaw(formState)// 标题
-                
                 // Object.keys(res).forEach(key=>{
                 //     if(res.key === undefined){delete res.key} // 清除值为undefind的键值
                 // })
@@ -1187,7 +1197,6 @@ export default defineComponent({
                 return res
                 
             }).catch(error => {
-                // console.log('error', error);
                 tool.Fun_.message('error',error.errorFields[0].errors[0]);
                 activeKey.value = '1';
                 return false
@@ -1256,7 +1265,6 @@ export default defineComponent({
 
             // 添加规格值
             pushvalue:(data)=>{
-                // console.log(SPECS.Obj[data].value.length)
                 var value_number = SPECS.Obj[data].values.length;
                 if(value_number >= 20){
                     tool.Fun_.message('error', '规格值最多不能超过20组！')
@@ -1283,7 +1291,6 @@ export default defineComponent({
 
             // 选择规格图片
             add_img:(data)=>{
-                // console.log(data)
                 var img_byte_url = data[0].byte_url
                 PAGEDATA.sku_img_obj.url = img_byte_url
             },
@@ -1453,15 +1460,10 @@ export default defineComponent({
             get_data:() =>{
 
                 var p_s_obj = sku_list.get_p_s_obj();
-                // console.log('初始规格', p_s_obj)
 
                 var name_list = sku_list.get_name_sku_list()//名称列表
-                // console.log('规格名称', name_list)
 
                 var d_list = sku_list.get_value_sku_list()// 值列表
-                // console.log('规格值',d_list)
-
-                // console.log('历史值',skumodel.skudatelist)
 
                 var o_sku_v_obj = sku_list.load_old_sku(d_list, skumodel.skudatelist)// 历史数据匹配关系
 
@@ -1544,10 +1546,10 @@ export default defineComponent({
                     o.sell_properties = sell_obj; //名称对象
                     o.sku_type = 0;
                     o.stock_num = obj.stock_num;
-                    o.price = obj.price;
+                    o.price = obj.price * 100;// 价格转换为分
+                    o.code = obj.code; // 商家编码
                     s_list.push(o)
                 })
-
                 return s_list
 
             }).catch(error => {
@@ -1574,8 +1576,6 @@ export default defineComponent({
                 skumodel.skudatelist = data_list
             }
         }
-
-
 
         // 分类&属性
         const CATE = {
@@ -1621,8 +1621,6 @@ export default defineComponent({
                 var cid = targetOption.value;       // 分类id
 
                 var isLeaf = targetOption.isLeaf;   // 是否叶子类目
-
-                // console.log(targetOption)
 
                 targetOption.loading = true; // load options
                 
@@ -1725,7 +1723,6 @@ export default defineComponent({
                 op.forEach((obj,index)=>{
                     var name = obj.name;
                     if(v_id == obj.value_id){
-                        // console.log(name)
                         r_name = name
                     }
                 })
@@ -1751,9 +1748,6 @@ export default defineComponent({
                     
                     var selected_mat = toRaw(CATE.format_formRef)// 选中的属性
                     var show_mat= toRaw(CATE.format.value)      // 当前展示的属性
-                    console.log('选中的属性', selected_mat) 
-                    console.log('当前展示的属性', show_mat)
-
                     var f_res_obj = {}
                     show_mat.forEach(obj => {
                         let property_id = obj.property_id;
@@ -1797,7 +1791,6 @@ export default defineComponent({
                         if(obj.value_id == data){v_name = obj.name}
                     })
                     var result = [{"value":data,"name":v_name,"diy_type":diy_type}]
-                    console.log(result)
                     return result
 
                 }else if(type == 'multi_select' || type == 'multi_value_measure'){
@@ -1810,7 +1803,6 @@ export default defineComponent({
                         var r_obj = {"value":obj,"name":r_name,"diy_type":diy_type}
                         res_lisr.push(r_obj)
                     })
-                    console.log(res_lisr);
                     return res_lisr
 
                 }
@@ -1938,7 +1930,6 @@ export default defineComponent({
                 })
                 var checkformat_result_list = res.data.data.properties;
                 checkformat_result_list.forEach(obj=>{
-                    console.log(obj)
                     var property_id = obj.property_id;
                     var property_values_id = obj.property_values[0].value_id;
                     Object.keys(CATE.format_formRef).forEach(key=>{
@@ -2118,6 +2109,10 @@ export default defineComponent({
                 product_data_obj.commit = pro_info.commit;              // 提交方式
                 product_data_obj.freight_id = pro_info.freight_id.value;// 运费模板
                 product_data_obj.size_info_template_id = pro_info.size_info_template_id.value// 尺码模板
+                product_data_obj.minimum_per_order = pro_info.minimum_per_order; // 最少下单购买件数
+                product_data_obj.maximum_per_order = pro_info.maximum_per_order; // 最多下单购买件数
+                product_data_obj.limit_per_buyer = pro_info.limit_per_buyer; // 累计购买件数
+                product_data_obj.presell_type = pro_info.presell_type; // 发货模式
             }else{
                 return
             }
@@ -2133,7 +2128,6 @@ export default defineComponent({
 
             // 属性
             var format_obj = await CATE.get_format();
-            console.log(format_obj)
             if(format_obj){
                 product_data_obj.product_format_new = JSON.stringify(format_obj);
             }else{
@@ -2196,22 +2190,32 @@ export default defineComponent({
         const upload_product = async (product_data) =>{
 
             // 按钮状态
+            PAGEDATA.upload_product_loading = true;
 
             // console.log(product_data)
             
             // 发送数据到接口
             var res = await tool.Http_.post(API.AppSrtoreAPI.dou_product.add, product_data)
 
-            console.log(res)
+            // console.log(res)
 
             var code = res.data.code;
             var sub_msg = res.data.sub_msg
             if(code === 10000 ){ // 接口返回成功
                 
                 // 提示上传成功，刷新列表;
-                tool.Fun_.message('success','商品添加成功！')
-                closed() // 关闭新建商品
-                ctx.emit('add_call_back')// 刷新列表
+
+                setTimeout(() => {
+
+                    tool.Fun_.message('success','商品添加成功！')
+
+                    PAGEDATA.upload_product_loading = false;
+
+                    closed() // 关闭新建商品
+
+                    ctx.emit('add_call_back')// 刷新列表
+
+                }, 1000);
 
             }else{ // 接口返回失败
                 // 提示失败，返回失败原因;

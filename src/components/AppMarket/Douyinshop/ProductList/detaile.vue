@@ -126,7 +126,7 @@
                                             <a-skeleton :title="false" :paragraph="{ rows: 1}" active/>
                                         </span>
                                         <span v-if="productdata.obj.market_price !== undefined">
-                                            <a-typography-text delete>￥{{ productdata.obj.market_price }}</a-typography-text>
+                                            <a-typography-text delete>￥{{ productdata.obj.market_price * 0.01 }}</a-typography-text>
                                         </span>
                                     </a-col>
                                     <a-col :span="2"><span>售卖价</span></a-col>
@@ -134,7 +134,7 @@
                                         <span v-if="productdata.obj.discount_price === undefined">
                                             <a-skeleton :title="false" :paragraph="{ rows: 1}" active/>
                                         </span>
-                                        <span v-if="productdata.obj.discount_price !== undefined">￥{{ productdata.obj.discount_price }}</span>
+                                        <span v-if="productdata.obj.discount_price !== undefined">￥{{ productdata.obj.discount_price * 0.01 }}</span>
                                     </a-col>
 
                                     <a-col :span="2"><span>销量</span></a-col>
@@ -216,46 +216,11 @@
                 </div>
                 
                 <div style="height: 120px;float: left;width: 100%;clear: both;">
-
+                    
+                    <!--3:4长图 long_pic_url-->
                     <div style="height: 120px;float: left;margin: 0 10px 0 0;">
 
-                        <div v-if="productdata.obj.main_pic_3_4 === undefined">
-                            <h5>3:4主图</h5>
-                            <a-space>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                            </a-space>
-                        </div>
-                        <div v-else-if="productdata.obj.main_pic_3_4.length === 0">
-                            <h5>3:4主图-暂无</h5>
-                            <a-space>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                            </a-space>
-
-                        </div>
-                        <div v-else-if="productdata.obj.main_pic_3_4.length > 0 ">
-                            <h5>3:4主图</h5>
-                            <a-image-preview-group>
-                                <a-space :size="6">
-                                    <div v-for="img in productdata.obj.main_pic_3_4" :key="img.index">
-                                        <p class="img_107"><a-image :src="img" :width="78" style="border-radius: 6px;" /></p>
-                                    </div>
-                                </a-space>
-                            </a-image-preview-group>
-                        </div>
-                        <div v-else>
-                        </div>
-                    </div>
-
-                    <div style="height: 120px;float: left;">
-                        <div v-if="productdata.obj.main_image_three_to_four=== undefined">
+                        <div v-if="productdata.obj.long_pic_url === undefined">
                             <h5>3:4长图</h5>
                             <a-space>
                                 <div class="img_loading_3_4"></div>
@@ -265,17 +230,7 @@
                                 <div class="img_loading_3_4"></div>
                             </a-space>
                         </div>
-                        <div v-else-if="productdata.obj.main_image_three_to_four.length > 2">
-                            <h5>3:4长图</h5>
-                            <a-image-preview-group>
-                                <a-space :size="6">
-                                    <div v-for="img in productdata.obj.main_image_three_to_four.slice(1,-1).split(' ')" :key="img.index">
-                                        <div class="img_107"><a-image :src="img" :width="78" style="border-radius: 6px;" /></div>
-                                    </div>
-                                </a-space>
-                            </a-image-preview-group>
-                        </div>
-                        <div v-else-if="productdata.obj.main_image_three_to_four.length === 2">
+                        <div v-else-if="productdata.obj.long_pic_url === null && productdata.obj.long_pic_url !== undefined">
                             <h5>3:4长图-暂无</h5>
                             <a-space>
                                 <div class="img_loading_3_4"></div>
@@ -284,17 +239,67 @@
                                 <div class="img_loading_3_4"></div>
                                 <div class="img_loading_3_4"></div>
                             </a-space>
+
+                        </div>
+                        <div v-else-if="productdata.obj.long_pic_url > 0 ">
+                            <h5>3:4长图</h5>
+                            <a-image-preview-group>
+                                <a-space :size="6">
+                                    <div v-for="img in productdata.obj.long_pic_url" :key="img.index">
+                                        <p class="img_107">
+                                            <a-image :src="img" :width="78" style="border-radius: 6px;" />
+                                        </p>
+                                    </div>
+                                </a-space>
+                            </a-image-preview-group>
+                        </div>
+                        <div v-else>
                         </div>
                     </div>
+
+                    <!--商品主图3:4 main_image_three_to_four-->
+                    <div style="height: 120px;float: left;">
+                        <div v-if="productdata.obj.main_image_three_to_four=== undefined">
+                            <h5>3:4主图</h5>
+                            <a-space>
+                                <div class="img_loading_3_4"></div>
+                                <div class="img_loading_3_4"></div>
+                                <div class="img_loading_3_4"></div>
+                                <div class="img_loading_3_4"></div>
+                                <div class="img_loading_3_4"></div>
+                            </a-space>
+                        </div>
+                        <div v-else-if="productdata.obj.main_image_three_to_four.length > 0">
+                            <h5>3:4主图</h5>
+                            <a-image-preview-group>
+                                <a-space :size="6">
+                                    <div v-for="img in productdata.obj.main_image_three_to_four.slice(1,-1).split(' ')" :key="img.index">
+                                        <div class="img_107"><a-image :src="img" :width="78" style="border-radius: 6px;" /></div>
+                                    </div>
+                                </a-space>
+                            </a-image-preview-group>
+                        </div>
+                        <div v-else-if="productdata.obj.main_image_three_to_four.length === 0">
+                            <h5>3:4主图-暂无</h5>
+                            <a-space>
+                                <div class="img_loading_3_4"></div>
+                                <div class="img_loading_3_4"></div>
+                                <div class="img_loading_3_4"></div>
+                                <div class="img_loading_3_4"></div>
+                                <div class="img_loading_3_4"></div>
+                            </a-space>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
 
             <a-divider orientation="left" orientation-margin="0px">基本信息</a-divider>
 
-            <div style="height: 200px;width: 100%;">
+            <div style="height: 300px;width: 100%;">
                 <a-row :gutter="[16,6]">
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">商品id</div>
                                 <div v-if="productdata.obj.product_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -303,16 +308,19 @@
                                     {{ productdata.obj.product_id }}
                                 </div>
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">外部商家编码</div>
                                 <div v-if="productdata.obj.out_product_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
                                 </div>
-                                <div v-if="productdata.obj.out_product_id !== undefined" class="basestyle">
+                                <div v-else-if="productdata.obj.out_product_id !== '0'" class="basestyle">
                                     {{ productdata.obj.out_product_id }}
                                 </div>
+                                <div v-else-if="productdata.obj.out_product_id === '0'" class="basestyle">
+                                    暂无
+                                </div>
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">商品类型</div>
                                 <div v-if="productdata.obj.product_type === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -321,7 +329,7 @@
                                     {{ Profun.Field_translation.product_type_info(productdata.obj.product_type) }}
                                 </div>
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">商品状态</div>
                                 <div v-if="productdata.obj.status === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -330,7 +338,7 @@
                                     {{ Profun.Field_translation.product_status(productdata.obj.status ) }}
                                 </div>
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">审核状态</div>
                                 <div v-if="productdata.obj.check_status === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -340,7 +348,7 @@
                                 </div>
 
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">草稿状态</div>
                                 <div v-if="productdata.obj.draft_status === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -349,7 +357,7 @@
                                     {{ Profun.Field_translation.product_draft_status_info(productdata.obj.draft_status) }}
                                 </div>
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">售卖方式</div>
                                 <div v-if="productdata.obj.sell_channel === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -358,7 +366,7 @@
                                     {{ Profun.Field_translation.product_sale_type_info(productdata.obj.sell_channel) }}
                                 </div>
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">库存扣减方式 </div>
                                 <div v-if="productdata.obj.reduce_type === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -367,7 +375,7 @@
                                     {{ Profun.Field_translation.product_reduce_type(productdata.obj.reduce_type) }}
                                 </div>
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">售后服务</div>
                                 <div v-if="productdata.obj.after_sale_service_v2 === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -376,7 +384,7 @@
                                     {{ Profun.Field_translation.product_after_sale_service_v2(productdata.obj.after_sale_service_v2) }}
                                 </div>
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">7天无理由</div>
                                 <div v-if="productdata.obj.after_sale_service === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -385,7 +393,7 @@
                                     {{ Profun.Field_translation.product_after_sale_service(productdata.obj.after_sale_service) }}
                                 </div>
                             </a-col>
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">运费模版ID</div>
                                 <div v-if="productdata.obj.freight_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -400,7 +408,7 @@
                                 </div>
                             </a-col>
                             
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">尺码模板ID</div>
                                 <div v-if="productdata.obj.size_info_template_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -417,7 +425,7 @@
                                 </div>
                             </a-col>
 
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">品牌</div>
                                 <div v-if="productdata.obj.standard_brand_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -429,7 +437,7 @@
                                 </div>
                             </a-col>
 
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">提取方式</div>
                                 <div v-if="productdata.obj.pickup_method === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -439,7 +447,7 @@
                                 </div>
                             </a-col>
 
-                            <a-col :span="4">
+                            <!-- <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">重量 </div>
                                 <div v-if="productdata.obj.weight_value === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -447,9 +455,9 @@
                                 <div v-if="productdata.obj.weight_value !== undefined" class="basestyle">
                                     {{ productdata.obj.weight_value }} {{ Profun.Field_translation.product_weight_unit(productdata.obj.weight_unit) }}
                                 </div>
-                            </a-col>
+                            </a-col> -->
 
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">创建时间</div>
                                 <div v-if="productdata.obj.create_time === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
@@ -457,30 +465,56 @@
                                 <div style="height: 24px;width: 100%;">{{ productdata.obj.create_time }}</div>
                             </a-col>
 
-                            <a-col :span="4">
+                            <a-col :span="6">
                                 <div style="height: 24px;width: 100%;">更新时间</div>
                                 <div v-if="productdata.obj.update_time === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
                                 </div>
                                 <div style="height: 24px;width: 100%;">{{ productdata.obj.update_time }}</div>
                             </a-col>
+                            <a-col :span="6">
+                            <div style="height: 24px;width: 100%;">最小购买数量</div>
+                                <div v-if="productdata.obj.minimum_per_order === undefined">
+                                    <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
+                                </div>
+                                <div style="height: 24px;width: 100%;">{{ productdata.obj.minimum_per_order }} 件</div>
+                            </a-col>
+                            <a-col :span="6">
+                            <div style="height: 24px;width: 100%;">最大购买数量</div>
+                                <div v-if="productdata.obj.maximum_per_order === undefined">
+                                    <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
+                                </div>
+                                <div style="height: 24px;width: 100%;">{{ productdata.obj.maximum_per_order }} 件</div>
+                            </a-col>
+                            <a-col :span="6">
+                            <div style="height: 24px;width: 100%;">单用户累计限购件数</div>
+                                <div v-if="productdata.obj.limit_per_buyer === undefined">
+                                    <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
+                                </div>
+                                <div style="height: 24px;width: 100%;">{{ productdata.obj.limit_per_buyer }} 件</div>
+                            </a-col>
+                            
                 </a-row>
             </div>
 
             <a-divider orientation="left" orientation-margin="0px">规格库存</a-divider>
 
             <div style="width: 100%;margin:0 0 50px 0;">
+
                 <a-row :gutter="[16,16]">
+
                     <a-col :span="24">
 
                         <div v-for="(item,index) in productdata.obj.specs" :key="index" style="width: 100%;margin: 0 0 10px 0;clear:both;">
 
                             <p>{{ item.name }}</p>
 
-                            <div class="font_size_12 specbox" v-for="(val,index) in item.values" :key="index" style="text-align: center;margin:0 10px 10px 0;border: 1px solid #e8e8e8;border-radius: 6px;padding:5px;">
+                            <div class="font_size_12 specbox" v-for="(val,index) in item.values" :key="index">
+                                
                                 <span v-for="(val2,index2) in productdata.obj.spec_pics" :key="index2" >
-                                    <a-image v-if="val2.spec_detail_id == val.id" :width="30" :height="30" style="margin: 0 5px 0 0;" :src="API.AppSrtoreAPI.meiuri + val2.pic"/>
+                                    <a-image v-if="val2.spec_detail_id == val.id" :width="50" :height="50" style="margin: 0 5px 0 0;" :src="API.AppSrtoreAPI.meiuri + val2.pic"/>
                                 </span>
+
                                 <span>{{ val.name }}</span>
 
                             </div>
@@ -488,6 +522,7 @@
                         </div>
 
                     </a-col>
+
                     <a-col :span="24">
 
                         <a-table 
@@ -533,6 +568,7 @@
 
     <!-- 自定义 footer，只放一个按钮 -->
     <template #footer>
+
       <a-button type="default" @click="close">关闭</a-button>
 
     </template>
@@ -586,7 +622,7 @@
                             <div v-if="item.type == 'description_pic'">
 
                                 <p v-html="val.reason_text" style="font-size: 12px;line-height: 28px;"></p>
-                                <a-space align="end" :size="10">
+                                <a-space align="end" :size="10" wrap>
 
                                 <span v-for="(img,index) in val.reject_img_list" :key="index">
                                     <a-image :src="img.url" width="100px" height="100px"></a-image>
@@ -777,6 +813,9 @@ export default defineComponent({
                     data.value = spec_res_obj.data // 列表内容
 
                     productdata.obj = responese.data.data
+                    console.log('商品详情',productdata.obj)
+                    console.log('3:4长图',productdata.obj.long_pic_url)
+                    console.log('3:4主图',productdata.obj.main_image_three_to_four)
 
                 },1000)
             
@@ -907,7 +946,6 @@ export default defineComponent({
             const load_cate_format=(data)=>{
 
                 var category_detail = data.category_detail;
-                console.log(category_detail)
                 let first_cname = category_detail.first_cname;
                 let second_cname = category_detail.second_cname;
                 let third_cname = category_detail.third_cname;
@@ -966,13 +1004,13 @@ export default defineComponent({
 .head_title_img{height: 140px;width: 100%;}
 .zhenduan{width: 100%;height:140px;}
 .top_img_box{height: 304px; width: 100%;}
-.img_loading_3_4{width: 80px;height: 107px;background-color: #f2f2f2;text-align: center;border-radius: 6px;}
+.img_loading_3_4{width: 80px;height: 114px;background-color: #f2f2f2;text-align: center;border-radius: 6px;}
 .skelestlye{margin: 0;padding: 0;width: 100%;}
 .basestyle{height: 30px;width: 100%;}
 .desbox{width: 770px;background-color: #333;padding: 10px;border-radius:6px;margin: 0 auto;}
-.specbox{display: block;float: left;margin:0 10px 10px 0;}
+.specbox{display: block;float: left;margin:0 10px 10px 0;text-align: center;margin:0 10px 10px 0;border: 1px solid #e8e8e8;border-radius: 6px;padding:10px;}
 .check_ico{width: 100px;margin: 0 auto;font-size: 44px;text-align: center;}
-.rejectinfo{padding:20px 10px 10px 20px;margin: 0 0 20px 0;border: 1px #f2f2f2 solid;border-radius: 6px;}
+.rejectinfo{padding:20px 10px 10px 20px;margin: 0 0 20px 0;}
 .img_80{border-radius: 6px;border: 1px #f2f2f2 solid;padding: 6px;height: 94px;width: 94px;}
 .img_107{height: 114px;width: 88px;border-radius: 6px;border: 1px #f2f2f2 solid;padding: 4px;}
 

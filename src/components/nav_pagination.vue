@@ -3,10 +3,10 @@
     <a-pagination 
       style="font-size: 12px;" 
       @change="onChange"
+      size="small"
       v-model:current="props.fandata.List_conditions.page"
       :total="props.fandata.total_number" 
       :show-total="total => `总共 ${ total } 条数据`" 
-      :pageSizeOptions="[10, 20, 50]"
       show-size-changer 
       show-quick-jumper 
     />

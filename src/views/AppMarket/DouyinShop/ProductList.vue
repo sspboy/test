@@ -137,7 +137,7 @@
 
                               <!--商品状态判断-->
                               <div>
-                                <span v-if="item.status == 0 && item.check_status == 1"><a-tag color="blue" :bordered="false">草稿</a-tag></span>
+                                <span v-if="item.status == 0 && item.check_status == 1"><a-tag color="#2db7f5">草稿</a-tag></span>
                                 <span v-else-if="item.status == 0 && item.check_status == 3"><a-tag color="#87d068">售卖中</a-tag></span>
                                 <span v-else-if="item.status == 1 && item.check_status == 7"><a-tag color="#999999">已下架</a-tag></span>
                                 <span v-else-if="item.status == 1 && item.check_status == 1"><a-tag color="orange" :bordered="false">待审核</a-tag></span>
@@ -311,7 +311,7 @@ export default {
     // 组件挂之后---请求数据===============================开始
     // 定义一个函数来处理窗口大小变化 ==
     const handleResize = () => {
-      PAGEDATA.innerHeight = window.innerHeight - 180; // 作为表格自适应高度
+      PAGEDATA.innerHeight = window.innerHeight - 160; // 作为表格自适应高度
     };
 
     // 在组件挂载时添加事件监听器
@@ -469,7 +469,7 @@ export default {
 
       }),
 
-      innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
+      innerHeight: ref(window.innerHeight - 160), // 初始化列表高度
       AddDate:ref(false),              // 新建显示状态
       EditDate:ref(false),             // 编辑显示状态
       DetaileDate:ref(false),          // 详情页显示状态
@@ -735,7 +735,9 @@ export default {
 
     // 新建商品回调刷新列表
     const add_call_back = ()=>{
-      loadproductData(FromData.value)
+      setTimeout(() => {
+        loadproductData(FromData.value)
+      }, 2000);
     }
 
 
