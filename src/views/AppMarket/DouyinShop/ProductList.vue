@@ -29,205 +29,188 @@
       <a-layout-content class="content_border">
   
         <!--条件查询组件 开始 -->        
-        <div style="width: 100%;overflow: hidden;">
-          <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
-        </div>
+          <div :style="{
+            width: PAGEDATA.innerWidth + 'px',
+            height:'42px',
+            backgroundColor:'#f2f2f2',
+            borderRadius:'4px',
+            overflow:'hidden'
+            }">
+            <Siftcondition :data="PAGEDATA" @sift_callback="sift_select"/>
+          </div>
+          
         <!--条件查询组件 结束 -->
+
+
         <!--列表组件 开始 -->
         
-          <div :style="{height:PAGEDATA.innerHeight + 'px','overflow-y':'auto','overflow-x':'hidden'}">
-          <!--列表 浏览方式 -->
-          <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
-          <a-list
-            :data-source="PAGEDATA.datalist" 
-            :loading="PAGEDATA.loading" 
-            style="width: 100%;"
-            size="default"
-            :split="true">            
+        <div :style="{
+          height: PAGEDATA.innerHeight + 'px',
+          
+          overflowY:'auto',
+          overflowX:'hidden',
+          marginTop:'10px',
+          marginBottom:'10px'
+          }">
+        <!--列表 浏览方式 -->
+        <a-checkbox-group v-model:value="PAGEDATA.check_value_list" style="width: 100%;height: 100%;">
+        <a-list
+          :data-source="PAGEDATA.datalist" 
+          :loading="PAGEDATA.loading" 
+          style="width: 100%;"
+          size="small"
+          :split="true"
+          >            
 
-              <template #renderItem="{ item }">
+            <template #renderItem="{ item }">
 
-                <a-list-item style="padding:10px 0 14px 0;">
+              <a-list-item style="padding-left: 0;">
 
-                    <a-list-item-meta>
-                      <template #avatar>
-                        <div class="cursor ListImg">
-                          <a-image 
-                          :src="item.img"
-                          alt="" 
-                          style="width: 100%;height: 100%;border-radius: 5px;" />
-                        </div>
-                      </template>
-
-                      <template #title>
-                        <a-row>
-                          <a-col :span="18">
-                            <div class="title_div_box">
-                                  <a-checkbox :value="item.product_id"></a-checkbox>
-                                  <a href="#" style="color:black;margin: 0 0 0 10px;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
-                            </div>
-
-                            <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
-                              <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
-                                <a-tooltip placement="top">
-                                  <template #title>
-                                    <span class="font_size_12">{{ item.product_id }}</span>
-                                  </template>
-
-                                  ID-<CopyOutlined />
-
-
-                                </a-tooltip>
-                              </div>
-
-                              <div class="title_text_span">
-                                {{ Profun.Field_translation.product_type_info(item.product_type) }}
-                              </div>
-
-                              <div class="title_text_span">
-                                <span class="left_box status_0" v-if="item.status == 0"></span>
-                                <span class="left_box status_1" v-if="item.status == 1"></span>
-                                <span class="left_box status_2" v-if="item.status == 2"></span>
-                                {{ Profun.Field_translation.product_status(item.status) }}
-                              </div>
-                              
-                              <div class="title_text_span">
-                                <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
-                                <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
-                                <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
-                                <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
-                                <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
-                                <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
-
-                                {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
-
-                                    <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
-
-                                      <a-tooltip placement="top">
-
-                                            <template  #title>
-                                              
-                                              <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
-                                                驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
-                                              </div>
-
-                                            </template>
-
-                                            <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
-
-                                          </a-tooltip>
-                                    </span>
-                                    <span class="font_size_12" v-else>
-                                    </span>
-
-
-                              </div>
-                              <div class="title_text_span cursor">
-                                <a-tooltip placement="top">
-                                  <template  #title>
-                                    <span class="font_size_12">
-                                      {{ Profun.Field_translation.product_cate_name_info(item.category_detail).full_cate }}
-                                    </span>
-                                  </template>
-                                  {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
-                                </a-tooltip>
-                              </div>
-
-                              <div class="title_text_span">销量{{ item.sell_num }}</div>
-
-                              <!--商品状态判断-->
-                              <div>
-                                <span v-if="item.status == 0 && item.check_status == 1"><a-tag color="#2db7f5">草稿</a-tag></span>
-                                <span v-else-if="item.status == 0 && item.check_status == 3"><a-tag color="#87d068">售卖中</a-tag></span>
-                                <span v-else-if="item.status == 1 && item.check_status == 7"><a-tag color="#999999">已下架</a-tag></span>
-                                <span v-else-if="item.status == 1 && item.check_status == 1"><a-tag color="orange" :bordered="false">待审核</a-tag></span>
-                                <span v-else-if="item.status == 0 && item.check_status == 2"><a-tag color="orange" :bordered="false">审核中</a-tag></span>
-                                <span v-else-if="item.status == 2 && item.check_status == 1"><a-tag :bordered="false">回收站</a-tag></span>
-                                <span v-else-if="item.check_status == 4"><a-tag color="#f50">驳回</a-tag></span>
-                                <span v-else-if="item.status == 0 && item.check_status == 5"><a-tag :bordered="false">封禁中</a-tag></span>
-                              </div>
-                              <!-- {{ item.status }}-{{ item.check_status }} -->
-                            </a-space>
-
-                            <div>
-                            <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
-                                    <div class="font_size_12" v-if="item.need_check_out">
-                                      <CloseSquareOutlined style="color:#eb2f96;" />  需要核销 
-                                    </div>
-                                    <div class="font_size_12" v-else>
-                                      <CheckSquareOutlined style="color:#52c41a;" /> 无需核销
-                                    </div>
-                                    <div class="font_size_12" v-if="item.can_combine"> 
-                                      <CheckSquareOutlined style="color:#52c41a;" /> 可以搭配 
-                                    </div>
-                                    <div class="font_size_12 cursor" v-else> 
-                                        <a-tooltip placement="top">
-                                            <template  #title>
-                                              <span class="font_size_12">
-                                                {{ item.can_not_combine_reason }}
-                                              </span>
-                                            </template>
-                                            <CloseSquareOutlined style="color:#eb2f96;" /> 不可搭配 
-                                          </a-tooltip>
-                                    </div>
-                                    <div class="list_span_one">
-                                      <a-space>
-                                      <span class="font_size_12">
-                                        创建时间：{{ moment.unix(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}
-                                      </span>
-                                      <span class="font_size_12">
-                                        更新时间：{{ moment.unix(item.update_time).format('YYYY-MM-DD HH:mm:ss') }}
-                                      </span>
-                                      </a-space>
-                                    </div>
-                            </a-space>
-                            </div>
-                          </a-col>
-                        </a-row>
-
-                      </template>
-
-                    </a-list-item-meta>
-
-                    <template #actions>
-                      <div style="height: 60px;width: 260px;">
-                        <a-row justify="center" align="middle" style="height: 100%;">
-                          <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看详情</a></a-col>
-                          <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 图片预览</a></a-col>
-                          <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 尺码模板</a></a-col>
-                          <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 规格库存</a></a-col>
-                          <a-col :span="8"><a class="font_size_12" @click="edit_douyinshop_product(item.product_id)"><edit-outlined /> 抖店编辑</a></a-col>
-                          <a-col :span="8"><a class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除回收</a></a-col>
-                        </a-row>
-
-                        
-                        
-                        
-
+                  <a-list-item-meta>
+                    <template #avatar>
+                      <div class="cursor ListImg">
+                        <a-image 
+                        :src="item.img"
+                        alt="" 
+                        style="width: 100%;height: 100%;border-radius: 5px;" />
                       </div>
+                    </template>
 
+                    <template #title>
+                      <a-row>
+                        <a-col :span="18">
+                          <div class="title_div_box">
+                                <a-checkbox :value="item.product_id"></a-checkbox>
+                                <a href="#" style="color:black;margin: 0 0 0 10px;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
+                          </div>
+
+                          <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
+                            <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
+                              <a-tooltip placement="top">
+                                <template #title>
+                                  <span class="font_size_12">{{ item.product_id }}</span>
+                                </template>
+
+                                ID-<CopyOutlined />
+
+
+                              </a-tooltip>
+                            </div>
+
+                            <div class="title_text_span">
+                              {{ Profun.Field_translation.product_type_info(item.product_type) }}
+                            </div>
+
+                            <div class="title_text_span">
+                              <span class="left_box status_0" v-if="item.status == 0"></span>
+                              <span class="left_box status_1" v-if="item.status == 1"></span>
+                              <span class="left_box status_2" v-if="item.status == 2"></span>
+                              {{ Profun.Field_translation.product_status(item.status) }}
+                            </div>
+                            
+                            <div class="title_text_span">
+                              <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
+                              <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
+                              <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
+                              <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
+                              <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
+                              <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
+
+                              {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
+
+                                  <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
+
+                                    <a-tooltip placement="top">
+
+                                          <template  #title>
+                                            
+                                            <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
+                                              驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
+                                            </div>
+
+                                          </template>
+
+                                          <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
+
+                                        </a-tooltip>
+                                  </span>
+                                  <span class="font_size_12" v-else>
+                                  </span>
+
+
+                            </div>
+                            <div class="title_text_span cursor">
+                              <a-tooltip placement="top">
+                                <template  #title>
+                                  <span class="font_size_12">
+                                    {{ Profun.Field_translation.product_cate_name_info(item.category_detail).full_cate }}
+                                  </span>
+                                </template>
+                                {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
+                              </a-tooltip>
+                            </div>
+
+                            <div class="title_text_span">销量{{ item.sell_num }}</div>
+
+                            <!--商品状态判断-->
+                            <div>
+                              <span v-if="item.status == 0 && item.check_status == 1"><a-tag color="#2db7f5">草稿</a-tag></span>
+                              <span v-else-if="item.status == 0 && item.check_status == 3"><a-tag color="#87d068">售卖中</a-tag></span>
+                              <span v-else-if="item.status == 1 && item.check_status == 7"><a-tag color="#999999">已下架</a-tag></span>
+                              <span v-else-if="item.status == 1 && item.check_status == 1"><a-tag color="orange" :bordered="false">待审核</a-tag></span>
+                              <span v-else-if="item.status == 0 && item.check_status == 2"><a-tag color="orange" :bordered="false">审核中</a-tag></span>
+                              <span v-else-if="item.status == 2 && item.check_status == 1"><a-tag :bordered="false">回收站</a-tag></span>
+                              <span v-else-if="item.check_status == 4"><a-tag color="#f50">驳回</a-tag></span>
+                              <span v-else-if="item.status == 0 && item.check_status == 5"><a-tag :bordered="false">封禁中</a-tag></span>
+                            </div>
+                            <!-- {{ item.status }}-{{ item.check_status }} -->
+                          </a-space>
+                        </a-col>
+                      </a-row>
 
                     </template>
 
-                </a-list-item>
+                  </a-list-item-meta>
 
-              </template>
+                  <template #actions>
+                    <div style="height: 60px;width: 260px;">
+                      <a-row justify="center" align="middle" style="height: 100%;">
+                        <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看详情</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 图片预览</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 尺码模板</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 规格库存</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="edit_douyinshop_product(item.product_id)"><edit-outlined /> 抖店编辑</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除回收</a></a-col>
+                      </a-row>
 
-          </a-list>
-          </a-checkbox-group>
-          </div>
+                      
+                      
+                      
+
+                    </div>
+
+
+                  </template>
+
+              </a-list-item>
+
+            </template>
+
+        </a-list>
+        </a-checkbox-group>
+        </div>
         <!--列表组件 结束 -->
 
 
         <!--翻页组件 -->
-          <span style="padding:14px 0 0 0 ;display: block;float: left;">
-            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><RedoOutlined /> 刷新列表</a-button>
-            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
-            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
-            <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 0;" ghost @click="check_list"><CheckCircleOutlined /> 全选</a-button>
-          </span>
+        <span style="padding:2px 0 0 0 ;display: block;float: left;">
+          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><RedoOutlined /> 刷新列表</a-button>
+          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
+          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
+          <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 0;" ghost @click="check_list"><CheckCircleOutlined /> 全选</a-button>
+        </span>
           
-          <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
+        <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
 
         <!--翻页组件 -->
 
@@ -311,7 +294,9 @@ export default {
     // 组件挂之后---请求数据===============================开始
     // 定义一个函数来处理窗口大小变化 ==
     const handleResize = () => {
-      PAGEDATA.innerHeight = window.innerHeight - 160; // 作为表格自适应高度
+      PAGEDATA.innerHeight = window.innerHeight - 180; // 作为表格自适应高度
+      PAGEDATA.innerWidth = window.innerWidth - 230; // 作为表格自适应高度
+
     };
 
     // 在组件挂载时添加事件监听器
@@ -469,7 +454,9 @@ export default {
 
       }),
 
-      innerHeight: ref(window.innerHeight - 160), // 初始化列表高度
+      innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
+      innerWidth: ref(window.innerWidth - 230), // 初始化列表高度
+
       AddDate:ref(false),              // 新建显示状态
       EditDate:ref(false),             // 编辑显示状态
       DetaileDate:ref(false),          // 详情页显示状态
@@ -769,7 +756,7 @@ export default {
 </script>
 
 <style scoped>
-.ListImg{width: 100px;height: 100px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
+.ListImg{width: 60px;height: 60px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
 .title_div_box{width: 100%; height: 26px;overflow: hidden;padding: 4px 0 0 0;font-size: 14px;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
 .title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}

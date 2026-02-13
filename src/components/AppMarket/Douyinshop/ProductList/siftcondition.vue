@@ -8,7 +8,7 @@
                 autocomplete="off"
                 :model="props.data.List_conditions"
                 @finish="handleFinish"
-                style="float: left;margin: -4px 0 0 0;"
+                style="float: left;margin: 5px 0 0 14px;width: 100%;"
             >
             <a-form-item>
                 <!--导航收起按钮-->
@@ -19,7 +19,6 @@
             </a-form-item>
                 <a-form-item>
                     <a-button type="primary" size="small" style="font-size: 12px;" @click="show_add">
-                    <PlusOutlined />
                     新建商品
                 </a-button>
                 </a-form-item>

@@ -28,7 +28,6 @@
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
                     <a-button type="primary" size="small" style="font-size: 12px;" @click="feight_add.play">
-                        <PlusOutlined />
                         新建运费
                     </a-button>
                 </a-col>
@@ -60,12 +59,34 @@
                             <span class="font_size_12">名称：{{ item.template.template_name }}</span>
                         </template>
                         
-                        ID: {{ item.template.id }}
                         
-                        计价方式：{{ item.template.calculate_type }}
+                        <p style="width: 100%; text-align: left;line-height: 24px;margin: 0;">
+                            ID: {{ item.template.id }}
+                        </p>
 
-                        类型：{{ item.template.rule_type }}
 
+                        <p style="width: 100%; text-align: left;line-height: 24px;margin: 0;">
+                            <a-row>
+                                <a-col :span="12">
+                                    计价:
+                                    <span v-if="item.template.calculate_type === 1">按重量计价</span>
+                                    <span v-else-if="item.template.calculate_type === 2">按数量计价</span>
+                                </a-col>
+                                <a-col :span="12">
+                                    模板:
+                                    <span v-if="item.template.rule_type === 0">阶梯计价</span>
+                                    <span v-else-if="item.template.rule_type === 1">固定运费</span>
+                                    <span v-else-if="item.template.rule_type === 2">卖家包邮</span>
+                                    <span v-else-if="item.template.rule_type === 3">货到付款</span>
+
+                                </a-col>
+
+                            </a-row>
+                        
+
+                        
+                        </p>
+                        
 
                         <template #actions>
                             <EyeOutlined @click="feight_detail.play(item)"/>

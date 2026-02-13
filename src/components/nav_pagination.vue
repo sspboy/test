@@ -50,5 +50,5 @@ export default defineComponent({
 
 <style scoped>
 #components-pagination-demo-mini .ant-pagination:not(:last-child) {margin-bottom: 24px;}
-.nav_s{margin: 18px 0 0 0;float: right;}
+.nav_s{margin: 6px 0 0 0;float: right;}
 </style>
