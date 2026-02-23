@@ -7,6 +7,7 @@
   <edit_components v-if="PAGEDATA.EditDate" :data="PAGEDATA"/>
   <detaile_components v-if="PAGEDATA.DetaileDate" :data="PAGEDATA"/>
   <more_select :data="PAGEDATA" @moer_select_callback="sift_select"/><!--更多筛选组件-->
+  <manage_images v-if="PAGEDATA.ImageDate" :data="PAGEDATA"/><!--图片预览-->
 
 
   <a-layout style="height: 100vh;width: 100vw;">
@@ -214,7 +215,7 @@
                     <div style="height: 60px;width: 260px;">
                       <a-row justify="center" align="middle" style="height: 100%;">
                         <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看详情</a></a-col>
-                        <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 图片预览</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="showImage(item.product_id)"><EyeOutlined /> 图片预览</a></a-col>
                         <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 尺码模板</a></a-col>
                         <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 规格库存</a></a-col>
                         <a-col :span="8"><a class="font_size_12" @click="edit_douyinshop_product(item.product_id)"><edit-outlined /> 抖店编辑</a></a-col>
@@ -309,8 +310,10 @@ export default {
         more_select,
         add_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add.vue')),
         edit_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/edit.vue')),
-        detaile_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/detaile.vue'))  
-    },
+        detaile_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/detaile.vue')),  
+        manage_images: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/manage_images.vue')),
+
+      },
   // 父组件数据
   props: {},
 
@@ -492,6 +495,7 @@ export default {
       AddDate:ref(false),              // 新建显示状态
       EditDate:ref(false),             // 编辑显示状态
       DetaileDate:ref(false),          // 详情页显示状态
+      ImageDate:ref(false),             // 图片预览显示状态
       MoreSelectData:ref(false),       // 更多查询显示状态
       product_id:ref(null),
 
@@ -671,6 +675,11 @@ export default {
       PAGEDATA.DetaileDate = true;
       PAGEDATA.product_id = pro_id
     }
+    // 图片预览方法加载
+    const showImage = (pro_id) =>{
+      PAGEDATA.ImageDate = true;
+      PAGEDATA.product_id = pro_id
+    }
 
     // 删除方法
     const deldata = reactive({
@@ -771,6 +780,7 @@ export default {
       page_turning,
       showEdit,
       showDetaile,
+      showImage,
       deldata,
       check_list,
       add_call_back,
