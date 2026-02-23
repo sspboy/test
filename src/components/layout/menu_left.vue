@@ -32,6 +32,7 @@ import { useStore } from 'vuex'
 import {Menu} from '/src/assets/JS_Model/Menu.js';
 
 import {
+  ShopOutlined,
   UserOutlined,
   MenuOutlined,
   BarsOutlined,

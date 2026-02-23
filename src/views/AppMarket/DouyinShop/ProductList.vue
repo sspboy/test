@@ -139,6 +139,7 @@
 
 
                             </div>
+
                             <div class="title_text_span cursor">
                               <a-tooltip placement="top">
                                 <template  #title>
@@ -165,7 +166,44 @@
                             </div>
                             <!-- {{ item.status }}-{{ item.check_status }} -->
                           </a-space>
+                          
+                          <div>
+                            <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
+                                    <div class="font_size_12" v-if="item.need_check_out">
+                                      <CloseSquareOutlined style="color:#eb2f96;" />  需要核销 
+                                    </div>
+                                    <div class="font_size_12" v-else>
+                                      <CheckSquareOutlined style="color:#52c41a;" /> 无需核销
+                                    </div>
+                                    <div class="font_size_12" v-if="item.can_combine"> 
+                                      <CheckSquareOutlined style="color:#52c41a;" /> 可以搭配 
+                                    </div>
+                                    <div class="font_size_12 cursor" v-else> 
+                                        <a-tooltip placement="top">
+                                            <template  #title>
+                                              <span class="font_size_12">
+                                                {{ item.can_not_combine_reason }}
+                                              </span>
+                                            </template>
+                                            <CloseSquareOutlined style="color:#eb2f96;" /> 不可搭配 
+                                          </a-tooltip>
+                                    </div>
+                                    <div class="list_span_one">
+                                      <a-space>
+                                      <span class="font_size_12">
+                                        创建时间：{{ moment.unix(item.create_time).format('YYYY-MM-DD HH:mm:ss') }}
+                                      </span>
+                                      <span class="font_size_12">
+                                        更新时间：{{ moment.unix(item.update_time).format('YYYY-MM-DD HH:mm:ss') }}
+                                      </span>
+                                      </a-space>
+                                    </div>
+                          </a-space>
+                            </div>
+
                         </a-col>
+
+
                       </a-row>
 
                     </template>
@@ -180,16 +218,10 @@
                         <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 尺码模板</a></a-col>
                         <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 规格库存</a></a-col>
                         <a-col :span="8"><a class="font_size_12" @click="edit_douyinshop_product(item.product_id)"><edit-outlined /> 抖店编辑</a></a-col>
-                        <a-col :span="8"><a class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined /> 删除回收</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined />移入回收站</a></a-col>
                       </a-row>
 
-                      
-                      
-                      
-
                     </div>
-
-
                   </template>
 
               </a-list-item>
@@ -203,7 +235,7 @@
 
 
         <!--翻页组件 -->
-        <span style="padding:2px 0 0 0 ;display: block;float: left;">
+        <span style="display: block;float: left;">
           <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><RedoOutlined /> 刷新列表</a-button>
           <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><DeleteOutlined /> 批量删除</a-button>
           <a-button size="small" type="primary" style="font-size: 12px;float: right;margin:4px 0 0 6px;" ghost><EditOutlined /> 批量修改</a-button>
@@ -660,10 +692,10 @@ export default {
 
         // 删除接口
         axios.post(API.AppSrtoreAPI.dou_product.delete,{
-          product_id:deldata.product_id
-
+          product_id:deldata.product_id,
+          delete_forever: true
         }).then(res=>{
-
+          console.log(res)
           deldata.del_loading = false;        // 删除loading状态
           deldata.open = false;
           deldata.product_id = undefined;
@@ -703,9 +735,6 @@ export default {
 
       }
       
-
-
-
       PAGEDATA.check_value_list = id_list
     }
 
@@ -756,7 +785,7 @@ export default {
 </script>
 
 <style scoped>
-.ListImg{width: 60px;height: 60px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
+.ListImg{width: 100px;height: 100px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
 .title_div_box{width: 100%; height: 26px;overflow: hidden;padding: 4px 0 0 0;font-size: 14px;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
 .title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}

@@ -106,7 +106,10 @@ export class Menu {
                 'ReconciliationOutlined':()=>h(ReconciliationOutlined),
                 'FieldTimeOutlined':()=>h(FieldTimeOutlined),
                 'MedicineBoxOutlined':() => h(MedicineBoxOutlined),
-                'PictureOutlined':() => h(PictureOutlined)
+                'PictureOutlined':() => h(PictureOutlined),
+                'ShopOutlined':() => h(ShopOutlined)
+
+                
                 
             }
         }

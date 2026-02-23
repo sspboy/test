@@ -18,12 +18,18 @@
       </a-layout-sider>
       <!--左侧 菜单组件  结束-->
 
-
       <!--右侧 内容组件  开始-->
       <a-layout-content class="content_border">
 
-        <div style="height: 40px;">
-            <a-row>
+        <!--条件查询组件 开始 -->        
+          <div :style="{
+            width: PAGEDATA.innerWidth + 'px',
+            height:'42px',
+            backgroundColor:'#f2f2f2',
+            borderRadius:'4px',
+            overflow:'hidden',
+            }">
+            <a-row style="padding: 9px 10px 0 14px;">
                 <a-col :span="4" >
                     <!--导航收起按钮-->
                   <a-button type="primary" size="small" style="font-size: 12px;margin-right: 16px;" @click="() => {store.commit('menu/change')}">
@@ -31,7 +37,6 @@
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
                     <a-button type="primary" size="small" @click="PAGEDATA.ADDtemplate">
-                        <PlusOutlined />
                         新建尺码
                     </a-button>
                 </a-col>
@@ -376,5 +381,5 @@ export default {
 </script>
 
 <style scoped>
-.content_list{overflow-x: hidden;overflow-y: scroll;}
+.content_list{overflow-x: hidden;overflow-y: scroll;margin-top: 10px;}
 </style>

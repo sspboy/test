@@ -30,11 +30,11 @@
                     
                     <ProfileTwoTone class="icoStyle"/>
 
-                    <a-flex vertical align="flex-end" justify="space-between" style="padding:0 10px;">
+                    <a-flex vertical align="flex-start" justify="space-between" style="padding:0 10px; width: 100%;">
                       <a-typography>
                         <a-typography-title class="cardTitle">商品管理 <RightOutlined /></a-typography-title>
                         <a-typography-paragraph class="cardText">
-                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        新建商品 快速编辑 图片预览 后台编辑 运费模板 尺码模板
                         </a-typography-paragraph>
                       </a-typography>
                     </a-flex>
@@ -47,11 +47,11 @@
                   <a-flex justify="space-between">
                     
                     <ShopTwoTone class="icoStyle"/>
-                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 0 10px 0 10px;">
+                    <a-flex vertical align="flex-start" justify="space-between" style="padding: 0 10px 0 10px;width: 100%;">
                       <a-typography>
                         <a-typography-title class="cardTitle">网盘素材<RightOutlined /></a-typography-title>
                         <a-typography-paragraph class="cardText">
-                            每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                            素材空间 图片上传 视频管理
                         </a-typography-paragraph>
                       </a-typography>
                     </a-flex>
@@ -65,11 +65,11 @@
                     
                     <MedicineBoxTwoTone class="icoStyle"/>
 
-                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 0 10px 0 10px;">
+                    <a-flex vertical align="flex-start" justify="space-between" style="padding: 0 10px 0 10px;width: 100%;">
                       <a-typography>
                         <a-typography-title class="cardTitle">诊断优化<RightOutlined /></a-typography-title>
                         <a-typography-paragraph class="cardText">
-                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        主图 关键字 违禁词
                         </a-typography-paragraph>
                       </a-typography>
                     </a-flex>
@@ -83,11 +83,11 @@
                     
                     <CodeTwoTone class="icoStyle"/>
 
-                    <a-flex vertical align="flex-end" justify="space-between" style="padding: 0 10px 0 10px;">
+                    <a-flex vertical align="flex-start" justify="space-between" style="padding: 0 10px 0 10px;width: 100%;">
                       <a-typography>
-                        <a-typography-title class="cardTitle">批量操作<RightOutlined /></a-typography-title>
+                        <a-typography-title class="cardTitle">批量修改<RightOutlined /></a-typography-title>
                         <a-typography-paragraph class="cardText">
-                        每个商家绕不开的日常；选品的过程中能完成复制，边看边采集信息；
+                        修改多个商品字段 
                         </a-typography-paragraph>
                       </a-typography>
                     </a-flex>
