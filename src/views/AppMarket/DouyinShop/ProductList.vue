@@ -8,6 +8,8 @@
   <detaile_components v-if="PAGEDATA.DetaileDate" :data="PAGEDATA"/>
   <more_select :data="PAGEDATA" @moer_select_callback="sift_select"/><!--更多筛选组件-->
   <manage_images v-if="PAGEDATA.ImageDate" :data="PAGEDATA"/><!--图片预览-->
+  <!--运费模板-->
+  <feight_detaile_components v-if="PAGEDATA.FreightDate" :data="PAGEDATA"/>
 
 
   <a-layout style="height: 100vh;width: 100vw;">
@@ -47,7 +49,6 @@
         
         <div :style="{
           height: PAGEDATA.innerHeight + 'px',
-          
           overflowY:'auto',
           overflowX:'hidden',
           marginTop:'10px',
@@ -82,7 +83,9 @@
                         <a-col :span="18">
                           <div class="title_div_box">
                                 <a-checkbox :value="item.product_id"></a-checkbox>
-                                <a href="#" style="color:black;margin: 0 0 0 10px;" @click="showDetaile(item.product_id)">{{ item.name }}</a>
+                                <a href="#" style="color:black;margin: 0 0 0 10px;" @click="showDetaile(item.product_id)">
+                                  {{ item.name }}
+                                </a>
                           </div>
 
                           <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
@@ -215,9 +218,9 @@
                     <div style="height: 60px;width: 260px;">
                       <a-row justify="center" align="middle" style="height: 100%;">
                         <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 查看详情</a></a-col>
-                        <a-col :span="8"><a class="font_size_12" @click="showImage(item.product_id)"><EyeOutlined /> 图片预览</a></a-col>
-                        <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 尺码模板</a></a-col>
-                        <a-col :span="8"><a class="font_size_12" @click="showDetaile(item.product_id)"><EyeOutlined /> 规格库存</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="showImage(item.product_id)"><PictureOutlined /> 图片预览</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="showFeight(item.freight_id)"><EyeOutlined /> 运费模板</a></a-col>
+                        <a-col :span="8"><a class="font_size_12" @click="showEdit(item.product_id)"><FormOutlined /> 快捷编辑</a></a-col>
                         <a-col :span="8"><a class="font_size_12" @click="edit_douyinshop_product(item.product_id)"><edit-outlined /> 抖店编辑</a></a-col>
                         <a-col :span="8"><a class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined />移入回收站</a></a-col>
                       </a-row>
@@ -272,7 +275,20 @@ import { useStore } from 'vuex'
 // 组件引用=====开始
 import menu_left from '@/components/layout/menu_left.vue'
 import menu_head from "@/components/layout/menu_head.vue";
-import { DeleteOutlined,EditOutlined,RedoOutlined,CheckCircleOutlined,SettingOutlined,CheckSquareOutlined,CloseSquareOutlined,CopyOutlined,ExclamationCircleFilled,EyeOutlined,PlusOutlined } from '@ant-design/icons-vue';
+import {
+  PictureOutlined,
+  FormOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  RedoOutlined,
+  CheckCircleOutlined,
+  SettingOutlined,
+  CheckSquareOutlined,
+  CloseSquareOutlined,
+  CopyOutlined,
+  ExclamationCircleFilled,
+  EyeOutlined,
+  PlusOutlined } from '@ant-design/icons-vue';
 
 
 // 筛选条件查询组件
@@ -292,7 +308,9 @@ export default {
   name: "ProductList",
   // 引用组件
   components: {
+    PictureOutlined,
     PlusOutlined,
+    FormOutlined,
         EyeOutlined,
         ExclamationCircleFilled,
         CopyOutlined,
@@ -308,10 +326,18 @@ export default {
         Siftcondition,
         nav_pagination,
         more_select,
+
+        // 添加组件
         add_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add.vue')),
+        // 编辑组件
         edit_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/edit.vue')),
-        detaile_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/detaile.vue')),  
+        // 商品详情
+        detaile_components: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/detaile.vue')), 
+        // 图片预览组件 
         manage_images: defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/manage_images.vue')),
+        // 运费模板
+        feight_detaile_components:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/productDetaile/feightdetaile.vue')),
+
 
       },
   // 父组件数据
@@ -369,7 +395,7 @@ export default {
 
       allNumber:"",         // 全部数量
       OnSaleNumber:"",      // 售卖中数量
-      WaitreviewNumber:"",    // 待审核数量
+      WaitreviewNumber:"",  // 待审核数量
       UnderReviewNumber:"", // 审核中数量
       RejectNumber:"",      // 驳回数量
       WareHouseNumber:"",   // 已下架数量
@@ -495,9 +521,11 @@ export default {
       AddDate:ref(false),              // 新建显示状态
       EditDate:ref(false),             // 编辑显示状态
       DetaileDate:ref(false),          // 详情页显示状态
-      ImageDate:ref(false),             // 图片预览显示状态
+      ImageDate:ref(false),            // 图片预览显示状态
+      FreightDate:ref(false),           // 运费模板显示状态
       MoreSelectData:ref(false),       // 更多查询显示状态
-      product_id:ref(null),
+      product_id:ref(null),            // 商品id
+      freight_id:ref(null),             // 运费模板id
 
 
     })
@@ -680,6 +708,11 @@ export default {
       PAGEDATA.ImageDate = true;
       PAGEDATA.product_id = pro_id
     }
+    // 运费模板方法加载
+    const showFeight = (freight_id) =>{
+      PAGEDATA.FreightDate = true;
+      PAGEDATA.freight_id = freight_id
+    }
 
     // 删除方法
     const deldata = reactive({
@@ -781,6 +814,7 @@ export default {
       showEdit,
       showDetaile,
       showImage,
+      showFeight,
       deldata,
       check_list,
       add_call_back,
@@ -799,7 +833,7 @@ export default {
 .title_div_box{width: 100%; height: 26px;overflow: hidden;padding: 4px 0 0 0;font-size: 14px;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
 .title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}
-.list_span_one{height: 24px;padding: 4px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
+.list_span_one{height: 24px;padding: 2px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .list_span_two{height: 28px;padding: 8px 0 0 0;color: darkgray;overflow: hidden;font-weight:normal;}
 .FlexBox{overflow:auto; transition:height 0s ease;margin:0;padding:200px 0 0 0;}
 

@@ -9,44 +9,26 @@
     style="color: red"
     title="图片预览"
     placement="right"
+    width="50%"
     @after-open-change="console.log('图片预览')"
   >
       <a-layout-content class="content">
 
-            <div style="width: 950px;margin: 0 auto;">
-              <a-tabs v-model:activeKey="activeKey">
+        <a-divider orientation="left" orientation-margin="0px">主图</a-divider>
 
-                <a-tab-pane key="1" tab="主图">
-                  主图
-                </a-tab-pane>
-
-                <a-tab-pane key="2" tab="3:4主图" force-render>
-                  3:4主图
-                </a-tab-pane>
-
-                <a-tab-pane key="3" tab="3:4长图">
-                    3:4长图
-                </a-tab-pane>
-
-                <a-tab-pane key="4" tab="规格图">
-                    规格图
-                </a-tab-pane>
-
-                <a-tab-pane key="5" tab="白底图">
-                    白底图
-                </a-tab-pane>
-
-                <a-tab-pane key="6" tab="描述详情图">
-                    描述详情图
-                </a-tab-pane>
-
-              </a-tabs>
+            <div style="margin: 0 auto;">
               
-              <p>图片管理</p>
+              <p>图片列表</p>
               
-
-
             </div>
+
+        <a-divider orientation="left" orientation-margin="0px">白底图</a-divider>
+
+        <a-divider orientation="left" orientation-margin="0px">规格图</a-divider>
+
+        <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
+
+
       </a-layout-content>
       </a-drawer>
       </template>
@@ -70,18 +52,16 @@ export default defineComponent({
 
     setup(props, ctx) {
 
-        console.log(props.data)
+        console.log(props.data.product_id);
 
         const handleOk = e => {
             console.log(e);
         };
 
-        const activeKey = ref('1');
 
         return{
             props,
             handleOk,
-            activeKey,
         }
     }
 })

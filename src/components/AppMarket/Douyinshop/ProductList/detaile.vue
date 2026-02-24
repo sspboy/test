@@ -7,7 +7,7 @@
     <!--尺码模板-->
     <template_detaile_components v-if="size_detaile.open" :data="size_detaile"/>
     <!--运费模板-->
-    <feight_detaile_components v-if="feight_detaile.open" :data="feight_detaile"/>
+    <feight_detaile_components v-if="freight_detaile.FreightDate" :data="freight_detaile"/>
 
     <a-modal
       v-model:open="props.data.DetaileDate"
@@ -159,7 +159,9 @@
 
                 <!---img-->
                 <div style="height: 140px;float: left;margin: 0 10px 0 0;">
+                    
                     <h5>商品主图</h5>
+
                     <div v-if="productdata.obj.pic === undefined">
                         <a-space>
                             <a-skeleton-avatar :size="94" active shape="square"/>
@@ -169,6 +171,7 @@
                             <a-skeleton-avatar :size="94" active shape="square"/>
                         </a-space>
                     </div>
+
                     <div v-else-if="productdata.obj.pic !== undefined">
                         <a-image-preview-group>
                             <a-space>
@@ -180,116 +183,121 @@
                     </div>
                 </div>
 
-                <!--white_back_ground_pic_url-->
+                <!--white_back_ground_pic_url 白底图 视频-->
                 <div style="height: 120px;float: left;">
                     <div style="width: 90px;margin: 0 16px 0 0;float: left;">
                         <div v-if="productdata.obj.white_back_ground_pic_url === undefined">
-                            <h5>白底图</h5>
+                            <h5 class="text_center">白底图</h5>
                             <a-skeleton-avatar :size="94" active shape="square" style="margin: 0 4px 0 0;"/>
                         </div>
                         <div v-else-if="productdata.obj.white_back_ground_pic_url === null">
-                            <h5>白底图-暂无</h5>
-                            <a-skeleton-avatar :size="94" active shape="square" style="margin: 0 4px 0 0 ;"/>
+                            <h5 class="text_center">白底图</h5>
+                            <p class="img_80 text_center_12">暂无</p>
                         </div>
                         <div v-else-if="productdata.obj.white_back_ground_pic_url !== null">
-                            <h5>白底图</h5>
+                            <h5 class="text_center">白底图</h5>
                             <p class="img_80"><a-image :width="80" style="border-radius: 6px;" :src="productdata.obj.white_back_ground_pic_url"/></p>
                         </div>
                     </div>
 
-                    <div style="width: 120px;float: left;" v-if="productdata.obj.material_video_id === undefined">
-                        <h5>视频-暂无</h5>
-                        <a-skeleton-avatar :size="94" active shape="square" />
-                    </div>
-                    <div style="width: 120px;float: left;" v-else-if="productdata.obj.material_video_id === null">
-                        <h5>视频-暂无</h5>
-                        <a-skeleton-avatar :size="94" active shape="square"/>
-                    </div>
-                    <div style="width: 120px;float: left;" v-else>
-                        <h5>视频</h5>
-                        <p class="img_80">
-                            <a :href="videoData.url" target="_blank">
-                                <img :src="videoData.img_src" style="width: 80px;height: 80px;"/>
-                            </a>
-                        </p>
-                    </div>
-                </div>
-                
-                <div style="height: 120px;float: left;width: 100%;clear: both;">
-                    
-                    <!--3:4长图 long_pic_url-->
-                    <div style="height: 120px;float: left;margin: 0 10px 0 0;">
-
-                        <div v-if="productdata.obj.long_pic_url === undefined">
-                            <h5>3:4长图</h5>
-                            <a-space>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                            </a-space>
+                    <div style="width: 90px;float: left;">
+                        <div v-if="productdata.obj.material_video_id === undefined">
+                            <h5 class="text_center">视频</h5>
+                            <a-skeleton-avatar :size="94" active shape="square" />
                         </div>
-                        <div v-else-if="productdata.obj.long_pic_url === null && productdata.obj.long_pic_url !== undefined">
-                            <h5>3:4长图-暂无</h5>
-                            <a-space>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                            </a-space>
-
-                        </div>
-                        <div v-else-if="productdata.obj.long_pic_url > 0 ">
-                            <h5>3:4长图</h5>
-                            <a-image-preview-group>
-                                <a-space :size="6">
-                                    <div v-for="img in productdata.obj.long_pic_url" :key="img.index">
-                                        <p class="img_107">
-                                            <a-image :src="img" :width="78" style="border-radius: 6px;" />
-                                        </p>
-                                    </div>
-                                </a-space>
-                            </a-image-preview-group>
+                        <div v-else-if="productdata.obj.material_video_id === null">
+                            <h5 class="text_center">视频</h5>
+                            <p class="img_80 text_center_12">暂无</p>
                         </div>
                         <div v-else>
+                            <h5 class="text_center">视频</h5>
+                            <p class="img_80">
+                                <a :href="videoData.url" target="_blank">
+                                    <img :src="videoData.img_src" style="width: 80px;height: 80px;"/>
+                                </a>
+                            </p>
                         </div>
                     </div>
+                </div>
 
-                    <!--商品主图3:4 main_image_three_to_four-->
-                    <div style="height: 120px;float: left;">
-                        <div v-if="productdata.obj.main_image_three_to_four=== undefined">
-                            <h5>3:4主图</h5>
-                            <a-space>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                            </a-space>
-                        </div>
-                        <div v-else-if="productdata.obj.main_image_three_to_four.length > 0">
-                            <h5>3:4主图</h5>
-                            <a-image-preview-group>
-                                <a-space :size="6">
-                                    <div v-for="img in productdata.obj.main_image_three_to_four.slice(1,-1).split(' ')" :key="img.index">
-                                        <div class="img_107"><a-image :src="img" :width="78" style="border-radius: 6px;" /></div>
-                                    </div>
+                
+                <div style="height: 120px;float: left;width: 100%;clear: both;">
+                    <a-row>
+                        
+                        <!--3:4长图 long_pic_url-->
+                        <a-col :span="12">
+                            <div v-if="productdata.obj.long_pic_url === undefined">
+                                <h5>3:4长图</h5>
+                                <a-space>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
                                 </a-space>
-                            </a-image-preview-group>
-                        </div>
-                        <div v-else-if="productdata.obj.main_image_three_to_four.length === 0">
-                            <h5>3:4主图-暂无</h5>
-                            <a-space>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                                <div class="img_loading_3_4"></div>
-                            </a-space>
-                        </div>
-                    </div>
+                            </div>
+                            <div v-else-if="productdata.obj.long_pic_url === null && productdata.obj.long_pic_url !== undefined">
+                                <h5>3:4长图-暂无</h5>
+                                <a-space>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                </a-space>
+
+                            </div>
+                            <div v-else-if="productdata.obj.long_pic_url > 0 ">
+                                <h5>3:4长图</h5>
+                                <a-image-preview-group>
+                                    <a-space :size="6">
+                                        <div v-for="img in productdata.obj.long_pic_url" :key="img.index">
+                                            <p class="img_107">
+                                                <a-image :src="img" :width="78" style="border-radius: 6px;" />
+                                            </p>
+                                        </div>
+                                    </a-space>
+                                </a-image-preview-group>
+                            </div>
+                            <div v-else>
+                            </div>
+                        </a-col>
+                            
+                        <!--商品主图3:4 main_image_three_to_four-->
+                        <a-col :span="12">
+                            <div v-if="productdata.obj.main_image_three_to_four=== undefined">
+                                <h5>3:4主图</h5>
+                                <a-space>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                </a-space>
+                            </div>
+                            <div v-else-if="productdata.obj.main_image_three_to_four.length > 0">
+                                <h5>3:4主图</h5>
+                                <a-image-preview-group>
+                                    <a-space :size="6">
+                                        <div v-for="img in productdata.obj.main_image_three_to_four.slice(1,-1).split(' ')" :key="img.index">
+                                            <div class="img_107"><a-image :src="img" :width="78" style="border-radius: 6px;" /></div>
+                                        </div>
+                                    </a-space>
+                                </a-image-preview-group>
+                            </div>
+                            <div v-else-if="productdata.obj.main_image_three_to_four.length === 0">
+                                <h5>3:4主图-暂无</h5>
+                                <a-space>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                    <div class="img_loading_3_4"></div>
+                                </a-space>
+                            </div>
+                        </a-col>
+
+                    </a-row>
 
                 </div>
 
@@ -402,7 +410,7 @@
                                     包邮
                                 </div>
                                 <div v-if="productdata.obj.freight_id !== 0 && productdata.obj.freight_id !== undefined" class="basestyle">
-                                <a href="#" @click="feight_detaile.play">查看 </a> {{ productdata.obj.freight_id }}
+                                <a href="#" @click="freight_detaile.play">查看 </a> {{ productdata.obj.freight_id }}
 
 
                                 </div>
@@ -558,7 +566,7 @@
             <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
             <div style="width: 100%;float: left;">
                 <div class="desbox">
-                    <div v-html="productdata.obj.description" style="width: 750px;margin: 0 0 20px 0;"></div>
+                    <div v-html="productdata.obj.description" style="margin: 40px 0 40px 0;"></div>
                 </div>
             </div>
 
@@ -749,11 +757,12 @@ export default defineComponent({
         })
 
         // 运费详情
-        const feight_detaile = reactive({
-            open:ref(false),
-            data:ref(undefined),
+        const freight_detaile = reactive({
+            FreightDate:ref(false),// 运费详情抽屉显示
+            freight_id:ref(null),// 运费模板id
             play:()=>{
-                feight_detaile.open = true
+                freight_detaile.FreightDate = true;
+                freight_detaile.freight_id = productdata.obj.freight_id;
             }
         })
 
@@ -800,9 +809,8 @@ export default defineComponent({
                 setTimeout(()=>{
 
                     // console.log('运费模板id',responese.data.data.freight_id)
-                    load_get_brand(responese.data.data.standard_brand_id)   // 品牌
+                    // load_get_brand(responese.data.data.standard_brand_id)   // 品牌
                     load_get_video(responese.data.data.material_video_id)   // 视频
-                    load_get_freight(responese.data.data.freight_id)        // 运费模板
                     load_get_size(responese.data.data.size_info_template_id)// 尺码
                     load_cate_format(responese.data.data) // 类目&属性
                     // console.log('资质',responese.data.data.quality_list)
@@ -813,8 +821,10 @@ export default defineComponent({
                     data.value = spec_res_obj.data // 列表内容
 
                     productdata.obj = responese.data.data
-                    console.log('商品详情',productdata.obj)
-                    console.log('3:4长图',productdata.obj.long_pic_url)
+                    // console.log('商品详情',productdata.obj)
+                    console.log('白底图',productdata.obj.white_back_ground_pic_url)
+                    console.log('3:4长图url',productdata.obj.long_pic_url)
+                    console.log('3:4主图',typeof productdata.obj.main_image_three_to_four)
                     console.log('3:4主图',productdata.obj.main_image_three_to_four)
 
                 },1000)
@@ -866,16 +876,7 @@ export default defineComponent({
                 }
             }
 
-            // 运费模板查询
-            const load_get_freight=(f_id)=>{
-                if(f_id !== undefined && f_id !== null){
-                    tool.Http_.post(API.AppSrtoreAPI.freight.detaile, {
-                        freight_id:f_id
-                    }).then((res)=>{
-                        feight_detaile.data = res.data.data
-                    })
-                }
-            }
+
 
             // 尺码模板查询
             const load_get_size=(s_id)=>{
@@ -989,7 +990,7 @@ export default defineComponent({
             showDrawer,
             videoData,
             size_detaile,
-            feight_detaile,
+            freight_detaile,
             brand_detaile,
             cate_name,
             columns,
@@ -1004,14 +1005,16 @@ export default defineComponent({
 .head_title_img{height: 140px;width: 100%;}
 .zhenduan{width: 100%;height:140px;}
 .top_img_box{height: 304px; width: 100%;}
-.img_loading_3_4{width: 80px;height: 114px;background-color: #f2f2f2;text-align: center;border-radius: 6px;}
+.img_loading_3_4{width: 80px;height: 114px;border: 1px #f2f2f2 solid;text-align: center;border-radius: 6px;}
 .skelestlye{margin: 0;padding: 0;width: 100%;}
 .basestyle{height: 30px;width: 100%;}
-.desbox{width: 770px;background-color: #333;padding: 10px;border-radius:6px;margin: 0 auto;}
+.desbox{width:100%;background-color: #333;padding: 10px;border-radius:6px;margin: 0 auto;text-align: center;}
 .specbox{display: block;float: left;margin:0 10px 10px 0;text-align: center;margin:0 10px 10px 0;border: 1px solid #e8e8e8;border-radius: 6px;padding:10px;}
 .check_ico{width: 100px;margin: 0 auto;font-size: 44px;text-align: center;}
 .rejectinfo{padding:20px 10px 10px 20px;margin: 0 0 20px 0;}
 .img_80{border-radius: 6px;border: 1px #f2f2f2 solid;padding: 6px;height: 94px;width: 94px;}
 .img_107{height: 114px;width: 88px;border-radius: 6px;border: 1px #f2f2f2 solid;padding: 4px;}
+.text_center_12{justify-content: center;display: flex;align-items: center;font-size: 12px;}/*文字垂直居中*/
+.text_center{text-align: center;}
 
 </style>

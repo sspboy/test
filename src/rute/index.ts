@@ -258,6 +258,14 @@ const routes = [
         }
     },
     {
+        path: '/materiallist',
+        name: 'materiallist',
+        component: () => import('../views/AppMarket/Material/list.vue'),    // 视图文件
+        meta:{
+            title:'素材列表',
+        }
+    },
+    {
         path: '/introduction',
         name: 'introduction',
         component: () => import('../views/AppMarket/Product/IntroductionView.vue'),    // 视图文件
