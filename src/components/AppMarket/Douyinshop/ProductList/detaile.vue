@@ -192,11 +192,11 @@
                         </div>
                         <div v-else-if="productdata.obj.white_back_ground_pic_url === null">
                             <h5 class="text_center">白底图</h5>
-                            <p class="img_80 text_center_12">暂无</p>
+                            <p class="img_80 text_center_12 cursor">暂无</p>
                         </div>
                         <div v-else-if="productdata.obj.white_back_ground_pic_url !== null">
                             <h5 class="text_center">白底图</h5>
-                            <p class="img_80"><a-image :width="80" style="border-radius: 6px;" :src="productdata.obj.white_back_ground_pic_url"/></p>
+                            <p class="img_80 cursor"><a-image :width="80" style="border-radius: 6px;" :src="productdata.obj.white_back_ground_pic_url"/></p>
                         </div>
                     </div>
 
@@ -207,11 +207,11 @@
                         </div>
                         <div v-else-if="productdata.obj.material_video_id === null">
                             <h5 class="text_center">视频</h5>
-                            <p class="img_80 text_center_12">暂无</p>
+                            <p class="img_80 text_center_12 cursor">暂无</p>
                         </div>
                         <div v-else>
                             <h5 class="text_center">视频</h5>
-                            <p class="img_80">
+                            <p class="img_80 cursor">
                                 <a :href="videoData.url" target="_blank">
                                     <img :src="videoData.img_src" style="width: 80px;height: 80px;"/>
                                 </a>
@@ -226,75 +226,33 @@
                         
                         <!--3:4长图 long_pic_url-->
                         <a-col :span="12">
-                            <div v-if="productdata.obj.long_pic_url === undefined">
-                                <h5>3:4长图</h5>
-                                <a-space>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                </a-space>
-                            </div>
-                            <div v-else-if="productdata.obj.long_pic_url === null && productdata.obj.long_pic_url !== undefined">
-                                <h5>3:4长图-暂无</h5>
-                                <a-space>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                </a-space>
-
-                            </div>
-                            <div v-else-if="productdata.obj.long_pic_url > 0 ">
-                                <h5>3:4长图</h5>
-                                <a-image-preview-group>
-                                    <a-space :size="6">
-                                        <div v-for="img in productdata.obj.long_pic_url" :key="img.index">
-                                            <p class="img_107">
-                                                <a-image :src="img" :width="78" style="border-radius: 6px;" />
-                                            </p>
+                            <div style="margin-bottom: 4px;">3:4长图</div>
+                            <a-list :grid="{ gutter:1, column: 5 }" :data-source="pic_3_4.list">
+                                <template #renderItem="{ item }">
+                                    <a-list-item style="padding: 0;margin: 0;">
+                                        <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
+                                        <div v-else class="img_80">
+                                            <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
                                         </div>
-                                    </a-space>
-                                </a-image-preview-group>
-                            </div>
-                            <div v-else>
-                            </div>
+                                    </a-list-item>
+                                </template>
+                            </a-list>
                         </a-col>
                             
                         <!--商品主图3:4 main_image_three_to_four-->
                         <a-col :span="12">
-                            <div v-if="productdata.obj.main_image_three_to_four=== undefined">
-                                <h5>3:4主图</h5>
-                                <a-space>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                </a-space>
-                            </div>
-                            <div v-else-if="productdata.obj.main_image_three_to_four.length > 0">
-                                <h5>3:4主图</h5>
-                                <a-image-preview-group>
-                                    <a-space :size="6">
-                                        <div v-for="img in productdata.obj.main_image_three_to_four.slice(1,-1).split(' ')" :key="img.index">
-                                            <div class="img_107"><a-image :src="img" :width="78" style="border-radius: 6px;" /></div>
-                                        </div>
-                                    </a-space>
-                                </a-image-preview-group>
-                            </div>
-                            <div v-else-if="productdata.obj.main_image_three_to_four.length === 0">
-                                <h5>3:4主图-暂无</h5>
-                                <a-space>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                    <div class="img_loading_3_4"></div>
-                                </a-space>
-                            </div>
+                            
+                            <div style="margin-bottom: 4px;">3:4主图</div>
+                            <a-list :grid="{ gutter:1, column: 5 }" :data-source="pic_3_4.list">
+                                <template #renderItem="{ item }">
+                                    <a-list-item style="padding: 0;margin: 0;">
+                                    <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
+                                    <div v-else class="img_80">
+                                        <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
+                                    </div>
+                                    </a-list-item>
+                                </template>
+                            </a-list>
                         </a-col>
 
                     </a-row>
@@ -305,154 +263,142 @@
 
             <a-divider orientation="left" orientation-margin="0px">基本信息</a-divider>
 
-            <div style="height: 300px;width: 100%;">
-                <a-row :gutter="[16,6]">
+            <div style="height: 240px;width: 100%;">
+                <a-row :gutter="[16,24]">
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">商品id</div>
-                                <div v-if="productdata.obj.product_id === undefined">
+                                <span v-if="productdata.obj.product_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.product_id !== undefined" class="basestyle">
-                                    {{ productdata.obj.product_id }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.product_id !== undefined">
+                                    商品ID：{{ productdata.obj.product_id }}
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">外部商家编码</div>
-                                <div v-if="productdata.obj.out_product_id === undefined">
+                                <span v-if="productdata.obj.out_product_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-else-if="productdata.obj.out_product_id !== '0'" class="basestyle">
-                                    {{ productdata.obj.out_product_id }}
-                                </div>
-                                <div v-else-if="productdata.obj.out_product_id === '0'" class="basestyle">
-                                    暂无
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.out_product_id !== '0'" class="basestyle">
+                                    外部商家编码：{{ productdata.obj.out_product_id }}
+                                </span>
+                                <span v-else-if="productdata.obj.out_product_id === '0'" class="basestyle">
+                                    外部商家编码：暂无
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">商品类型</div>
-                                <div v-if="productdata.obj.product_type === undefined">
+                                <span v-if="productdata.obj.product_type === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.product_type !== undefined" class="basestyle">
-                                    {{ Profun.Field_translation.product_type_info(productdata.obj.product_type) }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.product_type !== undefined" class="basestyle">
+                                    商品类型：{{ Profun.Field_translation.product_type_info(productdata.obj.product_type) }}
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">商品状态</div>
-                                <div v-if="productdata.obj.status === undefined">
+                                <span v-if="productdata.obj.status === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.status !== undefined" class="basestyle">
-                                    {{ Profun.Field_translation.product_status(productdata.obj.status ) }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.status !== undefined" class="basestyle">
+                                    商品状态：{{ Profun.Field_translation.product_status(productdata.obj.status ) }}
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">审核状态</div>
-                                <div v-if="productdata.obj.check_status === undefined">
+                                <span v-if="productdata.obj.check_status === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.check_status !== undefined" class="basestyle">
-                                    {{ Profun.Field_translation.product_check_status_info(productdata.obj.check_status) }}
-                                </div>
-
+                                </span>
+                                <span v-else-if="productdata.obj.check_status !== undefined" class="basestyle">
+                                    审核状态：{{ Profun.Field_translation.product_check_status_info(productdata.obj.check_status) }}
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">草稿状态</div>
-                                <div v-if="productdata.obj.draft_status === undefined">
+                                <span v-if="productdata.obj.draft_status === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.draft_status !== undefined" class="basestyle">
-                                    {{ Profun.Field_translation.product_draft_status_info(productdata.obj.draft_status) }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.draft_status !== undefined" class="basestyle">
+                                    草稿状态：{{ Profun.Field_translation.product_draft_status_info(productdata.obj.draft_status) }}
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">售卖方式</div>
-                                <div v-if="productdata.obj.sell_channel === undefined">
+                                <span v-if="productdata.obj.sell_channel === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.sell_channel !== undefined" class="basestyle">
-                                    {{ Profun.Field_translation.product_sale_type_info(productdata.obj.sell_channel) }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.sell_channel !== undefined" class="basestyle">
+                                    售卖方式：{{ Profun.Field_translation.product_sale_type_info(productdata.obj.sell_channel) }}
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">库存扣减方式 </div>
-                                <div v-if="productdata.obj.reduce_type === undefined">
+                                <span v-if="productdata.obj.reduce_type === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.reduce_type !== undefined" class="basestyle">
-                                    {{ Profun.Field_translation.product_reduce_type(productdata.obj.reduce_type) }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.reduce_type !== undefined" class="basestyle">
+                                    库存扣减方式：{{ Profun.Field_translation.product_reduce_type(productdata.obj.reduce_type) }}
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">售后服务</div>
-                                <div v-if="productdata.obj.after_sale_service_v2 === undefined">
+                                <span v-if="productdata.obj.after_sale_service_v2 === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.after_sale_service_v2 !== undefined" class="basestyle">
-                                    {{ Profun.Field_translation.product_after_sale_service_v2(productdata.obj.after_sale_service_v2) }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.after_sale_service_v2 !== undefined" class="basestyle">
+                                    售后服务：{{ Profun.Field_translation.product_after_sale_service_v2(productdata.obj.after_sale_service_v2) }}
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">7天无理由</div>
-                                <div v-if="productdata.obj.after_sale_service === undefined">
+                                <span v-if="productdata.obj.after_sale_service === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.after_sale_service !== undefined" class="basestyle">
-                                    {{ Profun.Field_translation.product_after_sale_service(productdata.obj.after_sale_service) }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.after_sale_service !== undefined" class="basestyle">
+                                    <a-typography-text
+                                        :style="{ width: '200px', fontSize: '12px' }"
+                                        :ellipsis="true"
+                                        :content="'7天无理由：' + Profun.Field_translation.product_after_sale_service(productdata.obj.after_sale_service)"
+                                    />
+                                </span>
                             </a-col>
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">运费模版ID</div>
-                                <div v-if="productdata.obj.freight_id === undefined">
+                                <span v-if="productdata.obj.freight_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.freight_id === 0" class="basestyle">
-                                    包邮
-                                </div>
-                                <div v-if="productdata.obj.freight_id !== 0 && productdata.obj.freight_id !== undefined" class="basestyle">
-                                <a href="#" @click="freight_detaile.play">查看 </a> {{ productdata.obj.freight_id }}
-
-
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.freight_id === 0" class="basestyle">
+                                    运费模版：包邮
+                                </span>
+                                <span v-else-if="productdata.obj.freight_id !== 0 && productdata.obj.freight_id !== undefined" class="basestyle">
+                                    运费模版：<a href="#" @click="freight_detaile.play">查看 </a> {{ productdata.obj.freight_id }}
+                                </span>
                             </a-col>
                             
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">尺码模板ID</div>
-                                <div v-if="productdata.obj.size_info_template_id === undefined">
+                                <span v-if="productdata.obj.size_info_template_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-else-if="productdata.obj.size_info_template_id === null" class="basestyle">
-                                    暂无
-                                </div>
-                                <div v-else-if="productdata.obj.size_info_template_id === 'None'" class="basestyle">
-                                    暂无
-                                </div>
-                                <div v-else-if="size_detaile.data !== undefined" class="basestyle">
-                                    <a href="#" @click="size_detaile.play">{{ size_detaile.data.component_template_info_list[0].template_name }}</a>
-
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.size_info_template_id === null" class="basestyle">
+                                    尺码模板：暂无
+                                </span>
+                                <span v-else-if="productdata.obj.size_info_template_id === 'None'" class="basestyle">
+                                    尺码模板：暂无
+                                </span>
+                                <span v-else-if="size_detaile.data !== undefined" class="basestyle">
+                                    尺码模板：<a href="#" @click="size_detaile.play">{{ size_detaile.data.component_template_info_list[0].template_name }}</a>
+                                </span>
                             </a-col>
 
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">品牌</div>
-                                <div v-if="productdata.obj.standard_brand_id === undefined">
+                                <span v-if="productdata.obj.standard_brand_id === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.standard_brand_id === 596120136" class="basestyle">无品牌</div>
-
-                                <div v-if="productdata.obj.standard_brand_id !== 596120136 && productdata.obj.standard_brand_id !== undefined" class="basestyle">
-                                {{ brand_detaile.data }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.standard_brand_id === 596120136" class="basestyle">品牌：无品牌</span>
+                                <span v-else-if="productdata.obj.standard_brand_id !== 596120136 && productdata.obj.standard_brand_id !== undefined" class="basestyle">
+                                    品牌：{{ brand_detaile.data }}
+                                </span>
+                                <span v-else>
+                                    品牌：暂无
+                                </span>
                             </a-col>
 
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">提取方式</div>
-                                <div v-if="productdata.obj.pickup_method === undefined">
+                                <span v-if="productdata.obj.pickup_method === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div v-if="productdata.obj.pickup_method !== undefined" class="basestyle">
-                                    {{ Profun.Field_translation.product_pickup_method(productdata.obj.pickup_method) }}
-                                </div>
+                                </span>
+                                <span v-else-if="productdata.obj.pickup_method !== undefined" class="basestyle">
+                                    提取方式：{{ Profun.Field_translation.product_pickup_method(productdata.obj.pickup_method) }}
+                                </span>
                             </a-col>
 
                             <!-- <a-col :span="6">
@@ -466,40 +412,35 @@
                             </a-col> -->
 
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">创建时间</div>
-                                <div v-if="productdata.obj.create_time === undefined">
+                                <span v-if="productdata.obj.create_time === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div style="height: 24px;width: 100%;">{{ productdata.obj.create_time }}</div>
+                                </span>
+                                <span v-else class="basestyle">创建时间：{{ productdata.obj.create_time }}</span>
                             </a-col>
 
                             <a-col :span="6">
-                                <div style="height: 24px;width: 100%;">更新时间</div>
-                                <div v-if="productdata.obj.update_time === undefined">
+                                <span v-if="productdata.obj.update_time === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div style="height: 24px;width: 100%;">{{ productdata.obj.update_time }}</div>
+                                </span>
+                                <span v-else class="basestyle">更新时间：{{ productdata.obj.update_time }}</span>
                             </a-col>
                             <a-col :span="6">
-                            <div style="height: 24px;width: 100%;">最小购买数量</div>
-                                <div v-if="productdata.obj.minimum_per_order === undefined">
+                                <span v-if="productdata.obj.minimum_per_order === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div style="height: 24px;width: 100%;">{{ productdata.obj.minimum_per_order }} 件</div>
+                                </span>
+                                <span v-else class="basestyle">最小购买数量：{{ productdata.obj.minimum_per_order }} 件</span>
                             </a-col>
                             <a-col :span="6">
-                            <div style="height: 24px;width: 100%;">最大购买数量</div>
-                                <div v-if="productdata.obj.maximum_per_order === undefined">
+                                <span v-if="productdata.obj.maximum_per_order === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div style="height: 24px;width: 100%;">{{ productdata.obj.maximum_per_order }} 件</div>
+                                </span>
+                                <span v-else class="basestyle">最大购买数量：{{ productdata.obj.maximum_per_order }} 件</span>
                             </a-col>
                             <a-col :span="6">
-                            <div style="height: 24px;width: 100%;">单用户累计限购件数</div>
-                                <div v-if="productdata.obj.limit_per_buyer === undefined">
+                                <span v-if="productdata.obj.limit_per_buyer === undefined">
                                     <a-skeleton :title="false" :paragraph="{ rows: 1}" class="skelestlye" active/>
-                                </div>
-                                <div style="height: 24px;width: 100%;">{{ productdata.obj.limit_per_buyer }} 件</div>
+                                </span>
+                                <span v-else class="basestyle">单用户累计限购件数：{{ productdata.obj.limit_per_buyer }} 件</span>
                             </a-col>
                             
                 </a-row>
@@ -721,6 +662,19 @@ export default defineComponent({
             obj:ref({}),
         })
 
+        // 商品主图
+        const pic_main = (data)=>{}
+
+        // 商品3:4主图数据处理
+        const pic_3_4 = reactive({
+            list:[{},{},{},{},{}],
+        })
+
+        // 商品长图long_image_url
+        const pic_long_url = reactive({
+            list:[{},{},{},{},{}],
+        })
+
         // 质量分
         const fen =reactive({
             value: ref(0),                      // 默认分值
@@ -787,8 +741,6 @@ export default defineComponent({
         // 类目
         const cate_name = ref(undefined)
 
-
-
         
         // 库存列表
         const columns = ref([])
@@ -809,7 +761,7 @@ export default defineComponent({
                 setTimeout(()=>{
 
                     // console.log('运费模板id',responese.data.data.freight_id)
-                    // load_get_brand(responese.data.data.standard_brand_id)   // 品牌
+                    load_get_brand(responese.data.data.standard_brand_id)   // 品牌
                     load_get_video(responese.data.data.material_video_id)   // 视频
                     load_get_size(responese.data.data.size_info_template_id)// 尺码
                     load_cate_format(responese.data.data) // 类目&属性
@@ -822,10 +774,12 @@ export default defineComponent({
 
                     productdata.obj = responese.data.data
                     // console.log('商品详情',productdata.obj)
+                    console.log('品牌',productdata.obj.standard_brand_id)
+
                     console.log('白底图',productdata.obj.white_back_ground_pic_url)
                     console.log('3:4长图url',productdata.obj.long_pic_url)
                     console.log('3:4主图',typeof productdata.obj.main_image_three_to_four)
-                    console.log('3:4主图',productdata.obj.main_image_three_to_four)
+                    console.log('3:4主图',JSON.parse(productdata.obj.main_image_three_to_four))
 
                 },1000)
             
@@ -851,14 +805,14 @@ export default defineComponent({
 
             // 品牌查询
             const load_get_brand=(b_id)=>{
-                // console.log('品牌id',b_id)
                 if(b_id !== undefined && b_id !== null){
                     tool.Http_.post(API.AppSrtoreAPI.dou_product.brand, {
                         brand_ids:[b_id]
                     }).then((res)=>{
+                        console.log('品牌',b_id,res.data.data.brand_list)
                         var name_cn = res.data.data.brand_list[0].name_cn;
                         var name_en = res.data.data.brand_list[0].name_en;;
-                        brand_detaile.data = name_cn + '-' + name_en
+                        brand_detaile.data = name_cn + ' ' + name_en
                     })
                 }
             }
@@ -959,7 +913,7 @@ export default defineComponent({
                     cate_test = cate_test + i + '>'
                 }
 
-                cate_name.value = cate_test
+                cate_name.value = cate_test.slice(0,-1)
 
             }
 
@@ -988,6 +942,8 @@ export default defineComponent({
             reject_info,
             showreject,
             showDrawer,
+            pic_3_4,
+            pic_long_url,
             videoData,
             size_detaile,
             freight_detaile,
@@ -1014,7 +970,7 @@ export default defineComponent({
 .rejectinfo{padding:20px 10px 10px 20px;margin: 0 0 20px 0;}
 .img_80{border-radius: 6px;border: 1px #f2f2f2 solid;padding: 6px;height: 94px;width: 94px;}
 .img_107{height: 114px;width: 88px;border-radius: 6px;border: 1px #f2f2f2 solid;padding: 4px;}
-.text_center_12{justify-content: center;display: flex;align-items: center;font-size: 12px;}/*文字垂直居中*/
+.text_center_12{justify-content: center;display: flex;align-items: center;font-size: 12px;color: #e8e8e8;}/*文字垂直居中*/
 .text_center{text-align: center;}
 
 </style>

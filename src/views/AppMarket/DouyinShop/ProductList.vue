@@ -34,7 +34,7 @@
         <!--条件查询组件 开始 -->        
           <div :style="{
             width: PAGEDATA.innerWidth + 'px',
-            height:'42px',
+            height:'40px',
             backgroundColor:'#f2f2f2',
             borderRadius:'4px',
             overflow:'hidden'
