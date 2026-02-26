@@ -7,7 +7,8 @@ import store from '/src/staore'         // 全局数据状态共享
 import 'css-doodle' // css 特效模块
 import vue3videoPlay from 'vue3-video-play' // 引入视频组件
 import 'vue3-video-play/dist/style.css' // 引入视频css
-// 全局样式（仅 Tailwind components/utilities，无 base）
+import VueLazyLoad from 'vue3-lazyload' // 引入图片懒加载组件
+
 // 页面标题设置---开始
 router.beforeEach((to, from, next) => {
   /* 路由发生变化修改页面title */
@@ -34,5 +35,12 @@ app.use(store)  // 初始化Vuex 数据状态共享
 app.use(Antd)   // 加载ant design UI框架
 app.use(router) // 加载路由
 app.use(vue3videoPlay)
+app.use(vue3videoPlay)
+app.use(VueLazyLoad, {
+  // loading: 'https://img.alicdn.com/tfs/TB1LhJjXoQnBKNjSZFDXXbVFXa-240-240.gif', // 加载时显示的图片
+  // error: 'https://img.alicdn.com/tfs/TB1LhJjXoQnBKNjSZFDXXbVFXa-240-240.gif',   // 加载失败时显示的图片
+  attempt: 3, // 尝试加载次数
+  lazyComponent: true, // 是否懒加载组件
+});
 
 app.mount('#app');

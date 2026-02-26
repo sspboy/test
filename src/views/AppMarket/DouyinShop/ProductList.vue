@@ -70,11 +70,21 @@
 
                   <a-list-item-meta>
                     <template #avatar>
+
                       <div class="cursor ListImg">
-                        <a-image 
-                        :src="item.img"
-                        alt="" 
-                        style="width: 100%;height: 100%;border-radius: 5px;" />
+                        <!--懒加载方法-->
+                        <!-- <img v-lazy="{
+                          src: item.img, 
+                          loading: '/logo.png', 
+                          error: 'your error image url' }" 
+                          style="width: 100%;height: 100%;border-radius: 5px;" 
+                        /> -->
+
+                        <a-image
+                          :src="item.img"
+                          alt="" 
+                          style="width: 100%;height: 100%;border-radius: 5px;" 
+                        />
                       </div>
                     </template>
 
@@ -590,7 +600,7 @@ export default {
             PAGEDATA.justify = 'start';
             PAGEDATA.align = 'start';
             // 请求数据不为空
-            PAGEDATA.datalist = res_list;
+            PAGEDATA.datalist = [...res_list];
             PAGEDATA.total_number = total;
           }, 100);
         }
@@ -829,7 +839,7 @@ export default {
 </script>
 
 <style scoped>
-.ListImg{width: 100px;height: 100px; background-color:white;border:1px silver solid;padding:2px;border-radius: 5px;}
+.ListImg{width: 100px;height: 100px; background-color:white;border:1px #f2f2f2 solid;padding:2px;border-radius: 5px;}
 .title_div_box{width: 100%; height: 26px;overflow: hidden;padding: 4px 0 0 0;font-size: 14px;}
 .ProductIDStyle{height: 16px;border-radius: 4px;font-size: 12px;color: darkgray;}
 .title_text_span{height: 20px;font-size:12px;color: darkgray;font-weight:normal;background-color: #f2f2f2;padding: 0 5px;border-radius: 5px;}

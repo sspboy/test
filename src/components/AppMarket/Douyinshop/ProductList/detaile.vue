@@ -231,6 +231,8 @@
                                 <template #renderItem="{ item }">
                                     <a-list-item style="padding: 0;margin: 0;">
                                         <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
+                                        <!-- <div v-else-if="item.url === null" class="img_loading_3_4 text_center_12 cursor">暂无</div> -->
+
                                         <div v-else class="img_80">
                                             <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
                                         </div>
@@ -375,7 +377,13 @@
                                     尺码模板：暂无
                                 </span>
                                 <span v-else-if="size_detaile.data !== undefined" class="basestyle">
-                                    尺码模板：<a href="#" @click="size_detaile.play">{{ size_detaile.data.component_template_info_list[0].template_name }}</a>
+                                    <a-typography-text
+                                    :style="{ width: '180px', fontSize: '12px'}"
+                                    :ellipsis="true"
+                                    :content="'尺码模板：'+ size_detaile.data.component_template_info_list[0].template_name"
+                                    />
+                                    <a href="#" @click="size_detaile.play">查看</a>
+                                    
                                 </span>
                             </a-col>
 
