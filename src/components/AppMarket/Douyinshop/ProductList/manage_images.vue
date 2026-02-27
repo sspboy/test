@@ -20,80 +20,133 @@
           <a-spin v-model:spinning="PAGEDATA.page_loading" />
         </a-flex>
 
-        <div v-show="!PAGEDATA.page_loading" style="padding: 0 0 100px 0;background-color: aqua;">
-          <a-divider orientation="left" orientation-margin="0px">主图</a-divider>
-              <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.pic">
-                <template #renderItem="{ item }">
-                  <a-list-item style="padding: 0;margin: 0;">
-                    <div v-if="item.url === undefined" class="img_80 text_center_12 cursor">暂无</div>
-                    <div v-else class="img_80">
-                        <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
-                    </div>
-                  </a-list-item>
-                </template>
-              </a-list>
-            <a-row>
-              <a-col :span="12">
-                <a-divider orientation="left" orientation-margin="0px">白底图</a-divider>
-                <div v-if="PAGEDATA.white_back_ground_pic_url === undefined || PAGEDATA.white_back_ground_pic_url === null" class="img_80 text_center_12 cursor">暂无</div>
-                <div v-else class="img_80">
-                  <a-image :src="PAGEDATA.white_back_ground_pic_url" :width="80" style="border-radius: 6px;" />
-                </div>
-              </a-col>
-              <a-col :span="12">
-              <a-divider orientation="left" orientation-margin="0px">视频</a-divider>
-              <div v-if="PAGEDATA.video === undefined" class="img_80 text_center_12 cursor">暂无</div>
-              <div v-else class="img_80">
-                <p class="img_80 cursor">
-                    <a :href="videoData.url" target="_blank">
-                        <img :src="videoData.img_src" style="width: 80px;height: 80px;"/>
-                    </a>
-                </p>
-              </div>
-              
+        <div v-show="!PAGEDATA.page_loading">
 
-              </a-col>
-            </a-row>
-          <a-divider orientation="left" orientation-margin="0px">3:4主图</a-divider>
-              <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.main_image_three_to_four">
-                <template #renderItem="{ item }">
-                  <a-list-item style="padding: 0;margin: 0;">
-                    <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
-                    <div v-else class="img_loading_3_4">
-                        <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
-                    </div>
-                  </a-list-item>
+          <a-divider orientation="left" orientation-margin="0px">主图</a-divider>
+
+          <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.pic">
+            <template #renderItem="{ item }">
+              <a-list-item style="padding: 0;margin: 0;">
+                <div v-if="item.url === undefined" class="img_80 text_center_12 cursor">暂无</div>
+                <a-card v-else class="cardstyle cursor" hoverable>
+                    <template #cover>
+                      <a-image :src="item.url" style="border-radius: 6px;" />
+                    </template>
+                    <template #actions>
+                      <a href="#" class="font_size_12">编辑</a>
+                      <a href="#" class="font_size_12">删除</a>
+                    </template>
+                </a-card>
+              </a-list-item>
+            </template>
+          </a-list>
+          <a-row>
+            <a-col :span="12">
+              <a-divider orientation="left" orientation-margin="0px">白底图</a-divider>
+              <div 
+                v-if="PAGEDATA.white_back_ground_pic_url === undefined || PAGEDATA.white_back_ground_pic_url === null" 
+                class="img_80 text_center_12 cursor"
+              >
+                暂无
+              </div>
+              <a-card v-else class="cardstyle cursor" hoverable>
+                <template #cover>
+                  <a-image :src="PAGEDATA.white_back_ground_pic_url" style="border-radius: 6px;" />
                 </template>
-              </a-list>
+                <template #actions>
+                  <a href="#" class="font_size_12">编辑</a>
+                  <a href="#" class="font_size_12">删除</a>
+                </template>
+              </a-card>
+            </a-col>
+            <a-col :span="12">
+            <a-divider orientation="left" orientation-margin="0px">视频</a-divider>
+              <div v-if="PAGEDATA.video === undefined" class="img_80 text_center_12 cursor">暂无</div>
+              <a-card v-else class="cardstyle cursor" hoverable>
+                <template #cover>
+                  <a :href="videoData.url" target="_blank">
+                      <a-image :src="PAGEDATA.video.url" :width="80" style="border-radius:6px;" />
+                  </a>
+                </template>
+                <template #actions>
+                  <a href="#" class="font_size_12">编辑</a>
+                  <a href="#" class="font_size_12">删除</a>
+                </template>
+              </a-card>
+
+            
+
+            </a-col>
+          </a-row>
+
+          <a-divider orientation="left" orientation-margin="0px">3:4主图</a-divider>
+          <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.main_pic_3_4">
+            <template #renderItem="{ item }">
+              <a-list-item style="padding: 0;margin: 0;">
+                <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
+                <a-card v-else class="cardstyle cursor" hoverable>
+                  <template #cover>
+                  <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
+                  </template>
+                  <template #actions>
+                  <a href="#" class="font_size_12">编辑</a>
+                  <a href="#" class="font_size_12">删除</a>
+                </template>
+                </a-card>
+              </a-list-item>
+            </template>
+          </a-list>
 
           <a-divider orientation="left" orientation-margin="0px">3:4长图</a-divider>
-            <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.long_pic_url">
-              <template #renderItem="{ item }">
-                <a-list-item style="padding: 0;margin: 0;">
-                  <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
-                  <div v-else class="img_loading_3_4">
-                      <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
-                  </div>
-                </a-list-item>
-              </template>
-            </a-list>
+          <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.long_pic_url">
+            <template #renderItem="{ item }">
+              <a-list-item style="padding: 0;margin: 0;">
+                <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
+                <div v-else class="img_loading_3_4">
+                    <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
+                </div>
+              </a-list-item>
+            </template>
+          </a-list>
           
           
           <a-divider orientation="left" orientation-margin="0px">规格图</a-divider>
-            <div v-if="PAGEDATA.spec_pic === undefined || PAGEDATA.spec_pic === null || PAGEDATA.spec_pic.length === 0" class="img_80 text_center_12 cursor">暂无</div>
-            <div v-else>
-              <div class="specbox" v-for="value in PAGEDATA.spec_pic" :key="value">
-                <a-image :src="API.AppSrtoreAPI.meiuri + value.pic" :width="80" style="border-radius: 6px;" />
-              </div>
-            </div>
+            <a-list :grid="{ gutter: [12, 12], column: 6 }" :data-source="PAGEDATA.spec_pic">
+              <template #renderItem="{ item }">
+                <a-list-item style="padding: 0;margin: 0;">
+                <div v-if="PAGEDATA.spec_pic === undefined || PAGEDATA.spec_pic === null || PAGEDATA.spec_pic.length === 0" class="img_80 text_center_12 cursor">暂无</div>
+                <a-card v-else class="cardstyle cursor" hoverable>
+                  <template #cover>
+                  <a-image :src="API.AppSrtoreAPI.meiuri + item.pic" style="border-radius: 6px;" />
+                  </template>
+                  <template #actions>
+                    <a href="#" class="font_size_12">编辑</a>
+                    <a href="#" class="font_size_12">删除</a>
+                  </template>
+                </a-card>
+                </a-list-item>
+              </template>
+
+            </a-list>
+          
 
           <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
-            <div v-if="PAGEDATA.description === undefined || PAGEDATA.description === null || PAGEDATA.description.length === 0" class="img_80 text_center_12 cursor">暂无</div>
-            <div v-else>
-              <div class="specbox" v-for="value in PAGEDATA.description" :key="value">
-                <a-image :src="value" :height="80" style="border-radius: 6px;" />
-              </div>
-            </div>
+            <a-list :grid="{ gutter: [12, 12], column: 6 }" :data-source="PAGEDATA.description">
+              <template #renderItem="{ item }">
+                <a-list-item style="padding: 0;margin: 0;">
+                <div v-if="PAGEDATA.description === undefined || PAGEDATA.description === null || PAGEDATA.description.length === 0" class="img_80 text_center_12 cursor">暂无</div>
+                <a-card v-else class="cardstyle cursor" hoverable>
+                  <template #cover>
+                    <a-image :src="item" :height="108" style="border-radius: 6px;" />
+                  </template>
+                  <template #actions>
+                    <a href="#" class="font_size_12">编辑</a>
+                    <a href="#" class="font_size_12">删除</a>
+                  </template>
+                </a-card>
+                </a-list-item>
+              </template>
+            </a-list>
         </div>
 
       </a-layout-content>
@@ -132,7 +185,7 @@ export default defineComponent({
           white_back_ground_pic_url:undefined,// 白底图列表
           video:undefined,// 视频列表
           long_pic_url:[{},{},{},{},{}],// 3:4长图列表
-          main_image_three_to_four:[{},{},{},{},{}],// 3:4主图列表
+          main_pic_3_4:[{},{},{},{},{}],// 3:4主图列表
           spec_pic:[],// 规格图列表
           description:undefined,// 描述详情图列表
         })
@@ -156,7 +209,7 @@ export default defineComponent({
 
           // PAGEDATA.pic = res_data.pic; // 主图列表
           fun.add_pic(res_data.pic);
-          console.log('主图',res_data.pic);
+          // console.log('主图',res_data.pic);
 
           PAGEDATA.white_back_ground_pic_url = res_data.white_back_ground_pic_url;// 白底图列表
           console.log('白底图',res_data.white_back_ground_pic_url);
@@ -167,16 +220,17 @@ export default defineComponent({
           // PAGEDATA.long_pic_url = res_data.long_pic_url_list;// 3:4长图列表
           console.log('3:4长图',res_data.long_pic_url_list);
 
-          // PAGEDATA.main_image_three_to_four = res_data.main_image_three_to_four;// 3:4主图列表
-          console.log('3:4主图',res_data.main_image_three_to_four);
+          // PAGEDATA.main_pic_3_4 = res_data.main_pic_3_4;// 3:4主图列表
+          fun.add_main_pic_3_4(res_data.main_pic_3_4);
+
 
           PAGEDATA.spec_pic = res_data.spec_pics;// 规格图列表
-          console.log('规格图',res_data.spec_pics);
-          console.log('规格图',typeof res_data.spec_pics);
+          // console.log('规格图',res_data.spec_pics);
+          // console.log('规格图',typeof res_data.spec_pics);
 
           // PAGEDATA.description = res_data.description;// 描述详情图列表
           fun.add_description(res_data.description);
-          console.log('描述详情图',res_data.description);
+          // console.log('描述详情图',res_data.description);
 
         }
         
@@ -186,8 +240,14 @@ export default defineComponent({
           // 主图
           add_pic:(data)=>{
             for(let i = 0;i<5;i++){
-              console.log(data[i]);
+              // console.log(data[i]);
               PAGEDATA.pic[i].url = data[i];
+            }
+          },
+          // 3:4主图
+          add_main_pic_3_4:(data)=>{
+            for(let i = 0;i<5;i++){
+              PAGEDATA.main_pic_3_4[i].url = data[i];
             }
           },
           // 描述图
@@ -198,7 +258,7 @@ export default defineComponent({
             for(let i = 0;i<dan_res.length;i++){
               dan_res[i] = dan_res[i].slice(0,dan_res[i].length-1);
             }
-            console.log('描述图正则结果', dan_res);
+            // console.log('描述图正则结果', dan_res);
             PAGEDATA.description = [...dan_res];
           },
           
@@ -222,11 +282,12 @@ export default defineComponent({
 })
 </script>
 <style scoped>
-.img_80{border-radius: 6px;border: 1px #f2f2f2 solid;padding: 6px;height: 94px;width: 94px;}
+.img_80{border-radius: 6px;border: 1px #f2f2f2 solid;padding: 6px;height: 164px;width: 120px;}
 .text_center_12{justify-content: center;display: flex;align-items: center;font-size: 12px;color: #e8e8e8;}/*文字垂直居中*/
+.cardstyle{padding: 5px;margin: 0;width: 120px;height: 164px;}
 .p_m{padding: 0;margin: 0;}
 .img_loading_3_4{width: 80px;height: 114px;border: 1px #f2f2f2 solid;text-align: center;border-radius: 6px;}
-.specbox{display: block;float: left;text-align: center;margin:0 10px 10px 0;border: 1px solid #e8e8e8;border-radius: 6px;padding:6px;width: 90px;height: 90px;}
+.speclayout{display: flex;justify-content: flex-start;flex-wrap: wrap;}/*规格图布局*/
 
 .full-modal {
   .ant-modal {

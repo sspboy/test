@@ -66,7 +66,7 @@
 
                 <template #renderItem="{ item }">
 
-                    <a-card size="small" style="margin:0px 10px 10px 0;font-size: 12px;">
+                    <a-card size="small" style="margin:0px 10px 10px 0;font-size: 12px;" hoverable>
 
                         <template #title>
                             <span class="font_size_12">{{ item.template_name }}</span>

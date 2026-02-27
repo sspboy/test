@@ -67,10 +67,13 @@
             <template #renderItem="{ item }">
 
               <a-list-item style="padding-left: 0;">
+                  <div style="width: 20px;height: 20px;float: left;margin-right: 10px;">
+                                <a-checkbox :value="item.product_id"></a-checkbox>
+
+                  </div>
 
                   <a-list-item-meta>
                     <template #avatar>
-
                       <div class="cursor ListImg">
                         <!--懒加载方法-->
                         <!-- <img v-lazy="{
@@ -92,8 +95,7 @@
                       <a-row>
                         <a-col :span="18">
                           <div class="title_div_box">
-                                <a-checkbox :value="item.product_id"></a-checkbox>
-                                <a href="#" style="color:black;margin: 0 0 0 10px;" @click="showDetaile(item.product_id)">
+                                <a href="#" style="color:black;" @click="showDetaile(item.product_id)">
                                   {{ item.name }}
                                 </a>
                           </div>
@@ -234,7 +236,6 @@
                         <a-col :span="8"><a class="font_size_12" @click="edit_douyinshop_product(item.product_id)"><edit-outlined /> 抖店编辑</a></a-col>
                         <a-col :span="8"><a class="font_size_12" @click="deldata.play(item.product_id)"><DeleteOutlined />移入回收站</a></a-col>
                       </a-row>
-
                     </div>
                   </template>
 

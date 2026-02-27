@@ -231,7 +231,7 @@ export class ProductList_fun {
             }else if(data == 1){
                 return '下线'
             }else if(data == 2){
-                return '删除'
+                return '回收站'
             }
         },
         // 审核状态
