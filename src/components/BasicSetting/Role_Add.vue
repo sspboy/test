@@ -1,5 +1,4 @@
 <template>
-
   <a-drawer
   :title="open.adddata.title"
   :width="720"

@@ -2,15 +2,16 @@
 <template>
 
 <a-drawer
-    v-model:open="props.data.ImageDate"
     class="custom-class"
     root-class-name="root-class-name"  
     :root-style="{ color: 'blue' }"
-    style="color: red"
     title="图片预览"
     placement="right"
     width="50%"
     @afterOpenChange="load_product_images"
+    :footer-style="{ textAlign: 'right' }"
+    @close="onClose"
+    :open="props.data.ImageDate"
   >
       <a-layout-content class="content">
 
@@ -21,11 +22,25 @@
         </a-flex>
 
         <div v-show="!PAGEDATA.page_loading">
-
-          <a-divider orientation="left" orientation-margin="0px">主图</a-divider>
-
+          <div style="height: 240px;">
+            <a-divider orientation="left" orientation-margin="0px">主图</a-divider>
+            <div v-for="item,index in PAGEDATA.pic">
+              <div v-if="item.url === undefined" class="img_80 text_center_12 cursor">暂无</div>
+              <a-card v-else class="cardstyle cursor" hoverable style="float: left;margin-right: 10px;">
+                  <template #cover>
+                    <a-image :src="item.url" style="border-radius: 6px;" />
+                  </template>
+                  <template #actions>
+                    <a href="#" class="font_size_12">编辑</a>
+                    <a href="#" class="font_size_12" @click="fun.del_pic(index)">删除</a>
+                  </template>
+              </a-card>
+            </div>
+            <div style="float: left;border: 1px #f2f2f2 solid;width: 120px;height: 166px;border-radius: 6px;" class="text_center_12 cursor">+ 主图</div>
+          </div>
+<!-- 
           <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.pic">
-            <template #renderItem="{ item }">
+            <template #renderItem="{ item, index}">
               <a-list-item style="padding: 0;margin: 0;">
                 <div v-if="item.url === undefined" class="img_80 text_center_12 cursor">暂无</div>
                 <a-card v-else class="cardstyle cursor" hoverable>
@@ -34,20 +49,21 @@
                     </template>
                     <template #actions>
                       <a href="#" class="font_size_12">编辑</a>
-                      <a href="#" class="font_size_12">删除</a>
+                      <a href="#" class="font_size_12" @click="fun.del_pic(index)">删除</a>
                     </template>
                 </a-card>
               </a-list-item>
             </template>
-          </a-list>
+          </a-list> -->
+          
           <a-row>
-            <a-col :span="12">
+            <a-col :span="24">
               <a-divider orientation="left" orientation-margin="0px">白底图</a-divider>
               <div 
                 v-if="PAGEDATA.white_back_ground_pic_url === undefined || PAGEDATA.white_back_ground_pic_url === null" 
                 class="img_80 text_center_12 cursor"
               >
-                暂无
+                + 白底图
               </div>
               <a-card v-else class="cardstyle cursor" hoverable>
                 <template #cover>
@@ -55,12 +71,12 @@
                 </template>
                 <template #actions>
                   <a href="#" class="font_size_12">编辑</a>
-                  <a href="#" class="font_size_12">删除</a>
+                  <a href="#" class="font_size_12" @click="fun.del_white_back_ground_pic">删除</a>
                 </template>
               </a-card>
             </a-col>
-            <a-col :span="12">
-            <a-divider orientation="left" orientation-margin="0px">视频</a-divider>
+            <a-col :span="0">
+            <!-- <a-divider orientation="left" orientation-margin="0px">视频</a-divider>
               <div v-if="PAGEDATA.video === undefined" class="img_80 text_center_12 cursor">暂无</div>
               <a-card v-else class="cardstyle cursor" hoverable>
                 <template #cover>
@@ -72,33 +88,30 @@
                   <a href="#" class="font_size_12">编辑</a>
                   <a href="#" class="font_size_12">删除</a>
                 </template>
-              </a-card>
-
-            
-
+              </a-card> -->
             </a-col>
           </a-row>
 
           <a-divider orientation="left" orientation-margin="0px">3:4主图</a-divider>
           <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.main_pic_3_4">
-            <template #renderItem="{ item }">
+            <template #renderItem="{ item,index }">
               <a-list-item style="padding: 0;margin: 0;">
                 <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
-                <a-card v-else class="cardstyle cursor" hoverable>
+                <a-card v-else class="cardstyle_3_4 cursor" hoverable>
                   <template #cover>
-                  <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
+                  <a-image :src="item.url" style="border-radius:6px;" />
                   </template>
                   <template #actions>
                   <a href="#" class="font_size_12">编辑</a>
-                  <a href="#" class="font_size_12">删除</a>
+                  <a href="#" class="font_size_12" @click="fun.del_main_pic_3_4(index)">删除</a>
                 </template>
                 </a-card>
               </a-list-item>
             </template>
           </a-list>
 
-          <a-divider orientation="left" orientation-margin="0px">3:4长图</a-divider>
-          <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.long_pic_url">
+          <!-- <a-divider orientation="left" orientation-margin="0px">3:4长图</a-divider> -->
+          <!-- <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.long_pic_url">
             <template #renderItem="{ item }">
               <a-list-item style="padding: 0;margin: 0;">
                 <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
@@ -107,7 +120,7 @@
                 </div>
               </a-list-item>
             </template>
-          </a-list>
+          </a-list> -->
           
           
           <a-divider orientation="left" orientation-margin="0px">规格图</a-divider>
@@ -117,11 +130,10 @@
                 <div v-if="PAGEDATA.spec_pic === undefined || PAGEDATA.spec_pic === null || PAGEDATA.spec_pic.length === 0" class="img_80 text_center_12 cursor">暂无</div>
                 <a-card v-else class="cardstyle cursor" hoverable>
                   <template #cover>
-                  <a-image :src="API.AppSrtoreAPI.meiuri + item.pic" style="border-radius: 6px;" />
+                  <a-image :src="item" style="border-radius: 6px;" />
                   </template>
                   <template #actions>
                     <a href="#" class="font_size_12">编辑</a>
-                    <a href="#" class="font_size_12">删除</a>
                   </template>
                 </a-card>
                 </a-list-item>
@@ -132,7 +144,7 @@
 
           <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
             <a-list :grid="{ gutter: [12, 12], column: 6 }" :data-source="PAGEDATA.description">
-              <template #renderItem="{ item }">
+              <template #renderItem="{ item,index }">
                 <a-list-item style="padding: 0;margin: 0;">
                 <div v-if="PAGEDATA.description === undefined || PAGEDATA.description === null || PAGEDATA.description.length === 0" class="img_80 text_center_12 cursor">暂无</div>
                 <a-card v-else class="cardstyle cursor" hoverable>
@@ -141,7 +153,7 @@
                   </template>
                   <template #actions>
                     <a href="#" class="font_size_12">编辑</a>
-                    <a href="#" class="font_size_12">删除</a>
+                    <a href="#" class="font_size_12" @click="fun.del_description(index)">删除</a>
                   </template>
                 </a-card>
                 </a-list-item>
@@ -150,13 +162,20 @@
         </div>
 
       </a-layout-content>
+      <template #footer>
+        <a-space style="float: left;">
+          <a-button type="primary" @click="handleOk" style="font-size: 12px;" :loading="loading">保存</a-button>
+          <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
+        </a-space>
+      </template>
       </a-drawer>
       </template>
 <script>
 import { defineComponent,reactive,ref, } from 'vue';
 import axios from "axios";
 import * as utils from '@/assets/JS_Model/public_model';
-import { t } from '@wangeditor/editor';
+import * as TOOL from '@/assets/JS_Model/tool';
+import { checkboxGroupProps } from 'ant-design-vue/es/checkbox';
 
 export default defineComponent({
 
@@ -176,10 +195,11 @@ export default defineComponent({
 
     setup(props, ctx) {
 
-        console.log(props.data.product_id);
+        // console.log(props.data.product_id);
+        const tool = new TOOL.TOOL()            // 工具方法
         const product_id = props.data.product_id // 商品id
         const API = new utils.A_Patch()         // 请求接口地址合集
-        const PAGEDATA= reactive({
+        const PAGEDATA = reactive({
           page_loading:true, // 页面加载状态
           pic:[{},{},{},{},{}], // 主图列表
           white_back_ground_pic_url:undefined,// 白底图列表
@@ -193,7 +213,7 @@ export default defineComponent({
         // 打开抽屉回调
         const load_product_images = async() => {
 
-          console.log('打开抽屉回调');
+          // console.log('打开抽屉回调');
 
           // 请求商品接口
           const res = await axios.post(API.AppSrtoreAPI.dou_product.detaile, {
@@ -205,52 +225,43 @@ export default defineComponent({
           PAGEDATA.page_loading = false; // 开始加载
 
           var res_data = res.data.data;
-          console.log(res_data);
+          // console.log(res_data);
 
-          // PAGEDATA.pic = res_data.pic; // 主图列表
+          // 主图列表
           fun.add_pic(res_data.pic);
-          // console.log('主图',res_data.pic);
-
           PAGEDATA.white_back_ground_pic_url = res_data.white_back_ground_pic_url;// 白底图列表
-          console.log('白底图',res_data.white_back_ground_pic_url);
-
-          // PAGEDATA.video = res_data.video_url_list;// 视频列表
-          console.log('视频',res_data.video_url_list);
-
-          // PAGEDATA.long_pic_url = res_data.long_pic_url_list;// 3:4长图列表
-          console.log('3:4长图',res_data.long_pic_url_list);
-
-          // PAGEDATA.main_pic_3_4 = res_data.main_pic_3_4;// 3:4主图列表
           fun.add_main_pic_3_4(res_data.main_pic_3_4);
-
-
-          PAGEDATA.spec_pic = res_data.spec_pics;// 规格图列表
-          // console.log('规格图',res_data.spec_pics);
-          // console.log('规格图',typeof res_data.spec_pics);
-
-          // PAGEDATA.description = res_data.description;// 描述详情图列表
+          fun.add_spec_pic(res_data.spec_pics);// 规格图列表
           fun.add_description(res_data.description);
-          // console.log('描述详情图',res_data.description);
 
         }
         
         // function load_product_images end
         const fun = {
           
-          // 主图
+          // 主图转义
           add_pic:(data)=>{
             for(let i = 0;i<5;i++){
               // console.log(data[i]);
               PAGEDATA.pic[i].url = data[i];
             }
           },
-          // 3:4主图
+          // 3:4主图转义
           add_main_pic_3_4:(data)=>{
             for(let i = 0;i<5;i++){
               PAGEDATA.main_pic_3_4[i].url = data[i];
             }
           },
-          // 描述图
+          // 规格图转义
+          add_spec_pic:(data)=>{
+
+            if(data === undefined || data.length > 0){
+              for(let i = 0;i<data.length;i++){
+                PAGEDATA.spec_pic.push(API.AppSrtoreAPI.meiuri + data[i].pic);
+              }
+            }
+          },
+          // 描述图转义
           add_description:(data)=>{
             var re_zyf = /https:(.*?)"/g;            // 单组sku
             var re_S = new RegExp(re_zyf);
@@ -261,14 +272,143 @@ export default defineComponent({
             // console.log('描述图正则结果', dan_res);
             PAGEDATA.description = [...dan_res];
           },
-          
-
+          // 主图验证==不能为空
+          check_pic:()=>{
+            if(PAGEDATA.pic.length === 0){
+              return false;
+            }else{
+              var url_list = []
+              for(let i = 0;i<PAGEDATA.pic.length;i++){
+                if(PAGEDATA.pic[i].url !== undefined){
+                  url_list.push(PAGEDATA.pic[i].url);
+                }
+              }
+              return url_list.join('|')
+            }
+          },
+          // 3:4主图验证
+          check_main_pic_3_4:()=>{
+            var url_list = []
+            for(let i = 0;i<PAGEDATA.main_pic_3_4.length;i++){
+              if(PAGEDATA.main_pic_3_4[i].url !== undefined){
+                url_list.push(PAGEDATA.main_pic_3_4[i].url);
+              }
+            }
+            if(url_list.length == 0){
+              return false;
+            }else{
+              return url_list.join('|')
+            }
+          },
+          // 规格图验证
+          check_spec_pic:()=>{
+            if(PAGEDATA.spec_pic.length == 0){
+              return false;
+            }else{
+              var url_list = []
+              for(let i = 0;i<PAGEDATA.spec_pic.length;i++){
+                url_list.push(PAGEDATA.spec_pic[i]);
+              }
+              return url_list.join('|')
+            }
+          },
+          // 描述图验证==不能为空
+          check_description:()=>{
+            if(PAGEDATA.description.length == 0){
+              return false;
+            }else{
+              return PAGEDATA.description.join('|');
+            }
+          },
+          // 主图删除
+          del_pic:(index)=>{
+            PAGEDATA.pic.splice(index,1);
+          },
+          // 白底图删除
+          del_white_back_ground_pic:()=>{
+            PAGEDATA.white_back_ground_pic_url = undefined;
+          },
+          // 3:4主图删除
+          del_main_pic_3_4:(index)=>{
+            PAGEDATA.main_pic_3_4.splice(index,1);
+          },
+          // 3:4长图删除
+          del_long_pic_3_4:(index)=>{
+            PAGEDATA.long_pic_url.splice(index,1);
+          },
+          // 规格图删除
+          del_spec_pic:(index)=>{
+            PAGEDATA.spec_pic.splice(index,1);
+          },
+          // 描述图删除
+          del_description:(index)=>{
+            PAGEDATA.description.splice(index,1);
+          }
         }
 
-        // 提交按钮回调
-        const handleOk = e => {
-            console.log(e);
+        // 保存方法
+        const handleOk = (e) => {
+          
+          // loading.value = true;
+
+          var upload_data = {
+            product_id: product_id,
+            pic: [],// 主图列表
+            white_back_ground_pic_url:PAGEDATA.white_back_ground_pic_url,// 白底图列表
+            main_pic_3_4:[],// 3:4主图列表
+            spec_pics:PAGEDATA.spec_pic,// 规格图列表
+            description:PAGEDATA.description,// 描述详情图列表
+          }
+
+          // 主图
+          var pic = fun.check_pic()
+          if(pic === false){
+            tool.Fun_.message('warning','主图不能为空');
+            return false; 
+          }else{
+            console.log('主图验证结果', pic);
+          }
+
+          // 白底图
+          if(PAGEDATA.white_back_ground_pic_url != undefined){
+            console.log('白底图验证结果', PAGEDATA.white_back_ground_pic_url);
+          }
+          // 3:4主图
+          var main_pic_3_4 = fun.check_main_pic_3_4();
+          if(main_pic_3_4){
+            // main_image_three_to_four
+            console.log('3:4主图验证结果', main_pic_3_4);
+          }
+
+          // 规格图
+          var spec_pic = fun.check_spec_pic();
+          if(spec_pic === false){
+            tool.Fun_.message('warning','规格图不能为空');
+            return false;
+          }else{
+            console.log('规格图验证结果', spec_pic);
+          }
+
+          // 描述详情图
+          var description = fun.check_description();
+          if(description === false){
+            tool.Fun_.message('warning','描述详情图不能为空');
+            return false;
+          }else{
+            console.log('描述详情图验证结果', description);
+          }
         };
+
+        // 取消方法
+        const onClose = () => {
+            props.data.ImageDate = false;
+        };
+
+        // 更新商品到接口
+        const loading = ref(false);
+        const from_submit = () => {
+          console.log('更新商品到接口');
+        }
 
 
         return{
@@ -277,6 +417,9 @@ export default defineComponent({
             load_product_images,
             PAGEDATA,
             handleOk,
+            loading,
+            onClose,
+            fun
         }
     }
 })
@@ -284,9 +427,11 @@ export default defineComponent({
 <style scoped>
 .img_80{border-radius: 6px;border: 1px #f2f2f2 solid;padding: 6px;height: 164px;width: 120px;}
 .text_center_12{justify-content: center;display: flex;align-items: center;font-size: 12px;color: #e8e8e8;}/*文字垂直居中*/
-.cardstyle{padding: 5px;margin: 0;width: 120px;height: 164px;}
+.cardstyle{padding: 5px;margin: 0;width: 120px;height: 166px;}
+.cardstyle_3_4{padding: 5px;margin: 0;width: 120px;height: 202px;}
+
 .p_m{padding: 0;margin: 0;}
-.img_loading_3_4{width: 80px;height: 114px;border: 1px #f2f2f2 solid;text-align: center;border-radius: 6px;}
+.img_loading_3_4{width: 120px;height: 202px;border: 1px #f2f2f2 solid;text-align: center;border-radius: 6px;}
 .speclayout{display: flex;justify-content: flex-start;flex-wrap: wrap;}/*规格图布局*/
 
 .full-modal {

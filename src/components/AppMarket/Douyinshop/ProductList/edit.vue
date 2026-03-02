@@ -30,6 +30,8 @@
 
             </div>
       </a-layout-content>
+
+      
     </a-modal>
 </template>
 <script>
