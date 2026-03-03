@@ -24,50 +24,7 @@
             <!--头图 标题-->
             <div>
                 <a-row>
-                    <a-col :span="7" style="background-color: aliceblue;border-radius: 6px;">
-
-                        <div class="zhenduan">
-
-                            <div v-if="productdata.obj.check_status === undefined" style="text-align: center;padding: 50px 0 0 0">
-                                <a-spin tip="Loading...">
-                                </a-spin>
-                            </div>
-
-                            <div v-if="productdata.obj.check_status === 1" style="text-align: center;border-radius: 6px;padding:20px 0 0 0;">
-                                <div class="check_ico"><InfoCircleTwoTone /></div>
-                                <p>商品待提交</p>
-                            </div>
-
-                            <div v-if="productdata.obj.check_status === 2" style="text-align: center;border-radius: 6px;padding:20px 0 0 0;">
-                                <div class="check_ico"><ClockCircleTwoTone /></div>
-                                <p>商品待审核</p>
-                            </div>
-                            
-                            <div v-if="productdata.obj.check_status === 3" style="text-align: center;padding:6px 0 0 0;">
-                                <div class="check_ico"><CheckCircleTwoTone /></div>
-                                <p style="margin: 0;padding: 0;">审核通过 <a href="#" @click="showDrawer">查看优化建议</a></p>
-                                <p style="margin: 0;padding: 0;"><a-rate :value="fen.value" disabled /></p>
-                            </div>
-
-                            <div v-if="productdata.obj.check_status === 4" style="text-align: center;padding:20px 0 0 0;">
-                                <div class="check_ico"><CloseCircleTwoTone /></div>
-                                <p>审核未通过 <a href="#" @click="showreject">查看驳回原因</a></p>
-                            </div>
-
-                            <div v-if="productdata.obj.check_status === 5" style="text-align: center;padding:20px 0 0 0;">
-                                <div class="check_ico"><WarningTwoTone /></div>
-                                <p>封禁 <a href="#" @click="showreject">查看驳回原因</a></p>
-                            </div>
-
-                            <div v-if="productdata.obj.check_status === 7" style="padding: 20px 0 0 0;text-align: center;">
-                                <div class="check_ico"><UpSquareTwoTone /></div>
-                                审核通过待上架
-                            </div>
-                        </div>
-                        <!--提示错误，-->
-                    </a-col>
-
-                    <a-col :span="16" :offset="1" style="background-color: aliceblue;border-radius: 6px;">
+                    <a-col :span="16"  style="background-color: aliceblue;border-radius: 6px;">
                         <div v-if="productdata.obj.name !== undefined" style="width: 100px;height:100px;float: left;margin: 20px;">
                             <a-image :src="productdata.obj.img" alt="" style="width: 100%;height: 100%;border-radius: 6px;" />
                         </div>
@@ -149,6 +106,49 @@
 
                         </div>
                     </a-col>
+
+                    <a-col :span="7" :offset="1" style="background-color: aliceblue;border-radius: 6px;">
+
+                        <div class="zhenduan">
+
+                            <div v-if="productdata.obj.check_status === undefined" style="text-align: center;padding: 50px 0 0 0">
+                                <a-spin tip="Loading...">
+                                </a-spin>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 1" style="text-align: center;border-radius: 6px;padding:20px 0 0 0;">
+                                <div class="check_ico"><InfoCircleTwoTone /></div>
+                                <p>商品待提交</p>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 2" style="text-align: center;border-radius: 6px;padding:20px 0 0 0;">
+                                <div class="check_ico"><ClockCircleTwoTone /></div>
+                                <p>商品待审核</p>
+                            </div>
+                            
+                            <div v-if="productdata.obj.check_status === 3" style="text-align: center;padding:6px 0 0 0;">
+                                <div class="check_ico"><CheckCircleTwoTone /></div>
+                                <p style="margin: 0;padding: 0;">审核通过 <a href="#" @click="showDrawer">查看优化建议</a></p>
+                                <p style="margin: 0;padding: 0;"><a-rate :value="fen.value" disabled /></p>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 4" style="text-align: center;padding:20px 0 0 0;">
+                                <div class="check_ico"><CloseCircleTwoTone /></div>
+                                <p>审核未通过 <a href="#" @click="showreject">查看驳回原因</a></p>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 5" style="text-align: center;padding:20px 0 0 0;">
+                                <div class="check_ico"><WarningTwoTone /></div>
+                                <p>封禁 <a href="#" @click="showreject">查看驳回原因</a></p>
+                            </div>
+
+                            <div v-if="productdata.obj.check_status === 7" style="padding: 20px 0 0 0;text-align: center;">
+                                <div class="check_ico"><UpSquareTwoTone /></div>
+                                审核通过待上架
+                            </div>
+                        </div>
+                        <!--提示错误，-->
+                    </a-col>
                 </a-row>
             </div>
 
@@ -223,33 +223,16 @@
                 
                 <div style="height: 120px;float: left;width: 100%;clear: both;">
                     <a-row>
-                        
-                        <!--3:4长图 long_pic_url-->
-                        <a-col :span="12">
-                            <div style="margin-bottom: 4px;">3:4长图</div>
-                            <a-list :grid="{ gutter:1, column: 5 }" :data-source="pic_3_4.list">
-                                <template #renderItem="{ item }">
-                                    <a-list-item style="padding: 0;margin: 0;">
-                                        <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
-                                        <!-- <div v-else-if="item.url === null" class="img_loading_3_4 text_center_12 cursor">暂无</div> -->
-
-                                        <div v-else class="img_80">
-                                            <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
-                                        </div>
-                                    </a-list-item>
-                                </template>
-                            </a-list>
-                        </a-col>
                             
                         <!--商品主图3:4 main_image_three_to_four-->
-                        <a-col :span="12">
+                        <a-col :span="14">
                             
                             <div style="margin-bottom: 4px;">3:4主图</div>
                             <a-list :grid="{ gutter:1, column: 5 }" :data-source="pic_3_4.list">
                                 <template #renderItem="{ item }">
                                     <a-list-item style="padding: 0;margin: 0;">
                                     <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
-                                    <div v-else class="img_80">
+                                    <div v-else class="img_loading_3_4">
                                         <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
                                     </div>
                                     </a-list-item>
@@ -773,6 +756,7 @@ export default defineComponent({
                     load_get_video(responese.data.data.material_video_id)   // 视频
                     load_get_size(responese.data.data.size_info_template_id)// 尺码
                     load_cate_format(responese.data.data) // 类目&属性
+                    load_pic_3_4(responese.data.data) // 3:4主图
                     // console.log('资质',responese.data.data.quality_list)
 
                     // 规格库存-表头、内容
@@ -782,12 +766,7 @@ export default defineComponent({
 
                     productdata.obj = responese.data.data
                     // console.log('商品详情',productdata.obj)
-                    console.log('品牌',productdata.obj.standard_brand_id)
 
-                    console.log('白底图',productdata.obj.white_back_ground_pic_url)
-                    console.log('3:4长图url',productdata.obj.long_pic_url)
-                    console.log('3:4主图',typeof productdata.obj.main_image_three_to_four)
-                    console.log('3:4主图',JSON.parse(productdata.obj.main_image_three_to_four))
 
                 },1000)
             
@@ -837,8 +816,6 @@ export default defineComponent({
                     })
                 }
             }
-
-
 
             // 尺码模板查询
             const load_get_size=(s_id)=>{
@@ -925,6 +902,20 @@ export default defineComponent({
 
             }
 
+            // 3:4 主图加载
+            const load_pic_3_4=(data)=>{
+                var pic_3_4_list = []
+                if(data.main_pic_3_4 !== undefined){
+                    for(let i of data.main_pic_3_4){
+                        let o = {}
+                        o.url = i
+                        pic_3_4_list.push(o)
+                    }
+                }
+                pic_3_4.list = pic_3_4_list
+            }
+
+
 
 
         })
@@ -969,7 +960,7 @@ export default defineComponent({
 .head_title_img{height: 140px;width: 100%;}
 .zhenduan{width: 100%;height:140px;}
 .top_img_box{height: 304px; width: 100%;}
-.img_loading_3_4{width: 80px;height: 114px;border: 1px #f2f2f2 solid;text-align: center;border-radius: 6px;}
+.img_loading_3_4{width: 100px;height: 120px;border: 1px #f2f2f2 solid;text-align: center;border-radius: 6px;padding: 6px;}
 .skelestlye{margin: 0;padding: 0;width: 100%;}
 .basestyle{height: 30px;width: 100%;}
 .desbox{width:100%;background-color: #333;padding: 10px;border-radius:6px;margin: 0 auto;text-align: center;}

@@ -94,97 +94,98 @@
                     <template #title>
                       <a-row>
                         <a-col :span="18">
+
                           <div class="title_div_box">
                                 <a href="#" style="color:black;" @click="showDetaile(item.product_id)">
                                   {{ item.name }}
                                 </a>
                           </div>
+                          <div style="overflow: hidden;">
+                            <a-space align="end" :size="10" style="height: 32px;font-weight:normal;">
+                              <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
+                                <a-tooltip placement="top">
+                                  <template #title>
+                                    <span class="font_size_12">{{ item.product_id }}</span>
+                                  </template>
 
-                          <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
-                            <div class="title_text_span ProductIDStyle cursor" @click="tool.Fun_.copyToClipboard(item.product_id)">
-                              <a-tooltip placement="top">
-                                <template #title>
-                                  <span class="font_size_12">{{ item.product_id }}</span>
-                                </template>
-
-                                ID-<CopyOutlined />
-
-
-                              </a-tooltip>
-                            </div>
-
-                            <div class="title_text_span">
-                              {{ Profun.Field_translation.product_type_info(item.product_type) }}
-                            </div>
-
-                            <div class="title_text_span">
-                              <span class="left_box status_0" v-if="item.status == 0"></span>
-                              <span class="left_box status_1" v-if="item.status == 1"></span>
-                              <span class="left_box status_2" v-if="item.status == 2"></span>
-                              {{ Profun.Field_translation.product_status(item.status) }}
-                            </div>
-                            
-                            <div class="title_text_span">
-                              <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
-                              <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
-                              <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
-                              <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
-                              <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
-                              <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
-
-                              {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
-
-                                  <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
-
-                                    <a-tooltip placement="top">
-
-                                          <template  #title>
-                                            
-                                            <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
-                                              驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
-                                            </div>
-
-                                          </template>
-
-                                          <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
-
-                                        </a-tooltip>
-                                  </span>
-                                  <span class="font_size_12" v-else>
-                                  </span>
+                                  ID-<CopyOutlined />
 
 
-                            </div>
+                                </a-tooltip>
+                              </div>
 
-                            <div class="title_text_span cursor">
-                              <a-tooltip placement="top">
-                                <template  #title>
-                                  <span class="font_size_12">
-                                    {{ Profun.Field_translation.product_cate_name_info(item.category_detail).full_cate }}
-                                  </span>
-                                </template>
-                                {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
-                              </a-tooltip>
-                            </div>
+                              <div class="title_text_span">
+                                {{ Profun.Field_translation.product_type_info(item.product_type) }}
+                              </div>
 
-                            <div class="title_text_span">销量{{ item.sell_num }}</div>
+                              <div class="title_text_span">
+                                <span class="left_box status_0" v-if="item.status == 0"></span>
+                                <span class="left_box status_1" v-if="item.status == 1"></span>
+                                <span class="left_box status_2" v-if="item.status == 2"></span>
+                                {{ Profun.Field_translation.product_status(item.status) }}
+                              </div>
+                              
+                              <div class="title_text_span">
+                                <span class="left_box check_status_1" v-if="item.check_status == 1"></span>
+                                <span class="left_box check_status_2" v-if="item.check_status == 2"></span>
+                                <span class="left_box check_status_3" v-if="item.check_status == 3"></span>
+                                <span class="left_box check_status_4" v-if="item.check_status == 4"></span>
+                                <span class="left_box check_status_5" v-if="item.check_status == 5"></span>
+                                <span class="left_box check_status_7" v-if="item.check_status == 7"></span>
 
-                            <!--商品状态判断-->
-                            <div>
-                              <span v-if="item.status == 0 && item.check_status == 1"><a-tag color="#2db7f5">草稿</a-tag></span>
-                              <span v-else-if="item.status == 0 && item.check_status == 3"><a-tag color="#87d068">售卖中</a-tag></span>
-                              <span v-else-if="item.status == 1 && item.check_status == 7"><a-tag color="#999999">已下架</a-tag></span>
-                              <span v-else-if="item.status == 1 && item.check_status == 1"><a-tag color="orange" :bordered="false">待审核</a-tag></span>
-                              <span v-else-if="item.status == 0 && item.check_status == 2"><a-tag color="orange" :bordered="false">审核中</a-tag></span>
-                              <span v-else-if="item.status == 2 && item.check_status == 1"><a-tag :bordered="false">回收站</a-tag></span>
-                              <span v-else-if="item.check_status == 4"><a-tag color="#f50">驳回</a-tag></span>
-                              <span v-else-if="item.status == 0 && item.check_status == 5"><a-tag :bordered="false">封禁中</a-tag></span>
-                            </div>
-                            <!-- {{ item.status }}-{{ item.check_status }} -->
-                          </a-space>
-                          
-                          <div>
-                            <a-space align="end" :size="10" style="height: 32px;overflow: hidden;font-weight:normal;">
+                                {{ Profun.Field_translation.product_check_status_info(item.check_status) }}
+
+                                    <span class="font_size_12 cursor" v-if="item.have_audit_reject_suggest == true && item.audit_reject_suggestion !== undefined"> 
+
+                                      <a-tooltip placement="top">
+
+                                            <template  #title>
+                                              
+                                              <div v-if="item.audit_reject_suggestion.reject_reason !== ''" style="font-size: 12px;">
+                                                驳回原因：<span v-html="item.audit_reject_suggestion.reject_reason"></span>
+                                              </div>
+
+                                            </template>
+
+                                            <ExclamationCircleFilled style="color:#eb2f96;font-size: 10px;" /><span> 驳回建议</span>
+
+                                          </a-tooltip>
+                                    </span>
+                                    <span class="font_size_12" v-else>
+                                    </span>
+
+
+                              </div>
+
+                              <div class="title_text_span cursor">
+                                <a-tooltip placement="top">
+                                  <template  #title>
+                                    <span class="font_size_12">
+                                      {{ Profun.Field_translation.product_cate_name_info(item.category_detail).full_cate }}
+                                    </span>
+                                  </template>
+                                  {{ Profun.Field_translation.product_cate_name_info(item.category_detail).last_cate }}
+                                </a-tooltip>
+                              </div>
+
+                              <div class="title_text_span">销量{{ item.sell_num }}</div>
+
+                              <!--商品状态判断-->
+                              <div>
+                                <span v-if="item.status == 0 && item.check_status == 1"><a-tag color="#2db7f5">草稿</a-tag></span>
+                                <span v-else-if="item.status == 0 && item.check_status == 3"><a-tag color="#87d068">售卖中</a-tag></span>
+                                <span v-else-if="item.status == 1 && item.check_status == 7"><a-tag color="#999999">已下架</a-tag></span>
+                                <span v-else-if="item.status == 1 && item.check_status == 1"><a-tag color="orange" :bordered="false">待审核</a-tag></span>
+                                <span v-else-if="item.status == 0 && item.check_status == 2"><a-tag color="orange" :bordered="false">审核中</a-tag></span>
+                                <span v-else-if="item.status == 2 && item.check_status == 1"><a-tag :bordered="false">回收站</a-tag></span>
+                                <span v-else-if="item.check_status == 4"><a-tag color="#f50">驳回</a-tag></span>
+                                <span v-else-if="item.status == 0 && item.check_status == 5"><a-tag :bordered="false">封禁中</a-tag></span>
+                              </div>
+                              <!-- {{ item.status }}-{{ item.check_status }} -->
+                            </a-space>
+                          </div>
+                          <div style="overflow: hidden;">
+                            <a-space align="end" :size="10" style="height: 32px;font-weight:normal;">
                                     <div class="font_size_12" v-if="item.need_check_out">
                                       <CloseSquareOutlined style="color:#eb2f96;" />  需要核销 
                                     </div>
@@ -214,8 +215,8 @@
                                       </span>
                                       </a-space>
                                     </div>
-                          </a-space>
-                            </div>
+                            </a-space>
+                          </div>
 
                         </a-col>
 

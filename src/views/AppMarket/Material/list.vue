@@ -16,10 +16,38 @@
         <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
         </a-layout-sider>
         <!--左侧 菜单组件  结束-->
+        <!-- 组织架构 开始 -->
+        <a-layout-sider style="background-color: #001529;height: 100%;padding: 6px 4px 0 0;">
+
+            <div class="box-left">
+
+                <a-divider orientation="center" class="font_size_12">文件夹</a-divider>
+
+                <a-row :gutter="[6,6]" justify="space-around">
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">标题</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">主图</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">推荐语</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">备注</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">品牌</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">属性</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">货号</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">上架</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">下架</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">价格</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">库存</div></a-col>
+                    <a-col :span="12"><div class="gutter-box cursor font_size_12">SKU编码</div></a-col>
+                </a-row>
+
+                
+                <a-divider orientation="center" class="font_size_12">服务与履约</a-divider>
+            </div>
+
+        </a-layout-sider>
+        <!-- 组织架构 结束 -->
 
         <a-layout-content class="content_border" >
 
-          <h1>素材列表</h1>
+            <h1>素材列表</h1>
 
         </a-layout-content>
 
@@ -83,4 +111,6 @@ setup(props,ctx) {
 }
 </script>
 <style scoped>
+.box-left{background-color: white;height: 100%;overflow-y:auto;width: 100%;white-space:nowrap;border-top-left-radius: 5px;border-top-right-radius: 5px;padding: 0 6px;}
+
 </style>

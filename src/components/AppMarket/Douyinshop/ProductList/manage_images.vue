@@ -22,40 +22,27 @@
         </a-flex>
 
         <div v-show="!PAGEDATA.page_loading">
-          <div style="height: 240px;">
+
+          <div class="speclayout">
             <a-divider orientation="left" orientation-margin="0px">主图</a-divider>
             <div v-for="item,index in PAGEDATA.pic">
-              <div v-if="item.url === undefined" class="img_80 text_center_12 cursor">暂无</div>
+              <div v-if="item === undefined" class="img_80 text_center_12 cursor">暂无</div>
               <a-card v-else class="cardstyle cursor" hoverable style="float: left;margin-right: 10px;">
                   <template #cover>
-                    <a-image :src="item.url" style="border-radius: 6px;" />
+                    <a-image :src="item" style="border-radius: 6px;" />
                   </template>
                   <template #actions>
-                    <a href="#" class="font_size_12">编辑</a>
+                    <a href="#" class="font_size_12">尺寸</a>
+                    <!-- <a href="#" class="font_size_12">白底图</a>
+                    <a href="#" class="font_size_12">去水印</a>
+                    <a href="#" class="font_size_12">去水印</a> -->
                     <a href="#" class="font_size_12" @click="fun.del_pic(index)">删除</a>
                   </template>
               </a-card>
             </div>
-            <div style="float: left;border: 1px #f2f2f2 solid;width: 120px;height: 166px;border-radius: 6px;" class="text_center_12 cursor">+ 主图</div>
+            <div v-if="PAGEDATA.pic.length < 5" class="add_img_1_1 text_center_12 cursor">+ 主图</div>
           </div>
-<!-- 
-          <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.pic">
-            <template #renderItem="{ item, index}">
-              <a-list-item style="padding: 0;margin: 0;">
-                <div v-if="item.url === undefined" class="img_80 text_center_12 cursor">暂无</div>
-                <a-card v-else class="cardstyle cursor" hoverable>
-                    <template #cover>
-                      <a-image :src="item.url" style="border-radius: 6px;" />
-                    </template>
-                    <template #actions>
-                      <a href="#" class="font_size_12">编辑</a>
-                      <a href="#" class="font_size_12" @click="fun.del_pic(index)">删除</a>
-                    </template>
-                </a-card>
-              </a-list-item>
-            </template>
-          </a-list> -->
-          
+
           <a-row>
             <a-col :span="24">
               <a-divider orientation="left" orientation-margin="0px">白底图</a-divider>
@@ -75,60 +62,29 @@
                 </template>
               </a-card>
             </a-col>
-            <a-col :span="0">
-            <!-- <a-divider orientation="left" orientation-margin="0px">视频</a-divider>
-              <div v-if="PAGEDATA.video === undefined" class="img_80 text_center_12 cursor">暂无</div>
-              <a-card v-else class="cardstyle cursor" hoverable>
-                <template #cover>
-                  <a :href="videoData.url" target="_blank">
-                      <a-image :src="PAGEDATA.video.url" :width="80" style="border-radius:6px;" />
-                  </a>
-                </template>
-                <template #actions>
-                  <a href="#" class="font_size_12">编辑</a>
-                  <a href="#" class="font_size_12">删除</a>
-                </template>
-              </a-card> -->
-            </a-col>
           </a-row>
 
           <a-divider orientation="left" orientation-margin="0px">3:4主图</a-divider>
-          <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.main_pic_3_4">
-            <template #renderItem="{ item,index }">
-              <a-list-item style="padding: 0;margin: 0;">
-                <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
-                <a-card v-else class="cardstyle_3_4 cursor" hoverable>
+          <div class="speclayout">
+            <div v-for="item,index in PAGEDATA.main_pic_3_4">
+              <a-card v-if="item !=undefined" class="cardstyle_3_4 cursor" hoverable style="float: left;margin-right: 10px;">
                   <template #cover>
-                  <a-image :src="item.url" style="border-radius:6px;" />
+                  <a-image :src="item" style="border-radius:6px;" />
                   </template>
                   <template #actions>
                   <a href="#" class="font_size_12">编辑</a>
                   <a href="#" class="font_size_12" @click="fun.del_main_pic_3_4(index)">删除</a>
                 </template>
                 </a-card>
-              </a-list-item>
-            </template>
-          </a-list>
+            </div>
+            <div style="float: left;margin-right: 10px;" v-if="PAGEDATA.main_pic_3_4.length < 5" class="img_loading_3_4 text_center_12 cursor">+ 3:4主图</div>
+          </div>
 
-          <!-- <a-divider orientation="left" orientation-margin="0px">3:4长图</a-divider> -->
-          <!-- <a-list :grid="{ gutter: 12 }" :data-source="PAGEDATA.long_pic_url">
-            <template #renderItem="{ item }">
-              <a-list-item style="padding: 0;margin: 0;">
-                <div v-if="item.url === undefined" class="img_loading_3_4 text_center_12 cursor">暂无</div>
-                <div v-else class="img_loading_3_4">
-                    <a-image :src="item.url" :width="80" style="border-radius: 6px;" />
-                </div>
-              </a-list-item>
-            </template>
-          </a-list> -->
-          
-          
           <a-divider orientation="left" orientation-margin="0px">规格图</a-divider>
-            <a-list :grid="{ gutter: [12, 12], column: 6 }" :data-source="PAGEDATA.spec_pic">
-              <template #renderItem="{ item }">
-                <a-list-item style="padding: 0;margin: 0;">
-                <div v-if="PAGEDATA.spec_pic === undefined || PAGEDATA.spec_pic === null || PAGEDATA.spec_pic.length === 0" class="img_80 text_center_12 cursor">暂无</div>
-                <a-card v-else class="cardstyle cursor" hoverable>
+          <div class="speclayout">
+            <div v-if="PAGEDATA.spec_pic === undefined || PAGEDATA.spec_pic === null || PAGEDATA.spec_pic.length === 0" class="img_80 text_center_12 cursor">暂无</div>
+            <div v-for="item,index in PAGEDATA.spec_pic">
+              <a-card class="cardstyle cursor" hoverable style="float: left;margin-right: 10px;">
                   <template #cover>
                   <a-image :src="item" style="border-radius: 6px;" />
                   </template>
@@ -136,39 +92,40 @@
                     <a href="#" class="font_size_12">编辑</a>
                   </template>
                 </a-card>
-                </a-list-item>
-              </template>
-
-            </a-list>
-          
+            </div>
+          </div>
 
           <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
-            <a-list :grid="{ gutter: [12, 12], column: 6 }" :data-source="PAGEDATA.description">
-              <template #renderItem="{ item,index }">
-                <a-list-item style="padding: 0;margin: 0;">
-                <div v-if="PAGEDATA.description === undefined || PAGEDATA.description === null || PAGEDATA.description.length === 0" class="img_80 text_center_12 cursor">暂无</div>
-                <a-card v-else class="cardstyle cursor" hoverable>
+          <div class="speclayout">
+            <div v-for="item,index in PAGEDATA.description">
+              <a-card v-if="item.url !=undefined" class="cardstyle cursor" hoverable style="float: left;margin-right: 10px;">
                   <template #cover>
-                    <a-image :src="item" :height="108" style="border-radius: 6px;" />
+                    <div style="width: 110px;height: 110px;display: flex;justify-content: center;align-items: center;">
+                      <a-image :src="item.url" :width="item.width" :height="item.height" style="border-radius:6px;" />
+                    </div>
                   </template>
                   <template #actions>
-                    <a href="#" class="font_size_12">编辑</a>
-                    <a href="#" class="font_size_12" @click="fun.del_description(index)">删除</a>
-                  </template>
+                  <a href="#" class="font_size_12">编辑</a>
+                  <a href="#" class="font_size_12" @click="fun.del_description(index)">删除</a>
+                </template>
                 </a-card>
-                </a-list-item>
-              </template>
-            </a-list>
+            </div>
+            <div class="img_80 text_center_12 cursor">+描述图</div>
+
+          </div>
         </div>
 
       </a-layout-content>
+
+      <!--底部按钮-->
       <template #footer>
         <a-space style="float: left;">
           <a-button type="primary" @click="handleOk" style="font-size: 12px;" :loading="loading">保存</a-button>
           <a-button @click="onClose" style="font-size: 12px;">取消</a-button>
         </a-space>
       </template>
-      </a-drawer>
+      
+    </a-drawer>
       </template>
 <script>
 import { defineComponent,reactive,ref, } from 'vue';
@@ -201,11 +158,11 @@ export default defineComponent({
         const API = new utils.A_Patch()         // 请求接口地址合集
         const PAGEDATA = reactive({
           page_loading:true, // 页面加载状态
-          pic:[{},{},{},{},{}], // 主图列表
+          pic:[], // 主图列表
           white_back_ground_pic_url:undefined,// 白底图列表
           video:undefined,// 视频列表
           long_pic_url:[{},{},{},{},{}],// 3:4长图列表
-          main_pic_3_4:[{},{},{},{},{}],// 3:4主图列表
+          main_pic_3_4:[],// 3:4主图列表
           spec_pic:[],// 规格图列表
           description:undefined,// 描述详情图列表
         })
@@ -241,15 +198,14 @@ export default defineComponent({
           
           // 主图转义
           add_pic:(data)=>{
-            for(let i = 0;i<5;i++){
-              // console.log(data[i]);
-              PAGEDATA.pic[i].url = data[i];
+            for(let i = 0;i<data.length;i++){
+              PAGEDATA.pic.push(data[i]);
             }
           },
           // 3:4主图转义
           add_main_pic_3_4:(data)=>{
-            for(let i = 0;i<5;i++){
-              PAGEDATA.main_pic_3_4[i].url = data[i];
+            for(let i = 0;i<data.length;i++){
+              PAGEDATA.main_pic_3_4.push(data[i])
             }
           },
           // 规格图转义
@@ -263,11 +219,33 @@ export default defineComponent({
           },
           // 描述图转义
           add_description:(data)=>{
-            var re_zyf = /https:(.*?)"/g;            // 单组sku
+            var re_zyf = /https:(.*?)"/g;// 单组sku
             var re_S = new RegExp(re_zyf);
             var dan_res = data.match(re_S);
             for(let i = 0;i<dan_res.length;i++){
-              dan_res[i] = dan_res[i].slice(0,dan_res[i].length-1);
+              var img_url= dan_res[i].slice(0,dan_res[i].length-1);
+              // console.log('描述图片url', img_url);
+              var img_url_width_height_list = img_url.match(/www(.*)/g)[0].slice(3).split('-');
+              // console.log('描述图片宽高', img_url_width_height_list);
+
+              var url_width = parseInt(img_url_width_height_list[0]);// 宽度
+              var url_height = parseInt(img_url_width_height_list[1]);// 高度
+              // 高度等比缩放到110px，计算宽度
+              var img_url_width_height_list_110 = [];
+              if(url_width>url_height){
+                img_url_width_height_list_110[0] = 110;// 图片宽度
+                img_url_width_height_list_110[1] = Math.floor(url_height * (110 / url_width));// 图片高度
+              }else{
+                img_url_width_height_list_110[0] = Math.floor(url_width * (110 / url_height));
+                img_url_width_height_list_110[1] = 110;
+              }
+
+              dan_res[i] = {
+                url:img_url,
+                width:img_url_width_height_list_110[0],// 图片宽度
+                height:img_url_width_height_list_110[1]// 图片高度
+              };
+              // console.log('描述图片宽高等比缩放110px', dan_res[i]);
             }
             // console.log('描述图正则结果', dan_res);
             PAGEDATA.description = [...dan_res];
@@ -427,9 +405,9 @@ export default defineComponent({
 <style scoped>
 .img_80{border-radius: 6px;border: 1px #f2f2f2 solid;padding: 6px;height: 164px;width: 120px;}
 .text_center_12{justify-content: center;display: flex;align-items: center;font-size: 12px;color: #e8e8e8;}/*文字垂直居中*/
-.cardstyle{padding: 5px;margin: 0;width: 120px;height: 166px;}
-.cardstyle_3_4{padding: 5px;margin: 0;width: 120px;height: 202px;}
-
+.cardstyle{padding: 5px;margin: 0 0 10px 0;width: 120px;height: 166px;text-align: center;}
+.cardstyle_3_4{padding: 5px;margin: 0 0 10px 0;width: 120px;height: 202px;}
+.add_img_1_1{float: left;border: 1px #f2f2f2 solid;width: 120px;height: 166px;border-radius: 6px;}
 .p_m{padding: 0;margin: 0;}
 .img_loading_3_4{width: 120px;height: 202px;border: 1px #f2f2f2 solid;text-align: center;border-radius: 6px;}
 .speclayout{display: flex;justify-content: flex-start;flex-wrap: wrap;}/*规格图布局*/

@@ -32,6 +32,9 @@ html{margin: 0px; padding: 0px;font-size: 12px;overflow: hidden;}
 .ant-form-item-label > label {font-size: 12px !important; /* 设置表单标签的字体大小 */}
 .ant-form-item-control {font-size: 12px !important; /* 设置表单控件的字体大小 */}
 .font_size_12{font-size: 12px;}
+.font_size_14{font-size: 14px;}
+.font_size_16{font-size: 16px;}
+.ant-menu-item-only-child {font-size: 12px !important;} /* 设置左侧子菜单项的字体大小 */
 /* 按钮默认字体大小 */
 .ant-btn{font-size: 12px !important;}
 .ant-input{font-size: 12px !important;}

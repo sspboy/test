@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-menu 
-      class="font_size_12"
+      class="font_size_14"
       v-model:selectedKeys="state.key"
       mode="inline"
       theme="dark"
