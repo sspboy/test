@@ -25,21 +25,23 @@
 
           <div class="speclayout">
             <a-divider orientation="left" orientation-margin="0px">主图</a-divider>
-            <div v-for="item,index in PAGEDATA.pic">
-              <div v-if="item === undefined" class="img_80 text_center_12 cursor">暂无</div>
-              <a-card v-else class="cardstyle cursor" hoverable style="float: left;margin-right: 10px;">
-                  <template #cover>
-                    <a-image :src="item" style="border-radius: 6px;" />
-                  </template>
-                  <template #actions>
-                    <a href="#" class="font_size_12">尺寸</a>
-                    <!-- <a href="#" class="font_size_12">白底图</a>
-                    <a href="#" class="font_size_12">去水印</a>
-                    <a href="#" class="font_size_12">去水印</a> -->
-                    <a href="#" class="font_size_12" @click="fun.del_pic(index)">删除</a>
-                  </template>
-              </a-card>
-            </div>
+            <a-image-preview-group>
+              <div v-for="item,index in PAGEDATA.pic">
+                <div v-if="item === undefined" class="img_80 text_center_12 cursor">暂无</div>
+                <a-card v-else class="cardstyle cursor" hoverable style="float: left;margin-right: 10px;">
+                    <template #cover>
+                      <a-image :src="item" style="border-radius: 6px;" />
+                    </template>
+                    <template #actions>
+                      <a href="#" class="font_size_12">尺寸</a>
+                      <!-- <a href="#" class="font_size_12">白底图</a>
+                      <a href="#" class="font_size_12">去水印</a>
+                      <a href="#" class="font_size_12">去水印</a> -->
+                      <a href="#" class="font_size_12" @click="fun.del_pic(index)">删除</a>
+                    </template>
+                </a-card>
+              </div>
+            </a-image-preview-group>
             <div v-if="PAGEDATA.pic.length < 5" class="add_img_1_1 text_center_12 cursor">+ 主图</div>
           </div>
 
@@ -66,6 +68,7 @@
 
           <a-divider orientation="left" orientation-margin="0px">3:4主图</a-divider>
           <div class="speclayout">
+            <a-image-preview-group>
             <div v-for="item,index in PAGEDATA.main_pic_3_4">
               <a-card v-if="item !=undefined" class="cardstyle_3_4 cursor" hoverable style="float: left;margin-right: 10px;">
                   <template #cover>
@@ -77,12 +80,14 @@
                 </template>
                 </a-card>
             </div>
+            </a-image-preview-group>
             <div style="float: left;margin-right: 10px;" v-if="PAGEDATA.main_pic_3_4.length < 5" class="img_loading_3_4 text_center_12 cursor">+ 3:4主图</div>
           </div>
 
           <a-divider orientation="left" orientation-margin="0px">规格图</a-divider>
           <div class="speclayout">
             <div v-if="PAGEDATA.spec_pic === undefined || PAGEDATA.spec_pic === null || PAGEDATA.spec_pic.length === 0" class="img_80 text_center_12 cursor">暂无</div>
+            <a-image-preview-group>
             <div v-for="item,index in PAGEDATA.spec_pic">
               <a-card class="cardstyle cursor" hoverable style="float: left;margin-right: 10px;">
                   <template #cover>
@@ -93,10 +98,12 @@
                   </template>
                 </a-card>
             </div>
+          </a-image-preview-group>
           </div>
 
           <a-divider orientation="left" orientation-margin="0px">描述详情</a-divider>
           <div class="speclayout">
+            <a-image-preview-group>
             <div v-for="item,index in PAGEDATA.description">
               <a-card v-if="item.url !=undefined" class="cardstyle cursor" hoverable style="float: left;margin-right: 10px;">
                   <template #cover>
@@ -110,6 +117,7 @@
                 </template>
                 </a-card>
             </div>
+            </a-image-preview-group>
             <div class="img_80 text_center_12 cursor">+描述图</div>
 
           </div>

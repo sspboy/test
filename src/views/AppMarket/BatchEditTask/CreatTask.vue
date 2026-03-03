@@ -59,20 +59,64 @@
 
 
         <a-layout-content class="content_border">
+            <div>
+                <a-form
+                    ref="formRef"
+                    name="advanced_search"
+                    class="ant-advanced-search-form"
+                    :model="formState"
+                    @finish="onFinish"
+                >
+                    <a-row :gutter="24">
+                        <template v-for="i in 10" :key="i">
+                        <a-col v-show="expand || i <= 6" :span="8">
+                            <a-form-item
+                            :name="`field-${i}`"
+                            :label="`field-${i}`"
+                            :rules="[{ required: true, message: 'input something' }]"
+                            >
+                            <a-input v-model:value="formState[`field-${i}`]" placeholder="placeholder"></a-input>
+                            </a-form-item>
+                        </a-col>
+                        </template>
+                    </a-row>
+                    <a-row>
+                        <a-col :span="24" style="text-align: right">
+                        <a-button type="primary" html-type="submit">Search</a-button>
+                        <a-button style="margin: 0 8px" @click="() => formRef.resetFields()">Clear</a-button>
+                        <a style="font-size: 12px" @click="expand = !expand">
+                            <template v-if="expand">
+                            <UpOutlined />
+                            </template>
+                            <template v-else>
+                            <DownOutlined />
+                            </template>
+                            Collapse
+                        </a>
+                        </a-col>
+                    </a-row>
+                </a-form>
+                <!--结果预览-->
+                <div style="height: 40px;background-color: aliceblue;text-align: center;">
+                    Search Result List
+                </div>
+            </div>
+
+
 
             <a-row>
 
                 
 
-                <a-col :span="8">
+                <!-- <a-col :span="8">
                     <h3 class="title_h">第一步：选择商品</h3>
                     <first_step :data="formState"/>
-                </a-col>
+                </a-col> -->
 
 
 
 
-                <a-col :span="8">
+                <!-- <a-col :span="8">
 
                     <h3 class="title_h">第二步：修改字段</h3>
 
@@ -185,12 +229,12 @@
                         <a-button type="primary" @click="add_task" size="small" :loading="OptfunctionData.sub_load" style="font-size: 12px;">提交批量修改任务</a-button>
                     </div>
 
-                </a-col>
+                </a-col> -->
 
 
 
 
-                <a-col :span="8">
+                <!-- <a-col :span="8">
                     
                     <h3 class="title_h">第三步：操作记录</h3>
                     <div class="bor_l" :style="{height:'80vh'}">
@@ -245,7 +289,7 @@
 
                     </div>
 
-                </a-col>
+                </a-col> -->
 
             </a-row>
             
@@ -292,6 +336,10 @@ export default {
   props: {},
   // 组合API返回到模版
   setup() {
+
+
+
+
     // 【数据绑定】=======================================>开始
     const API = new utils.A_Patch()         // 请求接口地址合集
     const TO = new TABLE.TableOperate()     // 表格操作方法
@@ -366,10 +414,6 @@ export default {
         product_result_list:ref([]) // 商品查询结果
 
     });
-
-
-
-
 
 
     // 批量修改-操作方法
@@ -543,6 +587,17 @@ export default {
 
     };
 
+
+
+
+    const expand = ref(false);
+    const formRef = ref();
+    // const formState = reactive({});
+    const onFinish = values => {
+        console.log('Received values of form: ', values);
+        console.log('formState: ', formState);
+    };
+
     return {
 
       store,
@@ -563,6 +618,8 @@ export default {
       initLoading,
       list,
       onLoadMore,
+        // 筛选条件
+      expand,formRef,onFinish
 
     }
     }
