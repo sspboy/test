@@ -2,135 +2,281 @@
 <template>
     <a-modal
       v-model:open="props.data.EditDate"
-      title="编辑商品"
       width="100%"
       wrap-class-name="full-modal"
       @ok="handleOk"
     >
-      <a-layout-content class="content">
+    <!--无数据loading-->
+        <div v-if="PAGEDATA.product_data === undefined" class="load_center">
+          <a-spin />
+        </div>
+      <a-layout-content v-else class="content">
 
-            <div style="width: 950px;margin: 0 auto;">
-              <a-tabs v-model:activeKey="activeKey">
-                <a-tab-pane key="1" tab="基础信息">
-                  <div style="width: 100%;clear: both;height: 140px;padding: 10px 0 0 0;">
+        <!--有数据 show time info-->
+        <div  style="width: 950px;margin: 0 auto;">
+          <a-tabs v-model:activeKey="activeKey">
+            <a-tab-pane key="1" tab="主图类目">
+              <a-row>
 
-                    <div class="img_pic">
-                    </div>
-                    <div class="img_pic">图片2</div>
-                    <div class="img_pic">图片3</div>
-                    <div class="img_pic">图片4</div>
-                    <div class="img_pic">图片5</div>
-                    <p class="cursor Add_img">
-                      <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
-                        +主图
-                      </a-flex>
-                    </p>
-                  </div>
-                  
-                  <a-form>
-                    <a-form-item label="商品标题">
-                      <a-input></a-input>
-                    </a-form-item>
-                    <a-form-item label="导购标题">
-                      <a-input></a-input>
-                    </a-form-item>
+                <a-col :span="24">
 
-                    <a-divider orientation="left" orientation-margin="0px">商品分类 </a-divider>
+                <p>主图</p>
+                <div class="img_pic">
+                </div>
+                <div class="img_pic">图片2</div>
+                <div class="img_pic">图片3</div>
+                <div class="img_pic">图片4</div>
+                <div class="img_pic">图片5</div>
+                <p class="cursor Add_img">
+                  <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                    +主图
+                  </a-flex>
+                </p>
 
-                    <a-form-item label="商品分类">
-                      <a-row>
-                        <a-col :span="8">
-                          <a-select v-model:value="formdata.category_leaf_id" placeholder="please select your zone" disabled="true">
-                          <a-select-option value="shanghai">Zone one</a-select-option>
-                          <a-select-option value="beijing">Zone two</a-select-option>
-                        </a-select>
-                        </a-col>
-                        <a-col :span="8">
-                          <a-button type="text" :size="small">点击预测分类</a-button>
-                        </a-col>
-                      </a-row>
-                        
-                    </a-form-item>
+                </a-col>
 
-                  </a-form>
+              </a-row>
 
-                  <a-divider orientation="left" orientation-margin="0px">商品属性 <a href="#" class="font_size_12">智能填充属性</a></a-divider>
+              <a-form style="margin-top: 20px;">
+                <a-form-item label="商品标题">
+                  <a-input></a-input>
+                </a-form-item>
+                <!-- <a-form-item label="导购标题">
+                  <a-input></a-input>
+                </a-form-item> -->
 
+                <a-divider orientation="left" orientation-margin="0px">商品分类 </a-divider>
+
+                <a-form-item label="商品分类">
                   <a-row>
-                    <a-col :span="4">商品属性</a-col>
-                    <a-col :span="4">商品属性</a-col>
-                    <a-col :span="4">商品属性</a-col>
-                    <a-col :span="4">商品属性</a-col>
-                    <a-col :span="4">商品属性</a-col>
-                    <a-col :span="4">商品属性</a-col>
-                    <a-col :span="4">商品属性</a-col>
+                    <a-col :span="8">
+                      <a-select v-model:value="formdata.category_leaf_id" placeholder="please select your zone" disabled>
+                      <a-select-option value="shanghai">Zone one</a-select-option>
+                      <a-select-option value="beijing">Zone two</a-select-option>
+                    </a-select>
+                    </a-col>
+                    <a-col :span="8">
+                      <a-button type="text" size="small">点击预测分类</a-button>
+                    </a-col>
+                  </a-row>
+                    
+                </a-form-item>
+
+              </a-form>
+
+              <a-divider orientation="left" orientation-margin="0px">商品属性 <a href="#" class="font_size_12">智能填充属性</a></a-divider>
+
+              <a-row :gutter="[16,16]">
+                <a-col :span="4">商品属性</a-col>
+                <a-col :span="4">商品属性</a-col>
+                <a-col :span="4">商品属性</a-col>
+                <a-col :span="4">商品属性</a-col>
+                <a-col :span="4">商品属性</a-col>
+                <a-col :span="4">商品属性</a-col>
+                <a-col :span="4">商品属性</a-col>
+              </a-row>
+
+            </a-tab-pane>
+
+            <a-tab-pane key="2" tab="图片视频" force-render>
+
+              <!--图片信息-->
+              <a-row>
+                <a-col :span="4">
+                  <p>白底图</p>
+                  <div class="img_pic">+添加</div>
+                </a-col>
+                <a-col :span="4">
+                  <p>视频</p>
+
+                  <div class="img_pic">+添加</div>
+                </a-col>
+                <a-col>
+                  <p>3:4主图</p>
+                  <div class="img_pic">3:4主图</div>
+                  <p class="cursor Add_img">
+                  <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                    +3:4主图
+                  </a-flex>
+                </p>
+                </a-col>
+              </a-row>
+
+
+              <!--商品信息-->
+              <div>
+                <a-form>
+                  <a-divider orientation="left" orientation-margin="0px">必填信息 </a-divider>
+                  <a-row>
+                    <a-col :span="8"><a-form-item label="商品类型"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="支付方式"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="库存类型"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="客服电话"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="提交方式"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="运费模板"></a-form-item></a-col>
                   </a-row>
 
-                </a-tab-pane>
+                  <a-divider orientation="left" orientation-margin="0px">选填信息 </a-divider>
+                  <a-row>
+                    <a-col :span="8"><a-form-item label="导购标题"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="推荐语"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="商家备注"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="尺码模板"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="售后服务"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="发货模式"></a-form-item></a-col>
+                  </a-row>
 
-                <a-tab-pane key="2" tab="图片视频" force-render>
-                  白底图+商品长图+主图3:4+视频
+                  <a-divider orientation="left" orientation-margin="0px">限购 </a-divider>
+                  <a-form-item label="最少购买" placeholder="用户每次下单最少限购件数">
+                    <a-input></a-input>
+                  </a-form-item>
+                  <a-form-item label="最多购买" placeholder="用户每次下单最多限购件数">
+                    <a-input></a-input>
+                  </a-form-item>
+                  <a-form-item label="累计限购" placeholder="每个用户累计限购件数">
+                    <a-input></a-input>
+                  </a-form-item>
+                </a-form>
+              </div>
+            </a-tab-pane>
 
 
-                  <div class="img_pic">白底图</div>
+            <a-tab-pane key="3" tab="商品规格">
 
-                  <div>视频</div>
+              <div style="margin-bottom: 10px;">
+                <a-space size="small">
+                  <a-input style="width: 300px;" placeholder="规格名称"></a-input>
+                  <a-button type="dashed">+</a-button>
+                  <a-button type="dashed">-</a-button>
+                </a-space>
+              </div>
 
-                  <div>主图3:4</div>
-                  <div>
-                    <a-form>
-
-                      <a-divider orientation="left" orientation-margin="0px">必填信息 </a-divider>
-                      <a-form-item></a-form-item>
-                      <a-form-item></a-form-item>
-                      <a-form-item></a-form-item>
-                      <a-form-item></a-form-item>
-                      <a-form-item></a-form-item>
-                      
-                      <a-divider orientation="left" orientation-margin="0px">选填信息 </a-divider>
-
-                      <a-form-item></a-form-item>
-                      <a-form-item></a-form-item>
-                      <a-form-item></a-form-item>
-
-                    
-                    
-                      
-                    
-
-                      <a-divider orientation="left" orientation-margin="0px">限购 </a-divider>
-                      <a-form-item label="最少购买" placeholder="用户每次下单最少限购件数">
-                        <a-input></a-input>
-                      </a-form-item>
-                      <a-form-item label="最多购买" placeholder="用户每次下单最多限购件数">
-                        <a-input></a-input>
-                      </a-form-item>
-                      <a-form-item label="累计限购" placeholder="每个用户累计限购件数">
-                        <a-input></a-input>
-                      </a-form-item>
-                    </a-form>
+              <a-row :gutter="[16,16]">
+                
+                <a-col :span="6">
+                  <a-space size="small">
+                    <a-input placeholder="规格值"></a-input>
+                    <a-button type="text">删除</a-button>
+                  </a-space>
+                  <div style="width: 50px;height: 50px;background-color: #f2f2f2;margin: 10px 0 0 0;border-radius: 6px;">
+                    <!--规格图片-->
                   </div>
+                </a-col>
 
-                </a-tab-pane>
+                <a-col :span="6">
+                  <a-space size="small">
+                    <a-input placeholder="规格值"></a-input>
+                    <a-button type="text">删除</a-button>
+                  </a-space>
+                  <div style="width: 50px;height: 50px;background-color: #f2f2f2;margin: 10px 0 0 0;border-radius: 6px;">
+                    <!--规格图片-->
+                  </div>
+                </a-col>
 
-                <a-tab-pane key="3" tab="商品规格">规格+图片+备注</a-tab-pane>
-                <a-tab-pane key="4" tab="库存数量">库存+价格+商家编码+状态</a-tab-pane>
-                <a-tab-pane key="5" tab="描述详情">描述图</a-tab-pane>
-              </a-tabs>
-            </div>
+                <a-col :span="6">
+                  <a-space size="small">
+                    <a-input placeholder="规格值"></a-input>
+                    <a-button type="text">删除</a-button>
+                  </a-space>
+                  <div style="width: 50px;height: 50px;background-color: #f2f2f2;margin: 10px 0 0 0;border-radius: 6px;">
+                    <!--规格图片-->
+                  </div>
+                </a-col>
+
+                <a-col :span="6">
+                  <a-space size="small">
+                    <a-input placeholder="规格值"></a-input>
+                    <a-button type="text">删除</a-button>
+                  </a-space>
+                  <div style="width: 50px;height: 50px;background-color: #f2f2f2;margin: 10px 0 0 0;border-radius: 6px;">
+                    <!--规格图片-->
+                  </div>
+                </a-col>
+                <a-col :span="6">
+                  <a-space size="small">
+                    <a-input placeholder="规格值"></a-input>
+                    <a-button type="text">删除</a-button>
+                  </a-space>
+                  <div style="width: 50px;height: 50px;background-color: #f2f2f2;margin: 10px 0 0 0;border-radius: 6px;">
+                    <!--规格图片-->
+                  </div>
+                </a-col>
+
+              </a-row>
+
+              <div style="margin-top: 10px;">
+                <a-button type="dashed">添加规格</a-button>
+              </div>
+
+
+
+            </a-tab-pane>
+            <a-tab-pane key="4" tab="库存数量">
+
+              <p>库存数量</p>
+              <a-table :columns="stockData.columns" :data-source="stockData.data" bordered>
+                <template #bodyCell="{ column, text }">
+                  <template v-if="column.dataIndex === 'name'">
+                    <a>{{ text }}</a>
+                  </template>
+                </template>
+                <template #title>Header</template>
+                <template #footer>Footer</template>
+              </a-table>
+
+            </a-tab-pane>
+
+            <a-tab-pane key="5" tab="描述详情">
+              <div style="margin-bottom: 10px;">
+                <a-space>
+                <a-button type="dashed">插入素材</a-button>
+                <a-button type="dashed">清空</a-button>
+                </a-space>
+              </div>
+
+              <div style="border: 1px solid #ccc;height: 100%;">
+      
+                  <Toolbar
+                      style="border-bottom: 1px solid #ccc"
+                      :editor="editorRef"
+                      :defaultConfig="DES.toolbarConfig"
+                      :mode="DES.mode.value"
+                  />
+
+                  <Editor
+                      style="height: 600px; overflow-y: hidden;"
+                      v-model="DES.valueHtml.value"
+                      :defaultConfig="DES.editorConfig"
+                      :mode="DES.mode.value"
+                      @onCreated="DES.handleCreated"
+                  />
+
+              </div>
+
+            </a-tab-pane>
+          </a-tabs>
+        </div>
+
       </a-layout-content>
 
       
     </a-modal>
 </template>
 <script>
-import { defineComponent,reactive,ref, } from 'vue';
+import { defineComponent,reactive,ref,shallowRef,onMounted } from 'vue';
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
+import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
+import * as TOOL from '@/assets/JS_Model/tool';
+import * as TABLE from '@/assets/JS_Model/TableOperate';
+import * as utils from '@/assets/JS_Model/public_model';
+import axios from 'axios';
 export default defineComponent({
 
     name: "edit",  // 筛选条件查询组件
     // 引用组件
     components: {
-
+        Editor, // 详情编辑
+        Toolbar, // 编辑工具栏
 
     },
 
@@ -142,12 +288,38 @@ export default defineComponent({
     },
 
     setup(props, ctx) {
+        const tool = new TOOL.TOOL()            // 工具方法
+        const TO = new TABLE.TableOperate()     // 表格操作方法
+        const API = new utils.A_Patch()         // 请求接口地址合集
+        // console.log(props.data.product_id) // 编辑的商品id
 
-        console.log(props.data.product_id) // 编辑的商品id
         // 页面配置
         const PAGEDATA = reactive({
             product_id: props.data.product_id, // 编辑的商品id
+            product_data: undefined
         })
+
+        // 在组件挂载时添加事件监听器
+        onMounted(() => {
+
+            load_product_detaile(PAGEDATA.product_id);
+
+        });
+
+        // 加载商品详情数据
+        const load_product_detaile = async(product_id) =>{
+
+          var res = await axios.post(API.AppSrtoreAPI.dou_product.detaile, {
+
+            product_id:product_id
+          
+          })
+
+          console.log(res.data.data)
+
+          PAGEDATA.product_data = res.data.data
+        
+        }
 
         // 表单数据
         const formdata = reactive({
@@ -258,6 +430,138 @@ export default defineComponent({
           
         })
 
+        // 库存表格数据
+        const stockData = reactive({
+          columns:[
+            {
+              title: 'Name',
+              dataIndex: 'name',
+            },
+            {
+              title: 'Cash Assets',
+              className: 'column-money',
+              dataIndex: 'money',
+            },
+            {
+              title: 'Address',
+              dataIndex: 'address',
+            },
+          ],
+          data:[
+            {
+              key: '1',
+              name: 'John Brown',
+              money: '￥300,000.00',
+              address: 'New York No. 1 Lake Park',
+            },
+            {
+              key: '2',
+              name: 'Jim Green',
+              money: '￥1,256,000.00',
+              address: 'London No. 1 Lake Park',
+            },
+            {
+              key: '3',
+              name: 'Joe Black',
+              money: '￥120,000.00',
+              address: 'Sidney No. 1 Lake Park',
+            },
+          ]
+        })
+
+        // 描述详情
+        const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
+        const DES = {
+            // 初始化
+            valueHtml:ref(undefined),
+            mode:ref('simple'),// 或 'simple' 'default'
+            // 编辑器实例，必须用 shallowRef
+            editorRef:shallowRef(),
+            editorConfig:{placeholder: '请输入内容...' },// 默认值
+            // 编辑器工具栏配置
+            toolbarConfig:{
+                excludeKeys: [
+                    'bold',
+                    "underline",
+                    "italic",
+                    "through",
+                    "color",
+                    "clearStyle",
+                    "bgColor",
+                    "codeBlock",
+                    "blockquote",
+                    "bulletedList",
+                    "numberedList",
+                    "insertTable",
+                    "header1",
+                    "header2",
+                    "header3",
+                    'headerSelect',
+                    'italic',
+                    'group-more-style', // 排除菜单组，写菜单组 key 的值即可
+                    //"fullScreen",
+                    "insertLink",
+                    "editLink",
+                    "insertVideo",
+                    "uploadVideo",
+                    "todo",
+                    "redo",
+                    "undo",
+                    "group-image",
+                    "uploadImage",
+                    "insertImage",
+
+                ]
+            },
+            // 创建编辑器
+            handleCreated:(editor) => {
+                editorRef.value = editor // 记录 editor 实例，重要！
+                editor.clear() // 清空编辑器
+            },
+            // 加载图片到编辑器
+            add_img:(img_list)=>{
+                var image_text = '<p>'
+                for(let i of img_list){
+                    let url = i.byte_url;
+                    image_text = image_text + '<img class="ant-image-img" src=" ' + url + '">';
+                }
+                DES.valueHtml.value = DES.valueHtml.value + image_text + '</p>'
+            },
+            // 获取描述图片
+            get_img:()=>{
+                var img_list_res = []
+                // 描述为空
+                if(editorRef.value == undefined){
+                    tool.Fun_.message('error', '描述详情不能为空！');
+                    activeKey.value = '5';
+                    return false
+                }else {
+
+                    var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
+
+                    if(img_list.length == 0 || editorRef.value == undefined){
+                        tool.Fun_.message('error', '描述详情不能为空！');
+                        activeKey.value = '5';
+                        return false
+                    }else{
+                        // 描述不为空
+                        // console.log(img_list)
+                        img_list.forEach((obj,index)=>{
+                            img_list_res.push(obj.src)
+                        })
+
+                        return img_list_res.join('|')
+                    }
+                }
+            },
+            // 清空描述图
+            clear_img:()=>{
+                DES.valueHtml.value = '';
+            }
+        }
+        
+
+
         // 提交
         const handleOk = e => {
             console.log(e);
@@ -266,16 +570,24 @@ export default defineComponent({
         // 卡片命中
         const activeKey = ref('1');
 
+
+
         return{
+            PAGEDATA,
             props,
             formdata,
             handleOk,
             activeKey,
+            stockData, // 库存数据
+            editorRef, // 富媒体编辑
+            DES // 描述数据
+
         }
     }
 })
 </script>
 <style scoped>
+.load_center{height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;}
 .img_pic{height: 100px;width: 100px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
 .img_3_4_pic{height: 132px;width: 99px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
 .Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
