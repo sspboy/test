@@ -21,26 +21,46 @@
                 <a-col :span="24">
 
                 <p>主图</p>
-                <div class="img_pic">
-                </div>
-                <div class="img_pic">图片2</div>
-                <div class="img_pic">图片3</div>
-                <div class="img_pic">图片4</div>
-                <div class="img_pic">图片5</div>
-                <p class="cursor Add_img">
+
+                <!--主图为空-->
+                <p class="cursor Add_img" v-if="formdata.pic == undefined || formdata.pic.length < 6">
                   <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
                     +主图
                   </a-flex>
                 </p>
 
+                <!--主图不为空-->
+                <div v-if="formdata.pic.length > 0">
+                  <div class="img_pic" v-for="(item,index) in formdata.pic">
+                    <a-image :src="item" />
+                    <!--图片尺寸不复合情况下-->
+
+                    <!--图片尺寸1：1情况下-->
+                    <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
+                        <a-button type="text" size="small" @click="console.log('删除')"> 
+                            <DeleteOutlined />
+                        </a-button>
+                    </span>
+                  </div>
+                </div>
+
+                
+                
+
                 </a-col>
 
               </a-row>
 
-              <a-form style="margin-top: 20px;">
+              <a-form 
+                name="basic"
+                style="margin-top: 20px;"
+                :model="formdata"
+                >
+
                 <a-form-item label="商品标题">
-                  <a-input></a-input>
+                  <a-input placeholder="商品标题" v-model:value="formdata.name"></a-input>
                 </a-form-item>
+
                 <!-- <a-form-item label="导购标题">
                   <a-input></a-input>
                 </a-form-item> -->
@@ -264,6 +284,8 @@
 </template>
 <script>
 import { defineComponent,reactive,ref,shallowRef,onMounted } from 'vue';
+import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined} from '@ant-design/icons-vue';
+
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 import * as TOOL from '@/assets/JS_Model/tool';
@@ -277,6 +299,7 @@ export default defineComponent({
     components: {
         Editor, // 详情编辑
         Toolbar, // 编辑工具栏
+        DeleteOutlined,
 
     },
 
@@ -302,7 +325,9 @@ export default defineComponent({
         // 在组件挂载时添加事件监听器
         onMounted(() => {
 
-            load_product_detaile(PAGEDATA.product_id);
+            load_product_detaile(PAGEDATA.product_id); // 获取数据 绑定到页面
+
+            // 将数据装在到表单
 
         });
 
@@ -315,10 +340,28 @@ export default defineComponent({
           
           })
 
-          console.log(res.data.data)
+          // console.log(res.data.data)
+          
+          // 绑定数据到页面
+          PAGEDATA.product_data = res.data.data;
 
-          PAGEDATA.product_data = res.data.data
-        
+          // 加载数据到表单
+          load_form_data(PAGEDATA.product_data)
+
+        }
+
+        // 表单数据加载处理
+        const load_form_data = (data) =>{
+
+          // 标题
+          formdata.name = PAGEDATA.product_data.name;
+
+          // 主图
+          // console.log(PAGEDATA.product_data.pic)
+          formdata.pic = PAGEDATA.product_data.pic;
+
+
+
         }
 
         // 表单数据
