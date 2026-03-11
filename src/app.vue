@@ -23,10 +23,13 @@ export default {
 <style>
 html{margin: 0px; padding: 0px;font-size: 12px;overflow: hidden;}
 .cursor{cursor: pointer}
+
 /* 页面内容区域背景色全局定义 */
-.ant-layout{background-color: #001529;}
+.ant-layout{background-color: #fff !important;}
+.ant-layout-sider{background-color: #fff !important;border-right:1px #f2f2f2 solid ;}
+.ant-menu-light{border: none !important;}
 /* 全局内容区域圆角样式定义*/
-.content_border{margin: 6px 0 0 0;border-top-left-radius:5px; padding:14px;background:#fff;}
+.content_border{margin: 0 0 0 0; padding:14px;background:#fff;}
 
 /* 在全局样式文件（如 `styles.css` 或 `App.vue` 的 `<style>` 中） */
 .ant-form-item-label > label {font-size: 12px !important; /* 设置表单标签的字体大小 */}
@@ -34,7 +37,8 @@ html{margin: 0px; padding: 0px;font-size: 12px;overflow: hidden;}
 .font_size_12{font-size: 12px;}
 .font_size_14{font-size: 14px;}
 .font_size_16{font-size: 16px;}
-.ant-menu-item-only-child {font-size: 12px !important;} /* 设置左侧子菜单项的字体大小 */
+/* .ant-menu-item-only-child {font-size: 12px !important;} /* 设置左侧子菜单项的字体大小 */
+
 /* 按钮默认字体大小 */
 .ant-btn{font-size: 12px !important;}
 .ant-input{font-size: 12px !important;}

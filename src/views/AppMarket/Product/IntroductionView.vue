@@ -346,7 +346,7 @@
       </a-layout-content>
 
       <!--内容右侧 开始-->
-      <a-layout-sider style="background-color: #fff;margin: 6px 0 0 0;" width='300px'>
+      <a-layout-sider style="background-color: #fff;margin: 0 0 0 0;" width='300px'>
 
         <div class="RightMiniBox">
           <h4><QuestionCircleFilled style="color:dimgray;"/> 帮助中心</h4>

@@ -161,8 +161,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.logo_text{width: 34%; float: left; color: #ffffff;font-size: 18px;}
-.head{text-align:'center';color:#fff;height: 64px;padding: 20px 10px 0 26px;line-height: '64px';background-color: '#fff';width:100%;}
+.logo_text{width: 34%; float: left;font-size: 18px;}
+.head{text-align:'center';height: 64px;padding: 16px 10px 0 26px;line-height: '64px';background-color: '#fff';width:100%;border-bottom: 1px #f2f2f2 solid;}
 .op_component_base_container{height:30px !important}
 .right_tips{float: right; color: dimgray;margin: 16px 20px 0 0;}
 </style>

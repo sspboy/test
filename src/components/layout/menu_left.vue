@@ -1,10 +1,10 @@
 <template>
   <div>
     <a-menu 
-      class="font_size_14"
+      class="font_size_12"
       v-model:selectedKeys="state.key"
       mode="inline"
-      theme="dark"
+      theme="light"
       :inline-collapsed="state.collapsed"
       :items="items?.value"
       :openKeys="state.openKeys"
@@ -12,10 +12,10 @@
       @openChange="onOpenChange"
     >
     </a-menu>
-
   </div>
-  <a-affix :offset-bottom="bottom" style="bottom: 18px;right:10px;position:absolute;">
-      <a-button type="dashed" ghost size="small" style="font-size: 12px; margin:3px 16px 0 0;" @click="() => { store.commit('menu/change') }">
+  
+  <a-affix :offset-bottom="bottom" style="bottom: 18px;right:10px;position:absolute;color: black;">
+      <a-button type="text" ghost size="small" style="font-size: 12px; margin:3px 16px 0 0;" @click="() => { store.commit('menu/change') }">
           <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
           <menu-fold-outlined v-else class="trigger" />
       </a-button>
@@ -154,6 +154,9 @@ export default defineComponent({
   },
 });
 </script>
-<style>
-
+<style scoped>
+/* 隐藏 Menu 的展开箭头 */
+:deep(.ant-menu-submenu-arrow) {
+  display: none !important;
+}
 </style>

@@ -22,31 +22,46 @@
 
                 <p>主图</p>
 
-                <!--主图为空-->
-                <p class="cursor Add_img" v-if="formdata.pic == undefined || formdata.pic.length < 6">
-                  <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
-                    +主图
-                  </a-flex>
-                </p>
-
                 <!--主图不为空-->
-                <div v-if="formdata.pic.length > 0">
-                  <div class="img_pic" v-for="(item,index) in formdata.pic">
-                    <a-image :src="item" />
-                    <!--图片尺寸不复合情况下-->
+                <div style="height: 130px;" v-if="formdata.pic.length > 0">
+
+                  <div style="width: 120px;float: left;" v-for="(item,index) in formdata.pic">
+
+                    <div class="img_pic cursor" style="margin: 0 auto;">
+                        <a-image :src="item" />
+                    </div>
 
                     <!--图片尺寸1：1情况下-->
-                    <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                        <a-button type="text" size="small" @click="console.log('删除')"> 
+                    <div style="margin: 6px 0 0 0;padding: 0;width: 100%;text-align: center;clear: both;">
+
+                        <a-space size="0">
+                          <a-button type="text" size="small" @click="fun.pic.left_inset(index)">
+                            <LeftOutlined />
+                          </a-button>
+                          <a-button type="text" size="small" @click="console.log('编辑')"> 
+                            <EditOutlined />
+                          </a-button>
+                          <a-button type="text" size="small" @click="fun.pic.del(index)"> 
                             <DeleteOutlined />
-                        </a-button>
-                    </span>
+                          </a-button>
+                          <a-button type="text" size="small" @click="fun.pic.right_inset(index)">
+                            <RightOutlined />
+                          </a-button>
+                      </a-space>
+                    </div>
+
                   </div>
+                  
+                  <!--主图为空-->
+                  <p class="cursor Add_img" v-if="formdata.pic == undefined || formdata.pic.length < 5">
+                    <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                      +主图
+                    </a-flex>
+                  </p>
+
                 </div>
 
                 
-                
-
                 </a-col>
 
               </a-row>
@@ -55,10 +70,11 @@
                 name="basic"
                 style="margin-top: 20px;"
                 :model="formdata"
+                :rules="fun.rule"
                 >
 
-                <a-form-item label="商品标题">
-                  <a-input placeholder="商品标题" v-model:value="formdata.name"></a-input>
+                <a-form-item label="商品标题" name="name">
+                  <a-input placeholder="输入商品标题不超过30个汉字" v-model:value="formdata.name" autoComplete="off"></a-input>
                 </a-form-item>
 
                 <!-- <a-form-item label="导购标题">
@@ -67,16 +83,16 @@
 
                 <a-divider orientation="left" orientation-margin="0px">商品分类 </a-divider>
 
-                <a-form-item label="商品分类">
+                <a-form-item>
                   <a-row>
                     <a-col :span="8">
-                      <a-select v-model:value="formdata.category_leaf_id" placeholder="please select your zone" disabled>
-                      <a-select-option value="shanghai">Zone one</a-select-option>
-                      <a-select-option value="beijing">Zone two</a-select-option>
+                      <a-select v-model:value="formdata.category_leaf_id" :options="formdata.cate_op" placeholder="下拉选择商品分类" disabled>
+                        <a-select-option value="shanghai">Zone one</a-select-option>
+                        <a-select-option value="beijing">Zone two</a-select-option>
                     </a-select>
                     </a-col>
                     <a-col :span="8">
-                      <a-button type="text" size="small">点击预测分类</a-button>
+                      <a-button type="dashed" style="width: 120px;margin-left: 10px;">点击预测分类</a-button>
                     </a-col>
                   </a-row>
                     
@@ -86,14 +102,22 @@
 
               <a-divider orientation="left" orientation-margin="0px">商品属性 <a href="#" class="font_size_12">智能填充属性</a></a-divider>
 
-              <a-row :gutter="[16,16]">
+              <div class="load_center" v-if="formdata.format == undefined"><a-spin /></div>
+
+              <a-row :gutter="[16,16]" v-else-if="formdata.format !== undefined">
+
+                <!--文本-->
+                <a-col :span="4">商品属性</a-col>
+                <!--单选-->
+                <!--多选-->
+
+                <!-- <a-col :span="4">商品属性</a-col>
                 <a-col :span="4">商品属性</a-col>
                 <a-col :span="4">商品属性</a-col>
                 <a-col :span="4">商品属性</a-col>
                 <a-col :span="4">商品属性</a-col>
                 <a-col :span="4">商品属性</a-col>
-                <a-col :span="4">商品属性</a-col>
-                <a-col :span="4">商品属性</a-col>
+                <a-col :span="4">商品属性</a-col> -->
               </a-row>
 
             </a-tab-pane>
@@ -284,7 +308,7 @@
 </template>
 <script>
 import { defineComponent,reactive,ref,shallowRef,onMounted } from 'vue';
-import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined} from '@ant-design/icons-vue';
+import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,EditOutlined,LeftOutlined,RightOutlined} from '@ant-design/icons-vue';
 
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
@@ -300,6 +324,9 @@ export default defineComponent({
         Editor, // 详情编辑
         Toolbar, // 编辑工具栏
         DeleteOutlined,
+        EditOutlined,
+        LeftOutlined,
+        RightOutlined
 
     },
 
@@ -327,8 +354,6 @@ export default defineComponent({
 
             load_product_detaile(PAGEDATA.product_id); // 获取数据 绑定到页面
 
-            // 将数据装在到表单
-
         });
 
         // 加载商品详情数据
@@ -340,11 +365,10 @@ export default defineComponent({
           
           })
 
-          // console.log(res.data.data)
+          console.log(res.data.data)
           
           // 绑定数据到页面
           PAGEDATA.product_data = res.data.data;
-
           // 加载数据到表单
           load_form_data(PAGEDATA.product_data)
 
@@ -357,10 +381,17 @@ export default defineComponent({
           formdata.name = PAGEDATA.product_data.name;
 
           // 主图
-          // console.log(PAGEDATA.product_data.pic)
           formdata.pic = PAGEDATA.product_data.pic;
 
+          // 分类
+          fun.cate.ex_cate_data(PAGEDATA.product_data.category_detail)
 
+          // 商品属性
+          console.log(formdata.category_leaf_id)
+          console.log(JSON.parse(PAGEDATA.product_data.product_format_new))
+
+          // 1查询属性，2填充属性值,3渲染到页面
+          fun.format.select_format(formdata.category_leaf_id)
 
         }
 
@@ -410,6 +441,7 @@ export default defineComponent({
             
             // 分类属性
             category_leaf_id:undefined, // 分类id
+            cate_op:[], // 分类选项
             product_format_new:undefined, // 商品属性== 通过/product/getCatePropertyV2获取 格式：{"property_id":[{"value":value,"name":"property_name","diy_type":0}]}, name的类型是string，value和diy_type的类型是number 度量衡参照open度量衡对接文档填写
 
             // 规格库存
@@ -602,6 +634,122 @@ export default defineComponent({
                 DES.valueHtml.value = '';
             }
         }
+
+        // 字段操作方法
+        const fun = {
+          
+          // 主图操作方法
+          pic:{
+            // 删除主图
+            del:(index)=>{
+              formdata.pic.splice(index,1)
+            },
+            // 左移动
+            left_inset:(index)=>{
+              var fromIndex = index // 原始位置
+              if(index > 0){
+                var toIndex = index - 1 // 调整后的位置
+              }else{
+                var toIndex = 0 // 调整后的位置
+              }
+              const element = formdata.pic.splice(fromIndex, 1)[0]; // 删除并获取元素
+              formdata.pic.splice(toIndex, 0, element);             // 插入到新位置
+            },
+            // 右移动
+            right_inset:(index)=>{
+              var fromIndex = index // 原始位置
+              if(index < 4){
+                var toIndex = index + 1 // 调整后的位置
+              }else{
+                var toIndex = 4 // 调整后的位置
+              }
+              const element = formdata.pic.splice(fromIndex, 1)[0]; // 删除并获取元素
+              formdata.pic.splice(toIndex, 0, element);             // 插入到新位置
+            },
+            // 编辑
+            edit:(index)=>{
+
+            },
+            // 添加
+            add:()=>{
+
+            }
+          },
+          // 标题操作方法
+          title:{
+            
+          },
+          // 分类
+          cate:{
+
+            // 预测分类category_detail
+            ex_cate_data:(data)=>{
+              var n_text = ''
+              var c_id = []
+              if(data.first_cname !== ''){
+                n_text = n_text + data.first_cname + '>'
+              }
+              if(data.second_cname !== ''){
+                n_text = n_text + data.second_cname + '>'
+              }
+              if(data.third_cname !== ''){
+                n_text = n_text + data.third_cname + '>'
+              }
+              if(data.fourth_cname !== ''){
+                n_text = n_text + data.fourth_cname + '>'
+              }
+              if(data.first_cid !== 0){
+                c_id.push(data.first_cid)
+              }
+              if(data.second_cid !== 0){
+                c_id.push(data.second_cid)
+              }
+              if(data.third_cid !== 0){
+                c_id.push(data.third_cid)
+              }
+              if(data.fourth_cid !== 0){
+                c_id.push(data.fourth_cid)
+              }
+
+              // console.log(n_text.slice(0,-1))
+              // console.log(c_id[c_id.length-1])
+              var res = {
+                label:n_text.slice(0,-1),
+                value:c_id[c_id.length-1]
+              }
+              // console.log(res)
+
+              formdata.cate_op.push(res)
+              formdata.category_leaf_id = c_id[c_id.length-1]
+            }
+
+          },
+          // 属性
+          format:{
+            // 查询属性
+            select_format:async(c_id)=>{
+              var data = {
+                  "category_leaf_id":c_id
+              }
+              var res = await axios.post(API.AppSrtoreAPI.dou_product.format,data);
+
+              console.log(res.data.data)
+            
+            },
+            // 填充属性
+            // 渲染属性
+          },
+          // 表单字段验证规则
+          rule:{
+            // 标题规则
+            name:[
+              {required: true, message: '标题不能为空', trigger: 'blur' },
+              {max: 32,message: '不超过30个汉字,不能含emoj表情.',trigger: 'change'},
+              {min: 4,message: '至少4个汉字.',trigger: 'change'},
+            ]
+          }
+
+        }
         
 
 
@@ -623,7 +771,8 @@ export default defineComponent({
             activeKey,
             stockData, // 库存数据
             editorRef, // 富媒体编辑
-            DES // 描述数据
+            DES, // 描述数据
+            fun // 数据操作方法
 
         }
     }
@@ -631,7 +780,7 @@ export default defineComponent({
 </script>
 <style scoped>
 .load_center{height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;}
-.img_pic{height: 100px;width: 100px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
+.img_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;padding: 10px;}
 .img_3_4_pic{height: 132px;width: 99px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
 .Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
 .Add_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}

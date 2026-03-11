@@ -62,14 +62,15 @@
           style="width: 100%;"
           size="small"
           :split="true"
+          :bordered="false"
           >            
 
             <template #renderItem="{ item }">
 
               <a-list-item style="padding-left: 0;">
-                  <div style="width: 20px;height: 20px;float: left;margin-right: 10px;">
-                                <a-checkbox :value="item.product_id"></a-checkbox>
 
+                  <div style="width: 20px;height: 20px;float: left;margin-right: 10px;">
+                    <a-checkbox :value="item.product_id"></a-checkbox>
                   </div>
 
                   <a-list-item-meta>
