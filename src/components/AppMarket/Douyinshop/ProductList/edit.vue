@@ -5,19 +5,23 @@
       width="100%"
       wrap-class-name="full-modal"
       @ok="handleOk"
+      :footer="null"
+
     >
     <!--无数据loading-->
-        <div v-if="PAGEDATA.product_data === undefined" class="load_center">
-          <a-spin />
-        </div>
+      <div v-if="PAGEDATA.product_data === undefined" class="load_center">
+        <a-spin />
+      </div>
+
       <a-layout-content v-else class="content">
 
         <!--有数据 show time info-->
-        <div  style="width: 950px;margin: 0 auto;">
+        <div  style="width: 950px;margin: 0 auto;height: 100%;">
+          
           <a-tabs v-model:activeKey="activeKey">
+
             <a-tab-pane key="1" tab="主图类目">
               <a-row>
-
                 <a-col :span="24">
 
                 <p>主图</p>
@@ -91,9 +95,10 @@
                         <a-select-option value="beijing">Zone two</a-select-option>
                     </a-select>
                     </a-col>
-                    <a-col :span="8">
+                    <a-col :span="4">
                       <a-button type="dashed" style="width: 120px;margin-left: 10px;">点击预测分类</a-button>
                     </a-col>
+                    <a-col :span="12">PS:需要填写【标题】、【主图】后获取系统推荐的类目、以及属性;</a-col>
                   </a-row>
                     
                 </a-form-item>
@@ -102,22 +107,66 @@
 
               <a-divider orientation="left" orientation-margin="0px">商品属性 <a href="#" class="font_size_12">智能填充属性</a></a-divider>
 
-              <div class="load_center" v-if="formdata.format == undefined"><a-spin /></div>
+              <div class="load_center" v-if="formdata.CateProperty == undefined"><a-spin /></div>
+              
+              <a-row :gutter="[16,16]" v-else-if="formdata.CateProperty !== undefined">
 
-              <a-row :gutter="[16,16]" v-else-if="formdata.format !== undefined">
+                <a-col :span="6" v-for="(item,index) in formdata.CateProperty.data">
+                
+                  <p>{{ item.property_name }} {{ item.important_type }}</p>
 
-                <!--文本-->
-                <a-col :span="4">商品属性</a-col>
-                <!--单选-->
-                <!--多选-->
+                  <!--文本-->
+                  <div v-if="item.type == 'text'">
+                    <a-input></a-input>
+                  </div>
+                  
+                  <!--multi_value_measure-->
+                  <div v-else-if="item.type == 'multi_value_measure'">
+                    {{ item.type }}
+                  </div>
 
-                <!-- <a-col :span="4">商品属性</a-col>
-                <a-col :span="4">商品属性</a-col>
-                <a-col :span="4">商品属性</a-col>
-                <a-col :span="4">商品属性</a-col>
-                <a-col :span="4">商品属性</a-col>
-                <a-col :span="4">商品属性</a-col>
-                <a-col :span="4">商品属性</a-col> -->
+                  <!--measure-->
+                  <div v-else-if="item.type == 'measure'">
+                    {{ item.type }}
+                  </div>
+
+                  <!--单选-->
+                  <div v-else-if="item.type == 'select'">
+                    <a-select
+                        placeholder="请选择"
+                        allow-clear
+                        :options="item.options"
+                        style="width: 100%;"
+                        :field-names="{
+                          label: 'name',
+                          value: 'value',
+                        }"
+                    ></a-select>
+                  </div>
+
+                  <!--多选-->
+                  <div v-else-if="item.type == 'multi_select'">
+                    <a-select
+                        placeholder="请选择"
+                        allow-clear
+                        mode="multiple"
+                        :max-tag-count="2"
+                        :options="item.options"
+                        style="width: 100%;"
+                        :field-names="{
+                          label: 'name',
+                          value: 'value',
+                        }"
+                    ></a-select>
+                  </div>
+
+                  <!--时间戳-->
+                  <div v-else-if="item.type == 'timestamp'">{{ item.type }}</div>
+
+                  <!--时间段-->
+                  <div v-else-if="item.type == 'timerange'">{{ item.type }}</div>
+
+                </a-col>
               </a-row>
 
             </a-tab-pane>
@@ -299,10 +348,21 @@
 
             </a-tab-pane>
           </a-tabs>
+
         </div>
 
       </a-layout-content>
 
+      <!--底部按钮--开始-->
+      <a-affix :offset-bottom="1">
+          <div style="width: 950px;margin: 0 auto;text-align: center;padding: 10px 0 0 0;">
+              <a-space align="end" style="height: 100%;">
+                  <a-button type="primary" >提交</a-button>
+                  <a-button >取消</a-button>
+              </a-space>
+          </div>
+      </a-affix>
+      <!--底部按钮--结束-->
       
     </a-modal>
 </template>
@@ -365,10 +425,11 @@ export default defineComponent({
           
           })
 
-          console.log(res.data.data)
+          // console.log(res.data.data)
           
           // 绑定数据到页面
           PAGEDATA.product_data = res.data.data;
+
           // 加载数据到表单
           load_form_data(PAGEDATA.product_data)
 
@@ -387,11 +448,11 @@ export default defineComponent({
           fun.cate.ex_cate_data(PAGEDATA.product_data.category_detail)
 
           // 商品属性
-          console.log(formdata.category_leaf_id)
-          console.log(JSON.parse(PAGEDATA.product_data.product_format_new))
+          // console.log(formdata.category_leaf_id)
+          // console.log(JSON.parse(PAGEDATA.product_data.product_format_new)) // 商品详情>商品填好的属性
 
           // 1查询属性，2填充属性值,3渲染到页面
-          fun.format.select_format(formdata.category_leaf_id)
+          fun.format.select_format(formdata.category_leaf_id)// 查询属性所有列表
 
         }
 
@@ -443,6 +504,8 @@ export default defineComponent({
             category_leaf_id:undefined, // 分类id
             cate_op:[], // 分类选项
             product_format_new:undefined, // 商品属性== 通过/product/getCatePropertyV2获取 格式：{"property_id":[{"value":value,"name":"property_name","diy_type":0}]}, name的类型是string，value和diy_type的类型是number 度量衡参照open度量衡对接文档填写
+            CateProperty:undefined, // 查询属性列表
+            format_form_ref:'', // 属性表单绑定值
 
             // 规格库存
             spec_pic:undefined,             // 规格图片，单规格必填，多个规格选填，规格图片会覆盖主图
@@ -732,8 +795,8 @@ export default defineComponent({
                   "category_leaf_id":c_id
               }
               var res = await axios.post(API.AppSrtoreAPI.dou_product.format,data);
-
-              console.log(res.data.data)
+              formdata.CateProperty = res.data.data
+              console.log(formdata.CateProperty)
             
             },
             // 填充属性
@@ -779,6 +842,7 @@ export default defineComponent({
 })
 </script>
 <style scoped>
+.content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 90vh;}
 .load_center{height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;}
 .img_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;padding: 10px;}
 .img_3_4_pic{height: 132px;width: 99px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}

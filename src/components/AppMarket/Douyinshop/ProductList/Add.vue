@@ -323,9 +323,7 @@
                             >清空属性
                             </a-button>
                         </a-divider>
-                        <div>
-
-                        </div>
+                        
                         <a-form :ref="CATE.form_ref" :model="CATE.format_formRef">
 
                             <a-row v-if="CATE.format.value.length !== 0" loading="true" :gutter="[16,6]">
