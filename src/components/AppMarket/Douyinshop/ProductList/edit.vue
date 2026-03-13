@@ -1,5 +1,7 @@
 <!-- 商品编辑 组件 -->
 <template>
+    <!-- 动态渲染异步组件--选择素材 -->
+    <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="PAGEDATA.Add_Callback" :data="PAGEDATA"/>
     <a-modal
       v-model:open="props.data.EditDate"
       width="100%"
@@ -27,9 +29,9 @@
                 <p>主图</p>
 
                 <!--主图不为空-->
-                <div style="height: 130px;" v-if="formdata.pic.length > 0">
+                <div style="height: 130px;" >
 
-                  <div style="width: 120px;float: left;" v-for="(item,index) in formdata.pic">
+                  <div v-if="formdata.pic.length > 0" style="width: 120px;float: left;" v-for="(item,index) in formdata.pic">
 
                     <div class="img_pic cursor" style="margin: 0 auto;">
                         <a-image :src="item" />
@@ -57,15 +59,15 @@
                   </div>
                   
                   <!--主图为空-->
-                  <p class="cursor Add_img" v-if="formdata.pic == undefined || formdata.pic.length < 5">
+                  <p class="cursor Add_img" 
+                    v-if="formdata.pic == undefined || formdata.pic.length < 5" 
+                    @click="PAGEDATA.change_material_type('PicList')">
                     <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
                       +主图
                     </a-flex>
                   </p>
 
                 </div>
-
-                
                 </a-col>
 
               </a-row>
@@ -89,16 +91,24 @@
 
                 <a-form-item>
                   <a-row>
-                    <a-col :span="8">
-                      <a-select v-model:value="formdata.category_leaf_id" :options="formdata.cate_op" placeholder="下拉选择商品分类" disabled>
-                        <a-select-option value="shanghai">Zone one</a-select-option>
-                        <a-select-option value="beijing">Zone two</a-select-option>
-                    </a-select>
+                    <a-col :span="12">
+                      <a-space>
+                        <a-button type="dashed" style="width: 120px;" @click="fun.cate.check_cate">
+                          点击预测分类
+                        </a-button>
+                        <a-select 
+                          style="width: 300px;"
+                          v-model:value="formdata.category_leaf_id"
+                          :options="formdata.cate_op" 
+                          placeholder="下拉选择商品分类" 
+                          disabled>
+                      </a-select>
+                    </a-space>
                     </a-col>
-                    <a-col :span="4">
-                      <a-button type="dashed" style="width: 120px;margin-left: 10px;">点击预测分类</a-button>
+                    
+                    <a-col :span="12">
+                      <p style="padding: 8px 0 0 0;">PS:需要填写【标题】、【主图】后获取系统推荐的类目、以及属性;</p>
                     </a-col>
-                    <a-col :span="12">PS:需要填写【标题】、【主图】后获取系统推荐的类目、以及属性;</a-col>
                   </a-row>
                     
                 </a-form-item>
@@ -106,68 +116,91 @@
               </a-form>
 
               <a-divider orientation="left" orientation-margin="0px">商品属性 <a href="#" class="font_size_12">智能填充属性</a></a-divider>
-
+              
+              <!--属性为空-->
               <div class="load_center" v-if="formdata.CateProperty == undefined"><a-spin /></div>
               
-              <a-row :gutter="[16,16]" v-else-if="formdata.CateProperty !== undefined">
-
-                <a-col :span="6" v-for="(item,index) in formdata.CateProperty.data">
+              <!--属性不为空-->
+              <a-form 
+                ref="format_form_ref" 
+                :model="formdata.CateProperty" 
+                v-else-if="formdata.CateProperty !== undefined">
                 
-                  <p>{{ item.property_name }} {{ item.important_type }}</p>
+                <a-row :gutter="[16,16]" >
+
+                <a-col :span="6" v-for="(value, key, index) in formdata.CateProperty" :key="key">
+                
+                  <p>
+                    {{ value.property_name }} 
+                    {{ value.important_type }} 
+                    <a-tag v-show="value.required ==1" :bordered="false" color="processing">必填</a-tag>
+                  </p>
 
                   <!--文本-->
-                  <div v-if="item.type == 'text'">
-                    <a-input></a-input>
+                  <div v-if="value.type == 'text'">
+                    <a-form-item :name="key">
+                      <a-input 
+                      autoComplete="off"
+                      v-model:value="formdata.CateProperty[key].value" 
+                      allow-clear></a-input>
+                    </a-form-item>
                   </div>
-                  
-                  <!--multi_value_measure-->
-                  <div v-else-if="item.type == 'multi_value_measure'">
-                    {{ item.type }}
-                  </div>
-
-                  <!--measure-->
-                  <div v-else-if="item.type == 'measure'">
-                    {{ item.type }}
-                  </div>
-
                   <!--单选-->
-                  <div v-else-if="item.type == 'select'">
+                  <div v-else-if="value.type == 'select'">
+                    <a-form-item>
                     <a-select
                         placeholder="请选择"
                         allow-clear
-                        :options="item.options"
+                        :options="value.options"
+                        v-model:value="formdata.CateProperty[key].value" 
                         style="width: 100%;"
                         :field-names="{
                           label: 'name',
                           value: 'value',
                         }"
-                    ></a-select>
+                    ></a-select></a-form-item>
                   </div>
 
                   <!--多选-->
-                  <div v-else-if="item.type == 'multi_select'">
+                  <div v-else-if="value.type == 'multi_select'">
+                    <a-form-item>
                     <a-select
                         placeholder="请选择"
                         allow-clear
                         mode="multiple"
-                        :max-tag-count="2"
-                        :options="item.options"
+                        :max-tag-count="1"
+                        :options="value.options"
                         style="width: 100%;"
+                        @change="fun.format.check_mat_options(value)"
                         :field-names="{
                           label: 'name',
                           value: 'value',
                         }"
                     ></a-select>
+                    </a-form-item>
+                  </div>
+
+
+                  <!--多选度量衡 multi_value_measure-->
+                  <div v-else-if="value.type == 'multi_value_measure'">
+                    {{ value.type }}
+                  </div>
+
+                  <!--单选 度量衡 measure-->
+                  <div v-else-if="value.type == 'measure'">
+                    {{ value.type }}
                   </div>
 
                   <!--时间戳-->
-                  <div v-else-if="item.type == 'timestamp'">{{ item.type }}</div>
+                  <div v-else-if="value.type == 'timestamp'">{{ value.type }}</div>
 
                   <!--时间段-->
-                  <div v-else-if="item.type == 'timerange'">{{ item.type }}</div>
+                  <div v-else-if="value.type == 'timerange'">{{ value.type }}</div>
 
                 </a-col>
               </a-row>
+              </a-form>
+              
 
             </a-tab-pane>
 
@@ -200,7 +233,7 @@
               <div>
                 <a-form>
                   <a-divider orientation="left" orientation-margin="0px">必填信息 </a-divider>
-                  <a-row>
+                  <a-row :gutter="[16,16]">
                     <a-col :span="8"><a-form-item label="商品类型"></a-form-item></a-col>
                     <a-col :span="8"><a-form-item label="支付方式"></a-form-item></a-col>
                     <a-col :span="8"><a-form-item label="库存类型"></a-form-item></a-col>
@@ -210,7 +243,7 @@
                   </a-row>
 
                   <a-divider orientation="left" orientation-margin="0px">选填信息 </a-divider>
-                  <a-row>
+                  <a-row :gutter="[16,16]">
                     <a-col :span="8"><a-form-item label="导购标题"></a-form-item></a-col>
                     <a-col :span="8"><a-form-item label="推荐语"></a-form-item></a-col>
                     <a-col :span="8"><a-form-item label="商家备注"></a-form-item></a-col>
@@ -219,16 +252,23 @@
                     <a-col :span="8"><a-form-item label="发货模式"></a-form-item></a-col>
                   </a-row>
 
-                  <a-divider orientation="left" orientation-margin="0px">限购 </a-divider>
-                  <a-form-item label="最少购买" placeholder="用户每次下单最少限购件数">
-                    <a-input></a-input>
-                  </a-form-item>
-                  <a-form-item label="最多购买" placeholder="用户每次下单最多限购件数">
-                    <a-input></a-input>
-                  </a-form-item>
-                  <a-form-item label="累计限购" placeholder="每个用户累计限购件数">
-                    <a-input></a-input>
-                  </a-form-item>
+                  <a-divider orientation="left" orientation-margin="0px">限购信息</a-divider>
+                  <a-row :gutter="[16,16]">
+                    <a-col :span="8">
+                      <a-form-item label="最少购买" placeholder="用户每次下单最少限购件数">
+                      <a-input></a-input>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="8">
+                      <a-form-item label="最多购买" placeholder="用户每次下单最多限购件数">
+                      <a-input></a-input>
+                      </a-form-item></a-col>
+                    <a-col :span="8">
+                      <a-form-item label="累计限购" placeholder="每个用户累计限购件数">
+                      <a-input></a-input>
+                      </a-form-item>
+                    </a-col>
+                  </a-row>
                 </a-form>
               </div>
             </a-tab-pane>
@@ -355,9 +395,9 @@
 
       <!--底部按钮--开始-->
       <a-affix :offset-bottom="1">
-          <div style="width: 950px;margin: 0 auto;text-align: center;padding: 10px 0 0 0;">
-              <a-space align="end" style="height: 100%;">
-                  <a-button type="primary" >提交</a-button>
+          <div style="width: 950px;margin: 0 auto;text-align: center;padding: 4px 0 0 0;">
+              <a-space align="end">
+                  <a-button type="primary" @click="handleOk">提交</a-button>
                   <a-button >取消</a-button>
               </a-space>
           </div>
@@ -367,7 +407,7 @@
     </a-modal>
 </template>
 <script>
-import { defineComponent,reactive,ref,shallowRef,onMounted } from 'vue';
+import { defineComponent,reactive,ref,shallowRef,onMounted,defineAsyncComponent,toRaw } from 'vue';
 import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,EditOutlined,LeftOutlined,RightOutlined} from '@ant-design/icons-vue';
 
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
@@ -386,7 +426,9 @@ export default defineComponent({
         DeleteOutlined,
         EditOutlined,
         LeftOutlined,
-        RightOutlined
+        RightOutlined,
+        selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
+
 
     },
 
@@ -405,8 +447,32 @@ export default defineComponent({
 
         // 页面配置
         const PAGEDATA = reactive({
-            product_id: props.data.product_id, // 编辑的商品id
-            product_data: undefined
+          product_id: props.data.product_id, // 编辑的商品id
+          product_data: undefined, // 页面绑定数据
+          selectimg_open:false,          // 添加主图-图片显示状态配置
+          // 图片组件获取地址后添加到页面容器：：：回调方法
+          setimg_name:'',             // 添加图片的对象['PicList','long_img_List','white_img','video','des']
+          Add_Callback:(data)=>{
+              var type = PAGEDATA.setimg_name;        // 添加类型
+              if(type == 'PicList'){                  // 判断回调type：：：主图添加
+                  fun.pic.add(data)                   // 添加主图方法
+              }else if(type == 'long_img_List'){      // 判断回调type：：：3:4长图添加
+                  // Longimg_Fun.add(data)               // 添加长图方法
+              }else if(type == 'white_img'){          // 判断回调type：：：白底图添加
+                  // whiteimg_Fun.add(data)              // 添加白底图方法
+              }else if(type == 'video_info'){
+                  // video_Fun.add(data)                 // 添加视频方法
+              }else if(type == 'des'){                // 添加描述详情
+                  // DES.add_img(data)
+              }else if(type == 'spec_img'){           // 添加规格图片
+                  // SPECS.add_img(data)
+              }
+          },
+          change_material_type:(typeName)=>{
+            PAGEDATA.selectimg_open = true;
+            PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
+          }
+            
         })
 
         // 在组件挂载时添加事件监听器
@@ -455,6 +521,9 @@ export default defineComponent({
           fun.format.select_format(formdata.category_leaf_id)// 查询属性所有列表
 
         }
+        
+        const format_form_ref = ref() // 属性表单验证对象
+
 
         // 表单数据
         const formdata = reactive({
@@ -500,12 +569,15 @@ export default defineComponent({
             presell_delivery_type:undefined, // 全款预售和sku预售时传递，其他不传： 0 预售结束后发货 1支付完成后发货
             delay_rule:undefined,             // 特殊日期延迟发货规则
             
-            // 分类属性
+            // 分类
             category_leaf_id:undefined, // 分类id
             cate_op:[], // 分类选项
-            product_format_new:undefined, // 商品属性== 通过/product/getCatePropertyV2获取 格式：{"property_id":[{"value":value,"name":"property_name","diy_type":0}]}, name的类型是string，value和diy_type的类型是number 度量衡参照open度量衡对接文档填写
-            CateProperty:undefined, // 查询属性列表
-            format_form_ref:'', // 属性表单绑定值
+            // 属性
+            product_format_new:undefined, // 商品详情属性== 通过/product/getCatePropertyV2获取 格式：{"property_id":[{"value":value,"name":"property_name","diy_type":0}]}, name的类型是string，value和diy_type的类型是number 度量衡参照open度量衡对接文档填写
+            CateProperty:undefined, // 接口查询属性列表
+            format_form_ref:ref('1'), // 属性表单验证对象
+            format_form_data:reactive(), // 属性表单绑定对象
+
 
             // 规格库存
             spec_pic:undefined,             // 规格图片，单规格必填，多个规格选填，规格图片会覆盖主图
@@ -705,6 +777,7 @@ export default defineComponent({
           pic:{
             // 删除主图
             del:(index)=>{
+              console.log(formdata.pic)
               formdata.pic.splice(index,1)
             },
             // 左移动
@@ -734,7 +807,41 @@ export default defineComponent({
 
             },
             // 添加
-            add:()=>{
+            add:(data)=>{
+              // 加载素材组件
+              data.forEach((obj,idx)=>{
+                    // 判断是否图片素材
+                    var material_type = obj.material_type;
+
+                    // console.log(material_type)
+                    // 是图片=>添加到数组
+                    if(material_type == 'photo'){
+                        var photo_info = obj.photo_info;
+                        var pic_width = photo_info.width;      // 宽度
+                        var pic_height = photo_info.height;     // 高度
+                        if(pic_width == pic_height){
+                          console.log(obj)
+                            formdata.pic.push(obj.byte_url)
+                        }else{
+                        
+                            tool.Fun_.message('info','主图长宽比例需要1:1,不小于600X600.')
+                        
+                        }
+                    }else if(material_type == 'video'){
+
+                        tool.Fun_.message('info','【主图】不能选择视频，请选择图片素材！')
+                    
+                    }
+                })
+
+                // 只保留5张主图；
+                if(formdata.pic.length > 5){
+                    formdata.pic = formdata.pic.slice(0, 5)
+                    tool.Fun_.message('info','最多上传5张主图')
+                }
+            },
+            // 插入素材到页面
+            inset_img:()=>{
 
             }
           },
@@ -742,10 +849,81 @@ export default defineComponent({
           title:{
             
           },
-          // 分类
+          // 类目
           cate:{
 
-            // 预测分类category_detail
+            // 类目预测
+            check_cate:async()=>{
+                
+                var name = formdata.name; // 标题
+                var pic = formdata.pic; // 主图
+                // CATE.predict_status.value = true;
+
+                // 判断标题是否为空
+                if(name == undefined || name == ''){ 
+                    tool.Fun_.message('error', '预测类目>标题不能为空！');
+                    CATE.predict_status.value = false;
+                    return false
+                }
+
+                // 判断主图是否为空
+                if(!pic || pic.length == 0){
+                    tool.Fun_.message('error', '预测分类>商品主图不能为空！');
+                    CATE.predict_status.value = false;
+                    return false
+                }
+
+                // 迭代图片数组格式
+                var pic_list = [...pic];
+                pic_list.forEach((obj,index)=>{
+                    pic_list[index] = {"url":obj}
+                })
+
+                // 请求接口
+                var res = await axios.post(API.AppSrtoreAPI.dou_product.cate_predict,{
+                    "scene":"category_infer",
+                    // "scene":"smart_publish",
+                    "pic":pic_list,
+                    "name":name
+                })
+
+                
+                // 获取预测的类目属性数据
+
+                var categoryDetails = res.data.data.categoryDetails;
+                console.log(categoryDetails)
+
+                // if(categoryDetails.length >0){
+
+                //     var cate_list = []
+
+                //     categoryDetails.forEach((obj,index)=>{
+
+                //         var op = CATE.de_cate_detaile(obj) // 迭代预测类目选项obj
+
+                //         cate_list.push(op)
+
+                //     })
+
+                //     tool.Fun_.message('success', '预测分类成功！');
+
+                //     CATE.options.value = cate_list;
+                //     CATE.cate_value.value = cate_list[0].value; // 下拉选择赋值
+
+                //     CATE.loadFormat();// 加载对应商品属性
+                    
+                //     CATE.Ceck_format()// 迭代预测的属性到页面
+
+                //     CATE.predict_status.value = false; // 按钮load状态停止
+                //     CATE.select_loading.value = false; // 下拉禁用状态停止
+
+                // }else{
+                //     tool.Fun_.message('error', '预测分类失败，请更换主图或标题！');
+                //     CATE.predict_status.value = false;
+                //     return false
+                // }
+            },
+            // 转义分类字符，提取分类id
             ex_cate_data:(data)=>{
               var n_text = ''
               var c_id = []
@@ -789,19 +967,81 @@ export default defineComponent({
           },
           // 属性
           format:{
+
             // 查询属性
             select_format:async(c_id)=>{
+              
               var data = {
                   "category_leaf_id":c_id
               }
               var res = await axios.post(API.AppSrtoreAPI.dou_product.format,data);
-              formdata.CateProperty = res.data.data
+
+              formdata.CateProperty = reactive(fun.format.sort_required_(res.data.data.data)) // 必填属性排序
+
               console.log(formdata.CateProperty)
             
             },
+            // 属性必填项目排序-靠前
+            sort_required_:(data)=>{
+              var quir_obj = {}
+              data.forEach(item =>{
+                if(item.type == 'measure' || item.type == 'multi_value_measure'){console.log(item)}
+                if(item.required == 1){quir_obj[item.property_id]=item}
+              })
+              data.forEach(item =>{
+                if(item.required !== 1){quir_obj[item.property_id]=item}
+              })
+              return quir_obj
+            },
+            // 属性加载到表单
+            load_in_form:()=>{
+              formdata.CateProperty.forEach(item =>{
+                let property_id = item.property_id;
+                let property_name = item.property_name
+              })
+            },
+            // 多选属性-超过可选数量禁用勾选
+            check_mat_options:(options_data)=>{
+              console.log(options_data)
+            },
+            
             // 填充属性
             // 渲染属性
+            // 获取表单属性
+            get_format: async()=>{
+
+                // 验证是否必填全部填写
+                var res = await format_form_ref.value.validate().then(()=>{
+                    console.log(toRaw(formdata.CateProperty))
+
+
+                    // var selected_mat = toRaw(CATE.format_formRef)// 选中的属性
+
+                    // var show_mat= toRaw(CATE.format.value)      // 当前展示的属性
+                    // var f_res_obj = {}
+                    // show_mat.forEach(obj => {
+                    //     let property_id = obj.property_id;
+                    //     if(selected_mat[property_id] !== undefined){
+                    //        var result_list = CATE.de_format_detail(obj, selected_mat[property_id])
+                    //        f_res_obj[property_id] = result_list
+                    //     }
+                    // });
+
+                    // return f_res_obj
+
+                }).catch(error => {
+
+                    // tool.Fun_.message('error',error.errorFields[0].errors[0]);
+
+                    // activeKey.value = '1';
+
+                    // return false
+                })
+
+                return ''
+            },
           },
+
           // 表单字段验证规则
           rule:{
             // 标题规则
@@ -818,7 +1058,9 @@ export default defineComponent({
 
         // 提交
         const handleOk = e => {
-            console.log(e);
+          // 属性
+          fun.format.get_format()
+          console.log('提交');
         };
 
         // 卡片命中
@@ -835,7 +1077,8 @@ export default defineComponent({
             stockData, // 库存数据
             editorRef, // 富媒体编辑
             DES, // 描述数据
-            fun // 数据操作方法
+            fun, // 数据操作方法
+            format_form_ref
 
         }
     }
@@ -844,7 +1087,7 @@ export default defineComponent({
 <style scoped>
 .content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 90vh;}
 .load_center{height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;}
-.img_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;padding: 10px;}
+.img_pic{height: 100px;width: 100px;border: 1px #f2f2f2 solid; border-radius: 4px;padding: 10px;}
 .img_3_4_pic{height: 132px;width: 99px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
 .Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
 .Add_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}

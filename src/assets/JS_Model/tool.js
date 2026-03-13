@@ -3,7 +3,7 @@ import * as utils from '@/assets/JS_Model/public_model'; // API地址
 import { message } from 'ant-design-vue';
 
     // 全局配置
-    axios.defaults.timeout = 10000  // 10秒
+    axios.defaults.timeout = 30000  // 10秒
 
     // 添加响应拦截器
     axios.interceptors.response.use(function (response) {
