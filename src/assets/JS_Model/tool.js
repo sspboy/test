@@ -97,9 +97,60 @@ const API = new utils.A_Patch()// 请求接口
                 console.error('复制失败:', err);
             }
             document.body.removeChild(textarea);
-        }        
+        },
+        // 指定单个键值靠前
+        // prioritizeKey_one:(obj, priorityKey)=> {
 
+        //     const entries = Object.entries(obj);
+            
+        //     // 分离置顶键和其他键
+        //     const priorityEntry = entries.find(([key]) => key === priorityKey);
+        //     const otherEntries = entries.filter(([key]) => key !== priorityKey);
+            
+        //     // 置顶键放最前
+        //     const sortedEntries = priorityEntry 
+        //         ? [priorityEntry, ...otherEntries] 
+        //         : otherEntries;
+                
+        //     return Object.fromEntries(sortedEntries);
+        // },
+        // console.log(prioritizeKey(obj, 'c'));
+        // 指定多个键值置顶
+        prioritizeKeys:(obj, priorityKeys)=> {
+            
+            const entries = Object.entries(obj);
+            const prioritySet = new Set(priorityKeys);
+
+            // 按优先级分组
+            const priorityEntries = [];
+            const otherEntries = [];
+            
+            entries.forEach(entry => {
+                if (prioritySet.has(entry[0])) {
+                    priorityEntries.push(entry);
+                } else {
+                    otherEntries.push(entry);
+                }
+            });
+            console.log(priorityEntries)
+
+            // 按 priorityKeys 的顺序排列置顶键
+            priorityEntries.sort(([a], [b]) => {
+                return priorityKeys.indexOf(a) - priorityKeys.indexOf(b);
+            });
+
+
+            return Object.fromEntries([...priorityEntries, ...otherEntries]);
+        },
+        // 使用：id 和 name 置顶，且 id 在 name 前面
+        // const result = prioritizeKeys(obj, ['id', 'name', 'price']);
+        // console.log(result);
+        // { id: 'P001', name: 'Product', price: 99, stock: 100, category: 'Electronics' }
     }
+
+
+
+
     // 抖音前端token请求
     mc_token = {
 

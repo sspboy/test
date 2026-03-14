@@ -124,9 +124,10 @@
               <a-form 
                 ref="format_form_ref" 
                 :model="formdata.CateProperty" 
-                v-else-if="formdata.CateProperty !== undefined">
+                v-else-if="formdata.CateProperty !== undefined"
+                >
                 
-                <a-row :gutter="[16,16]" >
+                <a-row :gutter="[16,0]" >
 
                 <a-col :span="6" v-for="(value, key, index) in formdata.CateProperty" :key="key">
                 
@@ -142,9 +143,11 @@
                       <a-input 
                       autoComplete="off"
                       v-model:value="formdata.CateProperty[key].value" 
-                      allow-clear></a-input>
+                      allow-clear>
+                    </a-input>
                     </a-form-item>
                   </div>
+
                   <!--单选-->
                   <div v-else-if="value.type == 'select'">
                     <a-form-item>
@@ -170,6 +173,7 @@
                         mode="multiple"
                         :max-tag-count="1"
                         :options="value.options"
+                        v-model:value="formdata.CateProperty[key].value" 
                         style="width: 100%;"
                         @change="fun.format.check_mat_options(value)"
                         :field-names="{
@@ -575,8 +579,8 @@ export default defineComponent({
             // 属性
             product_format_new:undefined, // 商品详情属性== 通过/product/getCatePropertyV2获取 格式：{"property_id":[{"value":value,"name":"property_name","diy_type":0}]}, name的类型是string，value和diy_type的类型是number 度量衡参照open度量衡对接文档填写
             CateProperty:undefined, // 接口查询属性列表
-            format_form_ref:ref('1'), // 属性表单验证对象
-            format_form_data:reactive(), // 属性表单绑定对象
+            format_form_ref:ref(), // 属性表单验证对象
+            format_form_data:reactive({}), // 属性表单绑定对象
 
 
             // 规格库存
@@ -976,29 +980,35 @@ export default defineComponent({
               }
               var res = await axios.post(API.AppSrtoreAPI.dou_product.format,data);
 
-              formdata.CateProperty = reactive(fun.format.sort_required_(res.data.data.data)) // 必填属性排序
-
+              formdata.CateProperty = res.data.data.data
+              fun.format.sort_required_(formdata.CateProperty)// 必填属性排序
               console.log(formdata.CateProperty)
             
             },
             // 属性必填项目排序-靠前
             sort_required_:(data)=>{
               var quir_obj = {}
+              var sort_id_list = []
+
+              // 装载到对象
               data.forEach(item =>{
-                if(item.type == 'measure' || item.type == 'multi_value_measure'){console.log(item)}
-                if(item.required == 1){quir_obj[item.property_id]=item}
+                quir_obj[item.property_id]=item
+                if(item.required == 1){
+                  sort_id_list.push(item.property_id)
+                }
               })
-              data.forEach(item =>{
-                if(item.required !== 1){quir_obj[item.property_id]=item}
-              })
-              return quir_obj
+              console.log(sort_id_list)
+
+              const result = tool.Fun_.prioritizeKeys(quir_obj, sort_id_list);
+
+              return result
             },
             // 属性加载到表单
             load_in_form:()=>{
-              formdata.CateProperty.forEach(item =>{
-                let property_id = item.property_id;
-                let property_name = item.property_name
-              })
+              // formdata.CateProperty.forEach(item =>{
+              //   let property_id = item.property_id;
+              //   let property_name = item.property_name
+              // })
             },
             // 多选属性-超过可选数量禁用勾选
             check_mat_options:(options_data)=>{
@@ -1011,7 +1021,7 @@ export default defineComponent({
             get_format: async()=>{
 
                 // 验证是否必填全部填写
-                var res = await format_form_ref.value.validate().then(()=>{
+                var res = await format_form_ref?.value.validate().then(()=>{
                     console.log(toRaw(formdata.CateProperty))
 
 
