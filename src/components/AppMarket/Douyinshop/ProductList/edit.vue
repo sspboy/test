@@ -132,20 +132,23 @@
               <a-row>
                 <a-col :span="4">
                   <p>白底图</p>
-                  <div class="img_pic">+添加</div>
+                  <div class="img_pic"></div>
                 </a-col>
                 <a-col :span="4">
                   <p>视频</p>
-                  <div class="img_pic">+添加</div>
+                  <div class="img_pic"></div>
                 </a-col>
-                <a-col>
+
+                <a-col :span="16">
                   <p>3:4主图</p>
-                  <div class="img_pic">3:4主图</div>
-                  <p class="cursor Add_img">
-                  <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
-                    +3:4主图
-                  </a-flex>
-                </p>
+
+                  <div class="img_pic"></div>
+
+                  <!-- <p class="cursor Add_img" style="float: left;">
+                    <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                      +3:4主图
+                    </a-flex>
+                  </p> -->
                 </a-col>
               </a-row>
 

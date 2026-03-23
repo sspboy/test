@@ -181,7 +181,23 @@ PS：支持新建、编辑====》场景使用
                     label: 'name',
                     value: 'value',
                     }"
-                ></a-select>
+                >
+                    <template #dropdownRender="{ menuNode: menu }" v-if="item.diy_type==1">
+                        <v-nodes :vnodes="menu" />
+                        <a-divider style="margin: 4px 0" />
+                        <a-space style="padding: 4px 8px">
+                        <a-input ref="inputRef" 
+                            v-model:value="insetpagedata.fun.format.diy_name.value" 
+                            placeholder="自定义面料"
+                            autoComplete="off"
+                        />
+                        <a-button type="text" @click="insetpagedata.fun.format.addItem(item.options)">
+                            <template #icon><PlusOutlined /></template>添加
+                        </a-button>
+                        </a-space>
+                    </template>
+            
+                </a-select>
                 </a-form-item>
                 </p>
 
@@ -199,7 +215,23 @@ PS：支持新建、编辑====》场景使用
                         label: 'name',
                         value: 'value',
                     }"
-                ></a-select>
+                >
+                    <template #dropdownRender="{ menuNode: menu }" v-if="item.diy_type==1">
+                        <v-nodes :vnodes="menu" />
+                        <a-divider style="margin: 4px 0" />
+                        <a-space style="padding: 4px 8px">
+                        <a-input ref="inputRef" 
+                            v-model:value="insetpagedata.fun.format.diy_name.value" 
+                            placeholder="自定义面料"
+                            autoComplete="off"
+                        />
+                        <a-button type="text" @click="insetpagedata.fun.format.addItem(item.options)">
+                            <template #icon><PlusOutlined /></template>添加
+                        </a-button>
+                        </a-space>
+                    </template>
+            
+                </a-select>
                 </a-form-item>
                 </p>
                 
@@ -231,7 +263,23 @@ PS：支持新建、编辑====》场景使用
                         label: 'name',
                         value: 'value',
                         }"
-                    ></a-select>
+                    >
+                
+                        <template #dropdownRender="{ menuNode: menu }" v-if="item.diy_type==1">
+                            <v-nodes :vnodes="menu" />
+                            <a-divider style="margin: 4px 0" />
+                            <a-space style="padding: 4px 8px">
+                            <a-input ref="inputRef" 
+                                v-model:value="insetpagedata.fun.format.diy_name.value" 
+                                placeholder="自定义面料"
+                                autoComplete="off"
+                            />
+                            <a-button type="text" @click="insetpagedata.fun.format.addItem(item.options)">
+                                <template #icon><PlusOutlined /></template>添加
+                            </a-button>
+                            </a-space>
+                        </template>
+                    </a-select>
                 </a-form-item>
                 </p>
 
@@ -252,7 +300,22 @@ PS：支持新建、编辑====》场景使用
                         label: 'name',
                         value: 'value',
                         }"
-                    ></a-select>
+                    >
+                        <template #dropdownRender="{ menuNode: menu }" v-if="item.diy_type==1">
+                            <v-nodes :vnodes="menu" />
+                            <a-divider style="margin: 4px 0" />
+                            <a-space style="padding: 4px 8px">
+                            <a-input ref="inputRef" 
+                                v-model:value="insetpagedata.fun.format.diy_name.value" 
+                                placeholder="自定义面料"
+                                autoComplete="off"
+                            />
+                            <a-button type="text" @click="insetpagedata.fun.format.addItem(item.options)">
+                                <template #icon><PlusOutlined /></template>添加
+                            </a-button>
+                            </a-space>
+                        </template>
+                    </a-select>
                 </a-form-item>
                 </p>
             </a-col>
@@ -331,6 +394,7 @@ import * as ProductEdit from '@/assets/douyinshop/productmanagement/edit';// 商
 
 // 组件引用=====开始
 export default {
+
     name:'name',
 
     components:{
@@ -353,15 +417,14 @@ export default {
    },
 
     props: {
-    data:{typr:Object}
+        data:{typr:Object}
     },
 
 setup(props,ctx) {
     
     const formdata = props.data; // 表单绑定
 
-    // 属性表单验证对象
-    const format_form_ref = ref()
+    const format_form_ref = ref()// 属性表单验证对象
 
     formdata.format_form_ref = format_form_ref;// 验证对象传值到方法中，方法验证调用；
 
@@ -371,6 +434,13 @@ setup(props,ctx) {
     const filterOption = (input, option) => {
         return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
+
+    
+    // 属性id
+    // 请求属性
+    // 渲染属性
+    // 填充属性值
+
 
 
 

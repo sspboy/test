@@ -6,6 +6,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
+
   plugins: [
     vue({
       // 替代 chainWebpack 中的 isCustomElement 配置
@@ -20,8 +21,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': '/src',
-      '@components':'/src/components'
+      '@components':'/src/components',
+
     },
+    
   },
   // 开发服务器配置（替代 devServer）
   server: {

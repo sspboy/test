@@ -5,10 +5,13 @@ import * as utils from '@/assets/JS_Model/public_model';// 接口地址配置
 const tool = new TOOL.TOOL()            // 工具方法
 const API = new utils.A_Patch()         // 请求接口地址合集
 
+
 // 加载详情数据到页面
 export class Insetpagedata {
     
     product_id = undefined// 商品id
+    product_detaile = undefined// 商品详情
+
     PAGEDATA = undefined// 页面数据
     formdata = undefined// 表单数据
     format_form_ref = undefined// 属性表单验证
@@ -16,6 +19,7 @@ export class Insetpagedata {
     // 加载详情数据到页面
     load = async() =>{
 
+        // 请求商品详情
         var res = await axios.post(API.AppSrtoreAPI.dou_product.detaile, {
 
             product_id:this.product_id
@@ -23,7 +27,7 @@ export class Insetpagedata {
         })
 
         var ProductDetaile = res.data.data;
-
+        this.product_detaile = res.data.data;
         this.PAGEDATA.product_data = false;// 页面load状态关闭
 
         // 主图
@@ -38,7 +42,7 @@ export class Insetpagedata {
         this.formdata.category_leaf_id = cateres.value; // 设置类目值
         
         // 属性+写入详情属性值
-        this.fun.format.select_format(this.formdata.category_leaf_id,true)// 查询属性
+        this.fun.format.select_format(this.formdata.category_leaf_id, true)// 初次加载属性：true：写入详情值
 
     }
 
@@ -289,24 +293,25 @@ export class Insetpagedata {
         format:{
 
             // 查询属性
-            select_format:async(c_id,states)=>{
+            select_format:async(c_id, states)=>{
                 
                 var data = {
                     "category_leaf_id":c_id
                 }
-                var res = await axios.post(API.AppSrtoreAPI.dou_product.format,data);
 
-                this.formdata.CateProperty = this.fun.format.sort_required_(res.data.data.data)// 必填属性排序
+                var res = await axios.post(API.AppSrtoreAPI.dou_product.format,data);
+                var format_detaile_value = res.data.data.data
+
+                this.formdata.CateProperty = this.fun.format.sort_required_(format_detaile_value)// 必填属性排序
                 
                 // states：：开关控制写入属性值到表单
                 // 初次加载属性需要写入详情的属性值
                 // 如果切换分类则不需要写入属性值
+
                 if(states){
-                    // 加载属性到表单
-                    console.log(this.formdata.format_form_data)
-                    for (const [key, value] of Object.entries(this.formdata.format_form_data)) {
-                        console.log(`${key}: ${value}`)
-                    }
+
+                    this.fun.format.load_inset_form(format_detaile_value)
+
                 }
                 
             
@@ -370,22 +375,29 @@ export class Insetpagedata {
                     }
                     // 无品牌添加结束
 
-                    if(item.required == 1){
+                    if(item.required == 1){ // 必填项
                         quir_obj_top.push(item)
                     }
-                    if(item.required == 0){
+
+                    if(item.required == 0){ // 非必填
                         quir_obj_end.push(item)
                     }
 
                     if(item.type == 'multi_value_measure'){ // 多选-度量衡
-                        // console.log(item)
+                        console.log(item)
                         // console.log(item.diy_type)
-
                     }else if(item.type == 'measure'){ // 单选-度量衡
                         // 克重
                         // 尺寸
+                        console.log('度量衡-单选',item)
+                    }else if(item.type == 'timestamp'){ // 时间戳
                         console.log(item)
+                    }else if(item.type == 'timerange'){ // 时间段
+                        console.log(item)
+                    }else if(item.type == 'text'){
+                        // console.log('text',item)
                     }
+
                 })
 
                 return [...quir_obj_top,...quir_obj_end]
@@ -393,10 +405,67 @@ export class Insetpagedata {
             },
 
             // 商品已选择属性->加载到表单
-            load_inset_form:()=>{
+            load_inset_form:(data)=>{
+                 
+                var format_detaile_obj = {}; // 类目id请求加载的属性
 
-                // var format_detaile_obj = JSON.parse(data.product_format_new)
-                // console.log(JSON.parse(data.product_format_new))
+                data.forEach(item=>{
+                    format_detaile_obj[item.property_id] = item
+                })
+
+                var detaile_format = JSON.parse(this.product_detaile.product_format_new) // 商品详情的属性
+
+                var form_format = this.formdata.format_form_data;// 表单绑定属性对象
+
+                // 迭代==>需要加载属性到表单
+                Object.keys(detaile_format).forEach(key =>{
+
+                    // 属性id
+                    var PropertyId = key;
+
+                    // 属性类型
+                    var type = format_detaile_obj[key].type;
+
+                    // 属性值
+                    // console.log('需要加载属性',key, type, detaile_format[key])
+                    
+                    // 载入文本
+                    if(type == 'text'){
+                        form_format[key] = detaile_format[key][0].Name;
+                    }else if(type == 'multi_select'){ // 多选
+                        detaile_format[key].forEach(item=>{
+                            form_format[key].push(item.Name)
+                        })
+                    }else if(type == 'select'){ // 单选
+                        form_format[key].push(detaile_format[key][0].Name)
+                    }else if(''){ // 度量衡-多选
+
+                    }else if(''){ // 度量衡-单选
+
+                    }else if(''){ // 时间戳
+
+                    }else if(''){ // 时间段
+
+                    }
+
+                })
+
+                // 加载文本
+                function inset_text(data){
+
+                }
+                // 加载单选
+
+                // 加载多选
+
+                // 加载度量衡-多选
+
+                // 加载度量衡-单选
+
+                // 加载时间戳
+
+                // 加载时间段
+                
 
 
             },
@@ -436,42 +505,6 @@ export class Insetpagedata {
                         }
                     }
                 }
-            },
-
-            // 获取表单属性
-            get_format: async()=>{
-                
-                // console.log(toRaw(this.formdata.format_form_ref))
-
-                // 验证是否必填全部填写
-                var res = await this.formdata.format_form_ref.validate().then(()=>{
-
-                    console.log(toRaw(this.formdata.format_form_data))
-
-
-                    // var selected_mat = toRaw(CATE.format_formRef)// 选中的属性
-
-                    // var show_mat= toRaw(CATE.format.value)      // 当前展示的属性
-                    // var f_res_obj = {}
-                    // show_mat.forEach(obj => {
-                    //     let property_id = obj.property_id;
-                    //     if(selected_mat[property_id] !== undefined){
-                    //        var result_list = CATE.de_format_detail(obj, selected_mat[property_id])
-                    //        f_res_obj[property_id] = result_list
-                    //     }
-                    // });
-
-                    // return f_res_obj
-
-                }).catch(error => {
-
-                    // tool.Fun_.message('error',error.errorFields[0].errors[0]);
-
-                    // activeKey.value = '1';
-
-                    // return false
-                })
-
             },
 
             // 删除面料材质属性
@@ -527,7 +560,7 @@ export class Insetpagedata {
             
             // 获取主图
             if(this.formdata.pic.length > 0){// 不为空
-                console.log('【主图】',this.formdata.pic)
+                console.log('【主图】',toRaw(this.formdata.pic))
             }else{
                 tool.Fun_.message('error','主图不能为空！')
                 // activeKey.value = '1'
@@ -538,7 +571,9 @@ export class Insetpagedata {
             this.product_form.getcateid()
 
             // 获取属性
-            this.fun.format.get_format()
+            this.product_form.getformat()
+
+            
         
         },
         // 标题
@@ -549,8 +584,63 @@ export class Insetpagedata {
         // 类目
         getcateid:()=>{
             console.log('【类目ID】',this.formdata.category_leaf_id)
-        }
-        
+        },
+
+        // 获取表单属性
+        getformat: async()=>{
+            
+            // console.log(toRaw(this.formdata.format_form_ref))
+
+            // 验证是否必填全部填写
+            var res = await this.formdata.format_form_ref.validate().then(()=>{
+
+                console.log(toRaw(this.formdata.format_form_data))
+                var format_result= toRaw(this.formdata.format_form_data)
+                Object.keys(format_result).forEach(key=>{
+                    console.log(key, format_result[key])
+                })
+
+                // var selected_mat = toRaw(CATE.format_formRef)// 选中的属性
+
+                // var show_mat= toRaw(CATE.format.value)      // 当前展示的属性
+                // var f_res_obj = {}
+                // show_mat.forEach(obj => {
+                //     let property_id = obj.property_id;
+                //     if(selected_mat[property_id] !== undefined){
+                //        var result_list = CATE.de_format_detail(obj, selected_mat[property_id])
+                //        f_res_obj[property_id] = result_list
+                //     }
+                // });
+
+                // return f_res_obj
+
+            }).catch(error => {
+
+                // tool.Fun_.message('error',error.errorFields[0].errors[0]);
+
+                // activeKey.value = '1';
+
+                // return false
+            })
+
+            // 文本获取方法
+            // 传入id：和值
+            // 获取配置
+            // 值 不为空，构建提交数据格式；
+
+            // 单选获取方法
+
+            // 多选获取方法
+
+            // 度量衡-单选-获取方法
+
+            // 度量衡-多选-获取方法
+
+            // 时间戳 - 获取方法
+
+            // 时间段 - 获取方法
+
+        },
 
     }
 
