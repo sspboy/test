@@ -390,6 +390,9 @@ export default defineComponent({
 
         const tool = new TOOL.TOOL()            // 工具方法
         const API = new utils.A_Patch()         // 请求接口地址合集
+        
+        // 选中卡片
+        const activeKey = ref('1');
 
         // 页面配置
         const PAGEDATA = reactive({
@@ -683,20 +686,8 @@ export default defineComponent({
           
           insetpagedata.load() // 加载页面
 
-          // 标题
-          // 主图
-          // 类目
-          // 属性
-          // 基础信息
-          // 
-          // 页面加载数据
-          // 分发数据到组件
-          // 组件调用各自的方法 去渲染数据 操作数据
-
         });
 
-
-        
         // 提交
         const handleOk = e => {
 
@@ -704,9 +695,6 @@ export default defineComponent({
           insetpagedata.product_form.get()
 
         };
-
-        // 卡片命中
-        const activeKey = ref('1');
 
         const inputRef = ref();
         const name = ref();

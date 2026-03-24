@@ -297,8 +297,8 @@ PS：支持新建、编辑====》场景使用
                         style="width: 100%;"
                         @change="insetpagedata.fun.format.dis_ops(item,formdata.format_form_data[item.property_id])"
                         :field-names="{
-                        label: 'name',
-                        value: 'value',
+                            label: 'name',
+                            value: 'value',
                         }"
                     >
                         <template #dropdownRender="{ menuNode: menu }" v-if="item.diy_type==1">
@@ -320,37 +320,43 @@ PS：支持新建、编辑====》场景使用
                 </p>
             </a-col>
 
-            <!--单选 度量衡 measure-->
+            <!--单值 度量衡 measure-->
             <a-col v-else-if="item.type == 'measure'" :span="6">
 
                 <p>
-                {{ item.property_name }} 
-                <span v-show="item.required ==1" style="color: red;">*必填</span>
+                    {{ item.property_name }} 
+                    <span v-show="item.required ==1" style="color: red;">*必填</span>
                 </p>
 
-                <!--克重-->
                 <p v-if="item.required == 1">
-                <a-form-item 
-                    :name="item.property_id"
-                    :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
-                    >
-                    <a-input-number
-                        style="width: 100%;"
-                        :placeholder="'请输入-' + item.property_name"
-                        autoComplete="off"
-                    ></a-input-number>
-                </a-form-item>
-                </p>
-                <p v-else>
                     <a-form-item 
-                    :name="item.property_id"
+                        :name="item.property_id"
+                        :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
+                        >
+                        <template v-for="(value, key) in formdata.format_form_data[item.property_id]">
+                                <a-input
+                                    v-model:value="formdata.format_form_data[item.property_id][key].unit_name" 
+                                    placeholder="最低价"
+                                    @click="console.log(formdata.format_form_data[item.property_id][key])"
+                                ></a-input>
+                        </template>
+                    </a-form-item>
+                </p>
+
+                <p v-else>
+
+                    <a-form-item 
+                        :name="item.property_id"
                     >
-                    <a-input-number
-                        style="width: 100%;"
-                        :placeholder="'请输入-' + item.property_name"
-                        autoComplete="off"
-                    ></a-input-number>
-                </a-form-item>
+                        <template v-for="(value, key) in formdata.format_form_data[item.property_id]">
+                                <a-input
+                                    v-model:value="formdata.format_form_data[item.property_id][key].unit_name" 
+                                    placeholder="最低价"
+                                    @click="console.log(formdata.format_form_data[item.property_id][key])"
+                                ></a-input>
+                        </template>
+                    </a-form-item>
+
                 </p>
 
                 <!--长宽高-->

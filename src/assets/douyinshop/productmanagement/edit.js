@@ -2,8 +2,13 @@ import { defineComponent,reactive,ref,shallowRef,onMounted,defineAsyncComponent,
 import axios from 'axios'; // 网络请求
 import * as TOOL from '@/assets/JS_Model/tool';// 常用工具
 import * as utils from '@/assets/JS_Model/public_model';// 接口地址配置
+import { selectProps } from 'ant-design-vue/es/vc-select';
 const tool = new TOOL.TOOL()            // 工具方法
 const API = new utils.A_Patch()         // 请求接口地址合集
+
+// 商品详情数据
+
+
 
 
 // 加载详情数据到页面
@@ -11,7 +16,6 @@ export class Insetpagedata {
     
     product_id = undefined// 商品id
     product_detaile = undefined// 商品详情
-
     PAGEDATA = undefined// 页面数据
     formdata = undefined// 表单数据
     format_form_ref = undefined// 属性表单验证
@@ -21,27 +25,18 @@ export class Insetpagedata {
 
         // 请求商品详情
         var res = await axios.post(API.AppSrtoreAPI.dou_product.detaile, {
-
             product_id:this.product_id
-        
         })
 
         var ProductDetaile = res.data.data;
         this.product_detaile = res.data.data;
         this.PAGEDATA.product_data = false;// 页面load状态关闭
 
-        // 主图
-        this.formdata.pic = ProductDetaile.pic;
-
-        // 标题
-        this.formdata.name = ProductDetaile.name;
-
-        // 分类
-        var cateres = this.fun.cate.ex_cate_data(ProductDetaile.category_detail)
+        this.formdata.pic = ProductDetaile.pic;// 主图
+        this.formdata.name = ProductDetaile.name;// 标题
+        var cateres = this.fun.cate.ex_cate_data(ProductDetaile.category_detail)// 分类
         this.formdata.cate_op.push(cateres); // 加载类目选项
         this.formdata.category_leaf_id = cateres.value; // 设置类目值
-        
-        // 属性+写入详情属性值
         this.fun.format.select_format(this.formdata.category_leaf_id, true)// 初次加载属性：true：写入详情值
 
     }
@@ -187,36 +182,6 @@ export class Insetpagedata {
 
                 this.fun.cate.ex_cate_check_list(categoryDetails)
 
-                // if(categoryDetails.length >0){
-
-                //     var cate_list = []
-
-                //     categoryDetails.forEach((obj,index)=>{
-
-                //         var op = CATE.de_cate_detaile(obj) // 迭代预测类目选项obj
-
-                //         cate_list.push(op)
-
-                //     })
-
-                //     tool.Fun_.message('success', '预测分类成功！');
-
-                //     CATE.options.value = cate_list;
-                //     CATE.cate_value.value = cate_list[0].value; // 下拉选择赋值
-
-                //     CATE.loadFormat();// 加载对应商品属性
-                    
-                //     CATE.Ceck_format()// 迭代预测的属性到页面
-
-                //     CATE.predict_status.value = false; // 按钮load状态停止
-                //     CATE.select_loading.value = false; // 下拉禁用状态停止
-
-                // }else{
-                //     tool.Fun_.message('error', '预测分类失败，请更换主图或标题！');
-                //     CATE.predict_status.value = false;
-                //     return false
-                // }
-
                 this.fun.cate.loading.value = false;
             },
 
@@ -225,28 +190,28 @@ export class Insetpagedata {
                 var n_text = ''
                 var c_id = []
                 if(data.first_cname !== ''){
-                n_text = n_text + data.first_cname + '>'
+                    n_text = n_text + data.first_cname + '>'
                 }
                 if(data.second_cname !== ''){
-                n_text = n_text + data.second_cname + '>'
+                    n_text = n_text + data.second_cname + '>'
                 }
                 if(data.third_cname !== ''){
-                n_text = n_text + data.third_cname + '>'
+                    n_text = n_text + data.third_cname + '>'
                 }
                 if(data.fourth_cname !== ''){
-                n_text = n_text + data.fourth_cname + '>'
+                    n_text = n_text + data.fourth_cname + '>'
                 }
                 if(data.first_cid !== 0){
-                c_id.push(data.first_cid)
+                    c_id.push(data.first_cid)
                 }
                 if(data.second_cid !== 0){
-                c_id.push(data.second_cid)
+                    c_id.push(data.second_cid)
                 }
                 if(data.third_cid !== 0){
-                c_id.push(data.third_cid)
+                    c_id.push(data.third_cid)
                 }
                 if(data.fourth_cid !== 0){
-                c_id.push(data.fourth_cid)
+                    c_id.push(data.fourth_cid)
                 }
 
                 // console.log(n_text.slice(0,-1))
@@ -302,7 +267,7 @@ export class Insetpagedata {
                 var res = await axios.post(API.AppSrtoreAPI.dou_product.format,data);
                 var format_detaile_value = res.data.data.data
 
-                this.formdata.CateProperty = this.fun.format.sort_required_(format_detaile_value)// 必填属性排序
+                this.formdata.CateProperty = this.fun.format.sort_required_(format_detaile_value)   // 必填属性排序
                 
                 // states：：开关控制写入属性值到表单
                 // 初次加载属性需要写入详情的属性值
@@ -313,8 +278,6 @@ export class Insetpagedata {
                     this.fun.format.load_inset_form(format_detaile_value)
 
                 }
-                
-            
             },
 
             // 自定义【面料材质】的名称
@@ -354,12 +317,64 @@ export class Insetpagedata {
                 // 装载到对象
                 data.forEach(item =>{
 
-                    if(item.type == 'text'){// 输入文本转载id：''
-                        this.formdata.format_form_data[item.property_id] = ''; 
-                    }else if(item.type == 'multi_value_measure'){// 输入多选转id：[{}]
-                        this.formdata.format_form_data[item.property_id] = [{}];
-                    }else{ // 单选转载id：[]
+                    if(item.required == 1){ // 必填项
+                        quir_obj_top.push(item)
+                    }
+
+                    if(item.required == 0){ // 非必填
+                        quir_obj_end.push(item)
+                    }
+                })
+                
+                var s_obj = [...quir_obj_top,...quir_obj_end]
+
+                // 构造数据结构
+                this.fun.format.makeup(s_obj)
+
+                return s_obj
+
+            },
+
+            // 构造绑定值数据结构
+            makeup:(data)=>{
+
+                data.forEach(item=>{
+                    if(item.type == 'text'){    // 输入文本
+
+                        this.formdata.format_form_data[item.property_id] = '';
+
+                    }else if(item.type == 'select'){ // 单选
+
                         this.formdata.format_form_data[item.property_id] = [];
+
+                    }else if(item.type == 'multi_select'){ // 多选
+
+                        this.formdata.format_form_data[item.property_id] = []; 
+
+                    }else if(item.type == 'measure'){ // 度量衡-单值
+
+                        const measure_Data= reactive({})// 绑定表单dui像
+                        item.measure_templates[0].value_modules.forEach(item=>{
+                            measure_Data[item.module_id] = {
+                                unit_id:'',
+                                unit_name:''
+                            }
+                        })
+                        this.formdata.format_form_data[item.property_id] = measure_Data;
+                        console.log(this.formdata.format_form_data[item.property_id])
+
+                    }else if(item.type == 'multi_value_measure'){   // 度量衡-多值
+
+                        this.formdata.format_form_data[item.property_id] = [{}];
+
+                    }else if(item.type == 'timestamp'){ // 时间戳
+
+                        this.formdata.format_form_data[item.property_id] = ''; 
+
+                    }else if(item.type == 'timerange'){ // 时间段
+
+                        this.formdata.format_form_data[item.property_id] = ''; 
+
                     }
 
                     // 添加品牌无品牌选项
@@ -374,34 +389,7 @@ export class Insetpagedata {
                         item.options.push(No_brand_obj)
                     }
                     // 无品牌添加结束
-
-                    if(item.required == 1){ // 必填项
-                        quir_obj_top.push(item)
-                    }
-
-                    if(item.required == 0){ // 非必填
-                        quir_obj_end.push(item)
-                    }
-
-                    if(item.type == 'multi_value_measure'){ // 多选-度量衡
-                        console.log(item)
-                        // console.log(item.diy_type)
-                    }else if(item.type == 'measure'){ // 单选-度量衡
-                        // 克重
-                        // 尺寸
-                        console.log('度量衡-单选',item)
-                    }else if(item.type == 'timestamp'){ // 时间戳
-                        console.log(item)
-                    }else if(item.type == 'timerange'){ // 时间段
-                        console.log(item)
-                    }else if(item.type == 'text'){
-                        // console.log('text',item)
-                    }
-
                 })
-
-                return [...quir_obj_top,...quir_obj_end]
-
             },
 
             // 商品已选择属性->加载到表单
@@ -438,13 +426,16 @@ export class Insetpagedata {
                         })
                     }else if(type == 'select'){ // 单选
                         form_format[key].push(detaile_format[key][0].Name)
-                    }else if(''){ // 度量衡-多选
+                    }else if(type == 'multi_value_measure'){ // 度量衡-多值
 
-                    }else if(''){ // 度量衡-单选
+                    }else if(type =='measure'){ // 度量衡-单值
 
-                    }else if(''){ // 时间戳
+                        console.log(form_format[key])
+                        
 
-                    }else if(''){ // 时间段
+                    }else if(type ==''){ // 时间戳
+
+                    }else if(type ==''){ // 时间段
 
                     }
 
@@ -542,7 +533,7 @@ export class Insetpagedata {
                 {max: 32,message: '不超过30个汉字,不能含emoj表情.',trigger: 'change'},
                 {min: 4,message: '至少4个汉字.',trigger: 'change'},
             ]
-        }
+        },
 
     }
 
@@ -652,12 +643,6 @@ export class Insetpagedata {
 }
 
 // 主图方法
-export class PicFun {
-    // 图片值
-    // 操作方法
-    // 获取图片
-
-}
 
 // 标题
 
@@ -671,13 +656,13 @@ export class PicFun {
 
 // 视频
 
-// 基础信息
-
 // 限购
 
 // 规格
 
-// 描述详情
+// 描述
+
+// 资质
 
 // 更新
 
