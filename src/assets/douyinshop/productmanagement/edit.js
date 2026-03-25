@@ -339,6 +339,7 @@ export class Insetpagedata {
             makeup:(data)=>{
 
                 data.forEach(item=>{
+
                     if(item.type == 'text'){    // 输入文本
 
                         this.formdata.format_form_data[item.property_id] = '';
@@ -354,13 +355,18 @@ export class Insetpagedata {
                     }else if(item.type == 'measure'){ // 度量衡-单值
 
                         const measure_Data= reactive({})// 绑定表单dui像
+
                         item.measure_templates[0].value_modules.forEach(item=>{
                             measure_Data[item.module_id] = {
-                                unit_id:'',
-                                unit_name:''
+                                prefix:item.prefix,
+                                unit_id:item.units[0].unit_id,
+                                unit_name:'',
+                                op:item.units
                             }
                         })
+
                         this.formdata.format_form_data[item.property_id] = measure_Data;
+
                         console.log(this.formdata.format_form_data[item.property_id])
 
                     }else if(item.type == 'multi_value_measure'){   // 度量衡-多值

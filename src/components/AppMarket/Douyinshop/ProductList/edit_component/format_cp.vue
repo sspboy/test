@@ -329,37 +329,83 @@ PS：支持新建、编辑====》场景使用
                 </p>
 
                 <p v-if="item.required == 1">
-                    <a-form-item 
-                        :name="item.property_id"
-                        :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
+                <a-form
+                    ref="format_form_ref" 
+                    layout="inline"
+                    :model="formdata.format_form_data" 
+                >
+                    <a-space >
+                    <!--迭代 多度量衡 输入值-->
+                    <template v-for="(value, key) in formdata.format_form_data[item.property_id]">
+                        <a-form-item 
+                            :name="item.property_id"
+                            style="padding: 0;margin: 0;width: 100%"
                         >
-                        <template v-for="(value, key) in formdata.format_form_data[item.property_id]">
-                                <a-input
-                                    v-model:value="formdata.format_form_data[item.property_id][key].unit_name" 
-                                    placeholder="最低价"
-                                    @click="console.log(formdata.format_form_data[item.property_id][key])"
-                                ></a-input>
-                        </template>
-                    </a-form-item>
+                            <a-input-number
+                                v-model:value="value.unit_name" 
+                                :placeholder="'输入-'+ value.prefix"
+                                @click="console.log(value,item)"
+                            >
+                                <template  #addonAfter>
+                                    <a-select 
+                                    :options="value.op"
+                                    v-model:value="value.unit_id"
+                                    style="width: 60px;"
+                                    :field-names="{
+                                        label: 'unit_name',
+                                        value: 'unit_id',
+                                    }"
+                                    >
+                                    </a-select>
+                                </template>
+                        
+                            </a-input-number>
+                        </a-form-item>
+                    </template>
+                    </a-space>
+                </a-form>
+                    
                 </p>
 
                 <p v-else>
 
-                    <a-form-item 
-                        :name="item.property_id"
-                    >
-                        <template v-for="(value, key) in formdata.format_form_data[item.property_id]">
-                                <a-input
-                                    v-model:value="formdata.format_form_data[item.property_id][key].unit_name" 
-                                    placeholder="最低价"
-                                    @click="console.log(formdata.format_form_data[item.property_id][key])"
-                                ></a-input>
-                        </template>
-                    </a-form-item>
+                <a-form
+                    ref="format_form_ref"
+                    :model="formdata.format_form_data" 
+                >
+                <a-space >
+                    <!--迭代 多度量衡 输入值-->
+                    <template v-for="(value, key) in formdata.format_form_data[item.property_id]">
+                        <a-form-item 
+                            :name="item.property_id"
+                            style="padding: 0;margin: 0;width: 100%"
+                        >
+                            <a-input
+                                v-model:value="value.unit_name" 
+                                :placeholder="'输入-'+ value.prefix"
+                                @click="console.log(value,item)"
+                            >
+                                <template  #addonAfter>
+                                    <a-select 
+                                    :options="value.op"
+                                    v-model:value="value.unit_id"
+                                    style="width: 60px;"
+                                    :field-names="{
+                                        label: 'unit_name',
+                                        value: 'unit_id',
+                                    }"
+                                    >
+                                    </a-select>
+                                </template>
+                        
+                            </a-input>
+                        </a-form-item>
+                    </template>
+                </a-space>
+                </a-form>
 
                 </p>
 
-                <!--长宽高-->
             
             </a-col>
 
@@ -462,5 +508,28 @@ setup(props,ctx) {
 </script>
 <style scoped>
 .load_center{height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;}
+.site-input-group-wrapper .site-input-split {
+  background-color: #fff;
+}
 
+.site-input-group-wrapper .site-input-right {
+  border-left-width: 0;
+}
+
+.site-input-group-wrapper .site-input-right:hover,
+.site-input-group-wrapper .site-input-right:focus {
+  border-left-width: 1px;
+}
+
+.site-input-group-wrapper .ant-input-rtl.site-input-right {
+  border-right-width: 0;
+}
+
+.site-input-group-wrapper .ant-input-rtl.site-input-right:hover,
+.site-input-group-wrapper .ant-input-rtl.site-input-right:focus {
+  border-right-width: 1px;
+}
+[data-theme='dark'] .site-input-group-wrapper .site-input-split {
+  background-color: transparent;
+}
 </style>
