@@ -476,7 +476,7 @@ export default defineComponent({
 
             // 属性
             product_format_new:undefined, // 商品详情属性== 通过/product/getCatePropertyV2获取 格式：{"property_id":[{"value":value,"name":"property_name","diy_type":0}]}, name的类型是string，value和diy_type的类型是number 度量衡参照open度量衡对接文档填写
-            CateProperty:undefined, // 接口查询属性列表
+            CateProperty:reactive({}), // 接口查询属性列表
             format_form_ref:undefined, // 属性表单验证对象
             format_form_data:reactive({}), // 属性表单绑定对象
 

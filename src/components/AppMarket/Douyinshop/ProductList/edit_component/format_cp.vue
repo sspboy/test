@@ -42,7 +42,6 @@ PS：支持新建、编辑====》场景使用
                 <!--迭代循环属性值-->
                 <a-col :span="6" v-for="(olist, dIndex) in formdata.format_form_data[item.property_id]">
                     
-                    <!-- {{ item.type }} {{ item.property_id }} -->
                     <a-form-item 
                         :name="[item.property_id, dIndex, 'value']"
                         :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
@@ -178,8 +177,8 @@ PS：支持新建、编辑====》场景使用
                     v-model:value="formdata.format_form_data[item.property_id]" 
                     style="width: 100%;"
                     :field-names="{
-                    label: 'name',
-                    value: 'value',
+                        label: 'name',
+                        value: 'value',
                     }"
                 >
                     <template #dropdownRender="{ menuNode: menu }" v-if="item.diy_type==1">
@@ -320,8 +319,8 @@ PS：支持新建、编辑====》场景使用
                 </p>
             </a-col>
 
-            <!--单值 度量衡 measure-->
-            <a-col v-else-if="item.type == 'measure'" :span="6">
+            <!--度量衡 measure 多个值输入-->
+            <a-col v-else-if="item.type == 'measure' && item.measure_templates[0].value_modules.length>1" :span="12">
 
                 <p>
                     {{ item.property_name }} 
@@ -329,27 +328,21 @@ PS：支持新建、编辑====》场景使用
                 </p>
 
                 <p v-if="item.required == 1">
-                <a-form
-                    ref="format_form_ref" 
-                    layout="inline"
-                    :model="formdata.format_form_data" 
-                >
                     <a-space >
-                    <!--迭代 多度量衡 输入值-->
-                    <template v-for="(value, key) in formdata.format_form_data[item.property_id]">
+                    <template v-for="(items, key) in formdata.format_form_data[item.property_id]">
                         <a-form-item 
-                            :name="item.property_id"
+                            :name="[item.property_id, items.module_id, 'unit_name']"
+                            :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
                             style="padding: 0;margin: 0;width: 100%"
                         >
-                            <a-input-number
-                                v-model:value="value.unit_name" 
-                                :placeholder="'输入-'+ value.prefix"
-                                @click="console.log(value,item)"
+                            <a-input
+                                v-model:value="items.unit_name" 
+                                :placeholder="'输入-'+ items.prefix"
                             >
                                 <template  #addonAfter>
                                     <a-select 
-                                    :options="value.op"
-                                    v-model:value="value.unit_id"
+                                    :options="items.op"
+                                    v-model:value="items.unit_id"
                                     style="width: 60px;"
                                     :field-names="{
                                         label: 'unit_name',
@@ -358,37 +351,28 @@ PS：支持新建、编辑====》场景使用
                                     >
                                     </a-select>
                                 </template>
-                        
-                            </a-input-number>
+                        </a-input>
                         </a-form-item>
                     </template>
                     </a-space>
-                </a-form>
-                    
                 </p>
 
                 <p v-else>
 
-                <a-form
-                    ref="format_form_ref"
-                    :model="formdata.format_form_data" 
-                >
-                <a-space >
-                    <!--迭代 多度量衡 输入值-->
-                    <template v-for="(value, key) in formdata.format_form_data[item.property_id]">
+                    <a-space >
+                    <template v-for="(items, key) in formdata.format_form_data[item.property_id]">
                         <a-form-item 
-                            :name="item.property_id"
+                            :name="[item.property_id, items.module_id, 'unit_name']"
                             style="padding: 0;margin: 0;width: 100%"
                         >
                             <a-input
-                                v-model:value="value.unit_name" 
-                                :placeholder="'输入-'+ value.prefix"
-                                @click="console.log(value,item)"
+                                v-model:value="items.unit_name" 
+                                :placeholder="'输入-'+ items.prefix"
                             >
                                 <template  #addonAfter>
                                     <a-select 
-                                    :options="value.op"
-                                    v-model:value="value.unit_id"
+                                    :options="items.op"
+                                    v-model:value="items.unit_id"
                                     style="width: 60px;"
                                     :field-names="{
                                         label: 'unit_name',
@@ -397,20 +381,91 @@ PS：支持新建、编辑====》场景使用
                                     >
                                     </a-select>
                                 </template>
-                        
-                            </a-input>
+                        </a-input>
                         </a-form-item>
                     </template>
-                </a-space>
-                </a-form>
+                    </a-space>
+
 
                 </p>
 
             
             </a-col>
 
+            <!--单值 度量衡 measure 单个值输入-->
+            <a-col v-else-if="item.type == 'measure' && item.measure_templates[0].value_modules.length == 1" :span="6">
+                <p>
+                    {{ item.property_name }} 
+                    <span v-show="item.required ==1" style="color: red;">*必填</span>
+                </p>
+
+                <p v-if="item.required == 1"><!--迭代 多度量衡 输入值 必填-->
+
+                    <template v-for="(items,key) in formdata.format_form_data[item.property_id]">
+
+                        <a-form-item 
+                            :name="[item.property_id, items.module_id, 'unit_name']"
+                            :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
+                        >
+
+                            <a-input-number
+                                v-model:value="items.unit_name" 
+                                :placeholder="'输入-'"
+                            >
+                                <template  #addonAfter>
+                                    <a-select 
+                                    :options="items.op"
+                                    v-model:value="items.unit_id"
+                                    style="width: 60px;"
+                                    :field-names="{
+                                        label: 'unit_name',
+                                        value: 'unit_id',
+                                    }"
+                                    >
+                                    </a-select>
+                                </template>
+                            </a-input-number>
+                        
+                        </a-form-item>
+                        
+                    </template>
+                </p>
+
+                <p v-else><!--迭代 多度量衡 输入值 非必填-->
+
+                    <template v-for="(items,key) in formdata.format_form_data[item.property_id]">
+
+                        <a-form-item 
+                            :name="[item.property_id, items.module_id, 'unit_name']"
+                        >
+                            <a-input-number
+                                v-model:value="items.unit_name" 
+                                :placeholder="'输入-'"
+                            >
+                                <template  #addonAfter>
+                                    <a-select 
+                                    :options="items.op"
+                                    v-model:value="items.unit_id"
+                                    style="width: 60px;"
+                                    :field-names="{
+                                        label: 'unit_name',
+                                        value: 'unit_id',
+                                    }"
+                                    >
+                                    </a-select>
+                                </template>
+                            </a-input-number>
+                        
+                        </a-form-item>
+                        
+                    </template>
+
+                </p>
+
+            </a-col>
+
             <!--时间戳-->
-            <a-col v-if="item.type == 'timestamp'" :span="6">
+            <!-- <a-col v-if="item.type == 'timestamp'" :span="6">
 
                 <p>
                     {{ item.property_name }} 
@@ -419,17 +474,16 @@ PS：支持新建、编辑====》场景使用
 
                 {{ item.type }}
 
-            </a-col>
+            </a-col> -->
 
             <!--时间段-->
-            <a-col v-if="item.type == 'timerange'" :span="6">
+            <!-- <a-col v-if="item.type == 'timerange'" :span="6">
                 <p>
                 {{ item.property_name }} 
-                <!-- {{ value.important_type }}  -->
                 <span v-show="item.required ==1" style="color: red;">*必填</span>
                 </p>
                 {{ item.type }}
-            </a-col>
+            </a-col> -->
 
             </template>
         </a-row> 
@@ -486,16 +540,6 @@ setup(props,ctx) {
     const filterOption = (input, option) => {
         return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
     };
-
-    
-    // 属性id
-    // 请求属性
-    // 渲染属性
-    // 填充属性值
-
-
-
-
 
     return{
         formdata,

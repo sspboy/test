@@ -37,6 +37,7 @@ export class Insetpagedata {
         var cateres = this.fun.cate.ex_cate_data(ProductDetaile.category_detail)// 分类
         this.formdata.cate_op.push(cateres); // 加载类目选项
         this.formdata.category_leaf_id = cateres.value; // 设置类目值
+
         this.fun.format.select_format(this.formdata.category_leaf_id, true)// 初次加载属性：true：写入详情值
 
     }
@@ -354,10 +355,11 @@ export class Insetpagedata {
 
                     }else if(item.type == 'measure'){ // 度量衡-单值
 
-                        const measure_Data= reactive({})// 绑定表单dui像
+                        const measure_Data= {}// 绑定表单dui像
 
                         item.measure_templates[0].value_modules.forEach(item=>{
                             measure_Data[item.module_id] = {
+                                module_id:item.module_id,
                                 prefix:item.prefix,
                                 unit_id:item.units[0].unit_id,
                                 unit_name:'',
@@ -366,8 +368,6 @@ export class Insetpagedata {
                         })
 
                         this.formdata.format_form_data[item.property_id] = measure_Data;
-
-                        console.log(this.formdata.format_form_data[item.property_id])
 
                     }else if(item.type == 'multi_value_measure'){   // 度量衡-多值
 
