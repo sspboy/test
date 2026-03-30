@@ -126,7 +126,7 @@
 
             </a-tab-pane>
 
-            <a-tab-pane key="2" tab="图片视频" force-render>
+            <a-tab-pane key="2" tab="基础信息" force-render>
 
               <!--图片信息-->
               <a-row>
@@ -196,7 +196,6 @@
                 </a-form>
               </div>
             </a-tab-pane>
-
 
             <a-tab-pane key="3" tab="商品规格">
 

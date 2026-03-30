@@ -143,6 +143,7 @@ PS：支持新建、编辑====》场景使用
                 </a-input>
                 </a-form-item>
                 </p>
+
                 <p v-else>
                 <a-form-item 
                     :name="item.property_id"
@@ -167,8 +168,8 @@ PS：支持新建、编辑====》场景使用
 
                 <p v-if="item.required == 1">
                 <a-form-item
-                :name="item.property_id"
-                :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
+                    :name="item.property_id"
+                    :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
                 >
                 <a-select
                     :placeholder="'请选择-' + item.property_name"
@@ -178,7 +179,7 @@ PS：支持新建、编辑====》场景使用
                     style="width: 100%;"
                     :field-names="{
                         label: 'name',
-                        value: 'value',
+                        value: 'value_id',
                     }"
                 >
                     <template #dropdownRender="{ menuNode: menu }" v-if="item.diy_type==1">
@@ -212,7 +213,7 @@ PS：支持新建、编辑====》场景使用
                     style="width: 100%;"
                     :field-names="{
                         label: 'name',
-                        value: 'value',
+                        value: 'value_id',
                     }"
                 >
                     <template #dropdownRender="{ menuNode: menu }" v-if="item.diy_type==1">
@@ -255,12 +256,12 @@ PS：支持新建、编辑====》场景使用
                         mode="multiple"
                         :max-tag-count="1"
                         :options="item.options"
-                        v-model:value="formdata.format_form_data[item.property_id]" 
+                        v-model:value="formdata.format_form_data[item.property_id]"
+                        @change="insetpagedata.fun.format.dis_ops(item,formdata.format_form_data[item.property_id])" 
                         style="width: 100%;"
-                        @change="insetpagedata.fun.format.dis_ops(item,formdata.format_form_data[item.property_id])"
                         :field-names="{
-                        label: 'name',
-                        value: 'value',
+                            label: 'name',
+                            value: 'value_id',
                         }"
                     >
                 
@@ -292,12 +293,12 @@ PS：支持新建、编辑====》场景使用
                         mode="multiple"
                         :max-tag-count="1"
                         :options="item.options"
-                        v-model:value="formdata.format_form_data[item.property_id]" 
+                        v-model:value="formdata.format_form_data[item.property_id]"
+                        @change="insetpagedata.fun.format.dis_ops(item, formdata.format_form_data[item.property_id])" 
                         style="width: 100%;"
-                        @change="insetpagedata.fun.format.dis_ops(item,formdata.format_form_data[item.property_id])"
                         :field-names="{
                             label: 'name',
-                            value: 'value',
+                            value: 'value_id',
                         }"
                     >
                         <template #dropdownRender="{ menuNode: menu }" v-if="item.diy_type==1">
@@ -336,7 +337,8 @@ PS：支持新建、编辑====》场景使用
                             style="padding: 0;margin: 0;width: 100%"
                         >
                             <a-input
-                                v-model:value="items.unit_name" 
+                                v-model:value="items.unit_name"
+                                autoComplete="off"
                                 :placeholder="'输入-'+ items.prefix"
                             >
                                 <template  #addonAfter>
@@ -366,7 +368,8 @@ PS：支持新建、编辑====》场景使用
                             style="padding: 0;margin: 0;width: 100%"
                         >
                             <a-input
-                                v-model:value="items.unit_name" 
+                                v-model:value="items.unit_name"
+                                autoComplete="off" 
                                 :placeholder="'输入-'+ items.prefix"
                             >
                                 <template  #addonAfter>

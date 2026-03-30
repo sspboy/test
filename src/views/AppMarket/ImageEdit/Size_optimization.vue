@@ -20,7 +20,14 @@
         <a-layout-content class="content_border" >
 
           <h1>尺寸优化</h1>
-
+            <a-select
+            ref="select"
+                v-model:value="value1"
+                style="width: 120px"
+                :options="options1"
+                @focus="focus"
+                @change="handleChange"
+            ></a-select>
         </a-layout-content>
 
       </a-layout>
@@ -77,9 +84,40 @@ setup(props,ctx) {
             page:1
         })
     })
+
+    const value1 = ref('lucy');
+    const options1 = ref([
+        {
+            value: '1',
+            label: 'Jack',
+        },
+        {
+            value: '2',
+            label: 'Lucy',
+        },
+        {
+            value: '3',
+            label: 'Disabled',
+            disabled: true,
+        },
+        {
+            value: '4',
+            label: 'Yiminghe',
+        },
+    ]);
+    const focus = () => {
+        console.log('focus');
+    };
+    const handleChange = value => {
+        console.log(value1.value);
+    };
        return{
         PAGEDATA,
-        store
+        store,
+        value1,
+        options1,
+        focus,
+        handleChange
        }
    }
 }

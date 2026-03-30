@@ -293,7 +293,8 @@ export class Insetpagedata {
                 }else{
                     op.unshift({
                         name: diy_name,
-                        value:op.length + 1
+                        value: op.length + 1 + '',
+                        value_id:op.length + 1
                     });
                 }
 
@@ -342,17 +343,14 @@ export class Insetpagedata {
                 data.forEach(item=>{
 
                     if(item.type == 'text'){    // 输入文本
-
                         this.formdata.format_form_data[item.property_id] = '';
-
+                        // [{"value":27664,"name":"复习资料","diy_type":0}
                     }else if(item.type == 'select'){ // 单选
-
+                        console.log('单选',item)
                         this.formdata.format_form_data[item.property_id] = [];
 
                     }else if(item.type == 'multi_select'){ // 多选
-
                         this.formdata.format_form_data[item.property_id] = []; 
-
                     }else if(item.type == 'measure'){ // 度量衡-单值
 
                         const measure_Data= {}// 绑定表单dui像
@@ -425,19 +423,51 @@ export class Insetpagedata {
                     
                     // 载入文本
                     if(type == 'text'){
+                        
                         form_format[key] = detaile_format[key][0].Name;
+
                     }else if(type == 'multi_select'){ // 多选
+                        
+                        console.log('多选',item)
+
+                        // var value_number = format_detaile_obj[key].options.length + 1;
+
+                        // // 输入自定义的值 - 选择的是自定义值value=0
+                        // if(format_detaile_obj[key].diy_type == 1 && detaile_format[key][0].Value == 0){
+
+                        // }else{
+
+                        // }
+
                         detaile_format[key].forEach(item=>{
-                            form_format[key].push(item.Name)
+                            form_format[key].push(item.Value)
                         })
+                    
                     }else if(type == 'select'){ // 单选
-                        form_format[key].push(detaile_format[key][0].Name)
+                        console.log('单选',item)
+
+                        // 输入自定义的值 - 选择的是自定义值value=0
+                        if(format_detaile_obj[key].diy_type == 1 && detaile_format[key][0].Value == 0){
+
+                            var value_number = format_detaile_obj[key].options.length + 1;
+
+                            format_detaile_obj[key].options.push({
+                                name:detaile_format[key][0].Name,
+                                value:value_number + '',
+                                value_id:value_number
+                            })
+
+                            form_format[key].push(value_number);
+
+                        }else{// 自带选择的值
+                            form_format[key].push(detaile_format[key][0].Value);
+                        }
+
                     }else if(type == 'multi_value_measure'){ // 度量衡-多值
 
                     }else if(type =='measure'){ // 度量衡-单值
 
-                        console.log(form_format[key])
-                        
+                        // console.log(form_format[key])
 
                     }else if(type ==''){ // 时间戳
 
@@ -446,24 +476,6 @@ export class Insetpagedata {
                     }
 
                 })
-
-                // 加载文本
-                function inset_text(data){
-
-                }
-                // 加载单选
-
-                // 加载多选
-
-                // 加载度量衡-多选
-
-                // 加载度量衡-单选
-
-                // 加载时间戳
-
-                // 加载时间段
-                
-
 
             },
 
@@ -477,7 +489,7 @@ export class Insetpagedata {
                     var result_value = data; // 选中的值
                     var options = item.options; // 选项
                     var diy_type = item.diy_type; // 是否支撑自定义
-                    
+
                     if(type == 'multi_select' || type == 'multi_value_measure'){ // 多选 'multi_select' & 'multi_value_measure'
 
                         // 选中值--超过限制
@@ -485,7 +497,7 @@ export class Insetpagedata {
 
                             // 非选中值添加禁用属性
                             options.forEach((obj,index)=>{
-                                var value = obj.value_id + '';
+                                var value = obj.value_id;
                                 // 过滤选中值
                                 if(!result_value.includes(value)){
                                     obj.disabled = true
@@ -527,6 +539,11 @@ export class Insetpagedata {
                 }
                 })
 
+            },
+
+            // 构造商品属性提交数据
+            makeup_submit:(data)=>{
+
             }
 
         },
@@ -549,50 +566,30 @@ export class Insetpagedata {
     // 获取数据
     product_form={
 
-        // get
-        get:()=>{
+        data:{},
 
-            // 获取标题
-            this.product_form.getname()
-            
+        // get
+        get:async()=>{
+
             // 获取主图
             if(this.formdata.pic.length > 0){// 不为空
-                console.log('【主图】',toRaw(this.formdata.pic))
+                this.product_form.data.pic = toRaw(this.formdata.pic).join('|')
             }else{
                 tool.Fun_.message('error','主图不能为空！')
-                // activeKey.value = '1'
                 return
             }
 
-            // 获取类目
-            this.product_form.getcateid()
-
-            // 获取属性
-            this.product_form.getformat()
-
-            
-        
-        },
-        // 标题
-        getname:()=>{
-            console.log('【标题】',this.formdata.name)
-        },
-
-        // 类目
-        getcateid:()=>{
-            console.log('【类目ID】',this.formdata.category_leaf_id)
-        },
-
-        // 获取表单属性
-        getformat: async()=>{
-            
-            // console.log(toRaw(this.formdata.format_form_ref))
-
             // 验证是否必填全部填写
-            var res = await this.formdata.format_form_ref.validate().then(()=>{
+            await this.formdata.format_form_ref.validate().then(()=>{
 
-                console.log(toRaw(this.formdata.format_form_data))
+                this.product_form.data.name = this.formdata.name;// 标题
+
+                this.product_form.data.category_leaf_id = this.formdata.category_leaf_id// 类目id
+
+                console.log('商品属性',toRaw(this.formdata.format_form_data))
+
                 var format_result= toRaw(this.formdata.format_form_data)
+
                 Object.keys(format_result).forEach(key=>{
                     console.log(key, format_result[key])
                 })
@@ -613,6 +610,8 @@ export class Insetpagedata {
 
             }).catch(error => {
 
+                console.log('表单不满足条件',error)
+
                 // tool.Fun_.message('error',error.errorFields[0].errors[0]);
 
                 // activeKey.value = '1';
@@ -620,30 +619,28 @@ export class Insetpagedata {
                 // return false
             })
 
-            // 文本获取方法
-            // 传入id：和值
-            // 获取配置
-            // 值 不为空，构建提交数据格式；
 
-            // 单选获取方法
 
-            // 多选获取方法
-
-            // 度量衡-单选-获取方法
-
-            // 度量衡-多选-获取方法
-
-            // 时间戳 - 获取方法
-
-            // 时间段 - 获取方法
-
+            // 提交
+            this.update(this.product_form.data)
+        
         },
-
     }
 
     // 提交数据
-    update = {
+    update = (data)=>{
 
+        data.product_id = this.product_id;
+        data.commit = false;
+
+        console.log('提交数据',data);
+
+        // axios.post(API.AppSrtoreAPI.dou_product.edit, data).then(res=>{
+        //     console.log('提交数据',res);
+        // }).catch(err=>{
+        //     console.log('提交数据失败',err);
+        // })
+        
     }
 
 }
