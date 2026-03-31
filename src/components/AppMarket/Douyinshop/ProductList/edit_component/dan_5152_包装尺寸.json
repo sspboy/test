@@ -1,0 +1,109 @@
+{
+    "options": [],
+    "measure_templates": [
+        {
+            "template_id": 869,
+            "value_modules": [
+                {
+                    "values": [],
+                    "units": [
+                        {
+                            "unit_name": "cm",
+                            "unit_id": 39
+                        },
+                        {
+                            "unit_name": "m",
+                            "unit_id": 41
+                        }
+                    ],
+                    "validate_rule": {
+                        "data_type": "float",
+                        "unit_rules": [],
+                        "time_format": "",
+                        "max": 0,
+                        "min": 0,
+                        "precision": 2
+                    },
+                    "module_id": 1846,
+                    "value_required": false,
+                    "prefix": "长",
+                    "suffix": "×",
+                    "input_type": "input"
+                },
+                {
+                    "units": [
+                        {
+                            "unit_id": 39,
+                            "unit_name": "cm"
+                        },
+                        {
+                            "unit_id": 41,
+                            "unit_name": "m"
+                        }
+                    ],
+                    "validate_rule": {
+                        "max": 0,
+                        "min": 0,
+                        "precision": 2,
+                        "data_type": "float",
+                        "unit_rules": [],
+                        "time_format": ""
+                    },
+                    "module_id": 1847,
+                    "value_required": false,
+                    "prefix": "宽",
+                    "suffix": "×",
+                    "input_type": "input",
+                    "values": []
+                },
+                {
+                    "input_type": "input",
+                    "values": [],
+                    "units": [
+                        {
+                            "unit_id": 39,
+                            "unit_name": "cm"
+                        },
+                        {
+                            "unit_id": 41,
+                            "unit_name": "m"
+                        }
+                    ],
+                    "validate_rule": {
+                        "precision": 2,
+                        "data_type": "float",
+                        "unit_rules": [],
+                        "time_format": "",
+                        "max": 0,
+                        "min": 0
+                    },
+                    "module_id": 1848,
+                    "value_required": false,
+                    "prefix": "高",
+                    "suffix": ""
+                }
+            ],
+            "display_name": "长cm×宽cm×高cm",
+            "input_rule": {}
+        }
+    ],
+    "status": 0,
+    "multi_select_max": 5,
+    "diy_type": 0,
+    "type": "measure",
+    "required": 0,
+    "sequence": 364,
+    "has_sub_property": false,
+    "property_name": "商品尺寸",
+    "property_pic_rule": {
+        "available": false,
+        "required": false
+    },
+    "property_id": 5152,
+    "category_id": 1000009233,
+    "property_type": 0,
+    "relation_id": 0,
+    "important_type": 0,
+    "feature_type_list": [],
+    "cid": 1000009233
+}

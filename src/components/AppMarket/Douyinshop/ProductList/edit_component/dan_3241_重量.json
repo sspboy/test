@@ -1,0 +1,59 @@
+
+
+{
+    "relation_id": 0,
+    "important_type": 0,
+    "feature_type_list": [],
+    "cid": 1000009233,
+    "category_id": 1000009233,
+    "type": "measure",
+    "property_type": 0,
+    "property_id": 3241,
+    "property_name": "重量",
+    "options": [],
+    "measure_templates": [
+        {
+            "template_id": 874,
+            "value_modules": [
+                {
+                    "module_id": 1856,
+                    "value_required": false,
+                    "prefix": "",
+                    "suffix": "",
+                    "input_type": "input",
+                    "values": [],
+                    "units": [
+                        {
+                            "unit_name": "kg",
+                            "unit_id": 4
+                        },
+                        {
+                            "unit_id": 2,
+                            "unit_name": "g"
+                        }
+                    ],
+                    "validate_rule": {
+                        "unit_rules": [],
+                        "time_format": "",
+                        "max": 0,
+                        "min": 0,
+                        "precision": 2,
+                        "data_type": "float"
+                    }
+                }
+            ],
+            "display_name": "kg/g",
+            "input_rule": {}
+        }
+    ],
+    "required": 0,
+    "status": 0,
+    "multi_select_max": 5,
+    "sequence": 365,
+    "diy_type": 0,
+    "has_sub_property": false,
+    "property_pic_rule": {
+        "available": false,
+        "required": false
+    }
+}

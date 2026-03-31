@@ -1,0 +1,92 @@
+{
+    "relation_id": 0,
+    "property_name": "净含量",
+    "feature_type_list": [
+        1,
+        2,
+        3,
+        14,
+        46,
+        100
+    ],
+    "required": 1,
+    "status": 0,
+    "property_id": 3299,
+    "type": "measure",
+    "measure_templates": [
+        {
+            "display_name": "g-mg-kg",
+            "input_rule": {},
+            "template_id": 183,
+            "value_modules": [
+                {
+                    "value_required": true,
+                    "prefix": "",
+                    "suffix": "",
+                    "input_type": "input",
+                    "values": [],
+                    "units": [
+                        {
+                            "unit_id": 2,
+                            "unit_name": "g"
+                        },
+                        {
+                            "unit_id": 3,
+                            "unit_name": "mg"
+                        },
+                        {
+                            "unit_id": 4,
+                            "unit_name": "kg"
+                        },
+                        {
+                            "unit_id": 82,
+                            "unit_name": "斤"
+                        },
+                        {
+                            "unit_id": 17,
+                            "unit_name": "ml"
+                        }
+                    ],
+                    "validate_rule": {
+                        "unit_rules": [
+                            {
+                                "unit_id": 4,
+                                "min": 0.001,
+                                "max": 15
+                            },
+                            {
+                                "unit_id": 2,
+                                "min": 1,
+                                "max": 15000
+                            },
+                            {
+                                "unit_id": 3,
+                                "min": 1000,
+                                "max": 15000000
+                            }
+                        ],
+                        "time_format": "",
+                        "max": 0,
+                        "min": 0,
+                        "precision": 3,
+                        "data_type": "float"
+                    },
+                    "module_id": 433
+                }
+            ]
+        }
+    ],
+    "cid": 1000000868,
+    "sequence": 8,
+    "diy_type": 0,
+    "multi_select_max": 5,
+    "property_type": 0,
+    "options": [],
+    "property_pic_rule": {
+        "available": false,
+        "required": false
+    },
+    "category_id": 1000000868,
+    "important_type": 1,
+    "has_sub_property": false
+}

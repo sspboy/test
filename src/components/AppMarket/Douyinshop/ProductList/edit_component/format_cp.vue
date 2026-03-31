@@ -82,25 +82,25 @@ PS：支持新建、编辑====》场景使用
                     </a-form-item>
 
                     <a-form-item
-                    :name="[item.property_id, dIndex, 'percentage']"
-                    :rules="[{ required: true, message:'数值不能为空！',trigger: 'change',}]"
+                        :name="[item.property_id, dIndex, 'percentage']"
+                        :rules="[{ required: true, message:'数值不能为空！',trigger: 'change',}]"
                     >
                     <a-space>
-                    <a-input-number
-                        v-model:value="olist.percentage"
-                        placeholder="输入百分比"
-                        suffix="%"
-                        :min="0"
-                        :max="100"
-                        addon-after="%"
-                    ></a-input-number>
+                        <a-input-number
+                            v-model:value="olist.percentage"
+                            placeholder="输入百分比"
+                            suffix="%"
+                            :min="0"
+                            :max="100"
+                            addon-after="%"
+                        ></a-input-number>
 
-                    <!--删除按钮-->
-                    <a-button
-                        v-show="formdata.format_form_data[item.property_id].length >1"
-                        type="dashed"
-                        @click="insetpagedata.fun.format.material_del(dIndex,formdata.format_form_data[item.property_id])"
-                    >删除</a-button>
+                        <!--删除按钮-->
+                        <a-button
+                            v-show="formdata.format_form_data[item.property_id].length > 1"
+                            type="dashed"
+                            @click="insetpagedata.fun.format.material_del(dIndex,formdata.format_form_data[item.property_id])"
+                        >删除</a-button>
                     </a-space>
                     </a-form-item>
                 </a-col>
@@ -330,6 +330,7 @@ PS：支持新建、编辑====》场景使用
 
                 <p v-if="item.required == 1">
                     <a-space >
+
                     <template v-for="(items, key) in formdata.format_form_data[item.property_id]">
                         <a-form-item 
                             :name="[item.property_id, items.module_id, 'unit_name']"

@@ -269,15 +269,12 @@ export class Insetpagedata {
                 var format_detaile_value = res.data.data.data
 
                 this.formdata.CateProperty = this.fun.format.sort_required_(format_detaile_value)   // 必填属性排序
-                
-                // states：：开关控制写入属性值到表单
-                // 初次加载属性需要写入详情的属性值
-                // 如果切换分类则不需要写入属性值
 
                 if(states){
-
+                    // states：：开关控制写入属性值到表单
+                    // 初次加载属性需要写入详情的属性值
+                    // 如果切换分类则不需要写入属性值
                     this.fun.format.load_inset_form(format_detaile_value)
-
                 }
             },
 
@@ -331,14 +328,14 @@ export class Insetpagedata {
                 var s_obj = [...quir_obj_top,...quir_obj_end]
 
                 // 构造数据结构
-                this.fun.format.makeup(s_obj)
+                this.fun.format.make_format_binding(s_obj)
 
                 return s_obj
 
             },
 
             // 构造绑定值数据结构
-            makeup:(data)=>{
+            make_format_binding:(data)=>{
 
                 data.forEach(item=>{
 
@@ -346,39 +343,54 @@ export class Insetpagedata {
                         this.formdata.format_form_data[item.property_id] = '';
                         // [{"value":27664,"name":"复习资料","diy_type":0}
                     }else if(item.type == 'select'){ // 单选
-                        console.log('单选',item)
                         this.formdata.format_form_data[item.property_id] = [];
-
                     }else if(item.type == 'multi_select'){ // 多选
                         this.formdata.format_form_data[item.property_id] = []; 
                     }else if(item.type == 'measure'){ // 度量衡-单值
+                        console.log('度量衡-单值',item)
+
+                        let property_id = item.property_id;
 
                         const measure_Data= {}// 绑定表单dui像
 
-                        item.measure_templates[0].value_modules.forEach(item=>{
-                            measure_Data[item.module_id] = {
-                                module_id:item.module_id,
-                                prefix:item.prefix,
-                                unit_id:item.units[0].unit_id,
-                                unit_name:'',
-                                op:item.units
-                            }
-                        })
+                        // 特殊property_id=785// 单项-> 输入两个值
+                        if(property_id == 785){
+                            
+                            console.log('特殊属性785')
 
-                        this.formdata.format_form_data[item.property_id] = measure_Data;
+                            item.measure_templates[0].value_modules.forEach(item=>{
+                                measure_Data[item.module_id] = {
+                                    module_id:item.module_id,
+                                    prefix:item.prefix,
+                                    // unit_id:item.units[0].unit_id,
+                                    unit_name:'',
+                                    op:item.units
+                                }
+                            })
+
+                            this.formdata.format_form_data[item.property_id] = measure_Data;
+
+                        }else{
+                            item.measure_templates[0].value_modules.forEach(item=>{
+                                measure_Data[item.module_id] = {
+                                    module_id:item.module_id,
+                                    prefix:item.prefix,
+                                    unit_id:item.units[0].unit_id,
+                                    unit_name:'',
+                                    op:item.units
+                                }
+                            })
+                            this.formdata.format_form_data[item.property_id] = measure_Data;
+                        }
+                        
 
                     }else if(item.type == 'multi_value_measure'){   // 度量衡-多值
-
+                        console.log('度量衡-多值',item)
                         this.formdata.format_form_data[item.property_id] = [{}];
-
                     }else if(item.type == 'timestamp'){ // 时间戳
-
                         this.formdata.format_form_data[item.property_id] = ''; 
-
                     }else if(item.type == 'timerange'){ // 时间段
-
                         this.formdata.format_form_data[item.property_id] = ''; 
-
                     }
 
                     // 添加品牌无品牌选项
@@ -428,23 +440,36 @@ export class Insetpagedata {
 
                     }else if(type == 'multi_select'){ // 多选
                         
-                        console.log('多选',item)
+                        // console.log('多选',item)
 
-                        // var value_number = format_detaile_obj[key].options.length + 1;
-
-                        // // 输入自定义的值 - 选择的是自定义值value=0
-                        // if(format_detaile_obj[key].diy_type == 1 && detaile_format[key][0].Value == 0){
-
-                        // }else{
-
-                        // }
-
+                        // 迭代加载多选属性值
                         detaile_format[key].forEach(item=>{
-                            form_format[key].push(item.Value)
+                            
+                            // console.log('多选',item)
+
+                            let diy_type = item.diy_type; // 是否自定义值
+                            let diy_value = item.Value; // 自定义值
+
+                            // // 输入自定义的值 - 选择的是自定义值value=0
+                            if(diy_type == 1 && diy_value == 0){
+                                var value_number = format_detaile_obj[key].options.length + 1;
+                                format_detaile_obj[key].options.push({
+                                    name:detaile_format[key][0].Name,
+                                    value:value_number + '',
+                                    value_id:value_number
+                                })
+
+                                form_format[key].push(value_number); // 添加自定id到表单绑定值
+
+                            }else{
+
+                                form_format[key].push(item.Value); // 添加选项值到表单绑定值
+                            
+                            }
+                            
                         })
                     
                     }else if(type == 'select'){ // 单选
-                        console.log('单选',item)
 
                         // 输入自定义的值 - 选择的是自定义值value=0
                         if(format_detaile_obj[key].diy_type == 1 && detaile_format[key][0].Value == 0){
@@ -465,9 +490,11 @@ export class Insetpagedata {
 
                     }else if(type == 'multi_value_measure'){ // 度量衡-多值
 
+                        // console.log('度量衡-多值',item)
+
                     }else if(type =='measure'){ // 度量衡-单值
 
-                        // console.log(form_format[key])
+                        // console.log('度量衡-单值',item)
 
                     }else if(type ==''){ // 时间戳
 
@@ -542,8 +569,12 @@ export class Insetpagedata {
             },
 
             // 构造商品属性提交数据
-            makeup_submit:(data)=>{
-
+            makeup_upload_format:(data)=>{
+                
+                console.log('构造属性提交数据')
+                Object.keys(data).forEach(key=>{
+                    // console.log(key, format_result[key])
+                })
             }
 
         },
@@ -586,13 +617,13 @@ export class Insetpagedata {
 
                 this.product_form.data.category_leaf_id = this.formdata.category_leaf_id// 类目id
 
-                console.log('商品属性',toRaw(this.formdata.format_form_data))
+                // console.log('商品属性',toRaw(this.formdata.format_form_data))
 
-                var format_result= toRaw(this.formdata.format_form_data)
+                var format_result_data = toRaw(this.formdata.format_form_data)
 
-                Object.keys(format_result).forEach(key=>{
-                    console.log(key, format_result[key])
-                })
+                this.fun.format.makeup_upload_format(format_result_data) // 属性-字符串
+
+                
 
                 // var selected_mat = toRaw(CATE.format_formRef)// 选中的属性
 

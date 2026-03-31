@@ -1,0 +1,2596 @@
+{
+    "important_type": 1,
+    "has_sub_property": false,
+    "required": 1,
+    "multi_select_max": 10,
+    "relation_id": 0,
+    "diy_type": 1,
+    "property_pic_rule": {
+        "available": true,
+        "required": true
+    },
+    "options": [
+        {
+            "value_id": 197449,
+            "sequence": 180,
+            "name": "火鸡毛",
+            "value": "197449"
+        },
+        {
+            "value_id": 272403,
+            "sequence": 108,
+            "name": "仿獭兔毛",
+            "value": "272403"
+        },
+        {
+            "name": "袋鼠皮革",
+            "value": "341897",
+            "value_id": 341897,
+            "sequence": 0
+        },
+        {
+            "value_id": 222019,
+            "sequence": 124,
+            "name": "天丝棉",
+            "value": "222019"
+        },
+        {
+            "value_id": 14931,
+            "sequence": 234,
+            "name": "柞蚕丝",
+            "value": "14931"
+        },
+        {
+            "value_id": 4739,
+            "sequence": 127,
+            "name": "天然彩棉",
+            "value": "4739"
+        },
+        {
+            "value": "197212",
+            "value_id": 197212,
+            "sequence": 138,
+            "name": "德绒"
+        },
+        {
+            "name": "鹿毛",
+            "value": "18433",
+            "value_id": 18433,
+            "sequence": 232
+        },
+        {
+            "value_id": 341900,
+            "sequence": 0,
+            "name": "驴皮革",
+            "value": "341900"
+        },
+        {
+            "value_id": 25752,
+            "sequence": 102,
+            "name": "丝绸",
+            "value": "25752"
+        },
+        {
+            "value_id": 10900,
+            "sequence": 197,
+            "name": "水獭毛",
+            "value": "10900"
+        },
+        {
+            "name": "仿羊毛绒",
+            "value": "345032",
+            "value_id": 345032,
+            "sequence": 110
+        },
+        {
+            "value_id": 341903,
+            "sequence": 0,
+            "name": "羊羔皮革",
+            "value": "341903"
+        },
+        {
+            "name": "纤绒纱",
+            "value": "430180",
+            "value_id": 430180,
+            "sequence": 193
+        },
+        {
+            "value_id": 197450,
+            "sequence": 101,
+            "name": "三醋酸纤维",
+            "value": "197450"
+        },
+        {
+            "value_id": 279123,
+            "sequence": 118,
+            "name": "冰蚕丝",
+            "value": "279123"
+        },
+        {
+            "value_id": 216770,
+            "sequence": 179,
+            "name": "獭兔毛",
+            "value": "216770"
+        },
+        {
+            "value_id": 341896,
+            "sequence": 0,
+            "name": "蟒皮革",
+            "value": "341896"
+        },
+        {
+            "value_id": 341902,
+            "sequence": 0,
+            "name": "鱼皮革",
+            "value": "341902"
+        },
+        {
+            "value_id": 167475,
+            "sequence": 0,
+            "name": "羊皮革",
+            "value": "167475"
+        },
+        {
+            "value_id": 341907,
+            "sequence": 0,
+            "name": "鸵鸟皮革",
+            "value": "341907"
+        },
+        {
+            "value_id": 3912,
+            "sequence": 160,
+            "name": "氯纶",
+            "value": "3912"
+        },
+        {
+            "value_id": 29399,
+            "sequence": 229,
+            "name": "野兔毛",
+            "value": "29399"
+        },
+        {
+            "value_id": 1743,
+            "sequence": 223,
+            "name": "腈纶",
+            "value": "1743"
+        },
+        {
+            "value_id": 197120,
+            "sequence": 161,
+            "name": "水晶丝",
+            "value": "197120"
+        },
+        {
+            "value_id": 35247,
+            "sequence": 149,
+            "name": "棉涤",
+            "value": "35247"
+        },
+        {
+            "value_id": 2426,
+            "sequence": 165,
+            "name": "水牛皮",
+            "value": "2426"
+        },
+        {
+            "name": "鱼皮",
+            "value": "344506",
+            "value_id": 344506,
+            "sequence": 0
+        },
+        {
+            "sequence": 125,
+            "name": "天丝牛仔",
+            "value": "345782",
+            "value_id": 345782
+        },
+        {
+            "value_id": 32029,
+            "sequence": 235,
+            "name": "骆驼绒",
+            "value": "32029"
+        },
+        {
+            "value_id": 211709,
+            "sequence": 0,
+            "name": "蛇皮革",
+            "value": "211709"
+        },
+        {
+            "value_id": 28544,
+            "sequence": 228,
+            "name": "莫代尔纤维",
+            "value": "28544"
+        },
+        {
+            "value_id": 21736,
+            "sequence": 112,
+            "name": "兔绒",
+            "value": "21736"
+        },
+        {
+            "value_id": 341901,
+            "sequence": 0,
+            "name": "麂皮革",
+            "value": "341901"
+        },
+        {
+            "value_id": 37173,
+            "sequence": 194,
+            "name": "苎麻",
+            "value": "37173"
+        },
+        {
+            "value_id": 282622,
+            "sequence": 195,
+            "name": "蚕丝棉",
+            "value": "282622"
+        },
+        {
+            "value_id": 286304,
+            "sequence": 191,
+            "name": "狐狸皮",
+            "value": "286304"
+        },
+        {
+            "name": "小牛皮",
+            "value": "168341",
+            "value_id": 168341,
+            "sequence": 0
+        },
+        {
+            "value_id": 12694,
+            "sequence": 222,
+            "name": "银鼠毛",
+            "value": "12694"
+        },
+        {
+            "value_id": 33465,
+            "sequence": 214,
+            "name": "鼬鼠毛",
+            "value": "33465"
+        },
+        {
+            "value_id": 23029,
+            "sequence": 135,
+            "name": "山羊皮",
+            "value": "23029"
+        },
+        {
+            "value": "1178",
+            "value_id": 1178,
+            "sequence": 210,
+            "name": "狐狸毛"
+        },
+        {
+            "value_id": 430178,
+            "sequence": 111,
+            "name": "兔皮",
+            "value": "430178"
+        },
+        {
+            "value_id": 216477,
+            "sequence": 142,
+            "name": "斜纹呢",
+            "value": "216477"
+        },
+        {
+            "value_id": 430185,
+            "sequence": 181,
+            "name": "火麻",
+            "value": "430185"
+        },
+        {
+            "value": "21876",
+            "value_id": 21876,
+            "sequence": 0,
+            "name": "猪皮"
+        },
+        {
+            "value_id": 278731,
+            "sequence": 159,
+            "name": "氧气棉",
+            "value": "278731"
+        },
+        {
+            "value": "345619",
+            "value_id": 345619,
+            "sequence": 133,
+            "name": "宋锦"
+        },
+        {
+            "value_id": 2791,
+            "sequence": 221,
+            "name": "牦牛绒",
+            "value": "2791"
+        },
+        {
+            "value_id": 33926,
+            "sequence": 201,
+            "name": "马海毛",
+            "value": "33926"
+        },
+        {
+            "value": "22353",
+            "value_id": 22353,
+            "sequence": 0,
+            "name": "麻"
+        },
+        {
+            "value_id": 9599,
+            "sequence": 211,
+            "name": "铜氨纤维",
+            "value": "9599"
+        },
+        {
+            "value_id": 22672,
+            "sequence": 225,
+            "name": "锦纶",
+            "value": "22672"
+        },
+        {
+            "value_id": 34800,
+            "sequence": 200,
+            "name": "麝鼠毛",
+            "value": "34800"
+        },
+        {
+            "value": "16509",
+            "value_id": 16509,
+            "sequence": 0,
+            "name": "蛇皮"
+        },
+        {
+            "value": "17383",
+            "value_id": 17383,
+            "sequence": 141,
+            "name": "摇粒绒"
+        },
+        {
+            "value_id": 22245,
+            "sequence": 242,
+            "name": "水貂毛",
+            "value": "22245"
+        },
+        {
+            "value_id": 281524,
+            "sequence": 121,
+            "name": "包芯纱",
+            "value": "281524"
+        },
+        {
+            "value_id": 9840,
+            "sequence": 0,
+            "name": "鸵鸟皮",
+            "value": "9840"
+        },
+        {
+            "value_id": 17713,
+            "sequence": 2100,
+            "name": "马正身毛",
+            "value": "17713"
+        },
+        {
+            "value_id": 196948,
+            "sequence": 153,
+            "name": "棉绸",
+            "value": "196948"
+        },
+        {
+            "name": "牛皮革",
+            "value": "24895",
+            "value_id": 24895,
+            "sequence": 0
+        },
+        {
+            "value_id": 209664,
+            "sequence": 0,
+            "name": "竹原纤维",
+            "value": "209664"
+        },
+        {
+            "value": "32136",
+            "value_id": 32136,
+            "sequence": 0,
+            "name": "马皮"
+        },
+        {
+            "value_id": 19165,
+            "sequence": 205,
+            "name": "棉",
+            "value": "19165"
+        },
+        {
+            "value_id": 168363,
+            "sequence": 134,
+            "name": "山羊毛",
+            "value": "168363"
+        },
+        {
+            "value_id": 279483,
+            "sequence": 178,
+            "name": "液氨棉",
+            "value": "279483"
+        },
+        {
+            "value_id": 346767,
+            "sequence": 190,
+            "name": "犏牛皮",
+            "value": "346767"
+        },
+        {
+            "value_id": 290939,
+            "sequence": 147,
+            "name": "桉树纤维",
+            "value": "290939"
+        },
+        {
+            "value_id": 297238,
+            "sequence": 0,
+            "name": "蟒皮",
+            "value": "297238"
+        },
+        {
+            "sequence": 186,
+            "name": "牛津布",
+            "value": "162",
+            "value_id": 162
+        },
+        {
+            "value_id": 11945,
+            "sequence": 243,
+            "name": "维纶",
+            "value": "11945"
+        },
+        {
+            "value_id": 216488,
+            "sequence": 169,
+            "name": "泰迪绒",
+            "value": "216488"
+        },
+        {
+            "value_id": 26913,
+            "sequence": 208,
+            "name": "山羊绒",
+            "value": "26913"
+        },
+        {
+            "value_id": 11606,
+            "sequence": 104,
+            "name": "人造彩棉",
+            "value": "11606"
+        },
+        {
+            "sequence": 130,
+            "name": "太空棉",
+            "value": "34380",
+            "value_id": 34380
+        },
+        {
+            "value_id": 10899,
+            "sequence": 137,
+            "name": "平纹布",
+            "value": "10899"
+        },
+        {
+            "name": "绵羊皮革",
+            "value": "341906",
+            "value_id": 341906,
+            "sequence": 0
+        },
+        {
+            "value_id": 34113,
+            "sequence": 207,
+            "name": "海豹毛",
+            "value": "34113"
+        },
+        {
+            "name": "水貂皮",
+            "value": "268854",
+            "value_id": 268854,
+            "sequence": 166
+        },
+        {
+            "sequence": 164,
+            "name": "水牛剖层皮革",
+            "value": "25605",
+            "value_id": 25605
+        },
+        {
+            "name": "牦牛毛",
+            "value": "17304",
+            "value_id": 17304,
+            "sequence": 233
+        },
+        {
+            "value": "34940",
+            "value_id": 34940,
+            "sequence": 217,
+            "name": "绵羊毛"
+        },
+        {
+            "value_id": 17607,
+            "sequence": 227,
+            "name": "丙纶",
+            "value": "17607"
+        },
+        {
+            "value_id": 210576,
+            "sequence": 106,
+            "name": "仿天丝平纹棉",
+            "value": "210576"
+        },
+        {
+            "value_id": 168718,
+            "sequence": 0,
+            "name": "猪皮革",
+            "value": "168718"
+        },
+        {
+            "sequence": 0,
+            "name": "黄牛皮革",
+            "value": "347203",
+            "value_id": 347203
+        },
+        {
+            "value_id": 7678,
+            "sequence": 115,
+            "name": "冰丝",
+            "value": "7678"
+        },
+        {
+            "sequence": 184,
+            "name": "牛剖层皮革",
+            "value": "32774",
+            "value_id": 32774
+        },
+        {
+            "value_id": 341905,
+            "sequence": 0,
+            "name": "小牛皮革",
+            "value": "341905"
+        },
+        {
+            "value_id": 265278,
+            "sequence": 176,
+            "name": "海马毛",
+            "value": "265278"
+        },
+        {
+            "value": "7221",
+            "value_id": 7221,
+            "sequence": 241,
+            "name": "牛毛"
+        },
+        {
+            "value_id": 212579,
+            "sequence": 167,
+            "name": "水貂绒",
+            "value": "212579"
+        },
+        {
+            "name": "牛仔布",
+            "value": "37569",
+            "value_id": 37569,
+            "sequence": 183
+        },
+        {
+            "name": "莱赛尔纤维",
+            "value": "3434",
+            "value_id": 3434,
+            "sequence": 230
+        },
+        {
+            "value_id": 216484,
+            "sequence": 132,
+            "name": "奥粒绒",
+            "value": "216484"
+        },
+        {
+            "value_id": 16315,
+            "sequence": 188,
+            "name": "牦牛剖层皮革",
+            "value": "16315"
+        },
+        {
+            "value_id": 19072,
+            "sequence": 202,
+            "name": "美洲驼毛",
+            "value": "19072"
+        },
+        {
+            "value_id": 54840,
+            "sequence": 109,
+            "name": "仿真丝",
+            "value": "54840"
+        },
+        {
+            "value_id": 28601,
+            "sequence": 240,
+            "name": "尼龙",
+            "value": "28601"
+        },
+        {
+            "value_id": 20906,
+            "sequence": 136,
+            "name": "帆布",
+            "value": "20906"
+        },
+        {
+            "value_id": 275254,
+            "sequence": 171,
+            "name": "浣熊毛",
+            "value": "275254"
+        },
+        {
+            "sequence": 126,
+            "name": "天丝麻",
+            "value": "209728",
+            "value_id": 209728
+        },
+        {
+            "value_id": 346770,
+            "sequence": 189,
+            "name": "牦牛皮",
+            "value": "346770"
+        },
+        {
+            "value_id": 279016,
+            "sequence": 117,
+            "name": "冰氧棉",
+            "value": "279016"
+        },
+        {
+            "value": "344498",
+            "value_id": 344498,
+            "sequence": 0,
+            "name": "黄牛皮"
+        },
+        {
+            "value_id": 343998,
+            "sequence": 105,
+            "name": "仿天丝",
+            "value": "343998"
+        },
+        {
+            "sequence": 144,
+            "name": "旱獭皮",
+            "value": "430183",
+            "value_id": 430183
+        },
+        {
+            "value_id": 168863,
+            "sequence": 185,
+            "name": "牛奶丝",
+            "value": "168863"
+        },
+        {
+            "sequence": 0,
+            "name": "袋鼠皮",
+            "value": "12471",
+            "value_id": 12471
+        },
+        {
+            "value": "18307",
+            "value_id": 18307,
+            "sequence": 131,
+            "name": "头层牛皮"
+        },
+        {
+            "sequence": 238,
+            "name": "兔毛",
+            "value": "6946",
+            "value_id": 6946
+        },
+        {
+            "name": "水洗棉",
+            "value": "22796",
+            "value_id": 22796,
+            "sequence": 163
+        },
+        {
+            "value": "56111",
+            "value_id": 56111,
+            "sequence": 174,
+            "name": "海狸皮"
+        },
+        {
+            "value_id": 270873,
+            "sequence": 100,
+            "name": "三醋酯纤维",
+            "value": "270873"
+        },
+        {
+            "value_id": 56085,
+            "sequence": 122,
+            "name": "卡其布",
+            "value": "56085"
+        },
+        {
+            "value_id": 430186,
+            "sequence": 172,
+            "name": "浣熊皮",
+            "value": "430186"
+        },
+        {
+            "value": "55302",
+            "value_id": 55302,
+            "sequence": 146,
+            "name": "有机棉"
+        },
+        {
+            "sequence": 151,
+            "name": "棉类混纺",
+            "value": "210577",
+            "value_id": 210577
+        },
+        {
+            "value_id": 280900,
+            "sequence": 119,
+            "name": "冰麻",
+            "value": "280900"
+        },
+        {
+            "value_id": 2668,
+            "sequence": 209,
+            "name": "北极狐毛",
+            "value": "2668"
+        },
+        {
+            "value_id": 1511,
+            "sequence": 0,
+            "name": "鳄鱼皮",
+            "value": "1511"
+        },
+        {
+            "value": "341911",
+            "value_id": 341911,
+            "sequence": 0,
+            "name": "鹿皮革"
+        },
+        {
+            "name": "马皮革",
+            "value": "341895",
+            "value_id": 341895,
+            "sequence": 0
+        },
+        {
+            "value_id": 479,
+            "sequence": 204,
+            "name": "驯鹿毛",
+            "value": "479"
+        },
+        {
+            "value": "37783",
+            "value_id": 37783,
+            "sequence": 203,
+            "name": "骆驼毛"
+        },
+        {
+            "value_id": 341909,
+            "sequence": 0,
+            "name": "鳄鱼皮革",
+            "value": "341909"
+        },
+        {
+            "value_id": 27486,
+            "sequence": 213,
+            "name": "氨纶",
+            "value": "27486"
+        },
+        {
+            "value_id": 286302,
+            "sequence": 177,
+            "name": "涤卡",
+            "value": "286302"
+        },
+        {
+            "sequence": 199,
+            "name": "羊驼毛",
+            "value": "21991",
+            "value_id": 21991
+        },
+        {
+            "value_id": 7384,
+            "sequence": 216,
+            "name": "醋酯纤维",
+            "value": "7384"
+        },
+        {
+            "value": "27126",
+            "value_id": 27126,
+            "sequence": 1100,
+            "name": "羊羔毛"
+        },
+        {
+            "value_id": 345776,
+            "sequence": 116,
+            "name": "冰丝棉",
+            "value": "345776"
+        },
+        {
+            "value": "212557",
+            "value_id": 212557,
+            "sequence": 236,
+            "name": "仿兔毛"
+        },
+        {
+            "value_id": 26402,
+            "sequence": 231,
+            "name": "粘胶纤维",
+            "value": "26402"
+        },
+        {
+            "sequence": 0,
+            "name": "牦牛皮革",
+            "value": "341912",
+            "value_id": 341912
+        },
+        {
+            "value_id": 13330,
+            "sequence": 218,
+            "name": "安哥拉兔毛",
+            "value": "13330"
+        },
+        {
+            "value_id": 25708,
+            "sequence": 237,
+            "name": "涤纶",
+            "value": "25708"
+        },
+        {
+            "value_id": 346772,
+            "sequence": 0,
+            "name": "驴皮",
+            "value": "346772"
+        },
+        {
+            "name": "剑麻",
+            "value": "209756",
+            "value_id": 209756,
+            "sequence": 120
+        },
+        {
+            "value": "54661",
+            "value_id": 54661,
+            "sequence": 168,
+            "name": "法兰绒"
+        },
+        {
+            "value": "28452",
+            "value_id": 28452,
+            "sequence": 212,
+            "name": "马毛"
+        },
+        {
+            "value_id": 16784,
+            "sequence": 224,
+            "name": "貉子毛",
+            "value": "16784"
+        },
+        {
+            "value_id": 216492,
+            "sequence": 158,
+            "name": "欧棉绒",
+            "value": "216492"
+        },
+        {
+            "value_id": 15971,
+            "sequence": 182,
+            "name": "灯芯绒",
+            "value": "15971"
+        },
+        {
+            "value_id": 54668,
+            "sequence": 157,
+            "name": "欧根纱",
+            "value": "54668"
+        },
+        {
+            "value_id": 17454,
+            "sequence": 206,
+            "name": "貂毛",
+            "value": "17454"
+        },
+        {
+            "value_id": 36828,
+            "sequence": 0,
+            "name": "山羊皮革",
+            "value": "36828"
+        },
+        {
+            "value_id": 287030,
+            "sequence": 173,
+            "name": "浣熊绒",
+            "value": "287030"
+        },
+        {
+            "name": "海藻纤维",
+            "value": "6324",
+            "value_id": 6324,
+            "sequence": 175
+        },
+        {
+            "value_id": 27113,
+            "sequence": 114,
+            "name": "再生纤维素纤维",
+            "value": "27113"
+        },
+        {
+            "value": "5673",
+            "value_id": 5673,
+            "sequence": 219,
+            "name": "聚酯纤维"
+        },
+        {
+            "value": "28315",
+            "value_id": 28315,
+            "sequence": 215,
+            "name": "桑蚕丝"
+        },
+        {
+            "value_id": 54691,
+            "sequence": 152,
+            "name": "棉纶",
+            "value": "54691"
+        },
+        {
+            "name": "水晶纱",
+            "value": "54714",
+            "value_id": 54714,
+            "sequence": 162
+        },
+        {
+            "value": "37548",
+            "value_id": 37548,
+            "sequence": 220,
+            "name": "马鬃尾毛"
+        },
+        {
+            "value_id": 430181,
+            "sequence": 123,
+            "name": "地鼠皮",
+            "value": "430181"
+        },
+        {
+            "value_id": 281235,
+            "sequence": 170,
+            "name": "流光纱",
+            "value": "281235"
+        },
+        {
+            "value": "18071",
+            "value_id": 18071,
+            "sequence": 239,
+            "name": "硅胶"
+        },
+        {
+            "value_id": 346769,
+            "sequence": 0,
+            "name": "骡皮",
+            "value": "346769"
+        },
+        {
+            "value_id": 474,
+            "sequence": 1800,
+            "name": "鸵鸟毛",
+            "value": "474"
+        },
+        {
+            "name": "牛皮",
+            "value": "26473",
+            "value_id": 26473,
+            "sequence": 187
+        },
+        {
+            "value_id": 341898,
+            "sequence": 0,
+            "name": "水牛皮革",
+            "value": "341898"
+        },
+        {
+            "value_id": 212490,
+            "sequence": 139,
+            "name": "恩卡",
+            "value": "212490"
+        },
+        {
+            "value": "341908",
+            "value_id": 341908,
+            "sequence": 0,
+            "name": "骡皮革"
+        },
+        {
+            "value_id": 216478,
+            "sequence": 128,
+            "name": "天莲纤维",
+            "value": "216478"
+        },
+        {
+            "value_id": 8794,
+            "sequence": 196,
+            "name": "原驼毛",
+            "value": "8794"
+        },
+        {
+            "value_id": 430188,
+            "sequence": 192,
+            "name": "狗皮",
+            "value": "430188"
+        },
+        {
+            "value_id": 280231,
+            "sequence": 107,
+            "name": "仿水貂绒",
+            "value": "280231"
+        },
+        {
+            "value_id": 16581,
+            "sequence": 103,
+            "name": "二层牛皮",
+            "value": "16581"
+        },
+        {
+            "name": "犏牛皮革",
+            "value": "341899",
+            "value_id": 341899,
+            "sequence": 0
+        },
+        {
+            "value_id": 290,
+            "sequence": 198,
+            "name": "亚麻",
+            "value": "290"
+        },
+        {
+            "value_id": 5589,
+            "sequence": 226,
+            "name": "骆马毛",
+            "value": "5589"
+        }
+    ],
+    "type": "multi_value_measure",
+    "feature_type_list": [
+        1000,
+        100,
+        6,
+        32,
+        10,
+        2,
+        101,
+        14,
+        46,
+        99,
+        1,
+        31,
+        103,
+        108,
+        107
+    ],
+    "measure_templates": [
+        {
+            "template_id": 873,
+            "value_modules": [
+                {
+                    "units": [],
+                    "validate_rule": {
+                        "time_format": "",
+                        "max": 0,
+                        "min": 0,
+                        "precision": 0,
+                        "data_type": "string",
+                        "unit_rules": []
+                    },
+                    "module_id": 1854,
+                    "value_required": true,
+                    "prefix": "",
+                    "suffix": "",
+                    "input_type": "enum_diy",
+                    "values": [
+                        {
+                            "value_name": "聚酯纤维"
+                        },
+                        {
+                            "value_name": "苎麻"
+                        },
+                        {
+                            "value_name": "COOLMAX"
+                        },
+                        {
+                            "value_name": "EVA"
+                        },
+                        {
+                            "value_name": "Gore-Tex"
+                        },
+                        {
+                            "value_name": "Omni-Tech"
+                        },
+                        {
+                            "value_name": "PBT"
+                        },
+                        {
+                            "value_name": "PE"
+                        },
+                        {
+                            "value_name": "PU"
+                        },
+                        {
+                            "value_name": "pu皮"
+                        },
+                        {
+                            "value_name": "PVC"
+                        },
+                        {
+                            "value_name": "Primaloft"
+                        },
+                        {
+                            "value_name": "TPE"
+                        },
+                        {
+                            "value_name": "TPU"
+                        },
+                        {
+                            "value_name": "TR"
+                        },
+                        {
+                            "value_name": "U卡丝"
+                        },
+                        {
+                            "value_name": "WindStopper"
+                        },
+                        {
+                            "value_name": "‌棉涤混纺"
+                        },
+                        {
+                            "value_name": "‌维纶"
+                        },
+                        {
+                            "value_name": "三醋酯纤维"
+                        },
+                        {
+                            "value_name": "三醋酯纤维（三醋纤）"
+                        },
+                        {
+                            "value_name": "三醋酷纤维"
+                        },
+                        {
+                            "value_name": "三醋酸纤维"
+                        },
+                        {
+                            "value_name": "不倒绒"
+                        },
+                        {
+                            "value_name": "丙纶"
+                        },
+                        {
+                            "value_name": "东丽丝蓓酷（Tryspec）"
+                        },
+                        {
+                            "value_name": "丝光棉"
+                        },
+                        {
+                            "value_name": "丝光羊毛"
+                        },
+                        {
+                            "value_name": "丝绒"
+                        },
+                        {
+                            "value_name": "丝绵"
+                        },
+                        {
+                            "value_name": "丝绸"
+                        },
+                        {
+                            "value_name": "乔其纱"
+                        },
+                        {
+                            "value_name": "乙纶"
+                        },
+                        {
+                            "value_name": "乳胶"
+                        },
+                        {
+                            "value_name": "二层牛皮"
+                        },
+                        {
+                            "value_name": "二烯类弹性纤维"
+                        },
+                        {
+                            "value_name": "亚麻"
+                        },
+                        {
+                            "value_name": "人丝"
+                        },
+                        {
+                            "value_name": "人棉"
+                        },
+                        {
+                            "value_name": "人造丝"
+                        },
+                        {
+                            "value_name": "人造彩棉"
+                        },
+                        {
+                            "value_name": "人造棉"
+                        },
+                        {
+                            "value_name": "人造毛"
+                        },
+                        {
+                            "value_name": "人造皮革"
+                        },
+                        {
+                            "value_name": "人造革"
+                        },
+                        {
+                            "value_name": "仿兔毛"
+                        },
+                        {
+                            "value_name": "仿天丝"
+                        },
+                        {
+                            "value_name": "仿天丝平纹棉"
+                        },
+                        {
+                            "value_name": "仿棉长丝"
+                        },
+                        {
+                            "value_name": "仿水貂绒"
+                        },
+                        {
+                            "value_name": "仿濑兔毛"
+                        },
+                        {
+                            "value_name": "仿獭兔毛"
+                        },
+                        {
+                            "value_name": "仿真丝"
+                        },
+                        {
+                            "value_name": "仿羊毛绒"
+                        },
+                        {
+                            "value_name": "仿羊绒"
+                        },
+                        {
+                            "value_name": "优可丝"
+                        },
+                        {
+                            "value_name": "兔毛"
+                        },
+                        {
+                            "value_name": "兔毛混纺"
+                        },
+                        {
+                            "value_name": "兔毛皮"
+                        },
+                        {
+                            "value_name": "兔毛皮（革）"
+                        },
+                        {
+                            "value_name": "兔皮"
+                        },
+                        {
+                            "value_name": "兔绒"
+                        },
+                        {
+                            "value_name": "兔绒包芯纱"
+                        },
+                        {
+                            "value_name": "其他纤维"
+                        },
+                        {
+                            "value_name": "再生纤维"
+                        },
+                        {
+                            "value_name": "再生纤维素"
+                        },
+                        {
+                            "value_name": "再生纤维素纤维"
+                        },
+                        {
+                            "value_name": "再生聚酯纤维"
+                        },
+                        {
+                            "value_name": "再生聚酰胺"
+                        },
+                        {
+                            "value_name": "再生锦纶"
+                        },
+                        {
+                            "value_name": "冰丝"
+                        },
+                        {
+                            "value_name": "冰丝棉"
+                        },
+                        {
+                            "value_name": "冰氧棉"
+                        },
+                        {
+                            "value_name": "冰花绒"
+                        },
+                        {
+                            "value_name": "冰蚕丝"
+                        },
+                        {
+                            "value_name": "冰麻"
+                        },
+                        {
+                            "value_name": "剑麻"
+                        },
+                        {
+                            "value_name": "剖层牛皮"
+                        },
+                        {
+                            "value_name": "包芯纱"
+                        },
+                        {
+                            "value_name": "化合纤维"
+                        },
+                        {
+                            "value_name": "化学纤维"
+                        },
+                        {
+                            "value_name": "化纤"
+                        },
+                        {
+                            "value_name": "化纤混纺"
+                        },
+                        {
+                            "value_name": "化纤类混纺"
+                        },
+                        {
+                            "value_name": "北极狐毛"
+                        },
+                        {
+                            "value_name": "千绒纱面料"
+                        },
+                        {
+                            "value_name": "卡其布"
+                        },
+                        {
+                            "value_name": "原驼毛"
+                        },
+                        {
+                            "value_name": "发泡聚乙烯"
+                        },
+                        {
+                            "value_name": "合成革"
+                        },
+                        {
+                            "value_name": "四氟乙烯"
+                        },
+                        {
+                            "value_name": "地鼠毛皮"
+                        },
+                        {
+                            "value_name": "地鼠毛皮（革）"
+                        },
+                        {
+                            "value_name": "地鼠皮"
+                        },
+                        {
+                            "value_name": "大豆纤维混纺"
+                        },
+                        {
+                            "value_name": "大麻"
+                        },
+                        {
+                            "value_name": "大麻纤维"
+                        },
+                        {
+                            "value_name": "天丝"
+                        },
+                        {
+                            "value_name": "天丝棉"
+                        },
+                        {
+                            "value_name": "天丝牛仔"
+                        },
+                        {
+                            "value_name": "天丝麻"
+                        },
+                        {
+                            "value_name": "天然乳胶"
+                        },
+                        {
+                            "value_name": "天然彩棉"
+                        },
+                        {
+                            "value_name": "天然拉菲草"
+                        },
+                        {
+                            "value_name": "天然羊毛"
+                        },
+                        {
+                            "value_name": "天莲纤维"
+                        },
+                        {
+                            "value_name": "天鹅绒"
+                        },
+                        {
+                            "value_name": "太空棉"
+                        },
+                        {
+                            "value_name": "头层小羊皮革"
+                        },
+                        {
+                            "value_name": "头层牛皮"
+                        },
+                        {
+                            "value_name": "奥丽绒"
+                        },
+                        {
+                            "value_name": "奥利绒"
+                        },
+                        {
+                            "value_name": "奥粒绒"
+                        },
+                        {
+                            "value_name": "安哥拉兔毛"
+                        },
+                        {
+                            "value_name": "安哥拉山羊毛"
+                        },
+                        {
+                            "value_name": "宋锦"
+                        },
+                        {
+                            "value_name": "宝宝绒"
+                        },
+                        {
+                            "value_name": "宾利绒"
+                        },
+                        {
+                            "value_name": "小牛剖层皮"
+                        },
+                        {
+                            "value_name": "小牛剖层皮革"
+                        },
+                        {
+                            "value_name": "小牛津"
+                        },
+                        {
+                            "value_name": "小牛皮"
+                        },
+                        {
+                            "value_name": "小牛皮（革）"
+                        },
+                        {
+                            "value_name": "小羊毛"
+                        },
+                        {
+                            "value_name": "小羊皮"
+                        },
+                        {
+                            "value_name": "小羊皮（革）"
+                        },
+                        {
+                            "value_name": "小羊绒"
+                        },
+                        {
+                            "value_name": "尼丝纺"
+                        },
+                        {
+                            "value_name": "尼龙"
+                        },
+                        {
+                            "value_name": "尼龙（锦纶）"
+                        },
+                        {
+                            "value_name": "山羊毛"
+                        },
+                        {
+                            "value_name": "山羊毛皮"
+                        },
+                        {
+                            "value_name": "山羊毛皮（革）"
+                        },
+                        {
+                            "value_name": "山羊皮"
+                        },
+                        {
+                            "value_name": "山羊皮革"
+                        },
+                        {
+                            "value_name": "山羊皮（革）"
+                        },
+                        {
+                            "value_name": "山羊绒"
+                        },
+                        {
+                            "value_name": "帆布"
+                        },
+                        {
+                            "value_name": "平纹布"
+                        },
+                        {
+                            "value_name": "弹力棉"
+                        },
+                        {
+                            "value_name": "弹力牛仔"
+                        },
+                        {
+                            "value_name": "弹性纤维"
+                        },
+                        {
+                            "value_name": "彩棉"
+                        },
+                        {
+                            "value_name": "德绒"
+                        },
+                        {
+                            "value_name": "德绒/涤纶"
+                        },
+                        {
+                            "value_name": "恩卡"
+                        },
+                        {
+                            "value_name": "抑菌纤维"
+                        },
+                        {
+                            "value_name": "抓绒"
+                        },
+                        {
+                            "value_name": "抗起球纤维"
+                        },
+                        {
+                            "value_name": "摇粒绒"
+                        },
+                        {
+                            "value_name": "斜纹呢"
+                        },
+                        {
+                            "value_name": "新型再生纤维素纤维"
+                        },
+                        {
+                            "value_name": "新型聚酯纤维"
+                        },
+                        {
+                            "value_name": "无"
+                        },
+                        {
+                            "value_name": "无纺布"
+                        },
+                        {
+                            "value_name": "旱獭毛皮"
+                        },
+                        {
+                            "value_name": "旱獭毛皮（革）"
+                        },
+                        {
+                            "value_name": "旱獭皮"
+                        },
+                        {
+                            "value_name": "春亚纺"
+                        },
+                        {
+                            "value_name": "普通棉"
+                        },
+                        {
+                            "value_name": "曲珠"
+                        },
+                        {
+                            "value_name": "有机棉"
+                        },
+                        {
+                            "value_name": "木浆纤维"
+                        },
+                        {
+                            "value_name": "木纤维"
+                        },
+                        {
+                            "value_name": "柞蚕丝"
+                        },
+                        {
+                            "value_name": "桉树纤维"
+                        },
+                        {
+                            "value_name": "桑蚕"
+                        },
+                        {
+                            "value_name": "桑蚕丝"
+                        },
+                        {
+                            "value_name": "梭织化纤"
+                        },
+                        {
+                            "value_name": "棉"
+                        },
+                        {
+                            "value_name": "棉氨"
+                        },
+                        {
+                            "value_name": "棉涤"
+                        },
+                        {
+                            "value_name": "棉混纺布"
+                        },
+                        {
+                            "value_name": "棉类混纺"
+                        },
+                        {
+                            "value_name": "棉纶"
+                        },
+                        {
+                            "value_name": "棉绸"
+                        },
+                        {
+                            "value_name": "棉麻"
+                        },
+                        {
+                            "value_name": "棉麻混纺"
+                        },
+                        {
+                            "value_name": "植物纤维"
+                        },
+                        {
+                            "value_name": "植绒"
+                        },
+                        {
+                            "value_name": "欧根纱"
+                        },
+                        {
+                            "value_name": "欧棉绒"
+                        },
+                        {
+                            "value_name": "毛呢"
+                        },
+                        {
+                            "value_name": "毛绒"
+                        },
+                        {
+                            "value_name": "氟纶"
+                        },
+                        {
+                            "value_name": "氧气棉"
+                        },
+                        {
+                            "value_name": "氨纶"
+                        },
+                        {
+                            "value_name": "氪纶"
+                        },
+                        {
+                            "value_name": "氯纶"
+                        },
+                        {
+                            "value_name": "水晶丝"
+                        },
+                        {
+                            "value_name": "水晶棉"
+                        },
+                        {
+                            "value_name": "水晶纱"
+                        },
+                        {
+                            "value_name": "水晶麻"
+                        },
+                        {
+                            "value_name": "水洗棉"
+                        },
+                        {
+                            "value_name": "水牛剖层皮革"
+                        },
+                        {
+                            "value_name": "水牛皮"
+                        },
+                        {
+                            "value_name": "水牛皮（革）"
+                        },
+                        {
+                            "value_name": "水獭毛"
+                        },
+                        {
+                            "value_name": "水貂毛"
+                        },
+                        {
+                            "value_name": "水貂毛皮"
+                        },
+                        {
+                            "value_name": "水貂毛皮革"
+                        },
+                        {
+                            "value_name": "水貂毛皮（革）"
+                        },
+                        {
+                            "value_name": "水貂皮"
+                        },
+                        {
+                            "value_name": "水貂绒"
+                        },
+                        {
+                            "value_name": "汉麻"
+                        },
+                        {
+                            "value_name": "法兰绒"
+                        },
+                        {
+                            "value_name": "法拉绒"
+                        },
+                        {
+                            "value_name": "泡泡棉"
+                        },
+                        {
+                            "value_name": "泰迪绒"
+                        },
+                        {
+                            "value_name": "流光纱"
+                        },
+                        {
+                            "value_name": "浣熊毛"
+                        },
+                        {
+                            "value_name": "浣熊毛皮"
+                        },
+                        {
+                            "value_name": "浣熊毛皮（革）"
+                        },
+                        {
+                            "value_name": "浣熊皮"
+                        },
+                        {
+                            "value_name": "浣熊绒"
+                        },
+                        {
+                            "value_name": "海狸毛皮"
+                        },
+                        {
+                            "value_name": "海狸毛皮（革）"
+                        },
+                        {
+                            "value_name": "海狸皮"
+                        },
+                        {
+                            "value_name": "海藻纤维"
+                        },
+                        {
+                            "value_name": "海豹毛"
+                        },
+                        {
+                            "value_name": "海马毛"
+                        },
+                        {
+                            "value_name": "涤卡"
+                        },
+                        {
+                            "value_name": "涤棉"
+                        },
+                        {
+                            "value_name": "涤棉混纺"
+                        },
+                        {
+                            "value_name": "涤纶"
+                        },
+                        {
+                            "value_name": "涤纶纤维"
+                        },
+                        {
+                            "value_name": "涤纶（聚酯纤维）"
+                        },
+                        {
+                            "value_name": "液氨棉"
+                        },
+                        {
+                            "value_name": "混合纤维"
+                        },
+                        {
+                            "value_name": "澳毛"
+                        },
+                        {
+                            "value_name": "澳洲羊毛"
+                        },
+                        {
+                            "value_name": "濑兔毛"
+                        },
+                        {
+                            "value_name": "火鸡毛"
+                        },
+                        {
+                            "value_name": "火麻"
+                        },
+                        {
+                            "value_name": "灯芯绒"
+                        },
+                        {
+                            "value_name": "热塑性聚氨酯"
+                        },
+                        {
+                            "value_name": "牛仔"
+                        },
+                        {
+                            "value_name": "牛仔布"
+                        },
+                        {
+                            "value_name": "牛剖层皮革"
+                        },
+                        {
+                            "value_name": "牛奶丝"
+                        },
+                        {
+                            "value_name": "牛奶绒"
+                        },
+                        {
+                            "value_name": "牛毛"
+                        },
+                        {
+                            "value_name": "牛毛皮"
+                        },
+                        {
+                            "value_name": "牛毛皮（革）"
+                        },
+                        {
+                            "value_name": "牛津布"
+                        },
+                        {
+                            "value_name": "牛皮"
+                        },
+                        {
+                            "value_name": "牛皮(革)"
+                        },
+                        {
+                            "value_name": "牛皮纤维"
+                        },
+                        {
+                            "value_name": "牛皮革"
+                        },
+                        {
+                            "value_name": "牛皮（革）"
+                        },
+                        {
+                            "value_name": "牦牛剖层皮革"
+                        },
+                        {
+                            "value_name": "牦牛毛"
+                        },
+                        {
+                            "value_name": "牦牛毛皮"
+                        },
+                        {
+                            "value_name": "牦牛毛皮（革）"
+                        },
+                        {
+                            "value_name": "牦牛皮"
+                        },
+                        {
+                            "value_name": "牦牛皮（革）"
+                        },
+                        {
+                            "value_name": "牦牛绒"
+                        },
+                        {
+                            "value_name": "犏牛皮"
+                        },
+                        {
+                            "value_name": "犏牛皮（革）"
+                        },
+                        {
+                            "value_name": "狐狸毛"
+                        },
+                        {
+                            "value_name": "狐狸毛皮"
+                        },
+                        {
+                            "value_name": "狐狸毛皮（革）"
+                        },
+                        {
+                            "value_name": "狐狸皮"
+                        },
+                        {
+                            "value_name": "狗毛皮"
+                        },
+                        {
+                            "value_name": "狗毛皮（革）"
+                        },
+                        {
+                            "value_name": "狗皮"
+                        },
+                        {
+                            "value_name": "狼毛"
+                        },
+                        {
+                            "value_name": "猪剖层皮革"
+                        },
+                        {
+                            "value_name": "猪皮"
+                        },
+                        {
+                            "value_name": "猪皮（革）"
+                        },
+                        {
+                            "value_name": "猾子毛皮"
+                        },
+                        {
+                            "value_name": "猾子毛皮（革）"
+                        },
+                        {
+                            "value_name": "獭兔毛"
+                        },
+                        {
+                            "value_name": "獭兔毛皮"
+                        },
+                        {
+                            "value_name": "獭兔毛皮（革）"
+                        },
+                        {
+                            "value_name": "珊瑚绒"
+                        },
+                        {
+                            "value_name": "珍珠纤维"
+                        },
+                        {
+                            "value_name": "白鸭毛"
+                        },
+                        {
+                            "value_name": "白鸭绒"
+                        },
+                        {
+                            "value_name": "白鹅绒"
+                        },
+                        {
+                            "value_name": "皮革"
+                        },
+                        {
+                            "value_name": "直贡尼"
+                        },
+                        {
+                            "value_name": "真丝"
+                        },
+                        {
+                            "value_name": "石墨烯"
+                        },
+                        {
+                            "value_name": "硅胶"
+                        },
+                        {
+                            "value_name": "碳纤维"
+                        },
+                        {
+                            "value_name": "秋舒绒"
+                        },
+                        {
+                            "value_name": "空气棉"
+                        },
+                        {
+                            "value_name": "竹原纤维(竹纤维)"
+                        },
+                        {
+                            "value_name": "竹子纤维"
+                        },
+                        {
+                            "value_name": "竹浆纤维"
+                        },
+                        {
+                            "value_name": "竹纤维"
+                        },
+                        {
+                            "value_name": "竹节棉"
+                        },
+                        {
+                            "value_name": "粘纤"
+                        },
+                        {
+                            "value_name": "粘纤纤维"
+                        },
+                        {
+                            "value_name": "粘胶"
+                        },
+                        {
+                            "value_name": "粘胶纤维"
+                        },
+                        {
+                            "value_name": "精梳棉"
+                        },
+                        {
+                            "value_name": "索罗娜"
+                        },
+                        {
+                            "value_name": "纤绒纱"
+                        },
+                        {
+                            "value_name": "纤维素"
+                        },
+                        {
+                            "value_name": "纤维素材料"
+                        },
+                        {
+                            "value_name": "纤维素材质"
+                        },
+                        {
+                            "value_name": "纤维素纤维"
+                        },
+                        {
+                            "value_name": "纯棉"
+                        },
+                        {
+                            "value_name": "纸纤维"
+                        },
+                        {
+                            "value_name": "细网布"
+                        },
+                        {
+                            "value_name": "织物配皮"
+                        },
+                        {
+                            "value_name": "绉纱"
+                        },
+                        {
+                            "value_name": "绒雪纺"
+                        },
+                        {
+                            "value_name": "绵纶"
+                        },
+                        {
+                            "value_name": "绵羊毛"
+                        },
+                        {
+                            "value_name": "绵羊毛皮"
+                        },
+                        {
+                            "value_name": "绵羊毛皮（革）"
+                        },
+                        {
+                            "value_name": "绵羊皮"
+                        },
+                        {
+                            "value_name": "绵羊皮革"
+                        },
+                        {
+                            "value_name": "绵羊皮（革）"
+                        },
+                        {
+                            "value_name": "绵羊绒"
+                        },
+                        {
+                            "value_name": "缎面"
+                        },
+                        {
+                            "value_name": "网纱"
+                        },
+                        {
+                            "value_name": "羊剖层皮革"
+                        },
+                        {
+                            "value_name": "羊剪绒毛皮"
+                        },
+                        {
+                            "value_name": "羊剪绒毛皮（革）"
+                        },
+                        {
+                            "value_name": "羊毛"
+                        },
+                        {
+                            "value_name": "羊毛混纺"
+                        },
+                        {
+                            "value_name": "羊毛皮"
+                        },
+                        {
+                            "value_name": "羊毛革"
+                        },
+                        {
+                            "value_name": "羊皮"
+                        },
+                        {
+                            "value_name": "羊皮革"
+                        },
+                        {
+                            "value_name": "羊皮（革）"
+                        },
+                        {
+                            "value_name": "羊绒"
+                        },
+                        {
+                            "value_name": "羊绒棉"
+                        },
+                        {
+                            "value_name": "羊绒混纺"
+                        },
+                        {
+                            "value_name": "羊绒蛋白"
+                        },
+                        {
+                            "value_name": "羊羔毛"
+                        },
+                        {
+                            "value_name": "羊羔皮（革）"
+                        },
+                        {
+                            "value_name": "羊羔绒"
+                        },
+                        {
+                            "value_name": "羊驼毛"
+                        },
+                        {
+                            "value_name": "羊驼绒"
+                        },
+                        {
+                            "value_name": "美丽奴羊毛"
+                        },
+                        {
+                            "value_name": "美丽诺羊毛"
+                        },
+                        {
+                            "value_name": "美利奴羊毛"
+                        },
+                        {
+                            "value_name": "美洲驼毛"
+                        },
+                        {
+                            "value_name": "羔羊毛皮"
+                        },
+                        {
+                            "value_name": "羔羊毛皮（革）"
+                        },
+                        {
+                            "value_name": "羔羊皮革"
+                        },
+                        {
+                            "value_name": "羽毛"
+                        },
+                        {
+                            "value_name": "羽绒"
+                        },
+                        {
+                            "value_name": "聚丙烯纤维"
+                        },
+                        {
+                            "value_name": "聚乙烯"
+                        },
+                        {
+                            "value_name": "聚乙烯醇纤维"
+                        },
+                        {
+                            "value_name": "聚乳酸"
+                        },
+                        {
+                            "value_name": "聚乳酸纤维"
+                        },
+                        {
+                            "value_name": "聚氨酯"
+                        },
+                        {
+                            "value_name": "聚氨酯革"
+                        },
+                        {
+                            "value_name": "聚氯乙烯"
+                        },
+                        {
+                            "value_name": "聚脂薄膜纤维"
+                        },
+                        {
+                            "value_name": "聚脂钎维"
+                        },
+                        {
+                            "value_name": "聚脂钎维 (涤纶)"
+                        },
+                        {
+                            "value_name": "聚脂钎维（涤纶）"
+                        },
+                        {
+                            "value_name": "聚酯复合弹性纤维"
+                        },
+                        {
+                            "value_name": "聚酯纤维"
+                        },
+                        {
+                            "value_name": "聚酯纤维(再生)"
+                        },
+                        {
+                            "value_name": "聚酯纤维（涤纶）"
+                        },
+                        {
+                            "value_name": "聚酯薄膜纤维"
+                        },
+                        {
+                            "value_name": "聚酰亚胺纤维"
+                        },
+                        {
+                            "value_name": "聚酰胺"
+                        },
+                        {
+                            "value_name": "聚酰胺纤维"
+                        },
+                        {
+                            "value_name": "聚酰胺纤维（锦纶）"
+                        },
+                        {
+                            "value_name": "聚醋纤维"
+                        },
+                        {
+                            "value_name": "腈纶"
+                        },
+                        {
+                            "value_name": "腈纶混纺"
+                        },
+                        {
+                            "value_name": "舒棉绒"
+                        },
+                        {
+                            "value_name": "艾草"
+                        },
+                        {
+                            "value_name": "花鼠毛皮"
+                        },
+                        {
+                            "value_name": "花鼠毛皮（革）"
+                        },
+                        {
+                            "value_name": "芳纶"
+                        },
+                        {
+                            "value_name": "苎麻"
+                        },
+                        {
+                            "value_name": "苏丽绒"
+                        },
+                        {
+                            "value_name": "草编"
+                        },
+                        {
+                            "value_name": "莫代尔"
+                        },
+                        {
+                            "value_name": "莫代尔纤维"
+                        },
+                        {
+                            "value_name": "莱卡"
+                        },
+                        {
+                            "value_name": "莱卡弹性纤维"
+                        },
+                        {
+                            "value_name": "莱卡纤维"
+                        },
+                        {
+                            "value_name": "莱塞尔"
+                        },
+                        {
+                            "value_name": "莱赛尔"
+                        },
+                        {
+                            "value_name": "莱赛尔纤维"
+                        },
+                        {
+                            "value_name": "蕾丝"
+                        },
+                        {
+                            "value_name": "蕾罗娜布料"
+                        },
+                        {
+                            "value_name": "蚕丝"
+                        },
+                        {
+                            "value_name": "蚕丝棉"
+                        },
+                        {
+                            "value_name": "蛇皮（革）"
+                        },
+                        {
+                            "value_name": "蜂巢塔丝隆"
+                        },
+                        {
+                            "value_name": "蟒皮（革）"
+                        },
+                        {
+                            "value_name": "表层：金属混纺纤维；内胆：银纤维"
+                        },
+                        {
+                            "value_name": "袋鼠皮（革）"
+                        },
+                        {
+                            "value_name": "貂毛"
+                        },
+                        {
+                            "value_name": "貂绒"
+                        },
+                        {
+                            "value_name": "貉子毛"
+                        },
+                        {
+                            "value_name": "貉子毛皮"
+                        },
+                        {
+                            "value_name": "貉子毛皮（革）"
+                        },
+                        {
+                            "value_name": "超细旦纤维"
+                        },
+                        {
+                            "value_name": "超细羊毛"
+                        },
+                        {
+                            "value_name": "醋酯纤维"
+                        },
+                        {
+                            "value_name": "醋酸纤维"
+                        },
+                        {
+                            "value_name": "野兔毛"
+                        },
+                        {
+                            "value_name": "金丝绒"
+                        },
+                        {
+                            "value_name": "金属"
+                        },
+                        {
+                            "value_name": "金属混纺纤维"
+                        },
+                        {
+                            "value_name": "金属纤维"
+                        },
+                        {
+                            "value_name": "金属镀膜纤维"
+                        },
+                        {
+                            "value_name": "针织"
+                        },
+                        {
+                            "value_name": "针织棉"
+                        },
+                        {
+                            "value_name": "铜氨丝"
+                        },
+                        {
+                            "value_name": "铜氨丝纤维"
+                        },
+                        {
+                            "value_name": "铜氨纤维"
+                        },
+                        {
+                            "value_name": "铜片"
+                        },
+                        {
+                            "value_name": "银狐绒"
+                        },
+                        {
+                            "value_name": "银纤维"
+                        },
+                        {
+                            "value_name": "银鼠毛"
+                        },
+                        {
+                            "value_name": "锌玉纤维"
+                        },
+                        {
+                            "value_name": "锌纶"
+                        },
+                        {
+                            "value_name": "锦棉"
+                        },
+                        {
+                            "value_name": "锦涤"
+                        },
+                        {
+                            "value_name": "锦纤"
+                        },
+                        {
+                            "value_name": "锦纶"
+                        },
+                        {
+                            "value_name": "锦纶(再生)"
+                        },
+                        {
+                            "value_name": "长绒棉"
+                        },
+                        {
+                            "value_name": "防雨绸"
+                        },
+                        {
+                            "value_name": "雅赛尔"
+                        },
+                        {
+                            "value_name": "雪兰貂"
+                        },
+                        {
+                            "value_name": "雪尼尔"
+                        },
+                        {
+                            "value_name": "雪尼尔面料"
+                        },
+                        {
+                            "value_name": "雪纺"
+                        },
+                        {
+                            "value_name": "雪花棉"
+                        },
+                        {
+                            "value_name": "韩国绒"
+                        },
+                        {
+                            "value_name": "颗粒绒"
+                        },
+                        {
+                            "value_name": "香云纱"
+                        },
+                        {
+                            "value_name": "香鼠毛皮"
+                        },
+                        {
+                            "value_name": "香鼠毛皮（革）"
+                        },
+                        {
+                            "value_name": "马正身毛"
+                        },
+                        {
+                            "value_name": "马毛"
+                        },
+                        {
+                            "value_name": "马海毛"
+                        },
+                        {
+                            "value_name": "马皮"
+                        },
+                        {
+                            "value_name": "马皮（革）"
+                        },
+                        {
+                            "value_name": "马鬃尾毛"
+                        },
+                        {
+                            "value_name": "驯鹿毛"
+                        },
+                        {
+                            "value_name": "驴皮（革）"
+                        },
+                        {
+                            "value_name": "驼绒棉"
+                        },
+                        {
+                            "value_name": "骆马毛"
+                        },
+                        {
+                            "value_name": "骆马绒"
+                        },
+                        {
+                            "value_name": "骆驼毛"
+                        },
+                        {
+                            "value_name": "骆驼毛皮"
+                        },
+                        {
+                            "value_name": "骆驼毛皮（革）"
+                        },
+                        {
+                            "value_name": "骆驼绒"
+                        },
+                        {
+                            "value_name": "骡皮（革）"
+                        },
+                        {
+                            "value_name": "高仿真水貂毛"
+                        },
+                        {
+                            "value_name": "高级聚酯纤维"
+                        },
+                        {
+                            "value_name": "鱼皮（革）"
+                        },
+                        {
+                            "value_name": "鲨鱼皮"
+                        },
+                        {
+                            "value_name": "鳄鱼皮（革）"
+                        },
+                        {
+                            "value_name": "鸭毛"
+                        },
+                        {
+                            "value_name": "鸭绒"
+                        },
+                        {
+                            "value_name": "鸵鸟毛"
+                        },
+                        {
+                            "value_name": "鸵鸟皮（革）"
+                        },
+                        {
+                            "value_name": "鹅毛"
+                        },
+                        {
+                            "value_name": "鹅绒"
+                        },
+                        {
+                            "value_name": "鹿毛"
+                        },
+                        {
+                            "value_name": "鹿皮"
+                        },
+                        {
+                            "value_name": "鹿皮绒"
+                        },
+                        {
+                            "value_name": "鹿皮（革）"
+                        },
+                        {
+                            "value_name": "麂皮"
+                        },
+                        {
+                            "value_name": "麂皮绒"
+                        },
+                        {
+                            "value_name": "麂皮绒（革）"
+                        },
+                        {
+                            "value_name": "麂皮（革）"
+                        },
+                        {
+                            "value_name": "麝鼠毛"
+                        },
+                        {
+                            "value_name": "麝鼠毛皮"
+                        },
+                        {
+                            "value_name": "麝鼠毛皮（革）"
+                        },
+                        {
+                            "value_name": "麦秆"
+                        },
+                        {
+                            "value_name": "麻"
+                        },
+                        {
+                            "value_name": "麻纱"
+                        },
+                        {
+                            "value_name": "黄牛剖层皮革"
+                        },
+                        {
+                            "value_name": "黄牛皮（革）"
+                        },
+                        {
+                            "value_name": "黄鼠毛皮"
+                        },
+                        {
+                            "value_name": "黄鼠毛皮（革）"
+                        },
+                        {
+                            "value_name": "鼬鼠毛"
+                        },
+                        {
+                            "value_name": "鼹鼠毛皮"
+                        },
+                        {
+                            "value_name": "鼹鼠毛皮（革）"
+                        },
+                        {
+                            "value_name": "龙骨纹绒"
+                        }
+                    ]
+                },
+                {
+                    "units": [
+                        {
+                            "unit_id": 15,
+                            "unit_name": "%"
+                        }
+                    ],
+                    "validate_rule": {
+                        "precision": 2,
+                        "min": 0.01,
+                        "max": 100,
+                        "data_type": "float",
+                        "unit_rules": [],
+                        "time_format": ""
+                    },
+                    "module_id": 1855,
+                    "value_required": true,
+                    "prefix": "",
+                    "suffix": "",
+                    "input_type": "input",
+                    "values": []
+                }
+            ],
+            "display_name": "面料材质",
+            "input_rule": {}
+        }
+    ],
+    "category_id": 1000003333,
+    "property_type": 0,
+    "property_name": "面料材质",
+    "sequence": 1650832089,
+    "cid": 1000003333,
+    "status": 0,
+    "property_id": 785
+}
