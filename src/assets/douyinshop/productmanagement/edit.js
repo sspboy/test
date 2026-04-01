@@ -266,6 +266,7 @@ export class Insetpagedata {
                 }
 
                 var res = await axios.post(API.AppSrtoreAPI.dou_product.format,data);
+
                 var format_detaile_value = res.data.data.data
 
                 this.formdata.CateProperty = this.fun.format.sort_required_(format_detaile_value)   // 必填属性排序
@@ -347,41 +348,28 @@ export class Insetpagedata {
                     }else if(item.type == 'multi_select'){ // 多选
                         this.formdata.format_form_data[item.property_id] = []; 
                     }else if(item.type == 'measure'){ // 度量衡-单值
-                        console.log('度量衡-单值',item)
 
-                        let property_id = item.property_id;
+                        console.log('度量衡-单值',item)
 
                         const measure_Data= {}// 绑定表单dui像
 
-                        // 特殊property_id=785// 单项-> 输入两个值
-                        if(property_id == 785){
-                            
-                            console.log('特殊属性785')
 
                             item.measure_templates[0].value_modules.forEach(item=>{
-                                measure_Data[item.module_id] = {
-                                    module_id:item.module_id,
-                                    prefix:item.prefix,
-                                    // unit_id:item.units[0].unit_id,
-                                    unit_name:'',
-                                    op:item.units
+                                var mo_obj = {}
+                                mo_obj.module_id = item.module_id;
+                                mo_obj.prefix = item.prefix;
+                                mo_obj.suffix = item.suffix;
+                                mo_obj.unit_name = '';
+                                if(item.units.length >0){
+                                    mo_obj.unit_id = item.units[0].unit_id;
+                                    mo_obj.op = item.units;
                                 }
+                                measure_Data[item.module_id] = mo_obj;
+
                             })
 
                             this.formdata.format_form_data[item.property_id] = measure_Data;
-
-                        }else{
-                            item.measure_templates[0].value_modules.forEach(item=>{
-                                measure_Data[item.module_id] = {
-                                    module_id:item.module_id,
-                                    prefix:item.prefix,
-                                    unit_id:item.units[0].unit_id,
-                                    unit_name:'',
-                                    op:item.units
-                                }
-                            })
-                            this.formdata.format_form_data[item.property_id] = measure_Data;
-                        }
+                        
                         
 
                     }else if(item.type == 'multi_value_measure'){   // 度量衡-多值
@@ -485,6 +473,7 @@ export class Insetpagedata {
                             form_format[key].push(value_number);
 
                         }else{// 自带选择的值
+                            console.log('单选',format_detaile_obj[key].options,detaile_format[key])
                             form_format[key].push(detaile_format[key][0].Value);
                         }
 
@@ -573,7 +562,11 @@ export class Insetpagedata {
                 
                 console.log('构造属性提交数据')
                 Object.keys(data).forEach(key=>{
-                    // console.log(key, format_result[key])
+                    let value = data[key];
+                    // console.log('属性id',key,'属性值',value)
+                    if(value.length > 0 || value !== ''){
+                        console.log(key, data[key])
+                    }
                 })
             }
 
@@ -611,7 +604,7 @@ export class Insetpagedata {
             }
 
             // 验证是否必填全部填写
-            await this.formdata.format_form_ref.validate().then(()=>{
+            var res = await this.formdata.format_form_ref.validate().then(()=>{
 
                 this.product_form.data.name = this.formdata.name;// 标题
 
@@ -638,6 +631,8 @@ export class Insetpagedata {
                 // });
 
                 // return f_res_obj
+                // 提交
+                this.update(this.product_form.data)
 
             }).catch(error => {
 
@@ -652,8 +647,7 @@ export class Insetpagedata {
 
 
 
-            // 提交
-            this.update(this.product_form.data)
+
         
         },
     }

@@ -337,12 +337,13 @@ PS：支持新建、编辑====》场景使用
                             :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
                             style="padding: 0;margin: 0;width: 100%"
                         >
-                            <a-input
+                            <a-input-number
                                 v-model:value="items.unit_name"
                                 autoComplete="off"
                                 :placeholder="'输入-'+ items.prefix"
+
                             >
-                                <template  #addonAfter>
+                                <template  #addonAfter v-if="items.unit_id != undefined">
                                     <a-select 
                                     :options="items.op"
                                     v-model:value="items.unit_id"
@@ -354,7 +355,7 @@ PS：支持新建、编辑====》场景使用
                                     >
                                     </a-select>
                                 </template>
-                        </a-input>
+                            </a-input-number>
                         </a-form-item>
                     </template>
                     </a-space>
@@ -368,12 +369,12 @@ PS：支持新建、编辑====》场景使用
                             :name="[item.property_id, items.module_id, 'unit_name']"
                             style="padding: 0;margin: 0;width: 100%"
                         >
-                            <a-input
+                            <a-input-number
                                 v-model:value="items.unit_name"
                                 autoComplete="off" 
                                 :placeholder="'输入-'+ items.prefix"
                             >
-                                <template  #addonAfter>
+                                <template  #addonAfter v-if="items.unit_id != undefined">
                                     <a-select 
                                     :options="items.op"
                                     v-model:value="items.unit_id"
@@ -385,7 +386,7 @@ PS：支持新建、编辑====》场景使用
                                     >
                                     </a-select>
                                 </template>
-                        </a-input>
+                        </a-input-number>
                         </a-form-item>
                     </template>
                     </a-space>
