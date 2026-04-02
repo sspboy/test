@@ -85,7 +85,9 @@ PS：支持新建、编辑====》场景使用
                         :name="[item.property_id, dIndex, 'percentage']"
                         :rules="[{ required: true, message:'数值不能为空！',trigger: 'change',}]"
                     >
-                    <a-space>
+                        <!-- 判断水洗 标上传 -->
+                        <!-- 判断水洗 标结束 -->
+                         
                         <a-input-number
                             v-model:value="olist.percentage"
                             placeholder="输入百分比"
@@ -93,15 +95,18 @@ PS：支持新建、编辑====》场景使用
                             :min="0"
                             :max="100"
                             addon-after="%"
+                            style="width: 100%;"
                         ></a-input-number>
 
                         <!--删除按钮-->
                         <a-button
                             v-show="formdata.format_form_data[item.property_id].length > 1"
                             type="dashed"
+                            style="margin-top: 10px;"
                             @click="insetpagedata.fun.format.material_del(dIndex,formdata.format_form_data[item.property_id])"
                         >删除</a-button>
-                    </a-space>
+
+
                     </a-form-item>
                 </a-col>
 
