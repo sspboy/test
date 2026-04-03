@@ -3,6 +3,7 @@ import axios from 'axios'; // 网络请求
 import * as TOOL from '@/assets/JS_Model/tool';// 常用工具
 import * as utils from '@/assets/JS_Model/public_model';// 接口地址配置
 import { selectProps } from 'ant-design-vue/es/vc-select';
+import { t } from '@wangeditor/editor';
 const tool = new TOOL.TOOL()            // 工具方法
 const API = new utils.A_Patch()         // 请求接口地址合集
 
@@ -37,6 +38,8 @@ export class Insetpagedata {
         this.formdata.cate_op.push(cateres); // 加载类目选项
         this.formdata.category_leaf_id = cateres.value; // 设置类目值
         this.fun.format.select_format(this.formdata.category_leaf_id, true)// 初次加载属性：true：写入详情值
+
+        // 5、渲染规格
 
     }
 
@@ -558,6 +561,7 @@ export class Insetpagedata {
             // 构造商品属性提交数据
             makeup_upload_format:(data)=>{
                 
+                var result = {} // 最终构造的提交数据
                 // console.log('构造属性提交数据',this.formdata.CateProperty)
                 var format_data = {}; // 类目属性基础数据
                 this.formdata.CateProperty.forEach(item=>{
@@ -567,19 +571,46 @@ export class Insetpagedata {
                 Object.keys(data).forEach(key=>{
                     // key:属性id
                     let value = data[key]; // 表单属性值
-                    // console.log('属性id',key,'属性值',value)
+
                     if(value !== undefined){// 迭代不为空的属性值
-                        console.log(format_data[key].property_name,key,data[key])
+                        
+                        console.log(format_data[key].property_name, key, data[key])
+                        var type = format_data[key].type; // 属性类型
+                        var diy_type = format_data[key].diy_type; // 是否自定义值
+
                         // 构造属性提交数据结构
-                        // 文本
-                        // 单选
-                        // 多选
-                        // 度量衡-单值
-                        // 度量衡-多值
-                        // 时间戳
-                        // 时间段
+                        if(type == 'text'){// 文本
+                            result[key] = [{
+                                value:0,
+                                name:value,
+                                diy_type:0
+                            }]
+                        }else if(type == 'select'){// 单选
+                            if(diy_type == 1){ // 输入自定义的值 - 选择的是自定义值value=0
+                                result[key] = [{
+                                    value:0,
+                                    name:value,
+                                    diy_type:diy_type
+                                }]
+                            }else{
+                                result[key] = [{
+                                    value:value,
+                                    name:'',
+                                    diy_type:diy_type
+                                }]
+                            }
+                            
+                        }else if(type == 'multi_select'){// 多选
+                        }else if(type == 'measure'){// 度量衡-单值
+                        }else if(type == 'multi_value_measure'){// 度量衡-多值
+                        }else if(type == 'timestamp'){// 时间戳
+                        }else if(type == 'timerange'){// 时间段
+                        }
+                        
                     }
                 })
+                console.log('构造属性提交数据',result)
+                return result
             },
             // 构造文本属性提交数据
             make_format_text_result:(data)=>{
@@ -692,33 +723,18 @@ export class Insetpagedata {
     // 获取数据
     product_form={
 
-        data:{},
-
         // get
         get:async()=>{
-
-            // 获取主图
-            if(this.formdata.pic.length > 0){// 不为空
-                this.product_form.data.pic = toRaw(this.formdata.pic).join('|')
-            }else{
-                tool.Fun_.message('error','主图不能为空！')
-                return
-            }
-
-            // 获取标题
-
 
             // 获取属性数据-格式化提交数据
             var format_res = await this.product_form.get_product_format_form() 
             console.log('请求属性结果',format_res)
 
-            // if(format_res){
-            //     console.log('获取属性数据成功')
-            //     // 提交
-            //     this.update(this.product_form.data)
-            // }else{
-            //     console.log('获取属性数据失败')
-            // }
+            if(format_res){
+                this.update()
+            }else{
+                console.log('获取属性数据失败')
+            }
         },
 
         get_product_format_form:async()=>{
@@ -726,17 +742,11 @@ export class Insetpagedata {
             // 验证是否必填全部填写
             var res = await this.formdata.format_form_ref.validate().then(()=>{
 
-                this.product_form.data.name = this.formdata.name;// 标题
-
-                this.product_form.data.category_leaf_id = this.formdata.category_leaf_id// 类目id
-
-                // console.log('商品属性',toRaw(this.formdata.format_form_data))
-
                 var format_result_data = toRaw(this.formdata.format_form_data)
 
-                this.fun.format.makeup_upload_format(format_result_data) // 属性-字符串
+                var res = this.fun.format.makeup_upload_format(format_result_data) // 属性-字符串
 
-                return true
+                return res
 
             }).catch(error => {
 
@@ -753,13 +763,27 @@ export class Insetpagedata {
         }
     }
 
+    data={}
+    
     // 提交数据
-    update = (data)=>{
+    update = ()=>{
+        // 1、商品id
+        this.data.product_id = this.product_id; 
+        // 2、提交方式
+        this.data.commit = false;
+        // 3、获取主图
+        if(this.formdata.pic.length > 0){// 不为空
+            this.data.pic = toRaw(this.formdata.pic).join('|')
+        }else{
+            tool.Fun_.message('error','主图不能为空！')
+            return
+        }
+        // 4、获取标题
+        this.data.name = this.formdata.name;
 
-        data.product_id = this.product_id;
-        data.commit = false;
+        this.data.category_leaf_id = this.formdata.category_leaf_id// 类目id
 
-        console.log('提交数据',data);
+        console.log('提交数据',this.data);
 
         // axios.post(API.AppSrtoreAPI.dou_product.edit, data).then(res=>{
         //     console.log('提交数据',res);
