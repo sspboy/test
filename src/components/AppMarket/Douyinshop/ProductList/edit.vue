@@ -44,16 +44,16 @@
                       <div style="margin: 6px 0 0 0;padding: 0;width: 100%;text-align: center;clear: both;">
 
                           <a-space size="0">
-                            <a-button type="text" size="small" @click="insetpagedata.fun.pic.left_inset(index)">
+                            <a-button type="text" size="small" @click="insetpagedata.pic.left_inset(index)">
                               <LeftOutlined />
                             </a-button>
                             <a-button type="text" size="small" @click="console.log('编辑')"> 
                               <EditOutlined />
                             </a-button>
-                            <a-button type="text" size="small" @click="insetpagedata.fun.pic.del(index)"> 
+                            <a-button type="text" size="small" @click="insetpagedata.pic.del(index)"> 
                               <DeleteOutlined />
                             </a-button>
-                            <a-button type="text" size="small" @click="insetpagedata.fun.pic.right_inset(index)">
+                            <a-button type="text" size="small" @click="insetpagedata.pic.right_inset(index)">
                               <RightOutlined />
                             </a-button>
                         </a-space>
@@ -80,7 +80,7 @@
                 name="basic"
                 style="margin-top: 20px;"
                 :model="formdata"
-                :rules="insetpagedata.fun.rule"
+                :rules="insetpagedata.rule"
                 >
 
                 <a-form-item label="商品标题" name="name">
@@ -97,7 +97,7 @@
                   <a-row>
                     <a-col :span="12">
                       <a-space>
-                        <a-button type="dashed" style="width: 120px;" @click="insetpagedata.fun.cate.check_cate" :loading="insetpagedata.fun.cate.loading.value">
+                        <a-button type="dashed" style="width: 120px;" @click="insetpagedata.cate.check_cate" :loading="insetpagedata.cate.loading.value">
                           点击预测分类
                         </a-button>
                         <a-select 
@@ -105,8 +105,8 @@
                           v-model:value="formdata.category_leaf_id"
                           :options="formdata.cate_op" 
                           placeholder="下拉选择商品分类" 
-                          @change="insetpagedata.fun.cate.change"
-                          :disabled="insetpagedata.fun.cate.state.value">
+                          @change="insetpagedata.cate.change"
+                          :disabled="insetpagedata.cate.state.value">
                       </a-select>
                     </a-space>
                     </a-col>
@@ -406,7 +406,7 @@ export default defineComponent({
           Add_Callback:(data)=>{
               var type = PAGEDATA.setimg_name;        // 添加类型
               if(type == 'PicList'){                  // 判断回调type：：：主图添加
-                  insetpagedata.fun.pic.add(data)                   // 添加主图方法
+                  insetpagedata.pic.add(data)                   // 添加主图方法
               }else if(type == 'long_img_List'){      // 判断回调type：：：3:4长图添加
                   // Longimg_Fun.add(data)               // 添加长图方法
               }else if(type == 'white_img'){          // 判断回调type：：：白底图添加
@@ -475,7 +475,7 @@ export default defineComponent({
 
             // 属性
             product_format_new:undefined, // 商品详情属性== 通过/product/getCatePropertyV2获取 格式：{"property_id":[{"value":value,"name":"property_name","diy_type":0}]}, name的类型是string，value和diy_type的类型是number 度量衡参照open度量衡对接文档填写
-            CateProperty:reactive({}), // 接口查询属性列表
+            CateProperty:undefined, // 接口查询属性列表
             format_form_ref:undefined, // 属性表单验证对象
             format_form_data:reactive({}), // 属性表单绑定对象
 

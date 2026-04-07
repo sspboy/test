@@ -59,7 +59,7 @@ PS：支持新建、编辑====》场景使用
                             label: 'name',
                             value: 'value',
                             }"
-                            @focus="insetpagedata.fun.format.material_change(formdata.format_form_data[item.property_id],item.options)"
+                            @focus="insetpagedata.format.material_change(formdata.format_form_data[item.property_id],item.options)"
                         >
 
                             <template #dropdownRender="{ menuNode: menu }">
@@ -67,11 +67,11 @@ PS：支持新建、编辑====》场景使用
                                 <a-divider style="margin: 4px 0" />
                                 <a-space style="padding: 4px 8px">
                                 <a-input ref="inputRef" 
-                                    v-model:value="insetpagedata.fun.format.diy_name.value" 
+                                    v-model:value="insetpagedata.format.diy_name.value" 
                                     placeholder="自定义面料"
                                     autoComplete="off"
                                 />
-                                <a-button type="text" @click="insetpagedata.fun.format.addItem(item.options)">
+                                <a-button type="text" @click="insetpagedata.format.addItem(item.options)">
                                     <template #icon><PlusOutlined /></template>添加
                                 </a-button>
                                 </a-space>
@@ -103,7 +103,7 @@ PS：支持新建、编辑====》场景使用
                             v-show="formdata.format_form_data[item.property_id].length > 1"
                             type="dashed"
                             style="margin-top: 10px;"
-                            @click="insetpagedata.fun.format.material_del(dIndex,formdata.format_form_data[item.property_id])"
+                            @click="insetpagedata.format.material_del(dIndex,formdata.format_form_data[item.property_id])"
                         >删除</a-button>
 
 
@@ -113,7 +113,7 @@ PS：支持新建、编辑====》场景使用
                 <a-col :span="24">
                     <a-button 
                     type="dashed"
-                    @click="insetpagedata.fun.format.add_limit(formdata.format_form_data[item.property_id],item.multi_select_max)"
+                    @click="insetpagedata.format.add_limit(formdata.format_form_data[item.property_id],item.multi_select_max)"
                     >添加材质</a-button>
                 </a-col>
                 </template>
@@ -192,11 +192,11 @@ PS：支持新建、编辑====》场景使用
                         <a-divider style="margin: 4px 0" />
                         <a-space style="padding: 4px 8px">
                         <a-input ref="inputRef" 
-                            v-model:value="insetpagedata.fun.format.diy_name.value" 
+                            v-model:value="insetpagedata.format.diy_name.value" 
                             placeholder="自定义面料"
                             autoComplete="off"
                         />
-                        <a-button type="text" @click="insetpagedata.fun.format.addItem(item.options)">
+                        <a-button type="text" @click="insetpagedata.format.addItem(item.options)">
                             <template #icon><PlusOutlined /></template>添加
                         </a-button>
                         </a-space>
@@ -226,11 +226,11 @@ PS：支持新建、编辑====》场景使用
                         <a-divider style="margin: 4px 0" />
                         <a-space style="padding: 4px 8px">
                         <a-input ref="inputRef" 
-                            v-model:value="insetpagedata.fun.format.diy_name.value" 
+                            v-model:value="insetpagedata.format.diy_name.value" 
                             placeholder="自定义面料"
                             autoComplete="off"
                         />
-                        <a-button type="text" @click="insetpagedata.fun.format.addItem(item.options)">
+                        <a-button type="text" @click="insetpagedata.format.addItem(item.options)">
                             <template #icon><PlusOutlined /></template>添加
                         </a-button>
                         </a-space>
@@ -262,7 +262,7 @@ PS：支持新建、编辑====》场景使用
                         :max-tag-count="1"
                         :options="item.options"
                         v-model:value="formdata.format_form_data[item.property_id]"
-                        @change="insetpagedata.fun.format.dis_ops(item,formdata.format_form_data[item.property_id])" 
+                        @change="insetpagedata.format.dis_ops(item,formdata.format_form_data[item.property_id])" 
                         style="width: 100%;"
                         :field-names="{
                             label: 'name',
@@ -275,11 +275,11 @@ PS：支持新建、编辑====》场景使用
                             <a-divider style="margin: 4px 0" />
                             <a-space style="padding: 4px 8px">
                             <a-input ref="inputRef" 
-                                v-model:value="insetpagedata.fun.format.diy_name.value" 
+                                v-model:value="insetpagedata.format.diy_name.value" 
                                 placeholder="自定义面料"
                                 autoComplete="off"
                             />
-                            <a-button type="text" @click="insetpagedata.fun.format.addItem(item.options)">
+                            <a-button type="text" @click="insetpagedata.format.addItem(item.options)">
                                 <template #icon><PlusOutlined /></template>添加
                             </a-button>
                             </a-space>
@@ -299,7 +299,7 @@ PS：支持新建、编辑====》场景使用
                         :max-tag-count="1"
                         :options="item.options"
                         v-model:value="formdata.format_form_data[item.property_id]"
-                        @change="insetpagedata.fun.format.dis_ops(item, formdata.format_form_data[item.property_id])" 
+                        @change="insetpagedata.format.dis_ops(item, formdata.format_form_data[item.property_id])" 
                         style="width: 100%;"
                         :field-names="{
                             label: 'name',
@@ -311,11 +311,11 @@ PS：支持新建、编辑====》场景使用
                             <a-divider style="margin: 4px 0" />
                             <a-space style="padding: 4px 8px">
                             <a-input ref="inputRef" 
-                                v-model:value="insetpagedata.fun.format.diy_name.value" 
+                                v-model:value="insetpagedata.format.diy_name.value" 
                                 placeholder="自定义面料"
                                 autoComplete="off"
                             />
-                            <a-button type="text" @click="insetpagedata.fun.format.addItem(item.options)">
+                            <a-button type="text" @click="insetpagedata.format.addItem(item.options)">
                                 <template #icon><PlusOutlined /></template>添加
                             </a-button>
                             </a-space>
