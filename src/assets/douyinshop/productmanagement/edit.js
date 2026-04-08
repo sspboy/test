@@ -23,9 +23,9 @@ export class Insetpagedata {
         var res = await axios.post(API.AppSrtoreAPI.dou_product.detaile, {
             product_id:this.product_id
         })
-        var ProductDetaile = res.data.data;
-        this.product_detaile = res.data.data;
-        this.PAGEDATA.product_data = false;// 页面load状态关闭
+        var ProductDetaile = res.data.data;     // 获取商品详情信息
+        this.product_detaile = res.data.data;   // 商品详情数据赋值到对象
+        this.PAGEDATA.product_data = false;     // 页面load状态关闭
 
         //2、渲染主图
         this.formdata.pic = ProductDetaile.pic;// 主图
@@ -428,7 +428,7 @@ export class Insetpagedata {
 
                     // 迭代加载多选属性值
                     value_list.forEach(item=>{
-
+                        console.log('多选属性值',item)
                         let diy_type = item.diy_type; // 是否自定义值
                         let diy_value = item.Value; // 自定义值
 
@@ -444,9 +444,7 @@ export class Insetpagedata {
                             form_format[key].push(value_number); // 添加自定id到表单绑定值
 
                         }else{
-
                             form_format[key].push(item.Value); // 添加选项值到表单绑定值
-                        
                         }
                         
                     })
@@ -461,7 +459,8 @@ export class Insetpagedata {
                         format_detaile_obj[key].options.push({
                             name:value_list[0].Name,
                             value:value_number + '',
-                            value_id:value_number
+                            value_id:value_number,
+                            value_text:false// 自定义值标识
                         })
 
                         form_format[key] = value_number;
@@ -471,8 +470,12 @@ export class Insetpagedata {
                     }
 
                 }else if(type == 'multi_value_measure'){ // 度量衡-多值
-
-                    // console.log('度量衡-多值',item)
+                    // 迭代加载多选属性值
+                    value_list.forEach(item=>{
+                        console.log('度量衡-多值',item)
+                        let diy_type = item.diy_type; // 是否自定义值
+                        let diy_value = item.Value; // 自定义值 
+                    })
 
                 }else if(type =='measure'){ // 度量衡-单值
 
@@ -559,10 +562,8 @@ export class Insetpagedata {
         makeup_upload_format:(data)=>{
             
             var result = {} // 最终构造的提交数据
-            // console.log('构造属性提交数据',this.formdata.CateProperty)
             var format_data = {}; // 类目属性基础数据
             this.formdata.CateProperty.forEach(item=>{
-                // console.log('类目属性',item.property_name, item)
                 format_data[item.property_id] = item
             })
 
@@ -573,10 +574,12 @@ export class Insetpagedata {
                 let options = format_data[key].options; // 属性选项
 
 
-                if(value !== undefined){// 迭代不为空的属性值
+                if(value !== undefined && value !== ''){// 迭代不为空的属性值
+                    
+                    var property_name = format_data[key].property_name; // 属性名称
                     var type = format_data[key].type; // 属性类型
                     var diy_type = format_data[key].diy_type; // 是否自定义值
-                    // console.log(format_data[key].property_name, key, data[key])
+
 
                     // 构造属性提交数据结构
                     if(type == 'text'){// 文本
@@ -589,10 +592,12 @@ export class Insetpagedata {
                         
                     }else if(type == 'multi_select'){// 多选
 
-                        this.format.make_format_multi_select_result(value, options, diy_type)
+                       result[key] = this.format.make_format_multi_select_result(value, options, diy_type)
 
-                    }else if(type == 'measure'){// 度量衡-单值
                     }else if(type == 'multi_value_measure'){// 度量衡-多值
+                        var measure_templates = format_data[key].measure_templates; // 度量衡值模板
+                        result[key] = this.format.make_format_multi_measure_result(value, options, diy_type,measure_templates)
+                    }else if(type == 'measure'){// 度量衡-单值
                     }else if(type == 'timestamp'){// 时间戳
                     }else if(type == 'timerange'){// 时间段
                     }
@@ -600,20 +605,15 @@ export class Insetpagedata {
                 }
             })
 
-            console.log('构造属性提交数据',result)
+            // console.log('构造属性提交数据',result)
 
-            return result
-        },
-
-        // 构造文本属性提交数据
-        make_format_text_result:(data)=>{
-            // [{"value":27664,"name":"复习资料","diy_type":0}]
-
+            return JSON.stringify(result)
         },
 
         // 构造单选属性提交数据
         make_format_select_result:(value, options, diy_type)=>{
             // [{"value":27664,"name":"复习资料","diy_type":0}]
+
             var res = ''
             if(diy_type == 1){ // 输入自定义的值 
                 options.forEach(item=>{
@@ -630,12 +630,35 @@ export class Insetpagedata {
                     }
                 })
             }
+            // console.log('属性', diy_type, value,res)
+
             return res;
         },
 
         // 构造多选属性提交数据
         make_format_multi_select_result:(value, options, diy_type)=>{
-            console.log(value,options)
+            // console.log(value,options)
+            var res = []
+            value.map(val_id=>{
+                if(diy_type == 1){ // 输入自定义的值
+                    options.forEach(item=>{
+                        if(item.value_id == val_id && item.value_text == false){// - 选择的是自定义值value=0
+                            res.push({"value":0, "name":item.name, "diy_type":diy_type})
+                        }else if(item.value_id == val_id && item.value_text == undefined){ // 不是自定义值
+                            res.push({"value":item.value_id, "name":item.name, "diy_type":diy_type})
+                        }
+                    })
+                }else{// 不是自定义值
+                    options.forEach(item=>{
+                        if(item.value_id == val_id){
+                            res.push({"value":item.value_id, "name":item.name, "diy_type":diy_type})
+                        }
+                    })
+                }
+            })
+            // console.log(res)
+            return res;
+
             // "4074":[
             //{"value":27664,"name":"复习资料","diy_type":0},
             // {"value":0,"name":"复习资料1","diy_type":1}
@@ -644,6 +667,7 @@ export class Insetpagedata {
 
         // 构造度量衡-单值属性提交数据
         make_format_measure_result:(data)=>{
+
             // "4074":[
             //     {
             //         "measure_info": {
@@ -664,64 +688,148 @@ export class Insetpagedata {
             //         "name": "300cm-"
             //     }
             // ]
+
         },
+
         // 构造度量衡-多值属性提交数据
-        make_format_multi_measure_result:(data)=>{
+        make_format_multi_measure_result:(value, options, diy_type, measure_templates)=>{
 
-            // "785": [
-            //     {
-            //     "measure_info": {
-            //         "values": [
-            //         {
-            //             "module_id": 466,
-            //             "value": "亚麻",
-            //             "unit_id": 0
-            //         },
-            //         {
-            //             "module_id": 467,
-            //             "unit_name": "%",
-            //             "unit_id": 15,
-            //             "value": "10"
-            //         }
-            //         ],
-            //         "template_id": 208,
-            //         "value_name": "亚麻10%"
-            //     },
-            //     "diy_type": 1,
-            //     "name": "亚麻10%",
-            //     "value": 0
-            //     },
-            //     {
-            //     "measure_info": {
-            //         "values": [
-            //         {
-            //             "module_id": 466,
-            //             "value": "棉",
-            //             "unit_id": 0
-            //         },
-            //         {
-            //             "module_id": 467,
-            //             "unit_name": "%",
-            //             "unit_id": 15,
-            //             "value": "90"
-            //         }
-            //         ],
-            //         "template_id": 208,
-            //         "value_name": "棉90%"
-            //     },
-            //     "diy_type": 1,
-            //     "name": "棉90%",
-            //     "value": 0
-            //     }
-            // ]
+            // console.log('度量衡-多值',value, options, diy_type, measure_templates)
+
+            var res = []
+
+            value.map(val_obj=>{
+
+                let val_id = val_obj.value;           // 选项id：对应options的value_id，选择出
+                let percentage = val_obj.percentage;    // 度量衡百分比数字
+                let template_id = measure_templates[0].template_id; // 度量衡模板id
+                let value_modules = measure_templates[0].value_modules; // 度量衡模板的值模块
+                if(diy_type == 1){ // 输入自定义的值
+                    options.forEach(item=>{
+                        if(item.value_id == val_id){
+                            let v_obj = {
+                                "measure_info": {
+                                    "values": [
+                                        {
+                                            "module_id": value_modules[0].module_id,
+                                            "value": item.name,
+                                            "unit_id": 0
+                                        },
+                                        {
+                                            "module_id": value_modules[1].module_id,
+                                            "unit_name": "%",
+                                            "unit_id": value_modules[1].units[0].unit_id,
+                                            "value": percentage + ''
+                                        }
+                                    ],
+                                        "template_id": template_id,
+                                        "value_name": item.name + percentage + "%"
+                                },
+                                "value":0,
+                                "name":item.name + percentage + "%",
+                                "diy_type":diy_type
+                            }
+                        res.push(v_obj)
+                        }
+                    })
+
+                }else{// 不是自定义值
+
+
+                }
+
+            })
+
+            let demo_text= {
+                "785": [
+                    {
+                    "measure_info": {
+                            "values": [
+                            {
+                                "module_id": 466,
+                                "value": "亚麻",
+                                "unit_id": 0
+                            },
+                            {
+                                "module_id": 467,
+                                "unit_name": "%",
+                                "unit_id": 15,
+                                "value": "10"
+                            }
+                            ],
+                            "template_id": 208,
+                            "value_name": "亚麻10%"
+                    },
+                    "diy_type": 1,
+                    "name": "亚麻10%",
+                    "value": 0
+                    },
+                    {
+                        "measure_info": {
+                            "values": [
+                            {
+                                "module_id": 466,
+                                "value": "棉",
+                                "unit_id": 0
+                            },
+                            {
+                                "module_id": 467,
+                                "unit_name": "%",
+                                "unit_id": 15,
+                                "value": "90"
+                            }
+                            ],
+                            "template_id": 208,
+                            "value_name": "棉90%"
+                        },
+                    "diy_type": 1,
+                    "name": "棉90%",
+                    "value": 0
+                    }
+                ]
+            }
+            console.log('度量衡-多值-提交数据',res)
+            return res;
+        },
+
+        // 构造【时间戳】属性提交数据
+        make_format_timestamp_result:(data)=>{
 
         },
 
-        // 构造时间戳属性提交数据
-        make_format_timestamp_result:(data)=>{},
-
-        // 构造时间段属性提交数据
-        make_format_timerange_result:(data)=>{},
+        // 构造【时间段】属性提交数据
+        make_format_timerange_result:(data)=>{
+            let demo_text = {
+                "4032": [
+                    {
+                        "value": 0,
+                        "name": "2024-03-28,2024-05-20",
+                        "diy_type": 0,
+                        "measure_info": {
+                            "template_id": 145,
+                            "values": [
+                            {
+                                "module_id": 393,
+                                "value": "2024-03-28",
+                                "unit_id": 0,
+                                "unit_name": "",
+                                "prefix": "",
+                                "suffix": ","
+                            },
+                            {
+                                "module_id": 394,
+                                "value": "2024-05-20",
+                                "unit_id": 0,
+                                "unit_name": "",
+                                "prefix": "",
+                                "suffix": ""
+                            }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
     }
 
     // 表单字段验证规则
@@ -745,6 +853,7 @@ export class Insetpagedata {
             // console.log('请求属性结果',format_res)
 
             if(format_res){
+                this.data.product_format_new = format_res; // 属性数据-字符串
                 this.update()
             }else{
                 console.log('获取属性数据失败')
@@ -800,23 +909,16 @@ export class Insetpagedata {
 
         console.log('提交数据',this.data);
 
-        // axios.post(API.AppSrtoreAPI.dou_product.edit, data).then(res=>{
-        //     console.log('提交数据',res);
-        // }).catch(err=>{
-        //     console.log('提交数据失败',err);
-        // })
+        axios.post(API.AppSrtoreAPI.dou_product.edit, this.data).then(res=>{
+            console.log('提交数据',res);
+        }).catch(err=>{
+            console.log('提交数据失败',err);
+        })
         
     }
 
 }
 
-// 主图
-
-// 标题
-
-// 分类
-
-// 属性
 
 // 白底图
 

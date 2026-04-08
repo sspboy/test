@@ -29,6 +29,7 @@ export default defineConfig({
   // 开发服务器配置（替代 devServer）
   server: {
     port: 8080, // 默认端口，可修改
+    host: '0.0.0.0',  // 或设置为 true，监听所有地址
     proxy: {
       '/api': {
         // target: 'http://192.168.2.106:5000', // 家里环境

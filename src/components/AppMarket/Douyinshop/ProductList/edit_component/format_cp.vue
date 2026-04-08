@@ -56,8 +56,8 @@ PS：支持新建、编辑====》场景使用
                             :filter-option="filterOption"
                             :options="item.options"
                             :field-names="{
-                            label: 'name',
-                            value: 'value',
+                                label: 'name',
+                                value: 'value_id',
                             }"
                             @focus="insetpagedata.format.material_change(formdata.format_form_data[item.property_id],item.options)"
                         >
