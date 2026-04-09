@@ -324,7 +324,8 @@
       <a-affix :offset-bottom="1" v-if="!PAGEDATA.product_data">
           <div style="width: 100%;margin: 0 auto;text-align: center;padding: 10px 0 0 0;">
                 <a-space align="end" style="height: 100%;">
-                  <a-button type="primary" @click="handleOk">提交</a-button>
+                  <a-button type="primary" @click="handleOk">发布到线上</a-button>
+                  <a-button type="primary" @click="console.log('放入草稿箱')">放入草稿箱</a-button>
                   <a-button >取消</a-button>
               </a-space>
           </div>

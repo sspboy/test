@@ -24,7 +24,7 @@ PS：支持新建、编辑====》场景使用
         v-else-if="formdata.CateProperty !== undefined"
     >
 
-        <!--多选度量衡-->
+        <!--多选度量衡 开始-->
         <a-row :gutter="[16,10]" style="padding: 0 0 20px 0;">
             
             <!--迭代出面料属性-->
@@ -122,8 +122,13 @@ PS：支持新建、编辑====》场景使用
             </template>
         
         </a-row>
+        <!--多选度量衡 结束-->
 
-        <!--基础属性列表-->
+        <!--单选度量衡 开始-->
+
+        <!--单选度量衡 结束-->
+
+        <!--基础属性列表 开始-->
         <a-row :gutter="[16,0]" >
 
             <template v-for="(item, index) in formdata.CateProperty" :key="item.property_id">
@@ -497,6 +502,7 @@ PS：支持新建、编辑====》场景使用
 
             </template>
         </a-row> 
+        <!--基础属性列表 结束-->
 
     </a-form>
 

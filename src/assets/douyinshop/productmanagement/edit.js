@@ -21,7 +21,8 @@ export class Insetpagedata {
 
         // 1、请求商品详情
         var res = await axios.post(API.AppSrtoreAPI.dou_product.detaile, {
-            product_id:this.product_id
+            product_id:this.product_id,
+            show_draft:"true" // true：读取草稿数据；false：读取线上数据；不传默认为false
         })
         var ProductDetaile = res.data.data;     // 获取商品详情信息
         this.product_detaile = res.data.data;   // 商品详情数据赋值到对象
@@ -255,7 +256,7 @@ export class Insetpagedata {
     // 属性
     format={
 
-        // 查询属性
+        // 请求属性
         select_format:async(c_id, states)=>{
             
             var data = {
@@ -370,7 +371,7 @@ export class Insetpagedata {
                     
                     // console.log('度量衡-多值',item)
 
-                    this.formdata.format_form_data[item.property_id] = [{}];
+                    this.formdata.format_form_data[item.property_id] = [];
 
                 }else if(item.type == 'timestamp'){ // 时间戳
                     
@@ -470,11 +471,40 @@ export class Insetpagedata {
                     }
 
                 }else if(type == 'multi_value_measure'){ // 度量衡-多值
+
                     // 迭代加载多选属性值
-                    value_list.forEach(item=>{
-                        console.log('度量衡-多值',item)
-                        let diy_type = item.diy_type; // 是否自定义值
+                    value_list.forEach((item,index)=>{
+
+                        console.log('度量衡-多值',index, item, form_format[key])
+
+                        let measure_info = item.measure_info; // 度量衡信息
                         let diy_value = item.Value; // 自定义值 
+                        let result_obj = {} // 表单绑定的属性对象
+
+                        // 选择值：自定义值-输入的值
+                        if(diy_value == 0){
+
+                            var value_number = format_detaile_obj[key].options.length + 1;
+                            format_detaile_obj[key].options.push({
+                                name:measure_info.values[0].value,
+                                value:value_number + '',
+                                value_id:value_number,
+                                value_text:false// 自定义值标识
+                            })
+
+                            result_obj.value = value_number;
+
+                        }else{ // 选项有的值
+
+                           result_obj.value = item.Value;
+
+                        }
+                        if(measure_info !== null){ // 度量衡信息不为空，说明有值，加载值到表单绑定对象
+                            result_obj.percentage = measure_info.values[1].value// 百分比
+                        }
+
+                        form_format[key].push(result_obj)// 百分比
+
                     })
 
                 }else if(type =='measure'){ // 度量衡-单值
@@ -694,49 +724,69 @@ export class Insetpagedata {
         // 构造度量衡-多值属性提交数据
         make_format_multi_measure_result:(value, options, diy_type, measure_templates)=>{
 
-            // console.log('度量衡-多值',value, options, diy_type, measure_templates)
+            console.log('度量衡-多值',value, options, diy_type, measure_templates)
 
             var res = []
 
             value.map(val_obj=>{
 
-                let val_id = val_obj.value;           // 选项id：对应options的value_id，选择出
-                let percentage = val_obj.percentage;    // 度量衡百分比数字
+                let val_id = val_obj.value;                         // 选项id：对应options的value_id，选择出
+                let percentage = val_obj.percentage;                // 度量衡百分比数字
                 let template_id = measure_templates[0].template_id; // 度量衡模板id
                 let value_modules = measure_templates[0].value_modules; // 度量衡模板的值模块
-                if(diy_type == 1){ // 输入自定义的值
-                    options.forEach(item=>{
-                        if(item.value_id == val_id){
-                            let v_obj = {
-                                "measure_info": {
-                                    "values": [
-                                        {
-                                            "module_id": value_modules[0].module_id,
-                                            "value": item.name,
-                                            "unit_id": 0
-                                        },
-                                        {
-                                            "module_id": value_modules[1].module_id,
-                                            "unit_name": "%",
-                                            "unit_id": value_modules[1].units[0].unit_id,
-                                            "value": percentage + ''
-                                        }
-                                    ],
-                                        "template_id": template_id,
-                                        "value_name": item.name + percentage + "%"
-                                },
-                                "value":0,
-                                "name":item.name + percentage + "%",
-                                "diy_type":diy_type
-                            }
-                        res.push(v_obj)
+                options.forEach(item=>{
+                    if(item.value_id == val_id && item.value_text == false){
+                        let v_obj = {
+                            "measure_info": {
+                                "values": [
+                                    {
+                                        "module_id": value_modules[0].module_id,
+                                        "value": item.name,
+                                        "unit_id": 0
+                                    },
+                                    {
+                                        "module_id": value_modules[1].module_id,
+                                        "unit_name": "%",
+                                        "unit_id": value_modules[1].units[0].unit_id,
+                                        "value": percentage + ''
+                                    }
+                                ],
+                                    "template_id": template_id,
+                                    "value_name": item.name + percentage + "%"
+                            },
+                            "value":0,
+                            "name":item.name + percentage + "%",
+                            "diy_type":diy_type
                         }
-                    })
+                        res.push(v_obj)
+                    }else if(item.value_id == val_id && item.value_text == undefined){
+                        let v_obj = {
+                            "measure_info": {
+                                "values": [
+                                    {
+                                        "module_id": value_modules[0].module_id,
+                                        "value": item.name,
+                                        "unit_id": 0
+                                    },
+                                    {
+                                        "module_id": value_modules[1].module_id,
+                                        "unit_name": "%",
+                                        "unit_id": value_modules[1].units[0].unit_id,
+                                        "value": percentage + ''
+                                    }
+                                ],
+                                    "template_id": template_id,
+                                    "value_name": item.name + percentage + "%"
+                            },
+                            "value":item.value_id,
+                            "name":item.name + percentage + "%",
+                            "diy_type":diy_type
+                        }
+                        res.push(v_obj)
+                    }
+                })
 
-                }else{// 不是自定义值
 
-
-                }
 
             })
 
@@ -893,8 +943,10 @@ export class Insetpagedata {
 
         // 1、商品id
         this.data.product_id = this.product_id; 
+
         // 2、提交方式
         this.data.commit = false;
+
         // 3、获取主图
         if(this.formdata.pic.length > 0){// 不为空
             this.data.pic = toRaw(this.formdata.pic).join('|')
@@ -902,6 +954,7 @@ export class Insetpagedata {
             tool.Fun_.message('error','主图不能为空！')
             return
         }
+
         // 4、获取标题
         this.data.name = this.formdata.name;
 
@@ -910,9 +963,24 @@ export class Insetpagedata {
         console.log('提交数据',this.data);
 
         axios.post(API.AppSrtoreAPI.dou_product.edit, this.data).then(res=>{
-            console.log('提交数据',res);
+            
+            let code = res.data.code;
+
+            if(code == 10000){// 提交成功
+
+                console.log('提交数据',res.data);
+
+            }
+            else{// 提交失败
+
+                tool.Fun_.message('error',res.data.sub_msg)
+
+            }
+
         }).catch(err=>{
+            
             console.log('提交数据失败',err);
+
         })
         
     }
@@ -935,4 +1003,5 @@ export class Insetpagedata {
 // 资质
 
 // 更新
-
+// 商品提交成功，继续发布商品视频，分享到抖音
+// 商品提交成功，变更商品信息需审核通过后生效，审核周期为1-2个工作日。您可以在 “商品管理-审核记录” 中查看审核进度，请耐心等待。
