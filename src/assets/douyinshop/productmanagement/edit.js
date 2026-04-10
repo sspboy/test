@@ -2,12 +2,19 @@ import { defineComponent,reactive,ref,shallowRef,onMounted,defineAsyncComponent,
 import axios from 'axios'; // 网络请求
 import * as TOOL from '@/assets/JS_Model/tool';// 常用工具
 import * as utils from '@/assets/JS_Model/public_model';// 接口地址配置
-import { selectProps } from 'ant-design-vue/es/vc-select';
-import { t } from '@wangeditor/editor';
+// import { selectProps } from 'ant-design-vue/es/vc-select';
+// import { t } from '@wangeditor/editor';
 const tool = new TOOL.TOOL()            // 工具方法
 const API = new utils.A_Patch()         // 请求接口地址合集
 
-// 加载详情数据到页面
+// 编辑方法组件调用方法说明：
+//1、在页面组件中引入编辑方法组件：import { Insetpagedata } from '@/assets/douyinshop/productmanagement/edit.js';
+//2、载入商品id
+//3、商品详情
+//4、页面数据
+//5、表单数据
+//6、属性表单验证对象
+
 export class Insetpagedata {
     
     product_id = undefined;          // 商品id
@@ -25,6 +32,7 @@ export class Insetpagedata {
             show_draft:"true" // true：读取草稿数据；false：读取线上数据；不传默认为false
         })
         var ProductDetaile = res.data.data;     // 获取商品详情信息
+
         this.product_detaile = res.data.data;   // 商品详情数据赋值到对象
         this.PAGEDATA.product_data = false;     // 页面load状态关闭
 
@@ -39,6 +47,47 @@ export class Insetpagedata {
         this.formdata.cate_op.push(cateres); // 加载类目选项
         this.formdata.category_leaf_id = cateres.value; // 设置类目值
         this.format.select_format(this.formdata.category_leaf_id, true)// 初次加载属性：true：写入详情值
+
+        //商品类型
+        this.formdata.product_type = ProductDetaile.product_type + '';
+
+        // 支付方式（——废弃）
+        
+        // 库存类型
+        this.formdata.reduce_type = ProductDetaile.reduce_type + '';
+
+        // 客服电话
+        this.formdata.mobile = ProductDetaile.mobile;
+    
+        // 运费模板
+        this.formdata.freight_id.value = ProductDetaile.freight_id + '';
+        // id查询运费模板名称
+        // 回填id和名称
+
+        // 导购标题
+        this.formdata.short_product_name = ProductDetaile.short_product_name;
+
+        // 推荐语
+        this.formdata.recommend_remark = ProductDetaile.recommend_remark;
+
+        // 商家备注
+        this.formdata.remark = ProductDetaile.remark;
+
+        // 尺码模板--需要请求--名称-id
+        this.formdata.size_info_template_id.value = ProductDetaile.size_info_template_id.value;
+        // id查询运费模板名称
+        // 回填id和名称
+        
+        // 售后服务
+        this.formdata.after_sale_service = ProductDetaile.after_sale_service;
+
+        // 发货模式presell_type
+        this.formdata.presell_type = ProductDetaile.presell_type;
+
+        // 限购信息
+        this.formdata.maximum_per_order = ProductDetaile.maximum_per_order;// 每个用户每次下单限购件数
+        this.formdata.limit_per_buyer = ProductDetaile.limit_per_buyer;// 每个用户累计限购件数
+        this.formdata.minimum_per_order = ProductDetaile.minimum_per_order;// 每个用户每次下单至少购买的件数
 
         // 5、渲染规格
 
@@ -264,8 +313,8 @@ export class Insetpagedata {
             }
 
             var res = await axios.post(API.AppSrtoreAPI.dou_product.format,data);
-
-            var format_detaile_value = res.data.data.data
+            // console.log('请求属性结果', res)
+            var format_detaile_value = res.data.data.data; // 类目属性基础数据
 
             this.formdata.CateProperty = this.format.sort_required_(format_detaile_value)   // 必填属性排序
 
@@ -429,7 +478,7 @@ export class Insetpagedata {
 
                     // 迭代加载多选属性值
                     value_list.forEach(item=>{
-                        console.log('多选属性值',item)
+
                         let diy_type = item.diy_type; // 是否自定义值
                         let diy_value = item.Value; // 自定义值
 
@@ -475,7 +524,7 @@ export class Insetpagedata {
                     // 迭代加载多选属性值
                     value_list.forEach((item,index)=>{
 
-                        console.log('度量衡-多值',index, item, form_format[key])
+                        // console.log('度量衡-多值',index, item, form_format[key])
 
                         let measure_info = item.measure_info; // 度量衡信息
                         let diy_value = item.Value; // 自定义值 
@@ -880,16 +929,48 @@ export class Insetpagedata {
                 ]
             }
         },
+
+        // 构建【水洗标】图片地址
+        make_format_wash_pic:(data)=>{
+
+            // 商品详情填写，对应的水洗图片地址
+            let category_property_pics = {
+                "785": {
+                    "urls": ["https"]
+                }
+            }
+        }
     }
 
     // 表单字段验证规则
     rule={
+
         // 标题规则
         name:[
             {required: true, message: '标题不能为空', trigger: 'blur' },
             {max: 32,message: '不超过30个汉字,不能含emoj表情.',trigger: 'change'},
             {min: 4,message: '至少4个汉字.',trigger: 'change'},
-        ]
+        ],
+
+        // 商品类型
+        product_type:[
+            {required: true, message: '商品类别不能为空', trigger: 'blur' },
+        ],
+
+        // 减库存
+        reduce_type:[
+            {required: true, message: '库存类型不能为空', trigger: 'blur' },
+        ],
+
+        // 客服电话
+        mobile:[
+            {required: true, message: '电话不能为空', trigger: 'blur' },
+        ],
+
+        // 运费模板
+        freight_id:[
+            {required: true, message: '运费模板不能为空', trigger: 'blur' },
+        ],
     }
 
     // 获取数据
@@ -987,6 +1068,9 @@ export class Insetpagedata {
 
 }
 
+// 水洗标
+// category_property_pics:["url"] 商品详情字段
+// 规则字段
 
 // 白底图
 

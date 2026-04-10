@@ -8,7 +8,7 @@ PS：支持新建、编辑====》场景使用
 <template>
 <div>
 
-    <a-divider orientation="left" orientation-margin="0px">商品属性 <a href="#" class="font_size_12">智能填充属性</a></a-divider>
+    <a-divider orientation="left" orientation-margin="0px">商品属性</a-divider>
               
     <!--属性为空-->
     <div class="load_center" v-if="formdata.CateProperty == undefined" style="height: 400px;">
@@ -24,6 +24,7 @@ PS：支持新建、编辑====》场景使用
         v-else-if="formdata.CateProperty !== undefined"
     >
 
+        
         <!--多选度量衡 开始-->
         <a-row :gutter="[16,10]" style="padding: 0 0 20px 0;">
             
@@ -33,8 +34,33 @@ PS：支持新建、编辑====》场景使用
                 <!--多选度量衡 multi_value_measure-->
                 <template v-if="item.type == 'multi_value_measure'">
 
+                <!--洗水标上传 开始
+                    available    是否可用	true-可用，false-不可用
+                    required     是否必填	true-必填，false-选填
+                -->
+
+                <template v-if="item.property_pic_rule.available == true">
+
+                    <a-col :span="24">
+
+                        <p>水洗标/吊牌图</p>
+
+                        <!--为空-->
+                        <div class="cursor Add_img" v-if="formdata.category_property_pics == undefined" 
+                            @click="console.log('点击上传水洗标')">
+                            <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                            + <br />水洗/吊牌图
+                            </a-flex>
+                        </div>
+
+                        <!--不为空-->
+
+                    </a-col>
+                </template>
+                <!--洗水标上传 结束-->
+
                 <!--属性名称-->
-                <a-col :span="24">
+                <a-col :span="24" style="margin: 10px 0 0 0;">
                     {{ item.property_name }} 
                     <span v-show="item.required ==1" style="color: red;">*必填</span>
                 </a-col>
@@ -122,6 +148,7 @@ PS：支持新建、编辑====》场景使用
             </template>
         
         </a-row>
+        
         <!--多选度量衡 结束-->
 
         <!--单选度量衡 开始-->
@@ -567,6 +594,8 @@ setup(props,ctx) {
 }
 </script>
 <style scoped>
+.Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
+.Add_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
 .load_center{height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;}
 .site-input-group-wrapper .site-input-split {
   background-color: #fff;

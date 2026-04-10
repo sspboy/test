@@ -2,7 +2,12 @@
 <template>
     <!-- 动态渲染异步组件--选择素材 -->
     <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="PAGEDATA.Add_Callback" :data="PAGEDATA"/>
-    
+
+    <!-- 动态渲染异步组件--选择运费模板 -->
+    <selectFreightid v-if="PAGEDATA.freighttemplate_open" v-on:freight_callback="selectfreight_callback" :data="PAGEDATA"/>
+
+    <!-- 动态渲染异步组件--选择尺码模板 -->
+    <selectsizetemplateid v-if="PAGEDATA.sizetemplate_open" v-on:sizetemplate_callback="selectsizetemplate_callback" :data="PAGEDATA"/>
     <a-modal
       v-model:open="props.data.EditDate"
       width="100%"
@@ -66,7 +71,7 @@
                     v-if="formdata.pic == undefined || formdata.pic.length < 5" 
                     @click="PAGEDATA.change_material_type('PicList')">
                     <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
-                      +主图
+                      +
                     </a-flex>
                   </p>
 
@@ -87,9 +92,6 @@
                   <a-input placeholder="输入商品标题不超过30个汉字" v-model:value="formdata.name" autoComplete="off"></a-input>
                 </a-form-item>
 
-                <!-- <a-form-item label="导购标题">
-                  <a-input></a-input>
-                </a-form-item> -->
 
                 <a-divider orientation="left" orientation-margin="0px">商品分类 </a-divider>
 
@@ -132,17 +134,29 @@
               <a-row>
                 <a-col :span="4">
                   <p>白底图</p>
-                  <div class="img_pic"></div>
+                  <div class="cursor Add_img">
+                    <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                      + 
+                    </a-flex>
+                  </div>
                 </a-col>
                 <a-col :span="4">
                   <p>视频</p>
-                  <div class="img_pic"></div>
+                  <div class="cursor Add_img">
+                    <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                      + 
+                    </a-flex>
+                  </div>
                 </a-col>
 
                 <a-col :span="16">
                   <p>3:4主图</p>
 
-                  <div class="img_pic"></div>
+                  <div class="cursor Add_img">
+                    <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                      + 
+                      </a-flex>
+                  </div>
 
                   <!-- <p class="cursor Add_img" style="float: left;">
                     <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
@@ -155,41 +169,120 @@
 
               <!--商品信息-->
               <div>
-                <a-form>
+                <a-form
+                  :model="formdata"
+                  :rules="insetpagedata.rule"
+                  >
                   <a-divider orientation="left" orientation-margin="0px">必填信息 </a-divider>
                   <a-row :gutter="[16,6]">
-                    <a-col :span="8"><a-form-item label="商品类型"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="支付方式"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="库存类型"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="客服电话"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="提交方式"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="运费模板"></a-form-item></a-col>
+                    <a-col :span="8">
+                      <a-form-item label="商品类型" name="product_type">
+                        <a-select 
+                          style="width: 100%;" 
+                          placeholder="请选择商品类型"
+                          v-model:value="formdata.product_type"  
+                        >
+                          <a-select-option value="0">普通商品</a-select-option>
+                          <a-select-option value="3">虚拟商品</a-select-option>
+                          <a-select-option value="6">玉石闪购</a-select-option>
+                          <a-select-option value="7">云闪购</a-select-option>
+                        </a-select>
+                      </a-form-item>
+                    </a-col>
+
+                    <a-col :span="8">
+                      <a-form-item label="库存类型" name="reduce_type">
+                      <a-select style="width: 100%;" 
+                        v-model:value="formdata.reduce_type"
+                        placeholder="请选择库存类型"
+                      >
+                        <a-select-option value="1">拍下减库存</a-select-option>
+                        <a-select-option value="2">付款减库存</a-select-option>
+                      </a-select>
+                    </a-form-item></a-col>
+
+                    <a-col :span="8">
+                      <a-form-item label="客服电话" name="mobile">
+                      <a-input 
+                        placeholder="请输入客服电话"
+                        v-model:value="formdata.mobile"
+                      ></a-input>
+                    </a-form-item></a-col>
+
+                    <a-col :span="8">
+                      <a-form-item label="运费模板" name="freight_id">
+                        <a-input-group compact>
+                            <a-input v-model:value="formdata.freight_id.name" placeholder="选择运费模板" disabled style="width: calc(74%);padding: 5.5px;" />
+                            <a-button class="font_size_12" @click="PAGEDATA.chang_freighttemplate">选择</a-button>
+                        </a-input-group>
+                    </a-form-item></a-col>
                   </a-row>
 
                   <a-divider orientation="left" orientation-margin="0px">选填信息 </a-divider>
                   <a-row :gutter="[16,6]">
-                    <a-col :span="8"><a-form-item label="导购标题"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="推荐语"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="商家备注"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="尺码模板"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="售后服务"></a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="发货模式"></a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="导购标题">
+                      <a-input 
+                      placeholder="输入导购标题不超过30个汉字"
+                      v-model:value="formdata.short_product_name"
+                      ></a-input>
+                    </a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="推荐语">
+                      <a-input 
+                      placeholder="输入推荐语不超过12个汉字"
+                      v-model:value="formdata.recommend_remark"
+                      ></a-input>
+                    </a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="商家备注">
+                      <a-input 
+                      placeholder="输入商家备注不超过100个汉字"
+                      v-model:value="formdata.remark"
+                      >
+                      </a-input>
+                    </a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="尺码模板">
+                      <a-input-group compact>
+                          <a-input v-model:value="formdata.size_info_template_id.name" placeholder="请选择尺码模板" disabled style="width: calc(74%);padding: 5.5px;" />
+                          <a-button @click="PAGEDATA.chang_sizetemplate">选择</a-button>
+                      </a-input-group>
+                    </a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="售后服务">
+                      <a-select style="width: 100%;" placeholder="请选择售后服务">
+                        <a-select-option value="0">售后服务1</a-select-option>
+                        <a-select-option value="1">售后服务2</a-select-option>
+                        <a-select-option value="2">售后服务3</a-select-option>
+                      </a-select>
+                    </a-form-item></a-col>
+                    <a-col :span="8"><a-form-item label="发货模式">
+                      <a-select style="width: 100%;" placeholder="请选择发货模式">
+                        <a-select-option value="0">现货发货</a-select-option>
+                        <a-select-option value="1">预售发货</a-select-option>
+                        <a-select-option value="2">阶梯发货</a-select-option>
+                      </a-select>
+                    </a-form-item></a-col>
                   </a-row>
 
-                  <a-divider orientation="left" orientation-margin="0px">限购信息</a-divider>
                   <a-row :gutter="[16,6]">
                     <a-col :span="8">
-                      <a-form-item label="最少购买" placeholder="用户每次下单最少限购件数">
-                      <a-input></a-input>
+                      <a-form-item label="最少购买" >
+                      <a-input-number
+                        style="width: 100%;"
+                        placeholder="用户每次下单最少限购件数"
+                      ></a-input-number> 
                       </a-form-item>
                     </a-col>
                     <a-col :span="8">
-                      <a-form-item label="最多购买" placeholder="用户每次下单最多限购件数">
-                      <a-input></a-input>
+                      <a-form-item label="最多购买" >
+                      <a-input-number
+                        style="width: 100%;"
+                        placeholder="用户每次下单最多限购件数"
+                      ></a-input-number> 
                       </a-form-item></a-col>
                     <a-col :span="8">
-                      <a-form-item label="累计限购" placeholder="每个用户累计限购件数">
-                      <a-input></a-input>
+                      <a-form-item label="累计限购">
+                      <a-input-number
+                        style="width: 100%;"
+                        placeholder="每个用户累计限购件数"
+                      ></a-input-number> 
                       </a-form-item>
                     </a-col>
                   </a-row>
@@ -311,9 +404,6 @@
 
             </a-tab-pane>
 
-            <a-tab-pane key="6" tab="商品属性">
-              <format_cp v-on:get_format="console.log('获取属性信息')" :data="formdata"/>
-            </a-tab-pane>
           </a-tabs>
 
         </div>
@@ -337,7 +427,7 @@
 <script>
 
 import { defineComponent,reactive,ref,shallowRef,onMounted,defineAsyncComponent,toRaw } from 'vue';
-import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,EditOutlined,LeftOutlined,RightOutlined,} from '@ant-design/icons-vue';
+import { UpOutlined,DownOutlined,PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,EditOutlined,LeftOutlined,RightOutlined,} from '@ant-design/icons-vue';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 
@@ -353,6 +443,8 @@ export default defineComponent({
     name: "edit",  // 筛选条件查询组件
     // 引用组件
     components: {
+        UpOutlined,
+        DownOutlined,
         Editor, // 详情编辑
         Toolbar, // 编辑工具栏
         PlusOutlined,
@@ -362,7 +454,8 @@ export default defineComponent({
         RightOutlined,
         selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
         format_cp:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/edit_component/format_cp.vue')),// 商品属性组件
-        
+        selectFreightid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templatefreight/selectFreightId.vue')),// 运费模板组件
+        selectsizetemplateid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/selectsizetemplateid.vue')),// 尺码模板组件
         // 产品属性>面料属性》多选组件
         VNodes:defineComponent({
           props: {
@@ -400,7 +493,8 @@ export default defineComponent({
           product_id: props.data.product_id,  // 编辑的商品id
           product_data: true,            // 页面绑定数据
           category_leaf_id:undefined,   // 类目id
-
+          freighttemplate_open:false,    // 运费模板-图片显示状态配置
+          sizetemplate_open:false,       // 尺码模板-图片显示状态配置
           selectimg_open:false,          // 添加主图-图片显示状态配置
           // 图片组件获取地址后添加到页面容器：：：回调方法
           setimg_name:'',             // 添加图片的对象['PicList','long_img_List','white_img','video','des']
@@ -423,7 +517,15 @@ export default defineComponent({
           change_material_type:(typeName)=>{
             PAGEDATA.selectimg_open = true;
             PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
-          }
+          },
+          // 选择运费模板
+          chang_freighttemplate:()=>{
+              PAGEDATA.freighttemplate_open = true;
+          },
+          // 选择尺码
+          chang_sizetemplate:()=>{
+              PAGEDATA.sizetemplate_open = true;
+          },
         })
 
         // 表单数据
@@ -450,13 +552,13 @@ export default defineComponent({
             standard_brand_id:undefined,   // 品牌id，通过/product/getBrandList获取
             recommend_remark:undefined,   // 推荐语
             reduce_type:undefined,        // 1 减库存类型：1-拍下减库存 2-付款减库存
-            freight_id:undefined,         // 运费模板id
+            freight_id:{"name":undefined,"value":undefined},           // 运费模板
             weight:undefined,             // 重量
             weight_unit:undefined,        // 重量单位 0:克 1:千克
             mobile:undefined,             // 联系电话
             remark:undefined,             // 商家可见备注
             material_video_id:undefined,  // 主图视频ID，可以先通过https://op.jinritemai.com/docs/api-docs/69/1617接口上传视频，获取审核通过的视频素材ID进行传入
-            size_info_template_id:undefined, // 尺寸表模板id
+            size_info_template_id:{"name":undefined,"value":undefined}, // 尺寸表模板id
             short_product_name:undefined, // 导购短标题，短标题可用于物流打单及商品搜索场景，说明详见：https://school.jinritemai.com/doudian/web/article/aHUW2MCvHqF3?from=shop_article
             is_evaluate_opened:undefined, // 是否开启评价
 
@@ -479,7 +581,7 @@ export default defineComponent({
             CateProperty:undefined, // 接口查询属性列表
             format_form_ref:undefined, // 属性表单验证对象
             format_form_data:reactive({}), // 属性表单绑定对象
-
+            category_property_pics:undefined, // 属性图，如水洗标等，key=属性id
 
             // 规格库存
             spec_pic:undefined,             // 规格图片，单规格必填，多个规格选填，规格图片会覆盖主图
@@ -698,6 +800,28 @@ export default defineComponent({
 
         const inputRef = ref();
         const name = ref();
+        // 选择运费模板==回调方法
+        const selectfreight_callback= (data)=>{
+            // 填充id
+            var f_id = data.id
+            var f_name = data.name
+            // 填充名称
+            formdata.freight_id.value = f_id
+            formdata.freight_id.name = f_name
+            // console.log(formState.freight_id)
+        }
+
+        // 选择尺码模板==回调方法
+        const selectsizetemplate_callback= (data)=>{
+            console.log(data)
+            // 填充id
+            var s_id = data.id;
+            var s_name = data.name;
+            // 填充名称
+            formdata.size_info_template_id.value = s_id
+            formdata.size_info_template_id.name = s_name
+            // console.log(formState.size_info_template_id)
+        }
 
 
 
@@ -713,6 +837,8 @@ export default defineComponent({
             insetpagedata,// 数据操作方法
             // inputRef,
             // name,
+            selectfreight_callback,
+            selectsizetemplate_callback
             
       }
     }
