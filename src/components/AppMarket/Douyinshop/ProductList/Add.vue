@@ -2133,8 +2133,6 @@ export default defineComponent({
                 return
             }
 
-
-
             // 验证规格信息
             var specs_info = await SPECS.get_specs_obj()
             if(specs_info){
@@ -2217,8 +2215,12 @@ export default defineComponent({
                 }, 1000);
 
             }else{ // 接口返回失败
+
                 // 提示失败，返回失败原因;
                 tool.Fun_.message('error', sub_msg)
+
+                // 重置提交按钮状态
+                PAGEDATA.upload_product_loading = false;
 
             }
 

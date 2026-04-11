@@ -49,7 +49,7 @@ PS：支持新建、编辑====》场景使用
                         <div class="cursor Add_img" v-if="formdata.category_property_pics == undefined" 
                             @click="console.log('点击上传水洗标')">
                             <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
-                            + <br />水洗/吊牌图
+                            +
                             </a-flex>
                         </div>
 

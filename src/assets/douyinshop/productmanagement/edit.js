@@ -2,8 +2,6 @@ import { defineComponent,reactive,ref,shallowRef,onMounted,defineAsyncComponent,
 import axios from 'axios'; // 网络请求
 import * as TOOL from '@/assets/JS_Model/tool';// 常用工具
 import * as utils from '@/assets/JS_Model/public_model';// 接口地址配置
-// import { selectProps } from 'ant-design-vue/es/vc-select';
-// import { t } from '@wangeditor/editor';
 const tool = new TOOL.TOOL()            // 工具方法
 const API = new utils.A_Patch()         // 请求接口地址合集
 
@@ -31,7 +29,10 @@ export class Insetpagedata {
             product_id:this.product_id,
             show_draft:"true" // true：读取草稿数据；false：读取线上数据；不传默认为false
         })
+        
         var ProductDetaile = res.data.data;     // 获取商品详情信息
+
+        // console.log(ProductDetaile)
 
         this.product_detaile = res.data.data;   // 商品详情数据赋值到对象
         this.PAGEDATA.product_data = false;     // 页面load状态关闭
@@ -60,23 +61,18 @@ export class Insetpagedata {
         this.formdata.mobile = ProductDetaile.mobile;
     
         // 运费模板
-        this.formdata.freight_id.value = ProductDetaile.freight_id + '';
-        // id查询运费模板名称
-        // 回填id和名称
+        this.formdata.freight_id.value = ProductDetaile.freight_id + '';// 回填id
+        var freight_name = await this.freight_id.load(ProductDetaile.freight_id)// id查询运费模板名称
+        this.formdata.freight_id.name = freight_name;// 回填名称
+        
 
         // 导购标题
         this.formdata.short_product_name = ProductDetaile.short_product_name;
 
-        // 推荐语
-        this.formdata.recommend_remark = ProductDetaile.recommend_remark;
-
-        // 商家备注
-        this.formdata.remark = ProductDetaile.remark;
-
         // 尺码模板--需要请求--名称-id
-        this.formdata.size_info_template_id.value = ProductDetaile.size_info_template_id.value;
-        // id查询运费模板名称
-        // 回填id和名称
+        this.formdata.size_info_template_id.value = ProductDetaile.size_info_template_id;// 回填id
+        var template_name = await this.size_info.load(ProductDetaile.size_info_template_id)// id查询运费模板名称
+        this.formdata.size_info_template_id.name = template_name;// 回填名称
         
         // 售后服务
         this.formdata.after_sale_service = ProductDetaile.after_sale_service;
@@ -90,6 +86,12 @@ export class Insetpagedata {
         this.formdata.minimum_per_order = ProductDetaile.minimum_per_order;// 每个用户每次下单至少购买的件数
 
         // 5、渲染规格
+
+        // 渲染详情描述
+        
+        this.DES.handleCreated()
+        // 渲染详情描述
+        this.DES.valueHtml.value = this.product_detaile.description;
 
     }
 
@@ -942,6 +944,46 @@ export class Insetpagedata {
         }
     }
 
+    // 运费模板=加载->回填数据
+    freight_id={
+
+        load:async(id)=>{
+
+            if(id == 0){
+
+                return '包邮'
+
+            }else{
+
+                // 请求id获取名称
+                var res = await axios.post(API.AppSrtoreAPI.freight.detaile,{
+                    "freight_id":id
+                })
+                var template_name = res.data.data.template.template_name
+                return template_name
+            }
+            
+        }
+    }
+
+    // 尺码模板=加载->回填数据
+    size_info={
+        load:async(id)=>{
+
+            // 请求id获取名称
+            var res = await axios.post(API.AppSrtoreAPI.size.list,{
+                "template_type":"size_info",
+                "page_num":0,
+                "page_size":10,
+                "template_id":id
+            })
+
+            var size_data = res.data.data;
+            var name = JSON.parse(size_data.component_template_info_list[0].component_data).title;
+            return name
+        }
+    }
+
     // 表单字段验证规则
     rule={
 
@@ -973,7 +1015,7 @@ export class Insetpagedata {
         ],
     }
 
-    // 获取数据
+    // 获取属性数据
     product_form={
 
         // get
@@ -984,10 +1026,15 @@ export class Insetpagedata {
             // console.log('请求属性结果',format_res)
 
             if(format_res){
-                this.data.product_format_new = format_res; // 属性数据-字符串
-                this.update()
+
+                this.data.product_format_new = format_res; // 属性数据-字符串-赋值
+
+                this.update()// 上传数据
+
             }else{
+
                 console.log('获取属性数据失败')
+
             }
         },
 
@@ -1017,18 +1064,148 @@ export class Insetpagedata {
         }
     }
 
+    // 详情描述
+    DES = {
+        // 初始化
+        editorRef:shallowRef(),// 编辑器实例，必须用 shallowRef
+        valueHtml:ref(undefined),
+        mode:ref('simple'),// 或 'simple' 'default'
+        // 编辑器实例，必须用 shallowRef
+        editorRef:shallowRef(),
+        editorConfig:{placeholder: '请输入内容...' },// 默认值
+        // 编辑器工具栏配置
+        toolbarConfig:{
+            excludeKeys: [
+                'bold',
+                "underline",
+                "italic",
+                "through",
+                "color",
+                "clearStyle",
+                "bgColor",
+                "codeBlock",
+                "blockquote",
+                "bulletedList",
+                "numberedList",
+                "insertTable",
+                "header1",
+                "header2",
+                "header3",
+                'headerSelect',
+                'italic',
+                'group-more-style', // 排除菜单组，写菜单组 key 的值即可
+                //"fullScreen",
+                "insertLink",
+                "editLink",
+                "insertVideo",
+                "uploadVideo",
+                "todo",
+                "redo",
+                "undo",
+                "group-image",
+                "uploadImage",
+                "insertImage",
+
+            ]
+        },
+        // 创建编辑器
+        handleCreated:(editor) => {
+            this.DES.editorRef.value = editor // 记录 editor 实例，重要！
+            console.log('创建编辑器成功！！！')
+        },
+        // 加载图片到编辑器
+        add_img:(img_list)=>{
+            var image_text = '<p>'
+            for(let i of img_list){
+                let url = i.byte_url;
+                image_text = image_text + '<img class="ant-image-img" src=" ' + url + '">';
+            }
+            this.DES.valueHtml.value = this.DES.valueHtml.value + image_text + '1</p>'
+        },
+        // 获取描述图片
+        get_img:()=>{
+            console.log(this.DES.valueHtml.value)
+            var img_list_res = []
+            // 描述为空
+            if(this.DES.editorRef.value == undefined){
+                tool.Fun_.message('error', '描述详情不能为空！');
+                activeKey.value = '5';
+                return false
+            }else {
+
+                var img_list = this.DES.editorRef.value.getElemsByType('image') // 获取图片地址
+
+                if(img_list.length == 0 || this.DES.editorRef.value == undefined){
+                    tool.Fun_.message('error', '描述详情不能为空！');
+                    activeKey.value = '5';
+                    return false
+                }else{
+                    // 描述不为空
+                    // console.log(img_list)
+                    img_list.forEach((obj,index)=>{
+                        img_list_res.push(obj.src)
+                    })
+
+                    return img_list_res.join('|')
+                }
+            }
+        },
+        // 清空描述图
+        clear_img:()=>{
+            DES.valueHtml.value = '';
+        },
+        // 描述图转义
+        escape_description:(data)=>{
+            var re_zyf = /https:(.*?)"/g;// 单组sku
+            var re_S = new RegExp(re_zyf);
+            var dan_res = data.match(re_S);
+            for(let i = 0;i<dan_res.length;i++){
+                var img_url= dan_res[i].slice(0,dan_res[i].length-1);
+                // console.log('描述图片url', img_url);
+                var img_url_width_height_list = img_url.match(/www(.*)/g)[0].slice(3).split('-');
+                // console.log('描述图片宽高', img_url_width_height_list);
+
+                var url_width = parseInt(img_url_width_height_list[0]);// 宽度
+                var url_height = parseInt(img_url_width_height_list[1]);// 高度
+                // 高度等比缩放到110px，计算宽度
+                var img_url_width_height_list_110 = [];
+                if(url_width>url_height){
+                img_url_width_height_list_110[0] = 110;// 图片宽度
+                img_url_width_height_list_110[1] = Math.floor(url_height * (110 / url_width));// 图片高度
+                }else{
+                img_url_width_height_list_110[0] = Math.floor(url_width * (110 / url_height));
+                img_url_width_height_list_110[1] = 110;
+                }
+
+                dan_res[i] = {
+                url:img_url,
+                width:img_url_width_height_list_110[0],// 图片宽度
+                height:img_url_width_height_list_110[1]// 图片高度
+                };
+                // console.log('描述图片宽高等比缩放110px', dan_res[i]);
+            }
+            console.log('描述图正则结果', dan_res);
+        
+            // PAGEDATA.description = [...dan_res];
+        },
+    }
+
+    // 描述详情 - 结束
+
+
+    // 上传对象
     data={}
     
     // 提交数据
     update = ()=>{
 
-        // 1、商品id
+        // 1、商品id-必填
         this.data.product_id = this.product_id; 
 
-        // 2、提交方式
+        // 2、提交方式-必填
         this.data.commit = false;
 
-        // 3、获取主图
+        // 3、获取主图-必填
         if(this.formdata.pic.length > 0){// 不为空
             this.data.pic = toRaw(this.formdata.pic).join('|')
         }else{
@@ -1036,10 +1213,50 @@ export class Insetpagedata {
             return
         }
 
-        // 4、获取标题
+        // 4、获取标题-必填
         this.data.name = this.formdata.name;
 
-        this.data.category_leaf_id = this.formdata.category_leaf_id// 类目id
+        // 5、类目id-必填
+        this.data.category_leaf_id = this.formdata.category_leaf_id;
+
+        // 商品类别-必填
+        this.data.product_type = this.formdata.product_type;
+
+        // 库存类别-必填
+        this.data.reduce_type = this.formdata.reduce_type;
+
+        // 运费模板-必填
+        this.data.freight_id = Number(this.formdata.freight_id.value);
+
+        // 尺码模板-非必填
+        this.data.size_info_template_id = this.formdata.size_info_template_id.value;
+
+        // 客服电话-非必填
+        this.data.mobile = this.formdata.mobile;
+
+        // 导购标题
+        if(this.formdata.short_product_name != undefined && this.formdata.short_product_name != ''){
+            this.data.short_product_name = this.formdata.short_product_name;
+        }
+
+        // 限购-最少购买
+        if(this.formdata.minimum_per_order != undefined && this.formdata.minimum_per_order != ''){
+            this.data.minimum_per_order = this.formdata.minimum_per_order;
+        }
+
+        // 限购-最多购买
+        if(this.formdata.maximum_per_order != undefined && this.formdata.maximum_per_order != ''){
+            this.data.maximum_per_order = this.formdata.maximum_per_order;
+        }
+
+        // 限购-累计购买
+        if(this.formdata.limit_per_buyer != undefined && this.formdata.limit_per_buyer != ''){
+            this.data.limit_per_buyer = this.formdata.limit_per_buyer;
+        }
+
+        // 描述图片
+        var des_image= this.DES.get_img()
+        console.log('提交数据',des_image);
 
         console.log('提交数据',this.data);
 
@@ -1050,6 +1267,7 @@ export class Insetpagedata {
             if(code == 10000){// 提交成功
 
                 console.log('提交数据',res.data);
+                tool.Fun_.message('success','商品信息提交成功！')
 
             }
             else{// 提交失败

@@ -88,10 +88,22 @@
                 :rules="insetpagedata.rule"
                 >
 
-                <a-form-item label="商品标题" name="name">
-                  <a-input placeholder="输入商品标题不超过30个汉字" v-model:value="formdata.name" autoComplete="off"></a-input>
-                </a-form-item>
-
+                <a-row  :gutter="[16,6]">
+                  <a-col :span="16">
+                    <a-form-item label="商品标题" name="name">
+                      <a-input placeholder="输入商品标题不超过30个汉字" v-model:value="formdata.name" autoComplete="off"></a-input>
+                    </a-form-item>
+                  </a-col>
+                  <a-col :span="8">
+                    <a-form-item label="导购标题" name="short_product_name">
+                      <a-input 
+                        placeholder="输入导购标题不超过30个汉字"
+                        v-model:value="formdata.short_product_name"
+                        autoComplete="off"
+                      ></a-input>
+                    </a-form-item>
+                  </a-col>
+                </a-row>
 
                 <a-divider orientation="left" orientation-margin="0px">商品分类 </a-divider>
 
@@ -206,6 +218,7 @@
                       <a-input 
                         placeholder="请输入客服电话"
                         v-model:value="formdata.mobile"
+                        autoComplete="off"
                       ></a-input>
                     </a-form-item></a-col>
 
@@ -216,72 +229,52 @@
                             <a-button class="font_size_12" @click="PAGEDATA.chang_freighttemplate">选择</a-button>
                         </a-input-group>
                     </a-form-item></a-col>
-                  </a-row>
-
-                  <a-divider orientation="left" orientation-margin="0px">选填信息 </a-divider>
-                  <a-row :gutter="[16,6]">
-                    <a-col :span="8"><a-form-item label="导购标题">
-                      <a-input 
-                      placeholder="输入导购标题不超过30个汉字"
-                      v-model:value="formdata.short_product_name"
-                      ></a-input>
-                    </a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="推荐语">
-                      <a-input 
-                      placeholder="输入推荐语不超过12个汉字"
-                      v-model:value="formdata.recommend_remark"
-                      ></a-input>
-                    </a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="商家备注">
-                      <a-input 
-                      placeholder="输入商家备注不超过100个汉字"
-                      v-model:value="formdata.remark"
-                      >
-                      </a-input>
-                    </a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="尺码模板">
-                      <a-input-group compact>
-                          <a-input v-model:value="formdata.size_info_template_id.name" placeholder="请选择尺码模板" disabled style="width: calc(74%);padding: 5.5px;" />
-                          <a-button @click="PAGEDATA.chang_sizetemplate">选择</a-button>
-                      </a-input-group>
-                    </a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="售后服务">
+                    <a-col :span="8">
+                      <a-form-item label="尺码模板" name="size_info_template_id">
+                        <a-input-group compact>
+                            <a-input v-model:value="formdata.size_info_template_id.name" placeholder="请选择尺码模板" disabled style="width: calc(74%);padding: 5.5px;" />
+                            <a-button @click="PAGEDATA.chang_sizetemplate">选择</a-button>
+                        </a-input-group>
+                      </a-form-item>
+                    </a-col>
+                    <a-col :span="8"><a-form-item label="售后服务" name="after_sale_service">
                       <a-select style="width: 100%;" placeholder="请选择售后服务">
                         <a-select-option value="0">售后服务1</a-select-option>
                         <a-select-option value="1">售后服务2</a-select-option>
                         <a-select-option value="2">售后服务3</a-select-option>
                       </a-select>
                     </a-form-item></a-col>
-                    <a-col :span="8"><a-form-item label="发货模式">
-                      <a-select style="width: 100%;" placeholder="请选择发货模式">
-                        <a-select-option value="0">现货发货</a-select-option>
-                        <a-select-option value="1">预售发货</a-select-option>
-                        <a-select-option value="2">阶梯发货</a-select-option>
-                      </a-select>
-                    </a-form-item></a-col>
                   </a-row>
+
+                  <a-divider orientation="left" orientation-margin="0px">限购信息 </a-divider>
 
                   <a-row :gutter="[16,6]">
                     <a-col :span="8">
-                      <a-form-item label="最少购买" >
+                      <a-form-item label="最少购买" name="minimum_per_order">
                       <a-input-number
                         style="width: 100%;"
                         placeholder="用户每次下单最少限购件数"
+                        v-model:value="formdata.minimum_per_order"
+                        autoComplete="off"
                       ></a-input-number> 
                       </a-form-item>
                     </a-col>
                     <a-col :span="8">
-                      <a-form-item label="最多购买" >
+                      <a-form-item label="最多购买" name="maximum_per_order">
                       <a-input-number
                         style="width: 100%;"
                         placeholder="用户每次下单最多限购件数"
+                        v-model:value="formdata.maximum_per_order"
+                        autoComplete="off"
                       ></a-input-number> 
                       </a-form-item></a-col>
                     <a-col :span="8">
-                      <a-form-item label="累计限购">
+                      <a-form-item label="累计限购" name="limit_per_buyer">
                       <a-input-number
                         style="width: 100%;"
                         placeholder="每个用户累计限购件数"
+                        v-model:value="formdata.limit_per_buyer"
+                        autoComplete="off"
                       ></a-input-number> 
                       </a-form-item>
                     </a-col>
@@ -387,17 +380,17 @@
       
                   <Toolbar
                       style="border-bottom: 1px solid #ccc"
-                      :editor="editorRef"
-                      :defaultConfig="DES.toolbarConfig"
-                      :mode="DES.mode.value"
+                      :editor="insetpagedata.editorRef"
+                      :defaultConfig="insetpagedata.DES.toolbarConfig"
+                      :mode="insetpagedata.DES.mode.value"
                   />
 
                   <Editor
-                      style="height: 600px; overflow-y: hidden;"
-                      v-model="DES.valueHtml.value"
-                      :defaultConfig="DES.editorConfig"
-                      :mode="DES.mode.value"
-                      @onCreated="DES.handleCreated"
+                      style="height: 700px; overflow-y: hidden;"
+                      v-model="insetpagedata.DES.valueHtml.value"
+                      :defaultConfig="insetpagedata.DES.editorConfig"
+                      :mode="insetpagedata.DES.mode.value"
+                      @onCreated="insetpagedata.DES.handleCreated"
                   />
 
               </div>
@@ -426,7 +419,7 @@
 </template>
 <script>
 
-import { defineComponent,reactive,ref,shallowRef,onMounted,defineAsyncComponent,toRaw } from 'vue';
+import { defineComponent,reactive,ref,onMounted,defineAsyncComponent,toRaw } from 'vue';
 import { UpOutlined,DownOutlined,PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,EditOutlined,LeftOutlined,RightOutlined,} from '@ant-design/icons-vue';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
@@ -550,13 +543,13 @@ export default defineComponent({
             out_product_id:undefined,     // 外部product_id。超市小时达场景不推荐使用
             outer_product_id:undefined,   // 外部product id。超市小时达场景不推荐使用
             standard_brand_id:undefined,   // 品牌id，通过/product/getBrandList获取
-            recommend_remark:undefined,   // 推荐语
+            // recommend_remark:undefined,   // 已废弃-推荐语
             reduce_type:undefined,        // 1 减库存类型：1-拍下减库存 2-付款减库存
             freight_id:{"name":undefined,"value":undefined},           // 运费模板
             weight:undefined,             // 重量
             weight_unit:undefined,        // 重量单位 0:克 1:千克
             mobile:undefined,             // 联系电话
-            remark:undefined,             // 商家可见备注
+            // remark:undefined,           // 后台无用-商家可见备注
             material_video_id:undefined,  // 主图视频ID，可以先通过https://op.jinritemai.com/docs/api-docs/69/1617接口上传视频，获取审核通过的视频素材ID进行传入
             size_info_template_id:{"name":undefined,"value":undefined}, // 尺寸表模板id
             short_product_name:undefined, // 导购短标题，短标题可用于物流打单及商品搜索场景，说明详见：https://school.jinritemai.com/doudian/web/article/aHUW2MCvHqF3?from=shop_article
@@ -594,8 +587,8 @@ export default defineComponent({
             minimum_per_order:undefined, // 每个用户每次下单至少购买的件数
 
             // 售后服务
-            after_sale_service:undefined, // 售后服务参数,key:value格式 
-            after_sale_service_v2:undefined, // 售后服务参数，售后服务新结构（老的after_sale_service中的字段后续会慢慢迁移到这里）
+            after_sale_service:{"supply_day_return_selector":"7-0"}, // 售后服务参数,key:value格式 
+            //after_sale_service_v2:undefined, // 售后服务参数，售后服务新结构（老的after_sale_service中的字段后续会慢慢迁移到这里）
 
             // 资质
             quality_list:[],// 资质信息，可通过/product/qualificationConfig获取
@@ -682,97 +675,7 @@ export default defineComponent({
             },
           ]
         })
-        
-        // 描述详情
-        const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
-        const DES = {
-            // 初始化
-            valueHtml:ref(undefined),
-            mode:ref('simple'),// 或 'simple' 'default'
-            // 编辑器实例，必须用 shallowRef
-            editorRef:shallowRef(),
-            editorConfig:{placeholder: '请输入内容...' },// 默认值
-            // 编辑器工具栏配置
-            toolbarConfig:{
-                excludeKeys: [
-                    'bold',
-                    "underline",
-                    "italic",
-                    "through",
-                    "color",
-                    "clearStyle",
-                    "bgColor",
-                    "codeBlock",
-                    "blockquote",
-                    "bulletedList",
-                    "numberedList",
-                    "insertTable",
-                    "header1",
-                    "header2",
-                    "header3",
-                    'headerSelect',
-                    'italic',
-                    'group-more-style', // 排除菜单组，写菜单组 key 的值即可
-                    //"fullScreen",
-                    "insertLink",
-                    "editLink",
-                    "insertVideo",
-                    "uploadVideo",
-                    "todo",
-                    "redo",
-                    "undo",
-                    "group-image",
-                    "uploadImage",
-                    "insertImage",
 
-                ]
-            },
-            // 创建编辑器
-            handleCreated:(editor) => {
-                editorRef.value = editor // 记录 editor 实例，重要！
-                editor.clear() // 清空编辑器
-            },
-            // 加载图片到编辑器
-            add_img:(img_list)=>{
-                var image_text = '<p>'
-                for(let i of img_list){
-                    let url = i.byte_url;
-                    image_text = image_text + '<img class="ant-image-img" src=" ' + url + '">';
-                }
-                DES.valueHtml.value = DES.valueHtml.value + image_text + '</p>'
-            },
-            // 获取描述图片
-            get_img:()=>{
-                var img_list_res = []
-                // 描述为空
-                if(editorRef.value == undefined){
-                    tool.Fun_.message('error', '描述详情不能为空！');
-                    activeKey.value = '5';
-                    return false
-                }else {
-
-                    var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
-
-                    if(img_list.length == 0 || editorRef.value == undefined){
-                        tool.Fun_.message('error', '描述详情不能为空！');
-                        activeKey.value = '5';
-                        return false
-                    }else{
-                        // 描述不为空
-                        // console.log(img_list)
-                        img_list.forEach((obj,index)=>{
-                            img_list_res.push(obj.src)
-                        })
-
-                        return img_list_res.join('|')
-                    }
-                }
-            },
-            // 清空描述图
-            clear_img:()=>{
-                DES.valueHtml.value = '';
-            }
-        }
 
         const insetpagedata = new ProductEdit.Insetpagedata() // 加载数据方法
         
@@ -781,8 +684,8 @@ export default defineComponent({
         insetpagedata.PAGEDATA = PAGEDATA;// 商品id初始化
 
         insetpagedata.formdata = formdata;// 商品表单初始化
-        
 
+        
         // 在组件挂载时添加事件监听器
         onMounted(() => {
           
@@ -800,6 +703,7 @@ export default defineComponent({
 
         const inputRef = ref();
         const name = ref();
+
         // 选择运费模板==回调方法
         const selectfreight_callback= (data)=>{
             // 填充id
@@ -808,22 +712,19 @@ export default defineComponent({
             // 填充名称
             formdata.freight_id.value = f_id
             formdata.freight_id.name = f_name
-            // console.log(formState.freight_id)
+            // console.log(formdata.freight_id)
         }
 
         // 选择尺码模板==回调方法
         const selectsizetemplate_callback= (data)=>{
-            console.log(data)
             // 填充id
             var s_id = data.id;
             var s_name = data.name;
             // 填充名称
             formdata.size_info_template_id.value = s_id
             formdata.size_info_template_id.name = s_name
-            // console.log(formState.size_info_template_id)
+            console.log(formdata.size_info_template_id)
         }
-
-
 
         return{
             PAGEDATA,
@@ -832,8 +733,6 @@ export default defineComponent({
             handleOk,
             activeKey,
             stockData, // 库存数据
-            editorRef, // 富媒体编辑
-            DES, // 描述数据
             insetpagedata,// 数据操作方法
             // inputRef,
             // name,
@@ -848,9 +747,9 @@ export default defineComponent({
 .formatboxstyle{width: 25%;height: 100px;padding: 0 10px 0 0;float: left;}
 .content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 90vh;}
 .load_center{height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;}
-.img_pic{height: 100px;width: 100px;border: 1px #f2f2f2 solid; border-radius: 4px;padding: 10px;}
+.img_pic{height: 110px;width: 110px;border: 1px #f2f2f2 solid; border-radius: 4px;padding: 10px;}
 .img_3_4_pic{height: 132px;width: 99px;background-color: #f2f2f2;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
-.Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
+.Add_img{height: 110px;width: 110px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
 .Add_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
 .Add_3_4_img{height: 132px;width: 99px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
 .Add_3_4_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
