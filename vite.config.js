@@ -32,9 +32,9 @@ export default defineConfig({
     host: '0.0.0.0',  // 或设置为 true，监听所有地址
     proxy: {
       '/api': {
-        // target: 'http://192.168.2.106:5000', // 家里环境
+        target: 'http://192.168.2.104:5000', // 家里环境
         // target: 'http://172.17.57.178:5000', // aliyun
-        target: 'http://192.168.3.121:5000', // 公司
+        // target: 'http://192.168.3.121:5000', // 公司
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '') // 替代 pathRewrite
       }

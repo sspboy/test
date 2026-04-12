@@ -1,4 +1,6 @@
-<!--抖音-选择图片、上传图片、本地上传图片 组件-->
+<!--
+页面说明：抖音-选择图片、上传图片、本地上传图片 抽屉组件
+-->
 <template>
 
     <a-drawer
@@ -57,7 +59,7 @@
 
             <a-layout style="height: 96%; margin-top: 16px;">
                 
-                <!-- 左侧素材选择树 菜单 -->
+                <!-- 左侧素材选择树 菜单 开始-->
                 <a-layout-sider class="siderStyle" width="300">
 
                     <!-- 加载状态 -->
@@ -81,6 +83,7 @@
                     </a-tree>
 
                 </a-layout-sider>
+                <!-- 左侧素材选择树 菜单 结束-->
 
                 <a-layout>
 
@@ -459,6 +462,7 @@ export default defineComponent({
                 // Material_Images.image_detaile.value = undefined;
             }
         };
+        
         // 显示视频详情--按钮
         const showChildvideoDrawer = (item) => {
             childvideoDrawer.value = !childvideoDrawer.value;
@@ -757,7 +761,7 @@ export default defineComponent({
 
             PAGEDATA.loading = true;
 
-            // 请求商品接口
+            // 请求素材接口
             const res = await axios.post(API.AppSrtoreAPI.material.getfolder, data)
             // console.log(res)
 

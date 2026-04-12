@@ -586,7 +586,6 @@ export default {
 
         // 请求商品接口
         const res = await axios.post(API.AppSrtoreAPI.dou_product.list, data)
-
         var res_data = res.data.data;
         var res_list = res_data.data;
         var total = res_data.total;

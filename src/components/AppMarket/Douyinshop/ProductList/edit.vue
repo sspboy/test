@@ -386,7 +386,7 @@
                   />
 
                   <Editor
-                      style="height: 700px; overflow-y: hidden;"
+                      style="height: 100%; overflow-y: hidden;"
                       v-model="insetpagedata.DES.valueHtml.value"
                       :defaultConfig="insetpagedata.DES.editorConfig"
                       :mode="insetpagedata.DES.mode.value"
