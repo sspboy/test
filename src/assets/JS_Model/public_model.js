@@ -124,12 +124,14 @@ export class A_Patch{
         material:{
             "searchfolder":"api/douyin/material/searchfolder",  // 搜索文件夹
             "getfolder":"api/douyin/material/getfolderinfo",// 查看文件夹信息
-            "list":"api/douyin/material/list",
-            "detaile":"api/douyin/material/getmaterialdetaile",
-            "delete":"api/douyin/material/",
-            "edit":"api/douyin/material/",
-            "add":"api/douyin/material/add",
-            "videolist":"api/douyin/material/batchgetvideodetaile"
+            "list":"api/douyin/material/list", // 素材列表
+            "detaile":"api/douyin/material/getmaterialdetaile", // 素材详情
+            "deletematerial":"api/douyin/material/deletematerial", // 彻底删除素材
+            "movematerialrecyclebin":"api/douyin/material/movematerialrecyclebin",// 放入回收站
+            "easyshuttle":"api/douyin/material/easyshuttle",// 一键删除
+            "edit":"api/douyin/material/", // 编辑文件夹
+            "add":"api/douyin/material/add", // 添加文件夹
+            "videolist":"api/douyin/material/batchgetvideodetaile" // 视频列表
         },
         // 上传商品图片
         upload:{

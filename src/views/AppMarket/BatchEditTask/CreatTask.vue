@@ -301,8 +301,8 @@
 </template>
 
 <script>
-import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined} from '@ant-design/icons-vue';
-import {defineComponent, onBeforeMount, onMounted, onUnmounted, reactive, ref, nextTick} from 'vue';
+import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined,UpOutlined,DownOutlined} from '@ant-design/icons-vue';
+import {defineComponent, onBeforeMount, onMounted,onUnmounted, reactive, ref, nextTick} from 'vue';
 import { Segmented } from 'ant-design-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
@@ -328,6 +328,8 @@ export default {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     PlusOutlined,
+    UpOutlined,
+    DownOutlined,
     menu_left,
     menu_head,
     first_step

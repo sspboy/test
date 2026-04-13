@@ -43,13 +43,16 @@
           </a-col>
 
           <a-col :span="6">
-                <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }">
+                <a-card class="cardStyle cursor" :body-style="{ padding: 0, overflow: 'hidden' }" @click="router.push('/materiallist')">
                   <a-flex justify="space-between">
                     
                     <ShopTwoTone class="icoStyle"/>
                     <a-flex vertical align="flex-start" justify="space-between" style="padding: 0 10px 0 10px;width: 100%;">
                       <a-typography>
-                        <a-typography-title class="cardTitle">网盘素材<RightOutlined /></a-typography-title>
+                        <a-typography-title class="cardTitle">
+                          网盘素材
+                          <RightOutlined />
+                        </a-typography-title>
                         <a-typography-paragraph class="cardText">
                             素材空间 图片上传 视频管理
                         </a-typography-paragraph>

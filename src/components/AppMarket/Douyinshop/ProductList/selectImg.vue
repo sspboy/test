@@ -1,5 +1,7 @@
 <!--
-页面说明：抖音-选择图片、上传图片、本地上传图片 抽屉组件
+组件说明：
+选择素材组件,功能包含如下：
+抖音-选择图片、上传图片、本地上传图片 抽屉组件
 -->
 <template>
 
@@ -19,9 +21,7 @@
                 <a-col :span="18">
                     <!--图片上传按钮-->
                     <a-space>
-
                         <h3 style="margin: 4px 0 0 0;">选择素材</h3>
-
                         <!--面包屑导航-->
                         <div style="margin: 8px 0 0 20px;"> 
                             <a-breadcrumb>
@@ -37,7 +37,6 @@
                             </a-breadcrumb>
                         </div>
                     </a-space>
-
                 </a-col>
 
                 <a-col :span="6">
@@ -94,28 +93,28 @@
 
                             <div class="confimImg">
 
-                                    <p style="padding: 0 0 0 20px;">
-                                        已选择图片 
-                                        <a-tag :bordered="false">{{ Material_Images.confirm_img_list.value.length }}</a-tag>
-                                        张 ------ 
-                                        <a href="#" @click="Material_Images.clear_confirm_img_list"><ClearOutlined />清空</a>
-                                    </p>
+                                <p style="padding: 0 0 0 20px;">
+                                    已选择图片 
+                                    <a-tag :bordered="false">{{ Material_Images.confirm_img_list.value.length }}</a-tag>
+                                    张 ------ 
+                                    <a href="#" @click="Material_Images.clear_confirm_img_list"><ClearOutlined />清空</a>
+                                </p>
 
-                                    <!--暂无数据-->
-                                    <div v-if="Material_Images.confirm_img_list.value.length == 0" style="margin-top: 110px;">
-                                        <a-empty :image="simpleImage" />
-                                    </div>
+                                <!--暂无数据-->
+                                <div v-if="Material_Images.confirm_img_list.value.length == 0" style="margin-top: 110px;">
+                                    <a-empty :image="simpleImage" />
+                                </div>
                                     
-                                    <!--列表数据 迭代-->
-                                    <div v-for="item in Material_Images.confirm_img_list.value" class="confimbox">
-                                            <a-image v-if="item.material_type == 'photo'" style="height:50px;" :src="item.byte_url" />
-                                            <a-image v-if="item.material_type == 'video'" style="height:50px;" :src="item.video_info.video_cover_url" />
-                                            <p style="margin: 10px 0 0 0;font-size: 12px;">
-                                                <a-button type="text" size="small" @click="Material_Images.clear_img_fun(item)"> 
-                                                <CloseCircleOutlined />
-                                                </a-button>
-                                            </p>
-                                    </div>
+                                <!--列表数据 迭代-->
+                                <div v-for="item in Material_Images.confirm_img_list.value" class="confimbox">
+                                        <a-image v-if="item.material_type == 'photo'" style="height:50px;" :src="item.byte_url" />
+                                        <a-image v-if="item.material_type == 'video'" style="height:50px;" :src="item.video_info.video_cover_url" />
+                                        <p style="margin: 10px 0 0 0;font-size: 12px;">
+                                            <a-button type="text" size="small" @click="Material_Images.clear_img_fun(item)"> 
+                                            <CloseCircleOutlined />
+                                            </a-button>
+                                        </p>
+                                </div>
 
                             </div>
 
