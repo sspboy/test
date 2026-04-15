@@ -43,7 +43,7 @@
                     v-model:selectedKeys="selectedKeys"
                     :load-data="onLoadData"
                     :tree-data="treeData"
-                    @select="handleSelect"
+                    @select="MaterialListMethod.Tree.handleSelect"
                     show-icon
                     style="font-size: 12px;"
                 >
@@ -229,7 +229,7 @@
 
             <!-- 翻页 -->
             <a-layout-footer class="footerStyle">          
-                <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
+                <nav_pagination :fandata="PAGEDATA" v-on:complete="MaterialListMethod.page_turning"/>
             </a-layout-footer>
 
         </a-layout-content>
@@ -382,8 +382,6 @@ import{Empty, message} from 'ant-design-vue'
 import { useStore } from 'vuex'
 // 网络请求工具引用FolderOutlined
 import { FolderOutlined,CloseCircleOutlined,ClearOutlined,EyeOutlined,DownOutlined,FolderOpenOutlined} from '@ant-design/icons-vue';
-
-import axios from "axios";
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as MaterialList from '@/assets/douyinshop/productmanagement/material_list';// 商品管理->编辑操作方法
@@ -416,7 +414,6 @@ setup(props,ctx) {
     const API = new utils.A_Patch()     // 请求接口地址合集
     const MaterialListMethod = new MaterialList.MaterialListMethod() // 加载数据方法
 
-
     // 组件挂之后---请求数据===============================开始
     const PAGEDATA = reactive({
         title:'素材列表',
@@ -431,10 +428,7 @@ setup(props,ctx) {
         // 列表信息
         datalist:[],
         total_number:0,     // 内容总数
-        // 翻页
-        List_conditions:ref({
-            page:1
-        }),
+        List_conditions:ref({page:1}),// 翻页-当前页数
         childrenDrawer:ref(false),// 本地上传图片-抽屉状态
         childnetDrawer:ref(false),// 网络上传图片-抽屉状态
         BreadCrumb:ref([// 面包屑导航
@@ -445,30 +439,21 @@ setup(props,ctx) {
         ]),
     })
 
-    const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE; // 默认为空的图标
-    const childrenDrawer = ref(false);      // 本地上传抽屉状态
-    const childnetDrawer = ref(false);      // 网络上传抽屉状态
-    const childimgDrawer = ref(false);      // 图片详情状态
-    const childvideoDrawer = ref(false);    // 视频详情状态
-    const expandedKeys = ref([]); // 展开指定的树节点
-    const selectedKeys = ref([]); // 选中的节点树
+    MaterialListMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
+
+
+    const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;   // 默认为空的图标
+
+
+    const childimgDrawer = ref(false);                  // 图片详情状态
+    const childvideoDrawer = ref(false);                // 视频详情状态
+    const expandedKeys = ref([]);                       // 展开指定的树节点
+    const selectedKeys = ref([]);                       // 选中的节点树
     const treeData = ref([]);
 
 
-    // 关闭选择素材抽屉
-    const onClose = () => {
-        props.data.selectimg_open = false;
-    };
 
-    // 显示本地上传--按钮
-    const showChildrenDrawer = () => {
-        childrenDrawer.value = !childrenDrawer.value;
-    };
 
-    // 显示网络上传--按钮
-    const showChildnetDrawer = () => {
-        childnetDrawer.value = !childnetDrawer.value;
-    };
 
     // 显示图片详情--按钮
     const showChildimgDrawer = (item) => {
@@ -484,7 +469,6 @@ setup(props,ctx) {
     // 显示视频详情--按钮
     const showChildvideoDrawer = (item) => {
         childvideoDrawer.value = !childvideoDrawer.value;
-
         if(childvideoDrawer.value){// 添加详情信息
             Material_Images.video_detaile.value = undefined;
             Material_Images.video_detaile.value = item;
@@ -581,6 +565,10 @@ setup(props,ctx) {
 
             return  res
         },
+        // 图片详情
+        image_detaile:ref(undefined),
+        // 视频详情
+        video_detaile:ref(undefined),
 
         // 素材图片列表
         data_img_list:ref([]),
@@ -596,23 +584,6 @@ setup(props,ctx) {
         clear_confirm_img_list:()=>{
             Material_Images.confirm_img_list.value = [];
             Material_Images.cunt_img_num = 0;
-        },
-
-        // 素材抽屉--确认提交按钮
-        click_submit:()=>{
-            var res_num = Material_Images.confirm_img_list.value.length;
-            if(res_num == 0){
-                // 提示选中图片为空
-                tool.Fun_.message('info','已选图片素材不能为空！')
-            }else if(res_num > 0){
-                // console.log(props.data.setimg_name)
-                onClose() // 关闭添加素材组件
-                ctx.emit('add_img_callback', Material_Images.confirm_img_list.value)
-            }
-            
-            // 提示添加图片成功
-            // 关闭抽屉
-            // 回调添加素材图片到页面方法
         },
 
         // 素材抽屉--取消按钮
@@ -654,10 +625,7 @@ setup(props,ctx) {
             const idx = Material_Images.confirm_img_list.value.indexOf(item);
             if (idx > -1) Material_Images.confirm_img_list.value.splice(idx, 1);
         },
-        // 图片详情
-        image_detaile:ref(undefined),
-        // 视频详情
-        video_detaile:ref(undefined)
+
     }
 
     // 初始化素材菜单
@@ -665,6 +633,7 @@ setup(props,ctx) {
 
     // 点击菜单===》异步加载菜单
     const onLoadData = treeNode => {
+
         return new Promise(resolve => {
 
             // 如果存在子菜单 跳过
@@ -759,94 +728,15 @@ setup(props,ctx) {
         });
     };
     
-    // 点击树型菜单方法
-    const handleSelect = (keys, event) =>{
-        console.log('文件夹id', keys) // 打印文件夹id
-        // console.log('文件信息',event.node) // 打印节点信息
-        PAGEDATA.BreadCrumb = [...event.node.breadcrumb] // 刷新面包屑
-        // 判断是否刷新右侧素材列表
-        if(keys.length > 0){
-            navData.value.folder_id = keys[0]
-            navData.value.page_num = 1;
-            navData.value.page_size = 10;
-            loadproductData(navData.value)
-        }
-    }
 
-    // 请求商品列表接口数据
-    const loadproductData = async(data) => {
-
-        PAGEDATA.loading = true;
-
-        // 请求素材接口
-        const res = await axios.post(API.AppSrtoreAPI.material.getfolder, data)
-        // console.log(res)
-
-        var res_data = res.data.data;
-
-        var folder_info = res_data.folder_info;
-
-        // 素材列表
-        var child_material = folder_info.child_material;
-
-        // 素材总数 total_child_material_num
-        var total = folder_info.total_child_material_num;
-
-        // 请求数据为空
-        if(child_material.length == 0){
-            PAGEDATA.justify = 'center';
-            PAGEDATA.align = 'center';
-            PAGEDATA.loading = false;
-            PAGEDATA.datalist = [];
-            PAGEDATA.total_number = 0
-        }else{
-            setTimeout(() => {
-                PAGEDATA.loading = false;
-                PAGEDATA.justify = 'start';
-                PAGEDATA.align = 'start';
-                // 请求数据不为空
-                PAGEDATA.datalist = [...child_material];
-                PAGEDATA.total_number = total;
-            }, 1000);
-        }
-    }
-
-    // 【翻页-组件 回调方法】======================================开始
-    // 翻页查询条件
-    const navData=ref({
-        "folder_id":0,//默认文件夹id
-        "page_num":1,
-        "page_size":10,
-    })
-
-    const page_turning = (data)=>{
-
-        // console.log(data)
-
-        PAGEDATA.justify = 'flex-start';
-        
-        PAGEDATA.align = 'flex-start';
-
-        navData.value.page_num = data.page;
-        
-        navData.value.page_size = data.page_size;
-
-        loadproductData(navData.value)
-
-    }
     // 【查询组件 回调方法】========================================结束
 
        return{
         PAGEDATA,
         store,
         MaterialListMethod, // 外部js方法
-        childrenDrawer,
-        childnetDrawer,
         childimgDrawer,
         childvideoDrawer,
-        onClose,
-        showChildrenDrawer,
-        showChildnetDrawer,
         showChildimgDrawer,
         showChildvideoDrawer,
         Material_Images,
@@ -854,8 +744,6 @@ setup(props,ctx) {
         selectedKeys,
         treeData,
         onLoadData,
-        page_turning,
-        handleSelect,
         simpleImage,
 
        }

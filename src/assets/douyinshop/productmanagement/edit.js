@@ -1266,11 +1266,10 @@ export class Insetpagedata {
 
             if(code == 10000){// 提交成功
 
-                console.log('提交数据',res.data);
+                // console.log('提交数据',res.data);
                 tool.Fun_.message('success','商品信息提交成功！')
 
-            }
-            else{// 提交失败
+            }else{// 提交失败
 
                 tool.Fun_.message('error',res.data.sub_msg)
 
