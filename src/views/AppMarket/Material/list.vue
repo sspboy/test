@@ -1,254 +1,253 @@
 <!-- 素材列表--模板说明 -->
 <template>
-<!--内容部分 菜单 右侧列表 开始-->
-<a-layout style="height: 100vh;width: 100vw;">
 
-    <!--head 导航组件  开始-->
-    <menu_head />
-    <!--head 导航组件  结束-->
-    
-    
+
     <!--内容部分 菜单 右侧列表 开始-->
-    <a-layout>
 
-        <!--左侧 菜单组件  开始-->
-        <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
-        <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
-        </a-layout-sider>
-        <!--左侧 菜单组件  结束-->
+    <a-layout style="height: 100vh;width: 100vw;">
+
+        <!--head 导航组件  开始-->
+        <menu_head />
+        <!--head 导航组件  结束-->
+        
+        
+        <!--内容部分 菜单 右侧列表 开始-->
+        <a-layout>
+
+            <!--左侧 菜单组件  开始-->
+            <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
+            <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
+            </a-layout-sider>
+            <!--左侧 菜单组件  结束-->
 
 
-        <!-- 选择文件夹树形结构 开始 -->
-        <a-layout-sider class="siderStyle" width="300">
+            <!-- 选择文件夹树形结构 开始 -->
+            <a-layout-sider class="siderStyle" width="300">
 
-            <div class="box-left">
+                <div class="box-left">
 
-                <p style="padding: 15px 0 0 32px;font-weight: bold;">
-                    <FolderOutlined /> 选择文件夹
-                </p>
+                    <p style="padding: 15px 0 0 32px;font-weight: bold;">
+                        <FolderOutlined /> 选择文件夹
+                    </p>
 
-                <!-- 加载状态 -->
-                <div v-if="treeData.length == 0" style="text-align: center;margin-top: 65%;">
-                    <a-spin />
-                </div>
+                    <!-- 加载状态 -->
+                    <div v-if="treeData.length == 0" style="text-align: center;margin-top: 65%;">
+                        <a-spin />
+                    </div>
 
-                <!-- 为空状态 -->
-                <div v-else-if="treeData.value === 'undefined'" style="text-align: center;margin-top: 65%;">
-                    <a-empty />
-                </div>
+                    <!-- 为空状态 -->
+                    <div v-else-if="treeData.value === 'undefined'" style="text-align: center;margin-top: 65%;">
+                        <a-empty />
+                    </div>
 
-                <!-- 不为空状态 -->
-                <a-tree
-                    v-model:expandedKeys="expandedKeys"
-                    v-model:selectedKeys="selectedKeys"
-                    :load-data="onLoadData"
-                    :tree-data="treeData"
-                    @select="MaterialListMethod.Tree.handleSelect"
-                    show-icon
-                    style="font-size: 12px;"
-                >
-                    <template #icon="{ key, selected }">
-                        <FolderOutlined />
-                    </template>
-                </a-tree>
-                
-            </div>
-
-        </a-layout-sider>
-        <!-- 选择文件夹树形结构 结束 -->
-
-        <!-- 素材列表 不为空状态 -->
-        <a-checkbox-group  v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
-
-        <a-layout-content class="content_border">
-
-            <!-- 查询导航 
-                面包屑、id查询、关键字查询
-                开始
-            -->
-
-            <div :style="{
-                width: '100%',
-                height:'42px',
-                backgroundColor:'#f2f2f2',
-                borderRadius:'4px',
-                overflow:'hidden',
-            }">
-                <a-row>
-                    <!--面包屑导航-->
-                    <a-col :span="16">
-                        <a-space>
-                            <div style="margin: 10px 0 0 20px;"> 
-                                <a-breadcrumb>
-                                    <a-breadcrumb-item v-for=" item in PAGEDATA.BreadCrumb" href="#">
-                                        <FolderOutlined />
-                                        <span 
-                                            @click="console.log('加载当前文件夹素材列表', item.folder_id)" 
-                                            class="font_size_12"
-                                        >
-                                        {{ item.folder_name }}
-                                        </span>
-                                    </a-breadcrumb-item>
-                                </a-breadcrumb>
-                            </div>
-                        </a-space>
-                    </a-col>
-                    <a-col :span="8" style="padding:8px 6px 0 0;">
-                        <a-space>
-                            <a-input type="text" placeholder="输入素材id"></a-input>
-                            <a-input type="text" placeholder="输入关键词"></a-input>
-                            <a-button 
-                            type="primary" 
-                            size="small"
-                            @click="console.log('查询素材')"
-                            >查询</a-button>
-                        <!-- <a-button type="primary" size="small">网络图片上传</a-button>
-                        <a-button type="primary" size="small">本地图片上传</a-button>
-                        <a-button type="primary" size="small">上传视频</a-button> -->
-                        </a-space>
-                    </a-col>
-
-                </a-row>
-            </div>
-            <!-- 查询导航 
-                面包屑、id查询、关键字查询
-                结束
-            -->
-            <!--已选择数据-->
-            <div class="confimImg">
-
-                <p class="font_size_12" style="padding: 0 0 0 20px;">
-                    <FolderOpenOutlined /> 已选择图片 
-                    <a-tag :bordered="false">
-                        {{ Material_Images.confirm_img_list.value.length }}
-                    </a-tag>
-                    张 ------ 
-                    <a href="#" @click="Material_Images.clear_confirm_img_list"><ClearOutlined />清空</a>
-                </p>
-
-                <!--暂无数据-->
-                <div v-if="Material_Images.confirm_img_list.value.length == 0" style="margin-top: 110px;">
-                    <a-empty :image="simpleImage" />
-                </div>
+                    <!-- 不为空状态 -->
+                    <a-tree
+                        v-model:expandedKeys="expandedKeys"
+                        v-model:selectedKeys="selectedKeys"
+                        :load-data="onLoadData"
+                        :tree-data="treeData"
+                        @select="MaterialListMethod.Tree.handleSelect"
+                        show-icon
+                        style="font-size: 12px;"
+                    >
+                        <template #icon="{ key, selected }">
+                            <FolderOutlined />
+                        </template>
+                    </a-tree>
                     
-                <!--列表数据 迭代-->
-                <div v-for="item in Material_Images.confirm_img_list.value" class="confimbox">
-                        <a-image v-if="item.material_type == 'photo'" style="height:50px;" :src="item.byte_url" />
-                        <a-image v-if="item.material_type == 'video'" style="height:50px;" :src="item.video_info.video_cover_url" />
-                        <p style="margin: 10px 0 0 0;font-size: 12px;">
-                            <a-button type="text" size="small" @click="Material_Images.clear_img_fun(item)"> 
-                            <CloseCircleOutlined />
-                            </a-button>
-                        </p>
                 </div>
 
-            </div>
-
+            </a-layout-sider>
+            <!-- 选择文件夹树形结构 结束 -->
 
             <!-- 素材列表 不为空状态 -->
-            <div style="height:50%;overflow-x: hidden;overflow-y: auto;padding: 20px 0 0 0;">
-                <a-list 
-                    :grid="{ gutter: [6,6], column: 5 }" 
-                    :data-source="PAGEDATA.datalist"
-                    :loading="PAGEDATA.loading"
+            <a-checkbox-group  v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
+
+            <a-layout-content class="content_border">
+
+                <!-- 查询导航 
+                    面包屑、id查询、关键字查询
+                    开始
+                -->
+
+                <div :style="{
+                    width: '100%',
+                    height:'42px',
+                    backgroundColor:'#f2f2f2',
+                    borderRadius:'4px',
+                    overflow:'hidden',
+                }">
+                    <a-row>
+                        <!--面包屑导航-->
+                        <a-col :span="16">
+                            <a-space>
+                                <div style="margin: 10px 0 0 20px;"> 
+                                    <a-breadcrumb>
+                                        <a-breadcrumb-item v-for=" item in PAGEDATA.BreadCrumb" href="#">
+                                            <FolderOutlined />
+                                            <span 
+                                                @click="MaterialListMethod.SelectMaterial.breadcrumb_click(item.folder_id)" 
+                                                class="font_size_12"
+                                            >
+                                            {{ item.folder_name }}
+                                            </span>
+                                        </a-breadcrumb-item>
+                                    </a-breadcrumb>
+                                </div>
+                            </a-space>
+                        </a-col>
+                        <a-col :span="8" style="padding:8px 6px 0 0;">
+                            <a-space>
+                                <a-input 
+                                    type="text" 
+                                    placeholder="输入素材id"
+                                    v-model:value="MaterialListMethod.SelectMaterial.m_id.value"
+                                    autoComplete="off"
+                                    >
+                                </a-input>
+                                <a-input 
+                                    type="text" 
+                                    placeholder="输入关键词"
+                                    v-model:value="MaterialListMethod.SelectMaterial.key_word.value"
+                                    autoComplete="off"
+                                ></a-input>
+                                <a-button 
+                                type="primary" 
+                                size="small"
+                                @click="MaterialListMethod.SelectMaterial.select"
+                                >查询</a-button>
+                            <!-- <a-button type="primary" size="small">网络图片上传</a-button>
+                            <a-button type="primary" size="small">本地图片上传</a-button>
+                            <a-button type="primary" size="small">上传视频</a-button> -->
+                            </a-space>
+                        </a-col>
+                    </a-row>
+                </div>
+                <!-- 
+                    查询导航 
+                    面包屑、id查询、关键字查询
+                    结束
+                -->                
+
+
+                <!-- 素材列表 不为空状态 -->
+                <div :style="{
+                    height: PAGEDATA.innerHeight + 'px',
+                    overflowY:'auto',
+                    overflowX:'hidden',
+                    marginTop:'10px',
+                    marginBottom:'10px'
+                }"
                 >
+                    <a-list 
 
-                    <template #renderItem="{ item }">
+                        :grid="{ gutter: 0, column: 5 }"
+                        size="default"
+                        :data-source="PAGEDATA.datalist"
+                        :loading="PAGEDATA.loading"
+                    >
 
-                        <a-list-item key="item.material_id">
+                        <template #renderItem="{ item }">
 
-                            <!--图片文件 显示方式-->
-                            <div v-if="item.material_type == 'photo'" class="Listimgbox">
-
-                                <a-image
-                                    :style="Material_Images.material_width(item.photo_info)"
-                                    :src="item.byte_url"
-                                />
-                                
-                                <p class="img_list_box" style="text-align: center;">
-
-                                    <a-space align="center" size="2" >
-                                        
-                                        <template #split>
-                                            <a-divider type="vertical" />
-                                        </template>
-
-                                        <a-typography-link>
-                                            <a-checkbox 
-                                                :value="item.material_id"
-                                                @change="Material_Images.select_img_fun(item)" 
-                                            ></a-checkbox>
-                                        </a-typography-link>
-
-                                        <a-typography-link>
-                                            <a href="#" class="font_size_12" @click="showChildimgDrawer(item)">
-                                            <EyeOutlined /> 详情 </a>
-                                        </a-typography-link>
-
-                                        <a-typography-link>
-                                            <a href="#" class="font_size_12" @click="MaterialListMethod.del.del_open(item)">
-                                            <EyeOutlined /> 删除 </a>
-                                        </a-typography-link>
-
-                                    </a-space>
-                                </p>
-
-                            </div>
+                            <a-card  v-if="item.material_type == 'photo'" size="small" class="card_style" hoverable>
+                                <div class="image_content_">
+                                    <!--图片文件 显示方式-->
+                                    <a-image
+                                        :style="Material_Images.material_width(item.photo_info)"
+                                        :src="item.byte_url"
+                                    />
+                                </div>
+                                <template #actions>
+                                    <a-checkbox 
+                                        :value="item.material_id"
+                                        @change="Material_Images.select_img_fun(item)" 
+                                    ></a-checkbox>
+                                    <a href="#" class="font_size_12" @click="showChildimgDrawer(item)">详情</a>
+                                    <a href="#" class="font_size_12" @click="MaterialListMethod.del.del_open(item)">删除</a>
+                                    <a href="#" class="font_size_12" @click="console.log('移入回收站')">回收</a>
+                                </template>
+                            </a-card>
 
                             <!--视频 显示方式-->
-                            <div v-else-if="item.material_type == 'video'" class="Listimgbox">
+                            <a-card v-else-if="item.material_type == 'video'" size="small" class="card_style" hoverable>
+                                <div class="image_content_">
                                 <a-image
                                     :height="100"
                                     :src="item.video_info.video_cover_url"
                                 />
-                                <p class="video_list_box">
-                                    <a-space align="center" size="2">
-                                        <template #split>
-                                        <a-divider type="vertical" />
-                                        </template>
-                                        <a-typography-link>
-                                            <a-checkbox 
-                                                :value="item.material_id"
-                                                @change="Material_Images.select_img_fun(item)"
-                                                class="font_size_12" 
-                                            >视频</a-checkbox>
-                                        </a-typography-link>
-                                        <a-typography-link>
-                                            <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)"><EyeOutlined /> 详情</a>
-                                        </a-typography-link>
-                                    </a-space>
-                                </p>
-                            </div>
+                                </div>
+                                <template #actions>
+                                    <a-checkbox 
+                                        :value="item.material_id"
+                                        @change="Material_Images.select_img_fun(item)"
+                                        class="font_size_12" 
+                                    ></a-checkbox>
+                                    <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)">
+                                        详情
+                                    </a>
+                                    <a href="#" class="font_size_12" @click="MaterialListMethod.del.del_open(item)">
+                                        删除
+                                    </a>
+                                    <a href="#" class="font_size_12" @click="console.log('移入回收站')">
+                                        回收
+                                    </a>
+                                </template>
+                            </a-card>
 
-                        </a-list-item>
-                    </template>
+                        </template>
 
-                </a-list>
-            </div>
+                    </a-list>
+                </div>
 
 
-            <!-- 翻页 -->
-            <a-layout-footer class="footerStyle">          
-                <nav_pagination :fandata="PAGEDATA" v-on:complete="MaterialListMethod.page_turning"/>
-            </a-layout-footer>
+                <!-- 翻页 -->
+                <a-layout-footer class="footerStyle">
+                    <a-row>
 
-        </a-layout-content>
+                        <a-col :span="8" style="text-align: left;">
+                            
+                            <p class="font_size_12" style="padding: 6px 0 0 20px;">
 
-        </a-checkbox-group>
+                                <a-space>
 
-      </a-layout>
-        
-  </a-layout>
+                                    <a-checkbox v-model:checked="MaterialListMethod.SelectMaterial.checked_status.value">全选</a-checkbox>
+                                
+                                    <a-tag :bordered="false">
+                                        <FolderOpenOutlined /> 
+                                        已选择图片
+                                        {{ Material_Images.confirm_img_list.value.length }}
+                                        张
+                                    </a-tag>
+                                    <a href="#" class="font_size_12" @click="Material_Images.clear_confirm_img_list"><ClearOutlined />清空</a>
+                                    <a href="#" class="font_size_12" @click="console.log('批量删除')"><ClearOutlined />批量删除</a>
+                                </a-space>
+                            </p>
+                        </a-col>
+                        <a-col :span="16">
+                            <nav_pagination :fandata="PAGEDATA" v-on:complete="MaterialListMethod.page_turning"/>
+                        </a-col>
+                    </a-row>
+                </a-layout-footer>
+
+            </a-layout-content>
+
+            </a-checkbox-group>
+
+        </a-layout>
+            
+    </a-layout>
+
 
     <!--图片详情 抽屉 -->
-    <a-drawer v-model:open="childimgDrawer" title="图片详情" width="320" :closable="false">
+    <a-drawer v-model:open="childimgDrawer" title="图片详情" width="520" :closable="false">
 
         <div v-if="Material_Images.image_detaile !== undefined">
 
-        <!--图片信息-->
+            <!--图片信息-->
             <p>所属文件夹ID：{{ Material_Images.image_detaile.value.folder_id }}</p>
             <p>素材ID：{{ Material_Images.image_detaile.value.material_id }}</P>
             <p>图片名称：{{ Material_Images.image_detaile.value.materil_name }}</p>
+            
             <div v-if="Material_Images.image_detaile.value.origin_url !== ''">
                 <p style="margin: 10px 0 10px 0;">来源地址：</p>
                 <p style="margin: 10px 0 10px 0;">
@@ -310,7 +309,7 @@
     </a-drawer>
 
     <!--视频详情 抽屉 -->
-    <a-drawer v-model:open="childvideoDrawer" title="视频详情" width="320" :closable="false">
+    <a-drawer v-model:open="childvideoDrawer" title="视频详情" width="520" :closable="false">
 
         <div v-if="Material_Images.video_detaile.value !== undefined">
         <!--视频信息-->
@@ -366,9 +365,8 @@
         title="确认删除"
         :confirm-loading="MaterialListMethod.del.buttonload.value"
         @ok="MaterialListMethod.del.del_material_ids"
-        >
-        <p>是否确认删除素材</p>
-        <p>删除后将无法恢复</p>
+    >
+        <p style="margin: 10px 0 0 0;">是否确认删除素材，删除后将无法恢复！</p>
     </a-modal>
     <!--删除确认 弹出层 结束-->
 
@@ -381,7 +379,7 @@ import{Empty, message} from 'ant-design-vue'
 
 import { useStore } from 'vuex'
 // 网络请求工具引用FolderOutlined
-import { FolderOutlined,CloseCircleOutlined,ClearOutlined,EyeOutlined,DownOutlined,FolderOpenOutlined} from '@ant-design/icons-vue';
+import { FolderOutlined,CloseCircleOutlined,ClearOutlined,EyeOutlined,DownOutlined,FolderOpenOutlined,DeleteOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as MaterialList from '@/assets/douyinshop/productmanagement/material_list';// 商品管理->编辑操作方法
@@ -402,7 +400,8 @@ export default {
         ClearOutlined,
         CloseCircleOutlined,
         DownOutlined,
-        FolderOpenOutlined
+        FolderOpenOutlined,
+        DeleteOutlined
    },
 props: {
    data:{typr:Object}
@@ -425,6 +424,8 @@ setup(props,ctx) {
         loading:true,         // 列表load状态
         justify:'center',     // 列表内容对齐：loading加载居中设定
         align:'center',       // 列表内容对齐：loading加载居中设定
+        innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
+        innerWidth: ref(window.innerWidth - 230), // 初始化列表高度
         // 列表信息
         datalist:[],
         total_number:0,     // 内容总数
@@ -451,9 +452,17 @@ setup(props,ctx) {
     const selectedKeys = ref([]);                       // 选中的节点树
     const treeData = ref([]);
 
+    // 在组件挂载时添加事件监听器
+    onMounted(() => {
+        window.addEventListener('resize', handleResize);// 窗口变换时候
+    });
 
+    // 定义一个函数来处理窗口大小变化 ==
+    const handleResize = () => {
+      PAGEDATA.innerHeight = window.innerHeight - 180; // 作为表格自适应高度
+      PAGEDATA.innerWidth = window.innerWidth - 230; // 作为表格自适应高度
 
-
+    };
 
     // 显示图片详情--按钮
     const showChildimgDrawer = (item) => {
@@ -669,14 +678,17 @@ setup(props,ctx) {
 
                 // 子文件夹列表
                 var child_folder_list = res.data.data.folder_info.child_folder
+
                 var chile_folder_number = child_folder_list.length;
 
                 // 子文件夹数量=0:禁用子菜单
                 if(chile_folder_number == 0){
+                    
                     // console.log('子文件夹为空', child_folder_list)
                     treeNode.isLeaf = true;
                     treeData.value = [...treeData.value];
                     resolve();
+
                 }else {     // 数量!=0：加载子菜单
 
                     // console.log('子文件夹',child_folder_list)
@@ -722,9 +734,6 @@ setup(props,ctx) {
                 console.log('子素材总数目',total_child_material_num)
 
             })
-
-
-
         });
     };
     
@@ -745,6 +754,7 @@ setup(props,ctx) {
         treeData,
         onLoadData,
         simpleImage,
+        handleResize
 
        }
    }
@@ -755,11 +765,16 @@ setup(props,ctx) {
 .headerStyle{text-align: left;background-color: #fff;height: 64px;line-height: 64px;}
 .contentStyle{text-align: center;background-color: #fff;height: 100%;}
 .siderStyle{background-color: #fff;overflow: auto;padding: 10px 10px 10px 0;width: 260px;}
-.footerStyle{text-align: center;background-color: #fff;}
+.footerStyle{text-align: center;background-color: #fff;padding: 0;}
 .confimImg{text-align: left;padding: 10px 0 10px 0;margin: 0 0 10px 0;height:300px;width: 100%;overflow-x: auto;overflow-y: auto;border-bottom: 1px #f2f2f2 solid;}
 .confimbox{width: 60px;height: 60px;margin: 10px 20px 30px 20px;padding: 4px; float: left;border: 1px #f2f2f2 solid;border-radius: 4px;text-align: center;}
 .Listimgbox{border: 1px solid #f2f2f2; border-radius: 6px;padding: 10px 4px 4px 4px;text-align: center;}
 .video_list_box{padding: 6px 0 0 0;margin: 4px 0 0 0;width: 100%;height: 28px;overflow: hidden;text-align: left;text-align: center;}
 .img_list_box{padding: 2px;margin: 4px 0 0 0;width: 100%;height: 28px;overflow: hidden;text-align: left;}
 .sucai_url{width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;margin: 0 0 20px 0;}
+.ant-list{height: 100% !important}/**暂无数据垂直居中**/
+.card_style{margin:0px 10px 10px 0;font-size: 12px;text-align: center;}
+.image_content_{height: 100px;width: 100px;margin: 0 auto;display: flex;
+  justify-content: center;  /* 水平居中 */
+  align-items: center;      /* 垂直居中 */}
 </style>
