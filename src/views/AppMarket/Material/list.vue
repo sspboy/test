@@ -61,7 +61,7 @@
             <!-- 选择文件夹树形结构 结束 -->
 
             <!-- 素材列表 不为空状态 -->
-            <a-checkbox-group  v-model:value="Material_Images.check_value.value" style="width: 100%;height: 100%;">
+
 
             <a-layout-content class="content_border">
 
@@ -114,7 +114,7 @@
                                 <a-button 
                                 type="primary" 
                                 size="small"
-                                @click="MaterialListMethod.SelectMaterial.select"
+                                @click="showQueryDrawer"
                                 >查询</a-button>
                             <!-- <a-button type="primary" size="small">网络图片上传</a-button>
                             <a-button type="primary" size="small">本地图片上传</a-button>
@@ -139,6 +139,7 @@
                     marginBottom:'10px'
                 }"
                 >
+                    <a-checkbox-group  v-model:value="PAGEDATA.check_value" style="width: 100%;height: 100%;">
                     <a-list 
 
                         :grid="{ gutter: 0, column: 5 }"
@@ -160,11 +161,11 @@
                                 <template #actions>
                                     <a-checkbox 
                                         :value="item.material_id"
-                                        @change="Material_Images.select_img_fun(item)" 
+                                        @change="Material_Images.select_img_fun(item)"
                                     ></a-checkbox>
                                     <a href="#" class="font_size_12" @click="showChildimgDrawer(item)">详情</a>
                                     <a href="#" class="font_size_12" @click="MaterialListMethod.del.del_open(item)">删除</a>
-                                    <a href="#" class="font_size_12" @click="console.log('移入回收站')">回收</a>
+                                    <a href="#" class="font_size_12" @click="MaterialListMethod.del.RecycleBin_open(item)">回收</a>
                                 </template>
                             </a-card>
 
@@ -188,7 +189,7 @@
                                     <a href="#" class="font_size_12" @click="MaterialListMethod.del.del_open(item)">
                                         删除
                                     </a>
-                                    <a href="#" class="font_size_12" @click="console.log('移入回收站')">
+                                    <a href="#" class="font_size_12" @click="MaterialListMethod.del.RecycleBin_open(item)">
                                         回收
                                     </a>
                                 </template>
@@ -197,6 +198,7 @@
                         </template>
 
                     </a-list>
+                </a-checkbox-group>
                 </div>
 
 
@@ -204,13 +206,13 @@
                 <a-layout-footer class="footerStyle">
                     <a-row>
 
-                        <a-col :span="8" style="text-align: left;">
+                        <a-col :span="10" style="text-align: left;">
                             
                             <p class="font_size_12" style="padding: 6px 0 0 20px;">
 
                                 <a-space>
 
-                                    <a-checkbox v-model:checked="MaterialListMethod.SelectMaterial.checked_status.value">全选</a-checkbox>
+                                    <a-checkbox v-model:checked="MaterialListMethod.SelectMaterial.checked_status.value" @change="Material_Images.onCheckAllChange">全选</a-checkbox>
                                 
                                     <a-tag :bordered="false">
                                         <FolderOpenOutlined /> 
@@ -220,10 +222,12 @@
                                     </a-tag>
                                     <a href="#" class="font_size_12" @click="Material_Images.clear_confirm_img_list"><ClearOutlined />清空</a>
                                     <a href="#" class="font_size_12" @click="console.log('批量删除')"><ClearOutlined />批量删除</a>
+                                    <a href="#" class="font_size_12" @click="console.log('批量移入回收站')"><ClearOutlined />批量回收</a>
+
                                 </a-space>
                             </p>
                         </a-col>
-                        <a-col :span="16">
+                        <a-col :span="14">
                             <nav_pagination :fandata="PAGEDATA" v-on:complete="MaterialListMethod.page_turning"/>
                         </a-col>
                     </a-row>
@@ -231,7 +235,6 @@
 
             </a-layout-content>
 
-            </a-checkbox-group>
 
         </a-layout>
             
@@ -370,11 +373,43 @@
     </a-modal>
     <!--删除确认 弹出层 结束-->
 
+    <!--回收确认 弹出层 开始-->
+    <a-modal 
+        v-model:open="MaterialListMethod.del.RecycleBinOpenStatus.value" 
+        title="确认回收"
+        :confirm-loading="MaterialListMethod.del.RecycleBinbuttonload.value"
+        @ok="MaterialListMethod.del.MovetoRecycleBin_ids"
+    >
+        <p style="margin: 10px 0 0 0;">是否确认回收素材，回收后，素材将放入回收站！</p>
+        <p style="margin: 10px 0 0 0;">删除成功后1-2分钟后生效 耐心等待后刷新查看。</p>
 
+    </a-modal>
+    <!--回收确认 弹出层 结束-->
+
+
+    <!-- 查询详情抽屉 开始 -->
+    <a-drawer v-model:open="queryDrawer" title="查询详情" width="400" :closable="true">
+        <a-space direction="vertical" style="width: 100%;">
+            <a-input 
+                type="text" 
+                placeholder="输入素材id"
+                v-model:value="MaterialListMethod.SelectMaterial.m_id.value"
+                autoComplete="off"
+            />
+            <a-input 
+                type="text" 
+                placeholder="输入关键词"
+                v-model:value="MaterialListMethod.SelectMaterial.key_word.value"
+                autoComplete="off"
+            />
+            <a-button type="primary" size="small" @click="handleQuery">查询</a-button>
+        </a-space>
+    </a-drawer>
+    <!-- 查询详情抽屉 结束 -->
 
 </template>
 <script>
-import { computed,ref,reactive,onMounted,h,onUnmounted } from 'vue';
+import { computed,ref,reactive,onMounted,h,onUnmounted,watch } from 'vue';
 import{Empty, message} from 'ant-design-vue'
 
 import { useStore } from 'vuex'
@@ -438,6 +473,8 @@ setup(props,ctx) {
                 "folder_id":0
             }
         ]),
+        check_value:ref([]),
+
     })
 
     MaterialListMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
@@ -448,6 +485,7 @@ setup(props,ctx) {
 
     const childimgDrawer = ref(false);                  // 图片详情状态
     const childvideoDrawer = ref(false);                // 视频详情状态
+    const queryDrawer = ref(false);                     // 查询详情抽屉状态
     const expandedKeys = ref([]);                       // 展开指定的树节点
     const selectedKeys = ref([]);                       // 选中的节点树
     const treeData = ref([]);
@@ -487,6 +525,17 @@ setup(props,ctx) {
         }
     };
 
+    // 显示查询详情抽屉
+    const showQueryDrawer = () => {
+        queryDrawer.value = true;
+    };
+
+    // 执行查询并关闭抽屉
+    const handleQuery = () => {
+        MaterialListMethod.SelectMaterial.select();
+        queryDrawer.value = false;
+    };
+
     // 图片素材管理
     const Material_Images = {
         
@@ -501,19 +550,18 @@ setup(props,ctx) {
 
             }).then((res)=>{
 
-                // res为空
-
                 // res不为空
                 PAGEDATA.loading = false
                 
                 // 子文件夹列表
-                var folder_info_list = res.data.data.folder_info.child_folder
+                var folder_info_list = res.data.data.folder_info.child_folder;
 
                 // 子素材列表
-                var child_material = res.data.data.folder_info.child_material
+                var child_material = res.data.data.folder_info.child_material;
 
                 // 符合条件文件夹数量
                 var total_child_material_num = res.data.data.folder_info.total_child_material_num;
+
                 // console.log(total_child_material_num)
                 PAGEDATA.total_number = total_child_material_num
 
@@ -581,9 +629,7 @@ setup(props,ctx) {
 
         // 素材图片列表
         data_img_list:ref([]),
-        
-        // 勾选素材对象
-        check_value:ref([]),
+
 
         // 已选图片素材数据列表
         confirm_img_list:ref([]),
@@ -591,8 +637,30 @@ setup(props,ctx) {
 
         // 已选图片素材--清空
         clear_confirm_img_list:()=>{
-            Material_Images.confirm_img_list.value = [];
-            Material_Images.cunt_img_num = 0;
+            Material_Images.confirm_img_list.value.length = 0;
+            PAGEDATA.check_value.length = 0;
+            MaterialListMethod.SelectMaterial.checked_status.value = false;
+        },
+
+        // 全选/取消全选
+        onCheckAllChange:(e)=>{
+
+            var checked = e.target.checked
+
+            MaterialListMethod.SelectMaterial.checked_status.value = checked;
+
+            if (checked) {
+                // 全选素材list
+                PAGEDATA.datalist.forEach(item => {
+                    var material_id = item.material_id;
+                    PAGEDATA.check_value.push(material_id)
+                    Material_Images.confirm_img_list.value.push(material_id)
+                });
+
+            } else {
+                PAGEDATA.check_value.length = 0;
+                Material_Images.confirm_img_list.value.length = 0;
+            }
         },
 
         // 素材抽屉--取消按钮
@@ -603,14 +671,11 @@ setup(props,ctx) {
 
         // 选择素材图片方法
         select_img_fun:(item)=>{
-            
             // 判断添加的图片是否重复
-            if (Material_Images.confirm_img_list.value.includes(item)) {
-                // console.log('存在');
-                Material_Images.clear_img_fun(item)
+            if (Material_Images.confirm_img_list.value.includes(item.material_id)) {
+                Material_Images.clear_img_fun(item.material_id)
             }else{
-                // console.log('不存在');
-                Material_Images.confirm_img_list.value.push(item)
+                Material_Images.confirm_img_list.value.push(item.material_id)
             }
         },
         // 获取checked状态
@@ -746,8 +811,11 @@ setup(props,ctx) {
         MaterialListMethod, // 外部js方法
         childimgDrawer,
         childvideoDrawer,
+        queryDrawer,
         showChildimgDrawer,
         showChildvideoDrawer,
+        showQueryDrawer,
+        handleQuery,
         Material_Images,
         expandedKeys,
         selectedKeys,

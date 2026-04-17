@@ -123,8 +123,8 @@ export class A_Patch{
         // 素材接口
         material:{
             "searchfolder":"api/douyin/material/searchfolder",  // 搜索文件夹
-            "getfolder":"api/douyin/material/getfolderinfo",// 查看文件夹信息
-            "list":"api/douyin/material/list", // 素材列表
+            "getfolder":"api/douyin/material/getfolderinfo",    // 查看文件夹信息
+            "list":"api/douyin/material/list",                  // 素材列表
             "detaile":"api/douyin/material/getmaterialdetaile", // 素材详情
             "deletematerial":"api/douyin/material/deletematerial", // 彻底删除素材
             "movematerialrecyclebin":"api/douyin/material/movematerialrecyclebin",// 放入回收站
