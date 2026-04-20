@@ -22,13 +22,8 @@
 
 
             <!-- 选择文件夹树形结构 开始 -->
-            <a-layout-sider class="siderStyle" width="300">
+            <a-layout-sider width="300">
 
-                <div class="box-left">
-
-                    <p style="padding: 15px 0 0 32px;font-weight: bold;">
-                        <FolderOutlined /> 选择文件夹
-                    </p>
 
                     <!-- 加载状态 -->
                     <div v-if="treeData.length == 0" style="text-align: center;margin-top: 65%;">
@@ -40,22 +35,38 @@
                         <a-empty />
                     </div>
 
-                    <!-- 不为空状态 -->
-                    <a-tree
-                        v-model:expandedKeys="expandedKeys"
-                        v-model:selectedKeys="selectedKeys"
-                        :load-data="onLoadData"
-                        :tree-data="treeData"
-                        @select="MaterialListMethod.Tree.handleSelect"
-                        show-icon
-                        style="font-size: 12px;"
+                    <!-- 不为空状态 innerHeight -->
+                    <div v-else style="height: 100px;"
+                        :style="{
+                            height: PAGEDATA.innerHeight + 100 + 'px',
+                            overflowY:'auto',
+                            overflowX:'auto',
+                            marginTop:'10px',
+                            marginBottom:'10px',
+                            padding:'10px 0 0 2px',
+                        }"
                     >
-                        <template #icon="{ key, selected }">
-                            <FolderOutlined />
-                        </template>
-                    </a-tree>
+                        <!-- <p style="padding: 15px 0 0 32px;font-weight: bold;">
+                            <FolderOutlined /> 选择文件夹
+                        </p> -->
+                        <a-tree
+                            v-model:expandedKeys="expandedKeys"
+                            v-model:selectedKeys="selectedKeys"
+                            :load-data="onLoadData"
+                            :tree-data="treeData"
+                            @select="MaterialListMethod.Tree.handleSelect"
+                            show-icon
+                            style="font-size: 12px;"
+                        >
+                        
+                            <template #icon="{ key, selected }">
+                                <FolderOutlined />
+                            </template>
+                        </a-tree>
+                    </div>
                     
-                </div>
+                    
+                    
 
             </a-layout-sider>
             <!-- 选择文件夹树形结构 结束 -->
@@ -136,9 +147,10 @@
                     overflowY:'auto',
                     overflowX:'hidden',
                     marginTop:'10px',
-                    marginBottom:'10px'
-                }"
-                >
+                    marginBottom:'10px',
+                    padding:'10px 0 0 2px'
+
+                }">
                     <a-checkbox-group  v-model:value="PAGEDATA.check_value" style="width: 100%;height: 100%;">
                     <a-list 
 
@@ -151,12 +163,19 @@
                         <template #renderItem="{ item }">
 
                             <a-card  v-if="item.material_type == 'photo'" size="small" class="card_style" hoverable>
+
+                                <div class="floating-badge">
+                                    <PictureOutlined /> 图片</div>
+
                                 <div class="image_content_">
                                     <!--图片文件 显示方式-->
                                     <a-image
                                         :style="Material_Images.material_width(item.photo_info)"
                                         :src="item.byte_url"
                                     />
+                                </div>
+                                <div class="material-name" :title="item.materil_name">
+                                    {{ item.materil_name }}
                                 </div>
                                 <template #actions>
                                     <a-checkbox 
@@ -171,11 +190,17 @@
 
                             <!--视频 显示方式-->
                             <a-card v-else-if="item.material_type == 'video'" size="small" class="card_style" hoverable>
+                                
+                                <div class="floating-badge"><PlaySquareOutlined />视频</div>
+
                                 <div class="image_content_">
                                 <a-image
                                     :height="100"
                                     :src="item.video_info.video_cover_url"
                                 />
+                                </div>
+                                <div class="material-name" :title="item.materil_name">
+                                    {{ item.materil_name }}
                                 </div>
                                 <template #actions>
                                     <a-checkbox 
@@ -208,7 +233,7 @@
 
                         <a-col :span="10" style="text-align: left;">
                             
-                            <p class="font_size_12" style="padding: 6px 0 0 20px;">
+                            <p class="font_size_12" style="padding: 6px 0 0 0;">
 
                                 <a-space>
 
@@ -414,7 +439,7 @@ import{Empty, message} from 'ant-design-vue'
 
 import { useStore } from 'vuex'
 // 网络请求工具引用FolderOutlined
-import { FolderOutlined,CloseCircleOutlined,ClearOutlined,EyeOutlined,DownOutlined,FolderOpenOutlined,DeleteOutlined} from '@ant-design/icons-vue';
+import { FolderOutlined,CloseCircleOutlined,ClearOutlined,EyeOutlined,DownOutlined,FolderOpenOutlined,DeleteOutlined,PictureOutlined,PlaySquareOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as MaterialList from '@/assets/douyinshop/productmanagement/material_list';// 商品管理->编辑操作方法
@@ -436,7 +461,9 @@ export default {
         CloseCircleOutlined,
         DownOutlined,
         FolderOpenOutlined,
-        DeleteOutlined
+        DeleteOutlined,
+        PictureOutlined,
+        PlaySquareOutlined
    },
 props: {
    data:{typr:Object}
@@ -451,7 +478,6 @@ setup(props,ctx) {
     // 组件挂之后---请求数据===============================开始
     const PAGEDATA = reactive({
         title:'素材列表',
-        innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
         menudata:{      // 菜单选中配置
             'key':'115',
             'openKeys':'cloudstorage',
@@ -832,7 +858,6 @@ setup(props,ctx) {
 .box-left{background-color: white;height: 100%;overflow-y:auto;width: 100%;white-space:nowrap;padding: 0 6px;}
 .headerStyle{text-align: left;background-color: #fff;height: 64px;line-height: 64px;}
 .contentStyle{text-align: center;background-color: #fff;height: 100%;}
-.siderStyle{background-color: #fff;overflow: auto;padding: 10px 10px 10px 0;width: 260px;}
 .footerStyle{text-align: center;background-color: #fff;padding: 0;}
 .confimImg{text-align: left;padding: 10px 0 10px 0;margin: 0 0 10px 0;height:300px;width: 100%;overflow-x: auto;overflow-y: auto;border-bottom: 1px #f2f2f2 solid;}
 .confimbox{width: 60px;height: 60px;margin: 10px 20px 30px 20px;padding: 4px; float: left;border: 1px #f2f2f2 solid;border-radius: 4px;text-align: center;}
@@ -840,9 +865,23 @@ setup(props,ctx) {
 .video_list_box{padding: 6px 0 0 0;margin: 4px 0 0 0;width: 100%;height: 28px;overflow: hidden;text-align: left;text-align: center;}
 .img_list_box{padding: 2px;margin: 4px 0 0 0;width: 100%;height: 28px;overflow: hidden;text-align: left;}
 .sucai_url{width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;margin: 0 0 20px 0;}
-.ant-list{height: 100% !important}/**暂无数据垂直居中**/
+.ant-list{height: 100%  !important;width: 100% !important;}/**暂无数据垂直居中**/
 .card_style{margin:0px 10px 10px 0;font-size: 12px;text-align: center;}
 .image_content_{height: 100px;width: 100px;margin: 0 auto;display: flex;
   justify-content: center;  /* 水平居中 */
   align-items: center;      /* 垂直居中 */}
+.material-name {
+    width: 100%;
+    height: 28px;
+    line-height: 28px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 12px;
+    color: #333;
+    margin-top: 4px;
+}
+/**！！！素材类型---相对定位！！！**/
+.floating-badge {background-color: black;color: #fff;height: 20px;position: absolute;z-index: 100;border-radius: 4px;padding: 0 4px;font-size: 12px;opacity: 0.5}
 </style>

@@ -1,0 +1,441 @@
+<!-- 回收站 -->
+<template>
+
+    <!--内容部分 菜单 右侧列表 开始-->
+    <a-layout style="height: 100vh;width: 100vw;">
+
+        <!--head 导航组件  开始-->
+        <menu_head />
+        <!--head 导航组件  结束-->
+        
+        
+        <!--内容部分 菜单 右侧列表 开始-->
+        <a-layout>
+
+            <!--左侧 菜单组件  开始-->
+            <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
+            <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
+            </a-layout-sider>
+            <!--左侧 菜单组件  结束-->
+
+
+            <!-- 回收站内容区域 开始 -->
+            <a-layout-content class="content_border">
+
+                <!-- 筛选条件 开始 -->
+                <div :style="{
+                    width: '100%',
+                    height:'42px',
+                    backgroundColor:'#f2f2f2',
+                    borderRadius:'4px',
+                    overflow:'hidden',
+                }">
+                    <a-row>
+                        
+                        <a-col :span="24" style="padding:6px 6px 0 10px;">
+                            <a-space>
+                                <a-input 
+                                    type="text" 
+                                    placeholder="输入素材名称"
+                                    v-model:value="filterForm.name"
+                                    autoComplete="off"
+                                    style="width: 160px;"
+                                />
+                                <a-select
+                                    v-model:value="filterForm.dateRange"
+                                    placeholder="删除时间"
+                                    style="width: 120px;"
+                                    :options="dateOptions"
+                                />
+                                <a-button 
+                                    type="primary" 
+                                    size="small"
+                                    @click="handleFilter"
+                                >查询</a-button>
+                                <a-button 
+                                    size="small"
+                                    @click="handleReset"
+                                >重置</a-button>
+                            </a-space>
+                        </a-col>
+                    </a-row>
+                </div>
+                <!-- 筛选条件 结束 -->
+
+
+                <!-- 回收站素材列表 开始 -->
+                <div :style="{
+                    height: PAGEDATA.innerHeight + 'px',
+                    overflowY:'auto',
+                    overflowX:'hidden',
+                    marginTop:'10px',
+                    marginBottom:'10px',
+                    padding:'10px 0 0 10px'
+                }"
+                >
+                    <a-list 
+                        :grid="{ gutter: 16, column: 5 }"
+                        size="default"
+                        :data-source="displayList"
+                        :loading="PAGEDATA.loading"
+                    >
+                        <template #renderItem="{ item }">
+                            <a-card size="small" class="card_style" hoverable>
+                                <div class="image_content_">
+                                    <a-image
+                                        :style="{ height: '100px' }"
+                                        :src="item.byte_url"
+                                    />
+                                </div>
+                                <div class="material-name" :title="item.materil_name">
+                                    {{ item.materil_name }}
+                                </div>
+                                <template #actions>
+                                    <a href="#" class="font_size_12" @click="showDetail(item)">详情</a>
+                                    <a href="#" class="font_size_12" @click="handleDelete(item)">恢复</a>
+                                    <a href="#" class="font_size_12" @click="handleDelete(item)">删除</a>
+
+                                </template>
+                            </a-card>
+                        </template>
+                    </a-list>
+
+                    <!-- 空状态 -->
+                    <div v-if="displayList.length === 0 && !PAGEDATA.loading" style="text-align: center;margin-top: 15%;">
+                        <a-empty description="暂无回收站素材" />
+                    </div>
+                </div>
+                <!-- 回收站素材列表 结束 -->
+
+
+                <!-- 底部翻页 开始 -->
+                <a-layout-footer class="footerStyle">
+                    <a-row>
+                        <a-col :span="10" style="text-align: left;">
+                            <p class="font_size_12" style="padding: 6px 0 0 20px;">
+                                <a-space>
+                                    <a-tag :bordered="false">
+                                        <FolderOpenOutlined /> 
+                                        共 {{ PAGEDATA.total_number }} 条
+                                    </a-tag>
+                                </a-space>
+                            </p>
+                        </a-col>
+                        <a-col :span="14">
+                            <a-pagination
+                                v-model:current="PAGEDATA.page"
+                                v-model:pageSize="PAGEDATA.pageSize"
+                                :total="PAGEDATA.total_number"
+                                show-size-changer
+                                :page-size-options="['10', '20', '50', '100']"
+                                @change="handlePageChange"
+                                @showSizeChange="handlePageChange"
+                            />
+                        </a-col>
+                    </a-row>
+                </a-layout-footer>
+                <!-- 底部翻页 结束 -->
+
+            </a-layout-content>
+            <!-- 回收站内容区域 结束 -->
+
+        </a-layout>
+            
+    </a-layout>
+
+
+    <!-- 详情查看 抽屉 开始 -->
+    <a-drawer v-model:open="detailDrawer" title="素材详情" width="520" :closable="false">
+        <div v-if="currentItem">
+            <p>素材ID：{{ currentItem.material_id }}</p>
+            <p>素材名称：{{ currentItem.materil_name }}</p>
+            <p>素材类型：{{ currentItem.material_type === 'photo' ? '图片' : '视频' }}</p>
+            <p>文件夹状态：回收站中</p>
+            <p>文件大小：{{ currentItem.size }} kb</p>
+            <p>删除时间：{{ currentItem.delete_time }}</p>
+            <p>创建时间：{{ currentItem.create_time }}</p>
+            <div style="margin: 10px 0 10px 0;">
+                <p>素材预览：</p>
+                <img width="200" :src="currentItem.byte_url" />
+            </div>
+        </div>
+        <a-button size="small" @click="detailDrawer = false">关闭</a-button>
+    </a-drawer>
+    <!-- 详情查看 抽屉 结束 -->
+
+    <!-- 删除确认 弹出层 开始-->
+    <a-modal 
+        v-model:open="deleteModalVisible" 
+        title="确认彻底删除"
+        @ok="confirmDelete"
+    >
+        <p style="margin: 10px 0 0 0;">是否确认彻底删除素材「{{ currentItem?.materil_name }}」？</p>
+        <p style="margin: 10px 0 0 0; color: #ff4d4f;">删除后将无法恢复！</p>
+    </a-modal>
+    <!-- 删除确认 弹出层 结束-->
+
+</template>
+
+<script>
+import { ref, reactive, onMounted, computed } from 'vue';
+import { useStore } from 'vuex';
+import { DeleteOutlined, FolderOpenOutlined } from '@ant-design/icons-vue';
+import * as MaterialList from '@/assets/douyinshop/productmanagement/material_list';// 商品管理->编辑操作方法
+
+// 组件引用 开始
+import menu_left from '@/components/layout/menu_left.vue';
+import menu_head from "@/components/layout/menu_head.vue";
+// 组件引用 结束
+
+export default {
+    name: 'RecycleBin',
+    components: {
+        menu_left,
+        menu_head,
+        DeleteOutlined,
+        FolderOpenOutlined
+    },
+    setup() {
+
+
+        const store = useStore();
+        const RecycleBinMethod = new MaterialList.RecycleBinMethod() // 加载数据方法
+        // 页面数据
+        const PAGEDATA = reactive({
+            title: '回收站',
+            innerHeight: ref(window.innerHeight - 180),
+            menudata: {
+                'key': '116',
+                'openKeys': 'cloudstorage',
+            },
+            loading: true,
+            total_number: 0,
+            page: 1,
+            pageSize: 10,
+        });
+
+        RecycleBinMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
+
+        RecycleBinMethod.load.getmaterialData(RecycleBinMethod.navData.value)
+
+        // 筛选表单
+        const filterForm = reactive({
+            name: '',
+            dateRange: 'all'
+        });
+
+        // 删除时间选项
+        const dateOptions = [
+            { value: 'all', label: '全部时间' },
+            { value: '1', label: '1天内' },
+            { value: '3', label: '3天内' },
+            { value: '7', label: '7天内' },
+            { value: '10', label: '10天内' },
+        ];
+
+        // 模拟数据列表（10天数据）
+        const mockDataList = ref([]);
+
+        // 生成模拟数据
+        const generateMockData = () => {
+            const list = [];
+            const now = new Date();
+            const materialNames = [
+                '商品主图_春季新款', '详情页_产品展示', '广告图_促销', ' Banner_首页',
+                '视频_产品介绍', '图片_模特展示', '海报_节日活动', '截图_用户好评',
+                '动图_效果展示', '封面_视频号', '白底图_标准', '场景图_家居',
+                '对比图_前后', '步骤图_教程', '合集_多色展示', '特写_细节',
+                '包装_外观', '标签_吊牌', '资质_认证', '售后_说明'
+            ];
+            const imageUrls = [
+                'https://picsum.photos/200/200?random=1',
+                'https://picsum.photos/200/200?random=2',
+                'https://picsum.photos/200/200?random=3',
+                'https://picsum.photos/200/200?random=4',
+                'https://picsum.photos/200/200?random=5',
+                'https://picsum.photos/200/200?random=6',
+                'https://picsum.photos/200/200?random=7',
+                'https://picsum.photos/200/200?random=8',
+                'https://picsum.photos/200/200?random=9',
+                'https://picsum.photos/200/200?random=10',
+            ];
+
+            for (let day = 0; day < 10; day++) {
+                const date = new Date(now);
+                date.setDate(date.getDate() - day);
+                const dateStr = date.toISOString().split('T')[0] + ' ' + 
+                    String(date.getHours()).padStart(2, '0') + ':' + 
+                    String(date.getMinutes()).padStart(2, '0') + ':' + 
+                    String(date.getSeconds()).padStart(2, '0');
+
+                // 每天 3-8 条数据
+                const count = 3 + Math.floor(Math.random() * 6);
+                for (let i = 0; i < count; i++) {
+                    const id = day * 100 + i + 1;
+                    list.push({
+                        material_id: 'M' + String(id).padStart(6, '0'),
+                        materil_name: materialNames[Math.floor(Math.random() * materialNames.length)] + '_' + id,
+                        material_type: Math.random() > 0.3 ? 'photo' : 'video',
+                        byte_url: imageUrls[Math.floor(Math.random() * imageUrls.length)],
+                        size: Math.floor(Math.random() * 5000 + 100),
+                        create_time: dateStr,
+                        delete_time: dateStr,
+                        operate_status: 4,
+                        dayOffset: day
+                    });
+                }
+            }
+            return list;
+        };
+
+        // 筛选后的列表
+        const filteredList = ref([]);
+
+        // 显示列表（分页后）
+        const displayList = computed(() => {
+            const start = (PAGEDATA.page - 1) * PAGEDATA.pageSize;
+            const end = start + PAGEDATA.pageSize;
+            return filteredList.value.slice(start, end);
+        });
+
+        // 初始化数据
+        const initData = () => {
+            PAGEDATA.loading = true;
+            setTimeout(() => {
+                mockDataList.value = generateMockData();
+                filteredList.value = [...mockDataList.value];
+                PAGEDATA.total_number = filteredList.value.length;
+                PAGEDATA.loading = false;
+            }, 300);
+        };
+
+        // 筛选操作
+        const handleFilter = () => {
+            PAGEDATA.page = 1;
+            let result = [...mockDataList.value];
+
+            // 按名称筛选
+            if (filterForm.name.trim()) {
+                const keyword = filterForm.name.trim().toLowerCase();
+                result = result.filter(item => item.materil_name.toLowerCase().includes(keyword));
+            }
+
+            // 按时间筛选
+            if (filterForm.dateRange !== 'all') {
+                const days = parseInt(filterForm.dateRange);
+                result = result.filter(item => item.dayOffset < days);
+            }
+
+            filteredList.value = result;
+            PAGEDATA.total_number = result.length;
+        };
+
+        // 重置筛选
+        const handleReset = () => {
+            filterForm.name = '';
+            filterForm.dateRange = 'all';
+            PAGEDATA.page = 1;
+            filteredList.value = [...mockDataList.value];
+            PAGEDATA.total_number = filteredList.value.length;
+        };
+
+        // 分页变化
+        const handlePageChange = () => {
+            // 分页由计算属性自动处理
+        };
+
+        // 详情抽屉
+        const detailDrawer = ref(false);
+        const currentItem = ref(null);
+
+        const showDetail = (item) => {
+            currentItem.value = item;
+            detailDrawer.value = true;
+        };
+
+        // 删除确认
+        const deleteModalVisible = ref(false);
+
+        const handleDelete = (item) => {
+            currentItem.value = item;
+            deleteModalVisible.value = true;
+        };
+
+        const confirmDelete = () => {
+            if (currentItem.value) {
+                const id = currentItem.value.material_id;
+                mockDataList.value = mockDataList.value.filter(item => item.material_id !== id);
+                handleFilter();
+                deleteModalVisible.value = false;
+                currentItem.value = null;
+            }
+        };
+
+        // 窗口大小变化
+        const handleResize = () => {
+            PAGEDATA.innerHeight = window.innerHeight - 180;
+        };
+
+        onMounted(() => {
+            initData();
+            window.addEventListener('resize', handleResize);
+        });
+
+        return {
+            store,
+            PAGEDATA,
+            filterForm,
+            dateOptions,
+            displayList,
+            detailDrawer,
+            currentItem,
+            deleteModalVisible,
+            handleFilter,
+            handleReset,
+            handlePageChange,
+            showDetail,
+            handleDelete,
+            confirmDelete,
+        };
+    }
+};
+</script>
+
+<style scoped>
+.content_border {
+    padding: 10px;
+    background-color: #fff;
+}
+.footerStyle {
+    text-align: center;
+    background-color: #fff;
+    padding: 0;
+}
+.font_size_12 {
+    font-size: 12px;
+}
+.card_style{margin:0px 10px 10px 0;font-size: 12px;text-align: center;}
+.image_content_ {
+    height: 100px;
+    width: 100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.material-name {
+    width: 100%;
+    height: 28px;
+    line-height: 28px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 12px;
+    color: #333;
+    margin-top: 4px;
+}
+.ant-list {
+    height: 100% !important;
+}
+</style>

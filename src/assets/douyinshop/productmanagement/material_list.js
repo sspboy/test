@@ -7,7 +7,7 @@ import * as utils from '@/assets/JS_Model/public_model';
 const tool = new TOOL.TOOL()        // 工具方法
 const API = new utils.A_Patch()     // 请求接口地址合集
 
-
+// 素材列表管理方法
 export class MaterialListMethod {
 
     PAGEDATA = undefined; // 页面配置参数
@@ -45,8 +45,8 @@ export class MaterialListMethod {
                 setTimeout(() => {
 
                     this.PAGEDATA.loading = false;
-                    this.PAGEDATA.justify = 'start';
-                    this.PAGEDATA.align = 'start';
+                    this.PAGEDATA.justify = 'center';
+                    this.PAGEDATA.align = 'center';
                     // 请求数据不为空
                     this.PAGEDATA.datalist = [...child_material];
                     this.PAGEDATA.total_number = total;
@@ -288,4 +288,91 @@ export class MaterialListMethod {
 
         // 关键词查询
     }
+}
+
+// 回收站管理方法
+export class RecycleBinMethod {
+
+    // 默认查询状态
+    navData=ref({
+        "folder_id":"-1",      // 文件夹id，0-素材中心； -1-回收站；
+        "operate_status":[4],               // 素材状态，0-待下载；1-有效；4-回收站中；
+        "page_num": 1,
+        "page_size": 10,
+        "order_by":0 
+    })
+
+    // 翻页方法--文件夹下素材翻页-搜索查询结果翻页；
+    page_turning = (data)=>{
+
+        this.PAGEDATA.justify = 'flex-start';
+        
+        this.PAGEDATA.align = 'flex-start';
+
+        this.navData.value.page_num = data.page;
+        
+        this.navData.value.page_size = data.page_size;
+
+        this.load.getmaterialData(this.navData.value)
+
+    }
+    
+    // 初始化方法
+    load={
+
+        // 请求回收站素材列表列表接口数据
+        getmaterialData:async(data) => {
+
+            console.log(data)
+
+            this.PAGEDATA.loading = true;
+
+            // 请求素材接口
+            const res = await axios.post(API.AppSrtoreAPI.material.searchmaterial, data)
+
+            var res_data = res.data.data;
+
+            console.log(res)
+
+            // var folder_info = res_data.folder_info;
+            // var child_material = folder_info.child_material;// 素材列表
+            // var total = folder_info.total_child_material_num;// 素材总数 total_child_material_num
+
+            // 请求数据为空
+            // if(child_material.length == 0){
+
+            //     this.PAGEDATA.justify = 'center';
+            //     this.PAGEDATA.align = 'center';
+            //     this.PAGEDATA.loading = false;
+            //     this.PAGEDATA.datalist = [];
+            //     this.PAGEDATA.total_number = 0
+            
+            // }else{
+            
+            //     setTimeout(() => {
+
+            //         this.PAGEDATA.loading = false;
+            //         this.PAGEDATA.justify = 'center';
+            //         this.PAGEDATA.align = 'center';
+            //         // 请求数据不为空
+            //         this.PAGEDATA.datalist = [...child_material];
+            //         this.PAGEDATA.total_number = total;
+
+            //     }, 1000);
+            
+            // }
+        }
+        
+    }
+    
+    // 列表方法
+    list ={
+        // 加载页面数据
+        getlistDate:()=>{
+            
+        }
+    }
+
+    // 
+
 }

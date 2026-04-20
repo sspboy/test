@@ -25,7 +25,7 @@ const routes = [
         path: '/user',
         name: 'User',
         // 路由守卫,用做前端鉴权访问路由
-        beforeEnter: (to, from) => {
+        beforeEnter: () => {
             return true
         },
         component: () => import('../views/admin/UserView.vue'),   // 视图文件
@@ -177,6 +177,7 @@ const routes = [
             title:'运费模板',
         }
     },
+    // 新建批量任务
     {
         path: '/creatTask',
         name: 'creatTask',
@@ -185,6 +186,7 @@ const routes = [
             title:'新建任务',
         }
     },
+    // 任务记录
     {
         path: '/operationlog',
         name: 'operationlog',
@@ -263,6 +265,14 @@ const routes = [
         component: () => import('../views/AppMarket/Material/list.vue'),    // 视图文件
         meta:{
             title:'素材列表',
+        }
+    },
+        {
+        path: '/recyclebin',
+        name: 'recyclebin',
+        component: () => import('../views/AppMarket/Material/RecycleBin.vue'),    // 视图文件
+        meta:{
+            title:'回收站',
         }
     },
     {
