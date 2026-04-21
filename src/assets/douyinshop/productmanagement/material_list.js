@@ -331,7 +331,8 @@ export class RecycleBinMethod {
             const res = await axios.post(API.AppSrtoreAPI.material.searchmaterial, data)
 
             var res_data = res.data.data;
-
+            var material_list = res_data.material_info_list;// 素材列表
+            var total = res_data.total_num;// 素材总数 total_num
             console.log(res)
 
             // var folder_info = res_data.folder_info;
@@ -339,28 +340,24 @@ export class RecycleBinMethod {
             // var total = folder_info.total_child_material_num;// 素材总数 total_child_material_num
 
             // 请求数据为空
-            // if(child_material.length == 0){
-
-            //     this.PAGEDATA.justify = 'center';
-            //     this.PAGEDATA.align = 'center';
-            //     this.PAGEDATA.loading = false;
-            //     this.PAGEDATA.datalist = [];
-            //     this.PAGEDATA.total_number = 0
+            if(material_list.length == 0){
+                this.PAGEDATA.justify = 'center';
+                this.PAGEDATA.align = 'center';
+                this.PAGEDATA.loading = false;
+                this.PAGEDATA.datalist = [];
+                this.PAGEDATA.total_number = 0
             
-            // }else{
+            }else{
             
-            //     setTimeout(() => {
+                this.PAGEDATA.loading = false;
+                this.PAGEDATA.justify = 'center';
+                this.PAGEDATA.align = 'center';
+                // 请求数据不为空
+                this.PAGEDATA.datalist = [...material_list];
+                this.PAGEDATA.total_number = total;
 
-            //         this.PAGEDATA.loading = false;
-            //         this.PAGEDATA.justify = 'center';
-            //         this.PAGEDATA.align = 'center';
-            //         // 请求数据不为空
-            //         this.PAGEDATA.datalist = [...child_material];
-            //         this.PAGEDATA.total_number = total;
-
-            //     }, 1000);
             
-            // }
+            }
         }
         
     }

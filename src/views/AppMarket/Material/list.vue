@@ -16,7 +16,7 @@
 
             <!--左侧 菜单组件  开始-->
             <a-layout-sider v-model:collapsed="store.state.menu.coll" :trigger="null" collapsible>
-            <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
+                <menu_left :menudata="PAGEDATA.menudata"/> <!--局部组件-->
             </a-layout-sider>
             <!--左侧 菜单组件  结束-->
 
@@ -90,7 +90,7 @@
                 }">
                     <a-row>
                         <!--面包屑导航-->
-                        <a-col :span="16">
+                        <a-col :span="12">
                             <a-space>
                                 <div style="margin: 10px 0 0 20px;"> 
                                     <a-breadcrumb>
@@ -107,7 +107,7 @@
                                 </div>
                             </a-space>
                         </a-col>
-                        <a-col :span="8" style="padding:8px 6px 0 0;">
+                        <a-col :span="12" style="padding:8px 6px 0 0;">
                             <a-space>
                                 <a-input 
                                     type="text" 
@@ -127,9 +127,8 @@
                                 size="small"
                                 @click="showQueryDrawer"
                                 >查询</a-button>
-                            <!-- <a-button type="primary" size="small">网络图片上传</a-button>
-                            <a-button type="primary" size="small">本地图片上传</a-button>
-                            <a-button type="primary" size="small">上传视频</a-button> -->
+                                <a-button type="primary" size="small" @click="showNetImageModal">网络图片上传</a-button>
+                                <a-button type="primary" size="small" @click="showLocalUploadModal">本地图片上传</a-button>
                             </a-space>
                         </a-col>
                     </a-row>
@@ -432,6 +431,120 @@
     </a-drawer>
     <!-- 查询详情抽屉 结束 -->
 
+    <!-- 上传网络图片 弹出层 开始-->
+    <a-modal 
+        v-model:open="netImageModalVisible" 
+        title="上传网络图片"
+        @ok="handleNetImageOk"
+        @cancel="handleNetImageCancel"
+    >
+        <a-form 
+            ref="netImageFormRef"
+            :model="netImageForm"
+            :rules="netImageRules"
+            layout="vertical"
+            style="padding: 20px 0 0 0;"
+        >
+
+            <a-form-item label="选择文件夹" name="folderId">
+                <a-cascader
+                    v-model:value="netImageForm.folderId"
+                    :options="netImageFolderOptions"
+                    :load-data="loadNetImageFolder"
+                    placeholder="请选择素材文件夹"
+                    change-on-select
+                />
+            </a-form-item>
+            
+            <div style="margin-bottom: 16px;">
+
+                <label style="display: block; margin: 0 0 8px 0;font-size: 12px;">
+                    <span style="color: #ff4d4f;">*</span> 图片地址 
+                </label>
+
+                <div v-for="(url, index) in netImageForm.imageUrls" :key="index" style="margin-bottom: 8px;">
+                        <a-form-item
+                            :name="['imageUrls', index]"
+                            :rules="[
+                                { required: true, message: '请输入图片地址', trigger: 'blur' },
+                                { pattern: /^http/, message: '图片地址必须以 http 开头', trigger: 'change' }
+                            ]"
+                            style="margin-bottom: 0;"
+                        >
+                            <a-row>
+                                <a-col :span="20">
+                                    <a-input 
+                                        v-model:value="netImageForm.imageUrls[index]"
+                                        :placeholder="'请输入图片地址'"
+                                        size="middle"
+
+                                    />
+                                </a-col>
+                                <a-col :span="4">
+                                    <a-button 
+                                        type="dashed" 
+                                        size="small"
+                                        @click="removeImageUrl(index)"
+                                        style="margin: 2px 0 0 10px;width: 80%;"
+                                        
+                                    >
+                                    删除
+                                    </a-button>
+                                </a-col>
+
+                            </a-row>
+
+                            
+                        </a-form-item>
+
+                </div>
+                <div >
+                    <a-button 
+                        type="dashed" 
+                        size="small"
+                        @click="addImageUrl"
+                        :disabled="netImageForm.imageUrls.length >= 10"
+                        style="margin: 18px 0 18px 0;"
+                    >
+                        <PlusOutlined /> 添加地址
+                    </a-button>
+                    <span v-if="netImageForm.imageUrls.length >= 10" style="color: #ff4d4f; font-size: 12px; margin-left: 8px;">
+                        最多添加10个图片地址
+                    </span>
+                </div>
+            </div>
+        </a-form>
+    </a-modal>
+    <!-- 上传网络图片 弹出层 结束-->
+
+    <!-- 上传本地文件 弹出层 开始-->
+    <a-modal 
+        v-model:open="localUploadModalVisible" 
+        title="上传本地文件"
+        @ok="handleLocalUploadOk"
+        @cancel="handleLocalUploadCancel"
+        :width="560"
+        
+    >
+        <a-upload-dragger
+            v-model:fileList="localFileList"
+            :multiple="true"
+            :beforeUpload="beforeLocalUpload"
+            :customRequest="handleLocalUpload"
+            @change="handleLocalUploadChange"
+            style="margin: 30px 0 20px 0;"
+        >
+            <p class="ant-upload-drag-icon">
+                <InboxOutlined />
+            </p>
+            <p class="ant-upload-text">点击或拖拽文件到此处上传</p>
+            <p class="ant-upload-hint">
+                支持单次上传多个文件，文件大小不超过5MB，最多20个文件
+            </p>
+        </a-upload-dragger>
+    </a-modal>
+    <!-- 上传本地文件 弹出层 结束-->
+
 </template>
 <script>
 import { computed,ref,reactive,onMounted,h,onUnmounted,watch } from 'vue';
@@ -439,7 +552,7 @@ import{Empty, message} from 'ant-design-vue'
 
 import { useStore } from 'vuex'
 // 网络请求工具引用FolderOutlined
-import { FolderOutlined,CloseCircleOutlined,ClearOutlined,EyeOutlined,DownOutlined,FolderOpenOutlined,DeleteOutlined,PictureOutlined,PlaySquareOutlined} from '@ant-design/icons-vue';
+import { FolderOutlined,CloseCircleOutlined,ClearOutlined,EyeOutlined,DownOutlined,FolderOpenOutlined,DeleteOutlined,PictureOutlined,PlaySquareOutlined, PlusOutlined, InboxOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as MaterialList from '@/assets/douyinshop/productmanagement/material_list';// 商品管理->编辑操作方法
@@ -463,7 +576,9 @@ export default {
         FolderOpenOutlined,
         DeleteOutlined,
         PictureOutlined,
-        PlaySquareOutlined
+        PlaySquareOutlined,
+        PlusOutlined,
+        InboxOutlined
    },
 props: {
    data:{typr:Object}
@@ -487,8 +602,8 @@ setup(props,ctx) {
         align:'center',       // 列表内容对齐：loading加载居中设定
         innerHeight: ref(window.innerHeight - 180), // 初始化列表高度
         innerWidth: ref(window.innerWidth - 230), // 初始化列表高度
-        // 列表信息
-        datalist:[],
+        
+        datalist:[],// 列表信息
         total_number:0,     // 内容总数
         List_conditions:ref({page:1}),// 翻页-当前页数
         childrenDrawer:ref(false),// 本地上传图片-抽屉状态
@@ -501,6 +616,9 @@ setup(props,ctx) {
         ]),
         check_value:ref([]),
 
+        // 配置网络图片地址上传组件状态
+        // 配置本地文件上传组件状态
+
     })
 
     MaterialListMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
@@ -512,6 +630,8 @@ setup(props,ctx) {
     const childimgDrawer = ref(false);                  // 图片详情状态
     const childvideoDrawer = ref(false);                // 视频详情状态
     const queryDrawer = ref(false);                     // 查询详情抽屉状态
+    const netImageModalVisible = ref(false);            // 上传网络图片弹出层状态
+    const netImageFormRef = ref(null);                  // 网络图片表单 ref
     const expandedKeys = ref([]);                       // 展开指定的树节点
     const selectedKeys = ref([]);                       // 选中的节点树
     const treeData = ref([]);
@@ -560,6 +680,194 @@ setup(props,ctx) {
     const handleQuery = () => {
         MaterialListMethod.SelectMaterial.select();
         queryDrawer.value = false;
+    };
+
+    // 联级选择器文件夹选项
+    const netImageFolderOptions = ref([]);
+
+    // 将 treeData 转换为 Cascader 选项
+    const convertTreeToCascader = (nodes) => {
+        if (!nodes || nodes.length === 0) return [];
+        return nodes.map(node => ({
+            value: String(node.key),
+            label: node.title,
+            isLeaf: node.isLeaf,
+            children: node.children ? convertTreeToCascader(node.children) : undefined
+        }));
+    };
+
+    // 异步加载联级选择器子文件夹
+    const loadNetImageFolder = (selectedOptions) => {
+        const targetOption = selectedOptions[selectedOptions.length - 1];
+        targetOption.loading = true;
+        
+        const folderId = targetOption.value;
+        
+        tool.Http_.post(API.AppSrtoreAPI.material.getfolder, {
+            "folder_id": folderId,
+            "page_num": 1,
+            "page_size": 10
+        }).then((res) => {
+            const child_folder_list = res.data.data.folder_info.child_folder;
+            
+            if (child_folder_list.length > 0) {
+                targetOption.children = child_folder_list.map(obj => ({
+                    value: String(obj.folder_id),
+                    label: obj.folder_name,
+                    isLeaf: true
+                }));
+                
+                // 检查子文件夹是否还有子文件夹
+                const checks = targetOption.children.map(child => {
+                    return tool.Http_.post(API.AppSrtoreAPI.material.getfolder, {
+                        "folder_id": child.value,
+                        "page_num": 1,
+                        "page_size": 10
+                    }).then((childRes) => {
+                        const grandChildren = childRes.data.data.folder_info.child_folder;
+                        child.isLeaf = grandChildren.length === 0;
+                    });
+                });
+                
+                Promise.all(checks).then(() => {
+                    targetOption.loading = false;
+                    netImageFolderOptions.value = [...netImageFolderOptions.value];
+                });
+            } else {
+                targetOption.isLeaf = true;
+                targetOption.loading = false;
+                netImageFolderOptions.value = [...netImageFolderOptions.value];
+            }
+        });
+    };
+
+    // 网络图片表单数据
+    const netImageForm = reactive({
+        folderId: [],
+        imageUrls: ['']
+    });
+
+    // 网络图片表单验证规则
+    const netImageRules = {
+        folderId: [
+            { required: true, message: '请选择素材文件夹', trigger: 'change', type: 'array' }
+        ]
+    };
+
+    // 显示上传网络图片弹出层
+    const showNetImageModal = () => {
+        netImageModalVisible.value = true;
+        // 初始化文件夹选项（添加根节点素材库）
+        if (treeData.value.length > 0) {
+            netImageFolderOptions.value = [{
+                value: '0',
+                label: '素材库',
+                isLeaf: false,
+                children: convertTreeToCascader(treeData.value)
+            }];
+        }
+    };
+
+    // 添加图片地址输入框
+    const addImageUrl = () => {
+        if (netImageForm.imageUrls.length < 10) {
+            netImageForm.imageUrls.push('');
+        }
+    };
+
+    // 删除图片地址输入框
+    const removeImageUrl = (index) => {
+        if (netImageForm.imageUrls.length > 1) {
+            netImageForm.imageUrls.splice(index, 1);
+        }
+    };
+
+    // 确认上传网络图片
+    const handleNetImageOk = () => {
+        netImageFormRef.value.validate().then(() => {
+            const folderId = netImageForm.folderId[netImageForm.folderId.length - 1];
+            const urls = netImageForm.imageUrls.filter(url => url.trim() !== '');
+            console.log('选择的文件夹ID：', folderId);
+            console.log('网络图片地址列表：', urls);
+            netImageModalVisible.value = false;
+            // 重置表单
+            netImageForm.folderId = [];
+            netImageForm.imageUrls = [''];
+        }).catch((error) => {
+            console.log('表单验证失败', error);
+        });
+    };
+
+    // 取消上传网络图片
+    const handleNetImageCancel = () => {
+        netImageModalVisible.value = false;
+        netImageForm.folderId = [];
+        netImageForm.imageUrls = [''];
+    };
+
+    // 上传本地文件弹出层状态
+    const localUploadModalVisible = ref(false);
+    const localFileList = ref([]);
+
+    // 显示上传本地文件弹出层
+    const showLocalUploadModal = () => {
+        localUploadModalVisible.value = true;
+    };
+
+    // 本地文件上传前验证
+    const beforeLocalUpload = (file, fileList) => {
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+        const MAX_COUNT = 20;
+
+        // 文件大小验证
+        if (file.size > MAX_SIZE) {
+            message.error(`文件 ${file.name} 超过5MB限制`);
+            return false;
+        }
+
+        // 单次上传数量验证
+        if (file === fileList[0] && fileList.length > MAX_COUNT) {
+            message.error(`一次最多上传${MAX_COUNT}个文件`);
+            return false;
+        }
+
+        return true;
+    };
+
+    // 自定义上传请求
+    const handleLocalUpload = ({ file, onSuccess, onError }) => {
+        console.log('上传触发，文件信息：', {
+            name: file.name,
+            size: file.size,
+            type: file.type
+        });
+        
+        // 模拟上传过程（实际项目中应替换为真实上传接口）
+        setTimeout(() => {
+            onSuccess('ok');
+        }, 500);
+    };
+
+    // 上传状态变化处理
+    const handleLocalUploadChange = (info) => {
+        const status = info.file.status;
+        if (status === 'done') {
+            message.success(`${info.file.name} 上传成功`);
+        } else if (status === 'error') {
+            message.error(`${info.file.name} 上传失败`);
+        }
+    };
+
+    // 确认关闭上传弹窗
+    const handleLocalUploadOk = () => {
+        localUploadModalVisible.value = false;
+        localFileList.value = [];
+    };
+
+    // 取消关闭上传弹窗
+    const handleLocalUploadCancel = () => {
+        localUploadModalVisible.value = false;
+        localFileList.value = [];
     };
 
     // 图片素材管理
@@ -848,7 +1156,26 @@ setup(props,ctx) {
         treeData,
         onLoadData,
         simpleImage,
-        handleResize
+        handleResize,
+        netImageModalVisible,
+        netImageFormRef,
+        netImageForm,
+        netImageRules,
+        netImageFolderOptions,
+        showNetImageModal,
+        handleNetImageOk,
+        handleNetImageCancel,
+        addImageUrl,
+        removeImageUrl,
+        loadNetImageFolder,
+        localUploadModalVisible,
+        localFileList,
+        showLocalUploadModal,
+        beforeLocalUpload,
+        handleLocalUpload,
+        handleLocalUploadChange,
+        handleLocalUploadOk,
+        handleLocalUploadCancel
 
        }
    }

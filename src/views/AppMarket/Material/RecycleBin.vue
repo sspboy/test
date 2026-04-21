@@ -41,21 +41,13 @@
                                     autoComplete="off"
                                     style="width: 160px;"
                                 />
-                                <a-select
-                                    v-model:value="filterForm.dateRange"
-                                    placeholder="删除时间"
-                                    style="width: 120px;"
-                                    :options="dateOptions"
-                                />
+
                                 <a-button 
                                     type="primary" 
                                     size="small"
                                     @click="handleFilter"
                                 >查询</a-button>
-                                <a-button 
-                                    size="small"
-                                    @click="handleReset"
-                                >重置</a-button>
+
                             </a-space>
                         </a-col>
                     </a-row>
@@ -76,7 +68,7 @@
                     <a-list 
                         :grid="{ gutter: 16, column: 5 }"
                         size="default"
-                        :data-source="displayList"
+                        :data-source="PAGEDATA.datalist"
                         :loading="PAGEDATA.loading"
                     >
                         <template #renderItem="{ item }">
@@ -100,10 +92,6 @@
                         </template>
                     </a-list>
 
-                    <!-- 空状态 -->
-                    <div v-if="displayList.length === 0 && !PAGEDATA.loading" style="text-align: center;margin-top: 15%;">
-                        <a-empty description="暂无回收站素材" />
-                    </div>
                 </div>
                 <!-- 回收站素材列表 结束 -->
 
@@ -122,15 +110,7 @@
                             </p>
                         </a-col>
                         <a-col :span="14">
-                            <a-pagination
-                                v-model:current="PAGEDATA.page"
-                                v-model:pageSize="PAGEDATA.pageSize"
-                                :total="PAGEDATA.total_number"
-                                show-size-changer
-                                :page-size-options="['10', '20', '50', '100']"
-                                @change="handlePageChange"
-                                @showSizeChange="handlePageChange"
-                            />
+                            <nav_pagination :fandata="PAGEDATA" v-on:complete="RecycleBinMethod.page_turning"/>
                         </a-col>
                     </a-row>
                 </a-layout-footer>
@@ -185,6 +165,8 @@ import * as MaterialList from '@/assets/douyinshop/productmanagement/material_li
 // 组件引用 开始
 import menu_left from '@/components/layout/menu_left.vue';
 import menu_head from "@/components/layout/menu_head.vue";
+import nav_pagination from "@/components/nav_pagination.vue";
+
 // 组件引用 结束
 
 export default {
@@ -193,13 +175,14 @@ export default {
         menu_left,
         menu_head,
         DeleteOutlined,
-        FolderOpenOutlined
-    },
+        FolderOpenOutlined,
+        nav_pagination
+        },
     setup() {
-
 
         const store = useStore();
         const RecycleBinMethod = new MaterialList.RecycleBinMethod() // 加载数据方法
+
         // 页面数据
         const PAGEDATA = reactive({
             title: '回收站',
@@ -209,7 +192,9 @@ export default {
                 'openKeys': 'cloudstorage',
             },
             loading: true,
-            total_number: 0,
+            datalist:[],// 列表信息
+            total_number:0,     // 内容总数
+            List_conditions:ref({page:1}),// 翻页-当前页数
             page: 1,
             pageSize: 10,
         });
@@ -224,14 +209,7 @@ export default {
             dateRange: 'all'
         });
 
-        // 删除时间选项
-        const dateOptions = [
-            { value: 'all', label: '全部时间' },
-            { value: '1', label: '1天内' },
-            { value: '3', label: '3天内' },
-            { value: '7', label: '7天内' },
-            { value: '10', label: '10天内' },
-        ];
+
 
         // 模拟数据列表（10天数据）
         const mockDataList = ref([]);
@@ -298,16 +276,7 @@ export default {
             return filteredList.value.slice(start, end);
         });
 
-        // 初始化数据
-        const initData = () => {
-            PAGEDATA.loading = true;
-            setTimeout(() => {
-                mockDataList.value = generateMockData();
-                filteredList.value = [...mockDataList.value];
-                PAGEDATA.total_number = filteredList.value.length;
-                PAGEDATA.loading = false;
-            }, 300);
-        };
+
 
         // 筛选操作
         const handleFilter = () => {
@@ -330,14 +299,6 @@ export default {
             PAGEDATA.total_number = result.length;
         };
 
-        // 重置筛选
-        const handleReset = () => {
-            filterForm.name = '';
-            filterForm.dateRange = 'all';
-            PAGEDATA.page = 1;
-            filteredList.value = [...mockDataList.value];
-            PAGEDATA.total_number = filteredList.value.length;
-        };
 
         // 分页变化
         const handlePageChange = () => {
@@ -377,21 +338,19 @@ export default {
         };
 
         onMounted(() => {
-            initData();
             window.addEventListener('resize', handleResize);
         });
 
         return {
             store,
             PAGEDATA,
+            RecycleBinMethod,
             filterForm,
-            dateOptions,
             displayList,
             detailDrawer,
             currentItem,
             deleteModalVisible,
             handleFilter,
-            handleReset,
             handlePageChange,
             showDetail,
             handleDelete,
