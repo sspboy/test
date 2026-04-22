@@ -65,6 +65,7 @@
                     padding:'10px 0 0 10px'
                 }"
                 >
+                    <a-checkbox-group v-model:value="RecycleBinMethod.check_value.value" style="width: 100%;height: 100%;">
                     <a-list 
                         :grid="{ gutter: 16, column: 5 }"
                         size="default"
@@ -75,14 +76,18 @@
                             <a-card size="small" class="card_style" hoverable>
                                 <div class="image_content_">
                                     <a-image
-                                        :style="{ height: '100px' }"
+                                        :style="RecycleBinMethod.load.material_width(item.photoInfo)"
                                         :src="item.byte_url"
                                     />
                                 </div>
                                 <div class="material-name" :title="item.materil_name">
-                                    {{ item.materil_name }}
+                                    {{ item.material_name }}
                                 </div>
                                 <template #actions>
+                                    <a-checkbox 
+                                        :value="item.material_id"
+                                        @change="console.log('选中素材ID：', item.material_id)"
+                                    ></a-checkbox>
                                     <a href="#" class="font_size_12" @click="showDetail(item)">详情</a>
                                     <a href="#" class="font_size_12" @click="handleDelete(item)">恢复</a>
                                     <a href="#" class="font_size_12" @click="handleDelete(item)">删除</a>
@@ -91,7 +96,7 @@
                             </a-card>
                         </template>
                     </a-list>
-
+                    </a-checkbox-group>
                 </div>
                 <!-- 回收站素材列表 结束 -->
 
@@ -102,10 +107,25 @@
                         <a-col :span="10" style="text-align: left;">
                             <p class="font_size_12" style="padding: 6px 0 0 20px;">
                                 <a-space>
+                                    <a-checkbox 
+                                        v-model:checked="RecycleBinMethod.checked_status.value"
+                                        @change="RecycleBinMethod.load.onCheckAllChange"
+                                    >
+                                     全选</a-checkbox>
+
                                     <a-tag :bordered="false">
-                                        <FolderOpenOutlined /> 
-                                        共 {{ PAGEDATA.total_number }} 条
+                                        <PictureOutlined /> 
+                                        已选 {{ RecycleBinMethod.confirm_img_list.value.length }} 条
                                     </a-tag>
+                                    <a-button type="dashed" size="small" @click="RecycleBinMethod.load.clear_confirm_img_list">
+                                        清空
+                                    </a-button>
+                                    <a-button type="dashed" size="small" @click="console.log('清空回收站')">
+                                        批量删除
+                                    </a-button>
+                                    <a-button type="dashed" size="small" @click="console.log('清空回收站')">
+                                        批量恢复
+                                    </a-button>
                                 </a-space>
                             </p>
                         </a-col>
@@ -159,7 +179,7 @@
 <script>
 import { ref, reactive, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
-import { DeleteOutlined, FolderOpenOutlined } from '@ant-design/icons-vue';
+import { DeleteOutlined, FolderOpenOutlined,PictureOutlined } from '@ant-design/icons-vue';
 import * as MaterialList from '@/assets/douyinshop/productmanagement/material_list';// 商品管理->编辑操作方法
 
 // 组件引用 开始
@@ -176,6 +196,7 @@ export default {
         menu_head,
         DeleteOutlined,
         FolderOpenOutlined,
+        PictureOutlined,
         nav_pagination
         },
     setup() {

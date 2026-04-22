@@ -4,6 +4,7 @@ import { defineComponent,reactive,ref,shallowRef,onMounted,defineAsyncComponent,
 import axios from "axios";
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
+import { BatchEdit_fun } from '../ProductList';
 const tool = new TOOL.TOOL()        // 工具方法
 const API = new utils.A_Patch()     // 请求接口地址合集
 
@@ -54,7 +55,231 @@ export class MaterialListMethod {
                 }, 1000);
             
             }
-        }
+        },
+
+        // 点击菜单===》异步加载菜单
+        onLoadData: treeNode => {
+
+            return new Promise(resolve => {
+
+                // 如果存在子菜单 跳过
+                if (treeNode.dataRef.children) {
+                    resolve();
+                    return;
+                }
+
+                var F_if = treeNode.key
+
+                // 请求文件夹信息
+                tool.Http_.post(API.AppSrtoreAPI.material.getfolder,{
+
+                    "folder_id":F_if,// 文件夹id
+                    "page_num":1,
+                    "page_size":100
+
+                }).then((res)=>{
+
+                    // 当前文件夹id
+                    var folder_id = res.data.data.folder_info.folder_id;
+
+                    // 当前文件夹类型
+                    var folder_type = res.data.data.folder_info.folder_type;
+
+                    // 当前文件夹名称
+                    var folder_name = res.data.data.folder_info.folder_name;
+
+                    // 文件夹状态：：1-有效 4-在回收站中
+                    var operate_status = res.data.data.folder_info.operate_status;
+
+                    // 子文件夹列表
+                    var child_folder_list = res.data.data.folder_info.child_folder
+
+                    var chile_folder_number = child_folder_list.length;
+
+                    // 子文件夹数量=0:禁用子菜单
+                    if(chile_folder_number == 0){
+                        
+                        // console.log('子文件夹为空', child_folder_list)
+                        treeNode.isLeaf = true;
+                        this.PAGEDATA.treeData.value = [...this.PAGEDATA.treeData.value];
+                        resolve();
+
+                    }else {     // 数量!=0：加载子菜单
+
+                        // console.log('子文件夹',child_folder_list)
+
+                        // 添加菜单名称和id
+                        child_folder_list.forEach((obj, idx)=>{
+                            
+                            // 面包屑
+                            var breadcrumb = treeNode.dataRef.breadcrumb;
+
+                            obj.title = obj.folder_name;
+                            obj.key = obj.folder_id;
+                            obj.isLeaf = true;
+                            obj.breadcrumb = [...breadcrumb]
+                            obj.breadcrumb.push({
+                                "folder_id":obj.folder_id,
+                                "folder_name":obj.folder_name
+                            })
+
+                            tool.Http_.post(API.AppSrtoreAPI.material.getfolder,{
+                                "folder_id":obj.folder_id,// 文件夹id
+                                "page_num":1,
+                                "page_size":10
+                            }).then((res)=>{
+                                var obj_child_f_list = res.data.data.folder_info.child_folder;
+                                if(obj_child_f_list.length !== 0){obj.isLeaf = false;}
+                            })
+
+
+
+                        })
+                        treeNode.dataRef.children = child_folder_list;
+                        this.PAGEDATA.treeData.value = [...this.PAGEDATA.treeData.value];
+                        resolve();
+                    }
+
+                    // 子素材列表
+                    var child_material_list = res.data.data.folder_info.child_material
+
+                    // 文件夹下素材总数目
+                    var total_child_material_num = res.data.data.folder_info.total_child_material_num;
+
+                })
+            });
+
+        },
+
+        // 图片尺寸验证
+        material_width:(_info)=>{
+            var width = _info.width;
+            var height = _info.height;
+            if(height == width){// 1:1
+                var res =  {width:'100px'}
+            }else if(width > height){// 长大于宽
+                var res =  {width:'100px'}
+            }else if(width < height){// 长小于宽
+                var res =  {height:'100px'}
+            }
+
+            return  res
+        },
+
+        // 视频封面尺寸验证
+        video_cover_width:(_info)=>{
+            console.log(_info)
+        },
+
+        // 初始化素材菜单
+        Loadtree:()=>{
+
+            tool.Http_.post(API.AppSrtoreAPI.material.getfolder,{
+                "folder_id":"0",// 文件夹id
+                "page_num":1,
+                "page_size":10
+
+            }).then((res)=>{
+
+                // res不为空
+                this.PAGEDATA.loading = false
+                
+                // 子文件夹列表
+                var folder_info_list = res.data.data.folder_info.child_folder;
+
+                // 子素材列表
+                var child_material = res.data.data.folder_info.child_material;
+
+                // 符合条件文件夹数量
+                var total_child_material_num = res.data.data.folder_info.total_child_material_num;
+
+                // console.log(total_child_material_num)
+                this.PAGEDATA.total_number = total_child_material_num
+
+                // 添加菜单名称和id
+                folder_info_list.forEach((obj, idx)=>{
+                    // parent_folder_id 父文件夹id
+                    obj.title = obj.folder_name;
+                    obj.key = obj.folder_id;                      
+                    obj.isLeaf = true; 
+
+                    // 面包屑
+                    obj.breadcrumb = [
+                        {
+                        "folder_name":"素材库",
+                        "folder_id":0
+                        },{
+                        "folder_name":obj.folder_name,
+                        "folder_id":obj.folder_id
+                        }
+                    ]
+
+                    tool.Http_.post(API.AppSrtoreAPI.material.getfolder,{
+                        "folder_id":obj.folder_id,// 文件夹id
+                        "page_num":1,
+                        "page_size":10
+                    }).then((res)=>{
+                        var obj_child_f_list = res.data.data.folder_info.child_folder;
+                        if(obj_child_f_list.length !== 0){obj.isLeaf = false;}
+                    }).then(()=>{
+                        this.PAGEDATA.treeData.value=[...folder_info_list]
+                    })
+                })
+
+                // 初始化图片列表
+                this.PAGEDATA.datalist = [...child_material]
+
+            })
+
+        },
+
+        // 已选图片素材--清空
+        clear_confirm_img_list:()=>{
+            this.PAGEDATA.confirm_img_list.length = 0;
+            this.PAGEDATA.check_value.length = 0;
+            this.SelectMaterial.checked_status.value = false;
+        },
+
+        // 选择素材图片方法
+        select_img_fun:(item)=>{
+            // 判断添加的图片是否重复
+            if (this.PAGEDATA.confirm_img_list.includes(item.material_id)) {
+                this.PAGEDATA.confirm_img_list.splice(this.PAGEDATA.confirm_img_list.indexOf(item.material_id), 1);
+            }else{
+                this.PAGEDATA.confirm_img_list.push(item.material_id)
+            }
+        },
+
+        // 全选/取消全选
+        onCheckAllChange:(e)=>{
+            
+            var checked = e.target.checked
+
+            this.SelectMaterial.checked_status.value = checked;
+
+            if (checked) {
+                // 全选素材list
+                this.PAGEDATA.datalist.forEach(item => {
+                    var material_id = item.material_id;
+                    // 判断是否在数组中
+                    if(!this.PAGEDATA.check_value.includes(material_id)){
+                        this.PAGEDATA.check_value.push(material_id)
+                    }
+                    if(!this.PAGEDATA.confirm_img_list.includes(material_id)){ 
+                        this.PAGEDATA.confirm_img_list.push(material_id)
+                    }
+                });
+            } else {
+                this.PAGEDATA.check_value.length = 0;
+                this.PAGEDATA.confirm_img_list.length = 0;
+            }
+        },
+
+        // 去除选中得素材图片方法
+        clear_img_fun:(item)=>{
+            const idx = PAGEDATA.confirm_img_list.value.indexOf(item);
+            if (idx > -1) PAGEDATA.confirm_img_list.value.splice(idx, 1);
+        },
 
     }
 
@@ -112,9 +337,11 @@ export class MaterialListMethod {
         delOpenStatus:ref(false), // 彻底删除弹出层状态
 
         material_ids:ref([]),// 删除素材列表
+
         buttonload:ref(false),// 删除按钮状态
 
         RecycleBinOpenStatus:ref(false),// 回收弹出层状态
+
         RecycleBinbuttonload:ref(false),// 回收确认按钮状态
 
         // 显示 删除对话框
@@ -147,8 +374,7 @@ export class MaterialListMethod {
         del_material_ids:()=>{
 
             this.del.buttonload.value = true; // 按钮状态-加载
-            console.log(this.PAGEDATA.BreadCrumb.at(-1))
-            let f_id = this.PAGEDATA.BreadCrumb.at(-1).folder_id;
+            let f_id = this.PAGEDATA.BreadCrumb.at(-1).folder_id; // 当前文件夹id
             let page = this.PAGEDATA.List_conditions.page;
             
             // 判断是否超过100个
@@ -197,9 +423,11 @@ export class MaterialListMethod {
         MovetoRecycleBin_ids:()=>{
             
             this.del.RecycleBinbuttonload.value = true; // 按钮状态-加载
-            let f_id = this.PAGEDATA.BreadCrumb.at(-1).folder_id;
+
+            let f_id = this.PAGEDATA.BreadCrumb.at(-1).folder_id; // 当前文件夹id
             
             // 判断是否超过100个
+
             // 超过提示
 
             // 未超过执行
@@ -211,7 +439,6 @@ export class MaterialListMethod {
 
                 let code = res.data.code;
                 let sub_msg = res.data.sub_msg;// 错误信息
-                console.log(res)
                 if(code == 10000){// 操作成功
 
                     this.del.RecycleBinbuttonload.value = false; // 按钮状态-false
@@ -241,14 +468,34 @@ export class MaterialListMethod {
         },
         // 批量删除素材
         BatchEdl:()=>{
+            console.log('批量删除素材数量', this.PAGEDATA.confirm_img_list.length)
+            var v_number = this.PAGEDATA.confirm_img_list.length;
+            if(v_number == 0){
+                tool.Fun_.message('warning','请至少选择一条素材进行删除！')// 提示-请选择素材
+            }else if(v_number > 100){
+                tool.Fun_.message('warning','批量删除素材数量不能超过100条！')// 提示-超过数量限制
+            }else{
+                this.del.material_ids.value = [...this.PAGEDATA.confirm_img_list]
+                // this.del.del_material_ids()
+            }
+        },
+
+        // 批量移入回收站
+        BatchMovetoRecycleBin:()=>{
+            console.log('批量移入回收站素材数量', this.PAGEDATA.confirm_img_list.length)
+            var v_number = this.PAGEDATA.confirm_img_list.length;
+            if(v_number == 0){
+                tool.Fun_.message('warning','请至少选择一条素材进行回收！')// 提示-请选择素材
+            }else if(v_number > 100){
+                tool.Fun_.message('warning','批量回收素材数量不能超过100条！')// 提示-超过数量限制
+            }else{
+                this.del.material_ids.value = [...this.PAGEDATA.confirm_img_list]
+                this.del.MovetoRecycleBin_ids()
+            }
 
         }
 
-        // 批量移入回收站
 
-        // 删除文件夹-彻底删除
-
-        // 删除文件夹-移动至回收站
     }
 
 
@@ -293,6 +540,12 @@ export class MaterialListMethod {
 // 回收站管理方法
 export class RecycleBinMethod {
 
+    PAGEDATA = undefined; // 页面配置参数
+
+    checked_status=ref(false)// 全选状态
+    check_value=ref([])// 内容权限状态
+    confirm_img_list=ref([])// 已选素材列表
+
     // 默认查询状态
     navData=ref({
         "folder_id":"-1",      // 文件夹id，0-素材中心； -1-回收站；
@@ -322,8 +575,6 @@ export class RecycleBinMethod {
 
         // 请求回收站素材列表列表接口数据
         getmaterialData:async(data) => {
-
-            console.log(data)
 
             this.PAGEDATA.loading = true;
 
@@ -358,7 +609,55 @@ export class RecycleBinMethod {
 
             
             }
-        }
+        },
+        // 图片尺寸验证
+        material_width:(_info)=>{
+            
+            var width = _info.width;
+            var height = _info.height;
+
+            if(height == width){// 1:1
+                var res =  {width:'100px'}
+            }else if(width > height){// 长大于宽
+                var res =  {width:'100px'}
+            }else if(width < height){// 长小于宽
+                var res =  {height:'100px'}
+            }
+
+            return  res
+        },
+
+        // 全选/取消全选
+        onCheckAllChange:(e)=>{
+            
+            var checked = e.target.checked
+
+            this.checked_status.value = checked;
+
+            if (checked) {
+                // 全选素材list
+                this.PAGEDATA.datalist.forEach(item => {
+                    var material_id = item.material_id;
+                    // 判断是否在数组中
+                    if(!this.check_value.value.includes(material_id)){
+                        this.check_value.value.push(material_id)
+                    }
+                    if(!this.confirm_img_list.value.includes(material_id)){ 
+                        this.confirm_img_list.value.push(material_id)
+                    }
+                });
+            } else {
+                this.check_value.value.length = 0;
+                this.confirm_img_list.value.length = 0;
+            }
+        },
+
+        // 已选图片素材--清空
+        clear_confirm_img_list:()=>{
+            this.confirm_img_list.value.length = 0;
+            this.check_value.value.length = 0;
+            this.checked_status.value = false;
+        },
         
     }
     
@@ -368,8 +667,43 @@ export class RecycleBinMethod {
         getlistDate:()=>{
             
         }
+        // 单选
+        // 全选
+        // 清空全选
     }
 
-    // 
+    // 彻底删除素材方法
+    delmaterial=()=>{
 
+    }
+
+    // 恢复素材方法
+    recovermaterial=()=>{
+
+        axios.post(API.AppSrtoreAPI.material.recovermaterial,{
+
+            "material_ids":this.del.material_ids.value
+
+        }).then((res)=>{
+
+            let code = res.data.code;
+            let sub_msg = res.data.sub_msg;// 错误信息
+            if(code == 10000){// 恢复成功
+                tool.Fun_.message('success','恢复操作成功！')// 提示-恢复成功
+
+                // 重置当前页面
+                this.navData.value.page_num = 1;
+                this.PAGEDATA.List_conditions.page = 1// 重置当前页数
+
+            }else{ // 恢复失败
+                
+                tool.Fun_.message('error', sub_msg) 
+
+            }
+        })
+    }
+
+    // 批量删除
+
+    // 批量恢复
 }

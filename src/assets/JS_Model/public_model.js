@@ -132,7 +132,8 @@ export class A_Patch{
             "easyshuttle":"api/douyin/material/easyshuttle",// 一键删除
             "edit":"api/douyin/material/", // 编辑文件夹
             "add":"api/douyin/material/add", // 添加文件夹
-            "videolist":"api/douyin/material/batchgetvideodetaile" // 视频列表
+            "videolist":"api/douyin/material/batchgetvideodetaile", // 视频列表
+            "recovermaterial":"api/douyin/material/recovermaterial"// 回收站恢复素材
         },
         // 上传商品图片
         upload:{
