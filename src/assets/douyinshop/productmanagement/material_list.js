@@ -543,8 +543,15 @@ export class RecycleBinMethod {
     PAGEDATA = undefined; // 页面配置参数
 
     checked_status=ref(false)// 全选状态
+
     check_value=ref([])// 内容权限状态
+
     confirm_img_list=ref([])// 已选素材列表
+
+    DelMaterialId=ref([])// 单个删除素材id
+    RecoverMaterialId=ref([])// 单个恢复素材id
+    BatchDelMaterialIdList=ref([])// 批量删除素材id列表
+    BatchRecoverMaterialIdList=ref([])// 批量恢复素材id列表
 
     // 默认查询状态
     navData=ref({
@@ -626,6 +633,15 @@ export class RecycleBinMethod {
 
             return  res
         },
+        
+    }
+    
+    // 列表方法
+    list = {
+
+        // 加载页面数据
+        getlistDate:()=>{
+        },
 
         // 全选/取消全选
         onCheckAllChange:(e)=>{
@@ -659,51 +675,79 @@ export class RecycleBinMethod {
             this.checked_status.value = false;
         },
         
+        // 单选选择素材图片方法
+        select_img_fun:(item)=>{
+            // 判断添加的图片是否重复
+            if (this.confirm_img_list.value.includes(item.material_id)) {
+                this.confirm_img_list.value.splice(this.confirm_img_list.value.indexOf(item.material_id), 1);
+            }else{
+                this.confirm_img_list.value.push(item.material_id)
+            }
+        },
     }
-    
-    // 列表方法
-    list ={
-        // 加载页面数据
-        getlistDate:()=>{
-            
-        }
-        // 单选
-        // 全选
-        // 清空全选
+
+    // 删除单个素材确认：
+    ConfirmDleteMaterial=(item)=>{
+        this.DelMaterialId.value = [item.material_id];
+        this.PAGEDATA.DeleteModalVisible = true;
+    }
+    // 恢复单个素材确认；
+    ConfirmRecoverMaterial=(item)=>{
+        this.RecoverMaterialId.value = [item.material_id];
+        this.PAGEDATA.RecoverModalVisible = true;
+    }
+    // 批量删除素材确认；
+    ConfirmBatchDeleteMaterial=()=>{
+        this.PAGEDATA.BatchDeleteModalVisible.value = true;
+        console.log('批量删除素材ID列表：')
+    }
+    // 批量恢复素材确认；
+    ConfirmBatchRecoverMaterial=()=>{
+        this.PAGEDATA.BatchRecoverModalVisible.value = true;
+        console.log('批量恢复素材ID列表：')
     }
 
     // 彻底删除素材方法
-    delmaterial=()=>{
-
+    DelMaterial=()=>{
+        console.log('删除素材ID：', this.DelMaterialId.value);
     }
 
     // 恢复素材方法
-    recovermaterial=()=>{
+    RecoverMaterial=()=>{
+        console.log('恢复素材ID：', this.RecoverMaterialId.value);
 
-        axios.post(API.AppSrtoreAPI.material.recovermaterial,{
+        // axios.post(API.AppSrtoreAPI.material.recovermaterial,{
 
-            "material_ids":this.del.material_ids.value
+        //     "material_ids":this.del.material_ids.value
 
-        }).then((res)=>{
+        // }).then((res)=>{
 
-            let code = res.data.code;
-            let sub_msg = res.data.sub_msg;// 错误信息
-            if(code == 10000){// 恢复成功
-                tool.Fun_.message('success','恢复操作成功！')// 提示-恢复成功
+        //     let code = res.data.code;
 
-                // 重置当前页面
-                this.navData.value.page_num = 1;
-                this.PAGEDATA.List_conditions.page = 1// 重置当前页数
+        //     let sub_msg = res.data.sub_msg;// 错误信息
 
-            }else{ // 恢复失败
+        //     if(code == 10000){// 恢复成功
+
+        //         tool.Fun_.message('success','恢复操作成功！')// 提示-恢复成功
+
+        //         // 重置当前页面
+        //         this.navData.value.page_num = 1;
+        //         this.PAGEDATA.List_conditions.page = 1// 重置当前页数
+
+        //     }else{ // 恢复失败
                 
-                tool.Fun_.message('error', sub_msg) 
+        //         tool.Fun_.message('error', sub_msg) 
 
-            }
-        })
+        //     }
+        // })
     }
 
     // 批量删除
+    BatchDelMaterial=()=>{
 
+    }
     // 批量恢复
+    BatchRecoverMaterial=()=>{
+
+    }
 }

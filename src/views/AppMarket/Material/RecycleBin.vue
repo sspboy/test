@@ -71,6 +71,7 @@
                         size="default"
                         :data-source="PAGEDATA.datalist"
                         :loading="PAGEDATA.loading"
+                         style="width: 100%;height: 100%;"
                     >
                         <template #renderItem="{ item }">
                             <a-card size="small" class="card_style" hoverable>
@@ -86,11 +87,11 @@
                                 <template #actions>
                                     <a-checkbox 
                                         :value="item.material_id"
-                                        @change="console.log('选中素材ID：', item.material_id)"
+                                        @change="RecycleBinMethod.list.select_img_fun(item)"
                                     ></a-checkbox>
                                     <a href="#" class="font_size_12" @click="showDetail(item)">详情</a>
-                                    <a href="#" class="font_size_12" @click="handleDelete(item)">恢复</a>
-                                    <a href="#" class="font_size_12" @click="handleDelete(item)">删除</a>
+                                    <a href="#" class="font_size_12" @click="RecycleBinMethod.ConfirmRecoverMaterial(item)">恢复</a>
+                                    <a href="#" class="font_size_12" @click="RecycleBinMethod.ConfirmDleteMaterial(item)">删除</a>
 
                                 </template>
                             </a-card>
@@ -109,7 +110,7 @@
                                 <a-space>
                                     <a-checkbox 
                                         v-model:checked="RecycleBinMethod.checked_status.value"
-                                        @change="RecycleBinMethod.load.onCheckAllChange"
+                                        @change="RecycleBinMethod.list.onCheckAllChange"
                                     >
                                      全选</a-checkbox>
 
@@ -117,7 +118,7 @@
                                         <PictureOutlined /> 
                                         已选 {{ RecycleBinMethod.confirm_img_list.value.length }} 条
                                     </a-tag>
-                                    <a-button type="dashed" size="small" @click="RecycleBinMethod.load.clear_confirm_img_list">
+                                    <a-button type="dashed" size="small" @click="RecycleBinMethod.list.clear_confirm_img_list">
                                         清空
                                     </a-button>
                                     <a-button type="dashed" size="small" @click="console.log('清空回收站')">
@@ -165,12 +166,23 @@
 
     <!-- 删除确认 弹出层 开始-->
     <a-modal 
-        v-model:open="deleteModalVisible" 
+        v-model:open="PAGEDATA.DeleteModalVisible" 
         title="确认彻底删除"
-        @ok="confirmDelete"
+        @ok="RecycleBinMethod.DelMaterial"
     >
         <p style="margin: 10px 0 0 0;">是否确认彻底删除素材「{{ currentItem?.materil_name }}」？</p>
         <p style="margin: 10px 0 0 0; color: #ff4d4f;">删除后将无法恢复！</p>
+    </a-modal>
+    <!-- 删除确认 弹出层 结束-->
+
+    <!-- 删除恢复 弹出层 开始-->
+    <a-modal 
+        v-model:open="PAGEDATA.RecoverModalVisible" 
+        title="确认彻底恢复"
+        @ok="RecycleBinMethod.RecoverMaterial"
+    >
+        <p style="margin: 10px 0 0 0;">是否确认恢复素材「{{ currentItem?.materil_name }}」？</p>
+        <p style="margin: 10px 0 0 0; color: #ff4d4f;">恢复后请在素材列表中查看！</p>
     </a-modal>
     <!-- 删除确认 弹出层 结束-->
 
@@ -218,6 +230,10 @@ export default {
             List_conditions:ref({page:1}),// 翻页-当前页数
             page: 1,
             pageSize: 10,
+            DeleteModalVisible:false,// 确认单个删除弹窗状态
+            RecoverModalVisible: false,// 确认单个恢复弹窗状态
+            BatchDeleteModalVisible: false,// 确认批量删除弹窗状态
+            BatchRecoverModalVisible: false// 确认批量恢复弹窗状态
         });
 
         RecycleBinMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
@@ -320,12 +336,6 @@ export default {
             PAGEDATA.total_number = result.length;
         };
 
-
-        // 分页变化
-        const handlePageChange = () => {
-            // 分页由计算属性自动处理
-        };
-
         // 详情抽屉
         const detailDrawer = ref(false);
         const currentItem = ref(null);
@@ -336,22 +346,10 @@ export default {
         };
 
         // 删除确认
-        const deleteModalVisible = ref(false);
 
-        const handleDelete = (item) => {
-            currentItem.value = item;
-            deleteModalVisible.value = true;
-        };
 
-        const confirmDelete = () => {
-            if (currentItem.value) {
-                const id = currentItem.value.material_id;
-                mockDataList.value = mockDataList.value.filter(item => item.material_id !== id);
-                handleFilter();
-                deleteModalVisible.value = false;
-                currentItem.value = null;
-            }
-        };
+
+
 
         // 窗口大小变化
         const handleResize = () => {
@@ -370,12 +368,8 @@ export default {
             displayList,
             detailDrawer,
             currentItem,
-            deleteModalVisible,
             handleFilter,
-            handlePageChange,
             showDetail,
-            handleDelete,
-            confirmDelete,
         };
     }
 };
