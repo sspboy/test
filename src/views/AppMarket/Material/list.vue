@@ -154,10 +154,10 @@
 
                         <template #renderItem="{ item }">
 
+                            <!--图片 显示方式-->
                             <a-card  v-if="item.material_type == 'photo'" size="small" class="card_style" hoverable>
 
-                                <div class="floating-badge">
-                                    <PictureOutlined /> 图片</div>
+                                <div class="floating-badge"><PictureOutlined /> 图片</div>
 
                                 <div class="image_content_">
                                     <!--图片文件 显示方式-->

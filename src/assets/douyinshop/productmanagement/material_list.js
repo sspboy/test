@@ -168,7 +168,7 @@ export class MaterialListMethod {
 
         // 视频封面尺寸验证
         video_cover_width:(_info)=>{
-            console.log(_info)
+            return {height:'100px'}
         },
 
         // 初始化素材菜单
@@ -510,7 +510,17 @@ export class MaterialListMethod {
 
         // 面包屑点击查询
         breadcrumb_click:(f_id)=>{
-            console.log(f_id)
+
+            // console.log('面包屑文件夹id', f_id) // 打印文件夹id
+            console.log('面包屑', this.PAGEDATA.BreadCrumb) // 打印文件夹id类型
+
+            // 找出当前文件夹id在面包屑中的位置
+            const index = this.PAGEDATA.BreadCrumb.findIndex(item => item.folder_id === f_id);
+            // 点击删除面包屑后，截取面包屑数组，保留当前文件夹及之前的面包屑
+            if (index !== -1) {
+                this.PAGEDATA.BreadCrumb = this.PAGEDATA.BreadCrumb.slice(0, index + 1);
+            }
+
             this.navData.value.folder_id = f_id + ''// 文件夹id
             this.navData.value.page_num = 1 // 请求当前页数
             this.PAGEDATA.List_conditions.page = 1// 重置当前页数
@@ -619,7 +629,8 @@ export class RecycleBinMethod {
         },
         // 图片尺寸验证
         material_width:(_info)=>{
-            
+
+            // console.log(_info)
             var width = _info.width;
             var height = _info.height;
 
@@ -632,6 +643,12 @@ export class RecycleBinMethod {
             }
 
             return  res
+        },
+
+        // 视频封面尺寸验证
+        video_cover_width:(_info)=>{
+            // console.log(_info)
+            return {height:'100px'}
         },
         
     }
@@ -686,22 +703,23 @@ export class RecycleBinMethod {
         },
     }
 
-    // 删除单个素材确认：
+    // 确认删除单个素材：
     ConfirmDleteMaterial=(item)=>{
         this.DelMaterialId.value = [item.material_id];
         this.PAGEDATA.DeleteModalVisible = true;
     }
-    // 恢复单个素材确认；
+
+    // 确认恢复单个素材；
     ConfirmRecoverMaterial=(item)=>{
         this.RecoverMaterialId.value = [item.material_id];
         this.PAGEDATA.RecoverModalVisible = true;
     }
-    // 批量删除素材确认；
+    // 确认批量删除素材；
     ConfirmBatchDeleteMaterial=()=>{
         this.PAGEDATA.BatchDeleteModalVisible.value = true;
         console.log('批量删除素材ID列表：')
     }
-    // 批量恢复素材确认；
+    // 确认批量恢复素材；
     ConfirmBatchRecoverMaterial=()=>{
         this.PAGEDATA.BatchRecoverModalVisible.value = true;
         console.log('批量恢复素材ID列表：')
@@ -714,6 +732,7 @@ export class RecycleBinMethod {
 
     // 恢复素材方法
     RecoverMaterial=()=>{
+
         console.log('恢复素材ID：', this.RecoverMaterialId.value);
 
         // axios.post(API.AppSrtoreAPI.material.recovermaterial,{

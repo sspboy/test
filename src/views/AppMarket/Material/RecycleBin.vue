@@ -74,12 +74,17 @@
                          style="width: 100%;height: 100%;"
                     >
                         <template #renderItem="{ item }">
-                            <a-card size="small" class="card_style" hoverable>
+
+                            <!--图片 显示方式-->
+                            <a-card v-if="item.material_type == 'photo'" size="small" class="card_style" hoverable>
+                                <div class="floating-badge"><PictureOutlined /> 图片</div>
+
                                 <div class="image_content_">
                                     <a-image
                                         :style="RecycleBinMethod.load.material_width(item.photoInfo)"
                                         :src="item.byte_url"
                                     />
+                                    
                                 </div>
                                 <div class="material-name" :title="item.materil_name">
                                     {{ item.material_name }}
@@ -95,6 +100,38 @@
 
                                 </template>
                             </a-card>
+
+                            <!--视频 显示方式-->
+                            <a-card v-else-if="item.material_type == 'video'" size="small" class="card_style" hoverable>
+                                
+                                <div class="floating-badge-video"><PlaySquareOutlined />视频</div>
+
+                                <div class="image_content_">
+                                <a-image
+                                    :style="RecycleBinMethod.load.video_cover_width(item)"
+                                    :src="item.videoInfo.video_cover_url"
+                                />
+                                </div>
+                                <div class="material-name" :title="item.materil_name">
+                                    {{ item.material_name }}
+                                </div>
+                                <template #actions>
+                                    <a-checkbox 
+                                        :value="item.material_id"
+                                        @change="RecycleBinMethod.load.select_img_fun(item)"
+                                        class="font_size_12" 
+                                    ></a-checkbox>
+                                    <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)">
+                                        详情
+                                    </a>
+                                    <a href="#" class="font_size_12" @click="RecycleBinMethod.ConfirmRecoverMaterial(item)">恢复</a>
+
+                                    <a href="#" class="font_size_12" @click="RecycleBinMethod.ConfirmDleteMaterial(item)">
+                                        删除
+                                    </a>
+                                </template>
+                            </a-card>
+
                         </template>
                     </a-list>
                     </a-checkbox-group>
@@ -170,7 +207,7 @@
         title="确认彻底删除"
         @ok="RecycleBinMethod.DelMaterial"
     >
-        <p style="margin: 10px 0 0 0;">是否确认彻底删除素材「{{ currentItem?.materil_name }}」？</p>
+        <p style="margin: 10px 0 0 0;">是否确认彻底删除素材？</p>
         <p style="margin: 10px 0 0 0; color: #ff4d4f;">删除后将无法恢复！</p>
     </a-modal>
     <!-- 删除确认 弹出层 结束-->
@@ -181,7 +218,7 @@
         title="确认彻底恢复"
         @ok="RecycleBinMethod.RecoverMaterial"
     >
-        <p style="margin: 10px 0 0 0;">是否确认恢复素材「{{ currentItem?.materil_name }}」？</p>
+        <p style="margin: 10px 0 0 0;">是否确认恢复素材？</p>
         <p style="margin: 10px 0 0 0; color: #ff4d4f;">恢复后请在素材列表中查看！</p>
     </a-modal>
     <!-- 删除确认 弹出层 结束-->
@@ -191,7 +228,7 @@
 <script>
 import { ref, reactive, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
-import { DeleteOutlined, FolderOpenOutlined,PictureOutlined } from '@ant-design/icons-vue';
+import { DeleteOutlined, FolderOpenOutlined,PictureOutlined,PlaySquareOutlined } from '@ant-design/icons-vue';
 import * as MaterialList from '@/assets/douyinshop/productmanagement/material_list';// 商品管理->编辑操作方法
 
 // 组件引用 开始
@@ -209,6 +246,7 @@ export default {
         DeleteOutlined,
         FolderOpenOutlined,
         PictureOutlined,
+        PlaySquareOutlined,
         nav_pagination
         },
     setup() {
@@ -412,4 +450,7 @@ export default {
 .ant-list {
     height: 100% !important;
 }
+.floating-badge {background-color: black;color: #fff;height: 20px;position: absolute;z-index: 100;border-radius: 4px;padding: 0 4px;font-size: 12px;opacity: 0.5}
+.floating-badge-video {background-color:blue;color: #fff;height: 20px;position: absolute;z-index: 100;border-radius: 4px;padding: 0 4px;font-size: 12px;opacity: 0.5}
+
 </style>
