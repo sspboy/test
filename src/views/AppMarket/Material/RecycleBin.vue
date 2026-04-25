@@ -158,10 +158,10 @@
                                     <a-button type="dashed" size="small" @click="RecycleBinMethod.list.clear_confirm_img_list">
                                         清空
                                     </a-button>
-                                    <a-button type="dashed" size="small" @click="console.log('清空回收站')">
+                                    <a-button type="dashed" size="small" @click="RecycleBinMethod.BatchDelMaterial">
                                         批量删除
                                     </a-button>
-                                    <a-button type="dashed" size="small" @click="console.log('清空回收站')">
+                                    <a-button type="dashed" size="small" @click="RecycleBinMethod.BatchRecoverMaterial">
                                         批量恢复
                                     </a-button>
                                 </a-space>
@@ -204,22 +204,28 @@
     <!-- 删除确认 弹出层 开始-->
     <a-modal 
         v-model:open="PAGEDATA.DeleteModalVisible" 
-        title="确认彻底删除"
+        title="是否确认彻底删除?"
+        :centered="true"
+        okText="彻底删除"
         @ok="RecycleBinMethod.DelMaterial"
+        :confirm-loading="PAGEDATA.DeleteButtonVisible"
     >
-        <p style="margin: 10px 0 0 0;">是否确认彻底删除素材？</p>
-        <p style="margin: 10px 0 0 0; color: #ff4d4f;">删除后将无法恢复！</p>
+        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：操作1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0; color: #ff4d4f;">彻底删除后将无法恢复！</p>
     </a-modal>
     <!-- 删除确认 弹出层 结束-->
 
     <!-- 删除恢复 弹出层 开始-->
     <a-modal 
         v-model:open="PAGEDATA.RecoverModalVisible" 
-        title="确认彻底恢复"
+        title="是否确认恢复素材？"
+        :centered="true"
+        okText="确认恢复"
         @ok="RecycleBinMethod.RecoverMaterial"
+        :confirm-loading="PAGEDATA.RecoverButtonVisible"
     >
-        <p style="margin: 10px 0 0 0;">是否确认恢复素材？</p>
-        <p style="margin: 10px 0 0 0; color: #ff4d4f;">恢复后请在素材列表中查看！</p>
+        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：操作1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0;">恢复素材后请在原有文件夹中查看！</p>
     </a-modal>
     <!-- 删除确认 弹出层 结束-->
 
@@ -269,9 +275,14 @@ export default {
             page: 1,
             pageSize: 10,
             DeleteModalVisible:false,// 确认单个删除弹窗状态
+            DeleteButtonVisible: false,// 删除按钮状态
             RecoverModalVisible: false,// 确认单个恢复弹窗状态
+            RecoverButtonVisible: false,// 回收按钮状态
+            // 恢复按钮状态
             BatchDeleteModalVisible: false,// 确认批量删除弹窗状态
-            BatchRecoverModalVisible: false// 确认批量恢复弹窗状态
+            BatchDeleteButtonVisible: false,// 批量删除按钮状态
+            BatchRecoverModalVisible: false,// 确认批量恢复弹窗状态
+            BatchRecoverButtonVisible: false,// 批量恢复按钮状态
         });
 
         RecycleBinMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
@@ -382,8 +393,6 @@ export default {
             currentItem.value = item;
             detailDrawer.value = true;
         };
-
-        // 删除确认
 
 
 

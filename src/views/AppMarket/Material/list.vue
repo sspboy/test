@@ -396,23 +396,28 @@
 
     <!--删除确认 弹出层 开始-->
     <a-modal v-model:open="MaterialListMethod.del.delOpenStatus.value" 
-        title="确认删除"
+        title="是否确认删除？"
+        okText="彻底删除"
+        :centered="true"
         :confirm-loading="MaterialListMethod.del.buttonload.value"
         @ok="MaterialListMethod.del.del_material_ids"
     >
-        <p style="margin: 10px 0 0 0;">是否确认删除素材，删除后将无法恢复！</p>
+    <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：删除成功后1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0;">素材删除后将无法恢复！</p>
     </a-modal>
     <!--删除确认 弹出层 结束-->
 
     <!--回收确认 弹出层 开始-->
     <a-modal 
         v-model:open="MaterialListMethod.del.RecycleBinOpenStatus.value" 
-        title="确认回收"
+        title="是否确认回收素材?"
+        okText="确认回收"
+        :centered="true"
         :confirm-loading="MaterialListMethod.del.RecycleBinbuttonload.value"
         @ok="MaterialListMethod.del.MovetoRecycleBin_ids"
     >
-        <p style="margin: 10px 0 0 0;">是否确认回收素材，回收后，素材将放入回收站！</p>
-        <p style="margin: 10px 0 0 0;">删除成功后1-2分钟后生效 耐心等待后刷新查看。</p>
+        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：回收成功后1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0;"> 素材将放入回收站，耐心等待后刷新查看。</p>
 
     </a-modal>
     <!--回收确认 弹出层 结束-->
