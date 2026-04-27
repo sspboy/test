@@ -45,8 +45,11 @@
                         padding:'10px 0 0 2px',
                     }"
                 >
-                    <p style="padding: 15px 0 0 32px;font-weight: bold;font-size: 12px;">
-                        <FolderOutlined /> 选择文件夹
+                    <p style="padding: 15px 0 0 32px;font-size: 12px;">
+                        <a-space style="width: 100%">
+                        <FolderOutlined /> 网盘
+                        <a-progress style="width: 100px;margin: 0px 0 0 0;" :percent="PAGEDATA.netdisk_info" size="small" />
+                        </a-space>
                     </p>
                     <a-tree
                         v-model:expandedKeys="PAGEDATA.expandedKeys"
@@ -246,7 +249,7 @@
                                     <a-button type="dashed" 
                                         size="small"
                                         class="font_size_12" 
-                                        @click="MaterialListMethod.del.BatchEdl">
+                                        @click="MaterialListMethod.del.BatchDel">
                                         批量删除
                                     </a-button>
                                     <a-button type="dashed" 
@@ -555,6 +558,34 @@
     </a-modal>
     <!-- 上传本地文件 弹出层 结束-->
 
+    <!--批量删除 确认弹窗-->
+    <a-modal 
+        v-model:open="MaterialListMethod.del.BatchDelOpenStatus.value" 
+        title="是否确认批量删除素材?"
+        okText="彻底删除"
+        :centered="true"
+        :confirm-loading="MaterialListMethod.del.BatchDelButtonload.value"
+        @ok="MaterialListMethod.del.BatchDel_material_ids"
+    >
+    <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：批量删除成功后1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0;">批量删除后将无法恢复！</p>
+    </a-modal>
+    <!--批量删除 确认弹窗 结束-->
+
+    <!--批量恢复 确认弹窗 开始-->
+    <a-modal 
+        v-model:open="MaterialListMethod.del.BatchMovetoRecycleBinOpenStatus.value" 
+        title="是否确认批量回收素材?"
+        okText="确认回收"
+        :centered="true"
+        :confirm-loading="MaterialListMethod.del.BatchMovetoRecycleBinButtonload.value"
+        @ok="MaterialListMethod.del.BatchRecover_material_ids"
+    >
+        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：批量回收成功后1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0;">批量回收后素材将放入回收站，耐心等待后刷新查看。</p>
+    </a-modal>
+    <!--批量恢复 确认弹窗 结束-->
+
 </template>
 <script>
 import { computed,ref,reactive,onMounted,h,onUnmounted,watch } from 'vue';
@@ -635,14 +666,16 @@ setup(props,ctx) {
 
         // 已选图片素材数据列表
         confirm_img_list:ref([]),
+
+        // 网盘信息
+        netdisk_info:0,
     })
 
     MaterialListMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
+    MaterialListMethod.load.getdiskusage();// 网盘使用占比
 
 
     const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;   // 默认为空的图标
-
-
     const childimgDrawer = ref(false);                  // 图片详情状态
     const childvideoDrawer = ref(false);                // 视频详情状态
     const queryDrawer = ref(false);                     // 查询详情抽屉状态

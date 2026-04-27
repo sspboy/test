@@ -113,12 +113,14 @@
                                 />
                                 </div>
                                 <div class="material-name" :title="item.materil_name">
+                                    
                                     {{ item.material_name }}
+
                                 </div>
                                 <template #actions>
                                     <a-checkbox 
                                         :value="item.material_id"
-                                        @change="RecycleBinMethod.load.select_img_fun(item)"
+                                        @change="RecycleBinMethod.list.select_img_fun(item)"
                                         class="font_size_12" 
                                     ></a-checkbox>
                                     <a href="#" class="font_size_12" @click="showChildvideoDrawer(item)">
@@ -158,10 +160,10 @@
                                     <a-button type="dashed" size="small" @click="RecycleBinMethod.list.clear_confirm_img_list">
                                         清空
                                     </a-button>
-                                    <a-button type="dashed" size="small" @click="RecycleBinMethod.BatchDelMaterial">
+                                    <a-button type="dashed" size="small" @click="RecycleBinMethod.ConfirmBatchDeleteMaterial">
                                         批量删除
                                     </a-button>
-                                    <a-button type="dashed" size="small" @click="RecycleBinMethod.BatchRecoverMaterial">
+                                    <a-button type="dashed" size="small" @click="RecycleBinMethod.ConfirmBatchRecoverMaterial">
                                         批量恢复
                                     </a-button>
                                 </a-space>
@@ -210,12 +212,12 @@
         @ok="RecycleBinMethod.DelMaterial"
         :confirm-loading="PAGEDATA.DeleteButtonVisible"
     >
-        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：操作1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：删除操作1-2分钟后生效。</p>
         <p style="margin: 10px 0 0 0; color: #ff4d4f;">彻底删除后将无法恢复！</p>
     </a-modal>
     <!-- 删除确认 弹出层 结束-->
 
-    <!-- 删除恢复 弹出层 开始-->
+    <!-- 恢复 弹出层 开始-->
     <a-modal 
         v-model:open="PAGEDATA.RecoverModalVisible" 
         title="是否确认恢复素材？"
@@ -224,10 +226,36 @@
         @ok="RecycleBinMethod.RecoverMaterial"
         :confirm-loading="PAGEDATA.RecoverButtonVisible"
     >
-        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：操作1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：恢复操作1-2分钟后生效。</p>
         <p style="margin: 10px 0 0 0;">恢复素材后请在原有文件夹中查看！</p>
     </a-modal>
-    <!-- 删除确认 弹出层 结束-->
+    <!-- 恢复 弹出层 结束-->
+
+    <!--批量 删除 弹出层-->
+    <a-modal 
+        v-model:open="PAGEDATA.BatchDeleteModalVisible" 
+        title="是否确认批量彻底删除？"
+        :centered="true"
+        okText="批量彻底删除"
+        @ok="RecycleBinMethod.BatchDelMaterial"
+        :confirm-loading="PAGEDATA.BatchDeleteButtonVisible"
+    >
+        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：批量删除操作1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0; color: #ff4d4f;">批量彻底删除后将无法恢复！</p>
+    </a-modal>
+
+    <!--批量 恢复 弹出层-->
+    <a-modal 
+        v-model:open="PAGEDATA.BatchRecoverModalVisible" 
+        title="是否确认批量恢复素材？"
+        :centered="true"
+        okText="确认批量恢复"
+        @ok="RecycleBinMethod.BatchRecoverMaterial"
+        :confirm-loading="PAGEDATA.BatchRecoverButtonVisible"
+    >
+        <p style="margin: 10px 0 0 0;color:blue;font-weight: bold;margin-top: 20px;">注意：批量恢复操作1-2分钟后生效。</p>
+        <p style="margin: 10px 0 0 0;">批量恢复素材后请在原有文件夹中查看！</p>
+    </a-modal>
 
 </template>
 
@@ -288,6 +316,7 @@ export default {
         RecycleBinMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
 
         RecycleBinMethod.load.getmaterialData(RecycleBinMethod.navData.value)
+
 
         // 筛选表单
         const filterForm = reactive({

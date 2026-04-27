@@ -133,7 +133,8 @@ export class A_Patch{
             "edit":"api/douyin/material/", // 编辑文件夹
             "add":"api/douyin/material/add", // 添加文件夹
             "videolist":"api/douyin/material/batchgetvideodetaile", // 视频列表
-            "recovermaterial":"api/douyin/material/recovermaterial"// 回收站恢复素材
+            "recovermaterial":"api/douyin/material/recovermaterial",// 回收站恢复素材
+            "getcapinfo":"api/douyin/material/getcapinfo" // 网盘容量查询
         },
         // 上传商品图片
         upload:{

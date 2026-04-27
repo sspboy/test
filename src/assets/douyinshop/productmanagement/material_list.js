@@ -281,6 +281,23 @@ export class MaterialListMethod {
             if (idx > -1) PAGEDATA.confirm_img_list.value.splice(idx, 1);
         },
 
+        // 网盘大小查询
+        getdiskusage:()=>{
+
+            axios.post(API.AppSrtoreAPI.material.getcapinfo,{}).then((res)=>{
+
+                // 总容量 单位KB
+                let total_capacity = res.data.data.total_capacity;
+                // 已使用容量 单位KB
+                let total_capacity_used = res.data.data.total_capacity_used;
+                // 占比到个位数
+                let percent = Math.round((total_capacity_used / total_capacity) * 10000) / 10000 * 100;
+
+                console.log('网盘容量', percent);
+                this.PAGEDATA.netdisk_info = percent;
+            })
+        }
+
     }
 
     // 树形菜单
@@ -344,6 +361,11 @@ export class MaterialListMethod {
 
         RecycleBinbuttonload:ref(false),// 回收确认按钮状态
 
+        BatchDelOpenStatus:ref(false),// 批量删除弹出层状态
+        BatchDelButtonload:ref(false),// 批量删除确认按钮状态
+        BatchMovetoRecycleBinOpenStatus:ref(false),// 批量回收弹出层状态
+        BatchMovetoRecycleBinButtonload:ref(false),// 批量回收确认按钮状态
+
         // 显示 删除对话框
         del_open:(item)=>{
             this.del.delOpenStatus.value = true;
@@ -376,16 +398,12 @@ export class MaterialListMethod {
             this.del.buttonload.value = true; // 按钮状态-加载
             let f_id = this.PAGEDATA.BreadCrumb.at(-1).folder_id; // 当前文件夹id
             let page = this.PAGEDATA.List_conditions.page;
-            
-            // 判断是否超过100个
-
-            // 超过提示
-
-            // 未超过执行
 
             // 接口彻底删除
             axios.post(API.AppSrtoreAPI.material.deletematerial,{
+                
                 "material_ids":this.del.material_ids.value
+
             }).then((res)=>{
 
                 let code = res.data.code;
@@ -408,7 +426,6 @@ export class MaterialListMethod {
 
                     }, 1000);
                     
-
                 }else{ // 删除失败
                 
                     tool.Fun_.message('error', sub_msg)
@@ -426,13 +443,7 @@ export class MaterialListMethod {
 
             let f_id = this.PAGEDATA.BreadCrumb.at(-1).folder_id; // 当前文件夹id
             
-            // 判断是否超过100个
-
-            // 超过提示
-
-            // 未超过执行
-
-            // 接口彻底删除
+            // 回收方法-接口请求
             axios.post(API.AppSrtoreAPI.material.movematerialrecyclebin,{
                 "material_ids":this.del.material_ids.value
             }).then((res)=>{
@@ -466,36 +477,121 @@ export class MaterialListMethod {
             })
 
         },
-        // 批量删除素材
-        BatchEdl:()=>{
-            console.log('批量删除素材数量', this.PAGEDATA.confirm_img_list.length)
+
+        // 批量删除素材-弹出层
+        BatchDel:()=>{
             var v_number = this.PAGEDATA.confirm_img_list.length;
             if(v_number == 0){
                 tool.Fun_.message('warning','请至少选择一条素材进行删除！')// 提示-请选择素材
             }else if(v_number > 100){
                 tool.Fun_.message('warning','批量删除素材数量不能超过100条！')// 提示-超过数量限制
             }else{
+                this.del.BatchDelOpenStatus.value = true; // 弹出层
                 this.del.material_ids.value = [...this.PAGEDATA.confirm_img_list]
-                // this.del.del_material_ids()
             }
         },
 
-        // 批量移入回收站
+        // 批量移入回收站-弹出层
         BatchMovetoRecycleBin:()=>{
-            console.log('批量移入回收站素材数量', this.PAGEDATA.confirm_img_list.length)
             var v_number = this.PAGEDATA.confirm_img_list.length;
             if(v_number == 0){
                 tool.Fun_.message('warning','请至少选择一条素材进行回收！')// 提示-请选择素材
             }else if(v_number > 100){
                 tool.Fun_.message('warning','批量回收素材数量不能超过100条！')// 提示-超过数量限制
             }else{
+                // 弹出层
+                this.del.BatchMovetoRecycleBinOpenStatus.value = true; // 弹出层
                 this.del.material_ids.value = [...this.PAGEDATA.confirm_img_list]
-                this.del.MovetoRecycleBin_ids()
+                // this.del.MovetoRecycleBin_ids()
             }
 
+        },
+
+        // 批量删除素材-确认
+        BatchDel_material_ids:()=>{
+
+            this.del.BatchDelButtonload.value = true; // 按钮状态-加载
+            let f_id = this.PAGEDATA.BreadCrumb.at(-1).folder_id; // 当前文件夹id
+
+            // 接口彻底删除
+            axios.post(API.AppSrtoreAPI.material.deletematerial,{
+                
+                "material_ids":this.del.material_ids.value
+
+            }).then((res)=>{
+
+                let code = res.data.code;
+                let sub_msg = res.data.sub_msg;// 错误信息
+                if(code == 10000){// 删除成功
+
+                    this.del.BatchDelButtonload.value = false; // 按钮状态-false
+                    this.del.BatchDelOpenStatus.value = false; // 关闭弹窗-加载
+                    tool.Fun_.message('success','删除操作成功！')// 提示-删除成功
+
+                    // 重置当前页面
+                    this.navData.value.folder_id = f_id + '' // 文件夹id
+                    // 数据删除后,验证数量，矫正请求页数
+                    this.navData.value.page_num = 1
+                    this.PAGEDATA.List_conditions.page = 1// 重置当前页数
+
+                    setTimeout(() => {
+                        // 刷新删除后的页面
+                        this.load.loadproductData(this.navData.value)
+
+                    }, 1000);
+                    
+                }else{ // 删除失败
+                
+                    tool.Fun_.message('error', sub_msg)
+                
+                }
+            })
+
+        },
+
+        // 批量恢复素材-确认
+        BatchRecover_material_ids:()=>{
+
+            this.del.BatchMovetoRecycleBinButtonload.value = true; // 按钮状态-加载
+            let f_id = this.PAGEDATA.BreadCrumb.at(-1).folder_id; // 当前文件夹id
+
+            // 回收方法-接口请求
+            axios.post(API.AppSrtoreAPI.material.movematerialrecyclebin,{
+                
+                "material_ids":this.del.material_ids.value
+
+            }).then((res)=>{
+
+                let code = res.data.code;
+                let sub_msg = res.data.sub_msg;// 错误信息
+                if(code == 10000){// 操作成功
+
+                    this.del.BatchMovetoRecycleBinButtonload.value = false; // 按钮状态-false
+                    this.del.BatchMovetoRecycleBinOpenStatus.value = false; // 关闭回收对话框
+                    tool.Fun_.message('success','成功放入回收站！')// 提示-删除成功
+
+                    // 重置当前页面
+                    this.navData.value.folder_id = f_id + '' // 文件夹id
+                    // 数据删除后,验证数量，矫正请求页数
+                    this.navData.value.page_num = 1
+                    this.PAGEDATA.List_conditions.page = 1// 重置当前页数
+
+                    setTimeout(() => {
+                        // 刷新回收后的页面
+                        this.load.loadproductData(this.navData.value)
+
+                    }, 1000);
+                    
+
+                }else{ // 删除失败
+                
+                    tool.Fun_.message('error', sub_msg)
+                
+                }
+            })
+            
+
         }
-
-
     }
 
 
@@ -601,7 +697,9 @@ export class RecycleBinMethod {
 
             var res_data = res.data.data;
             var material_list = res_data.material_info_list;// 素材列表
-            var total = res_data.total_num;// 素材总数 total_num
+            var total = res_data.total;// 素材总数 total_num
+            
+            console.log('回收站素材列表', res_data)
 
             // 请求数据为空
             if(material_list.length == 0){
@@ -713,16 +811,36 @@ export class RecycleBinMethod {
 
     // 点击批量删除素材；
     ConfirmBatchDeleteMaterial=()=>{
-        this.PAGEDATA.BatchDeleteModalVisible.value = true;
-        console.log('批量删除素材ID列表：')
+
+        var v_number =  this.confirm_img_list.value.length;
+
+        if(v_number == 0){
+            tool.Fun_.message('warning','请至少选择一条素材进行删除！')// 提示-请选择素材
+        }else if(v_number > 100){
+            tool.Fun_.message('warning','批量删除素材数量不能超过100条！')// 提示-超过数量限制
+        }else{
+            this.PAGEDATA.BatchDeleteModalVisible = true;
+            this.BatchDelMaterialIdList.value = [...this.confirm_img_list.value]
+            // this.del.del_material_ids()
+        }
+
+
     }
     // 点击批量恢复素材；
     ConfirmBatchRecoverMaterial=()=>{
-        this.PAGEDATA.BatchRecoverModalVisible.value = true;
-        console.log('批量恢复素材ID列表：')
+        var v_number =  this.confirm_img_list.value.length;
+        if(v_number == 0){
+            tool.Fun_.message('warning','请至少选择一条素材进行恢复！')// 提示-请选择素材
+        }else if(v_number > 100){
+            tool.Fun_.message('warning','批量恢复素材数量不能超过100条！')// 提示-超过数量限制
+        }else{
+            this.PAGEDATA.BatchRecoverModalVisible = true;
+            this.BatchRecoverMaterialIdList.value = [...this.confirm_img_list.value]
+            // this.RecoverMaterial()
+        }
     }
 
-    // 彻底删除-【确认】-素材方法
+    // 单个删除-【确认】-素材方法
     DelMaterial=()=>{
 
         this.PAGEDATA.DeleteButtonVisible = true; // 确认按钮状态-加载
@@ -745,7 +863,7 @@ export class RecycleBinMethod {
 
                 this.PAGEDATA.DeleteModalVisible = false; // 关闭恢复对话框
 
-                tool.Fun_.message('success','恢复操作成功！')// 提示-恢复成功
+                tool.Fun_.message('success','彻底删除操作成功！')// 提示-恢复成功
 
                 // 重置当前页面
                 this.navData.value.page_num = 1;
@@ -759,14 +877,58 @@ export class RecycleBinMethod {
 
             } else{ // 恢复失败
 
-                tool.Fun_.message('error', sub_msg) 
+                tool.Fun_.message('error','彻底删除操作失败！' + sub_msg) 
+
             }
 
         })
-
     }
 
-    // 恢复素材方法
+    // 批量删除【确认】方法
+    BatchDelMaterial=()=>{
+        
+        console.log('批量删除素材ID列表：', this.BatchDelMaterialIdList.value);
+        this.PAGEDATA.BatchDeleteButtonVisible = true; // 确认按钮状态-加载
+
+        // 请求接口 删除素材
+        axios.post(API.AppSrtoreAPI.material.deletematerial,{
+
+            "material_ids":this.BatchDelMaterialIdList.value
+
+        }).then((res)=>{
+
+            let code = res.data.code;
+
+            let sub_msg = res.data.sub_msg;// 错误信息
+
+            if(code == 10000){// 恢复成功
+
+                this.PAGEDATA.BatchDeleteButtonVisible = false; // 确认按钮状态-false
+
+                this.PAGEDATA.BatchDeleteModalVisible = false; // 关闭恢复对话框
+
+                tool.Fun_.message('success','彻底删除操作成功！')// 提示-恢复成功
+
+                // 重置当前页面
+                this.navData.value.page_num = 1;
+
+                this.PAGEDATA.List_conditions.page = 1// 重置当前页数
+
+                // 刷新恢复后的页面
+                setTimeout(() => {
+                    this.load.getmaterialData(this.navData.value)
+                }, 1000);
+
+            } else{ // 恢复失败
+
+                tool.Fun_.message('error','彻底删除操作失败！' + sub_msg) 
+
+            }
+
+        })
+    }
+
+    // 单个恢复-【确认】方法
     RecoverMaterial=()=>{
 
         this.PAGEDATA.RecoverButtonVisible = true; // 确认按钮状态-加载
@@ -803,37 +965,53 @@ export class RecycleBinMethod {
 
             }else{ // 恢复失败
                 
-                tool.Fun_.message('error', sub_msg) 
+                tool.Fun_.message('error','恢复操作失败！' + sub_msg) 
 
             }
         })
     }
 
-    // 批量删除
-    BatchDelMaterial=()=>{
-        var v_number =  this.confirm_img_list.value.length;
-        if(v_number == 0){
-            tool.Fun_.message('warning','请至少选择一条素材进行删除！')// 提示-请选择素材
-        }else if(v_number > 100){
-            tool.Fun_.message('warning','批量删除素材数量不能超过100条！')// 提示-超过数量限制
-        }else{
-            this.BatchDelMaterialIdList.value = [...this.confirm_img_list.value]
-            // this.del.del_material_ids()
-            console.log('批量删除素材ID列表：', this.BatchDelMaterialIdList.value);
-        }
-    }
-    // 批量恢复
+    // 批量恢复【点击确认】方法
     BatchRecoverMaterial=()=>{
-        var v_number =  this.confirm_img_list.value.length;
-        if(v_number == 0){
-            tool.Fun_.message('warning','请至少选择一条素材进行恢复！')// 提示-请选择素材
-        }else if(v_number > 100){
-            tool.Fun_.message('warning','批量恢复素材数量不能超过100条！')// 提示-超过数量限制
-        }else{
-            this.BatchRecoverMaterialIdList.value = [...this.confirm_img_list.value]
-            // this.RecoverMaterial()
-            console.log('批量恢复素材ID列表：', this.BatchRecoverMaterialIdList.value);
-        }
+
+        console.log('批量恢复素材ID列表：', this.BatchRecoverMaterialIdList.value);
+
+        // 请求接口 恢复素材
+        axios.post(API.AppSrtoreAPI.material.recovermaterial,{
+
+            "material_ids":this.BatchRecoverMaterialIdList.value
+
+        }).then((res)=>{
+
+            let code = res.data.code;
+
+            let sub_msg = res.data.sub_msg;// 错误信息
+
+            if(code == 10000){// 恢复成功
+
+                this.PAGEDATA.BatchRecoverButtonVisible = false; // 确认按钮状态-false
+
+                this.PAGEDATA.BatchRecoverModalVisible = false; // 关闭恢复对话框
+
+                tool.Fun_.message('success','恢复操作成功！')// 提示-恢复成功
+
+                // 重置当前页面
+                this.navData.value.page_num = 1;
+
+                this.PAGEDATA.List_conditions.page = 1// 重置当前页数
+
+                // 刷新恢复后的页面
+                setTimeout(() => {
+                    this.load.getmaterialData(this.navData.value)
+                }, 1000);
+
+            }else{ // 恢复失败
+                
+                tool.Fun_.message('error','恢复操作失败！' + sub_msg) 
+
+            }
+        })
+
 
     }
 }
