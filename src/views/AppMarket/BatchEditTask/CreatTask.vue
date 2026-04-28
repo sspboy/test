@@ -22,33 +22,33 @@
             <a-divider orientation="center" class="font_size_12">基础信息</a-divider>
 
             <a-row :gutter="[6,6]" justify="space-around">
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">标题</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">主图</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">推荐语</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">备注</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">品牌</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">属性</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">货号</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">上架</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">下架</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">价格</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">库存</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">SKU编码</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('TitleEdit')">标题</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('MainImageEdit')">主图</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('RecommendationEdit')">推荐语</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('RemarkEdit')">备注</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('BrandEdit')">品牌</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('AttributeEdit')">属性</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('ItemNoEdit')">货号</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('OnShelfEdit')">上架</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('OffShelfEdit')">下架</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('PriceEdit')">价格</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('StockEdit')">库存</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('SkuCodeEdit')">SKU编码</div></a-col>
             </a-row>
 
             <a-divider orientation="center" class="font_size_12">其他信息</a-divider>
 
             <a-row :gutter="[6,6]">
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">跨类目属性</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">尺码模板</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">运费模板</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">发货模式</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">售后服务</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">限购策略</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">商品资质</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">删除商品</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">详情描述</div></a-col>
-                <a-col :span="12"><div class="gutter-box cursor font_size_12">商家编码</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('CrossCategoryEdit')">跨类目属性</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('SizeTemplateEdit')">尺码模板</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('FreightTemplateEdit')">运费模板</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('DeliveryModeEdit')">发货模式</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('AfterSalesEdit')">售后服务</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('PurchaseLimitEdit')">限购策略</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('QualificationEdit')">商品资质</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('DeleteProductEdit')">删除商品</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('DetailDescEdit')">详情描述</div></a-col>
+                <a-col :span="12"><div class="gutter-box cursor font_size_12" @click="showEditComponent('MerchantCodeEdit')">商家编码</div></a-col>
 
             </a-row>
             <a-divider orientation="center" class="font_size_12">服务与履约</a-divider>
@@ -99,6 +99,11 @@
                 <!--结果预览-->
                 <div style="height: 40px;background-color: aliceblue;text-align: center;">
                     Search Result List
+                </div>
+
+                <!-- 批量编辑组件展示区域 -->
+                <div v-if="currentComponent" style="margin-top: 16px;">
+                    <component :is="currentComponent" />
                 </div>
             </div>
 
@@ -302,7 +307,7 @@
 
 <script>
 import { MenuFoldOutlined, MenuUnfoldOutlined, PlusOutlined,UpOutlined,DownOutlined} from '@ant-design/icons-vue';
-import {defineComponent, onBeforeMount, onMounted,onUnmounted, reactive, ref, nextTick} from 'vue';
+import {defineComponent, defineAsyncComponent, onBeforeMount, onMounted,onUnmounted, reactive, ref, nextTick} from 'vue';
 import { Segmented } from 'ant-design-vue';
 import { useStore } from 'vuex'
 import * as utils from '@/assets/JS_Model/public_model';
@@ -332,7 +337,29 @@ export default {
     DownOutlined,
     menu_left,
     menu_head,
-    first_step
+    first_step,
+    TitleEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/TitleEdit.vue')),
+    MainImageEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/MainImageEdit.vue')),
+    RecommendationEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/RecommendationEdit.vue')),
+    RemarkEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/RemarkEdit.vue')),
+    BrandEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/BrandEdit.vue')),
+    AttributeEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/AttributeEdit.vue')),
+    ItemNoEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/ItemNoEdit.vue')),
+    OnShelfEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/OnShelfEdit.vue')),
+    OffShelfEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/OffShelfEdit.vue')),
+    PriceEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/PriceEdit.vue')),
+    StockEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/StockEdit.vue')),
+    SkuCodeEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/SkuCodeEdit.vue')),
+    CrossCategoryEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/CrossCategoryEdit.vue')),
+    SizeTemplateEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/SizeTemplateEdit.vue')),
+    FreightTemplateEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/FreightTemplateEdit.vue')),
+    DeliveryModeEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/DeliveryModeEdit.vue')),
+    AfterSalesEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/AfterSalesEdit.vue')),
+    PurchaseLimitEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/PurchaseLimitEdit.vue')),
+    QualificationEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/QualificationEdit.vue')),
+    DeleteProductEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/DeleteProductEdit.vue')),
+    DetailDescEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/DetailDescEdit.vue')),
+    MerchantCodeEdit: defineAsyncComponent(() => import('@/components/AppMarket/BatchEdit/MerchantCodeEdit.vue'))
   },
   // 父组件数据
   props: {},
@@ -594,6 +621,10 @@ export default {
 
     const expand = ref(false);
     const formRef = ref();
+    const currentComponent = ref('TitleEdit');
+    const showEditComponent = (name) => {
+      currentComponent.value = name;
+    };
     // const formState = reactive({});
     const onFinish = values => {
         console.log('Received values of form: ', values);
@@ -621,7 +652,7 @@ export default {
       list,
       onLoadMore,
         // 筛选条件
-      expand,formRef,onFinish
+      expand,formRef,onFinish,currentComponent,showEditComponent
 
     }
     }

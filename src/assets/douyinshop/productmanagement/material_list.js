@@ -293,8 +293,8 @@ export class MaterialListMethod {
                 // 占比到个位数
                 let percent = Math.round((total_capacity_used / total_capacity) * 10000) / 10000 * 100;
 
-                console.log('网盘容量', percent);
-                this.PAGEDATA.netdisk_info = percent;
+                // console.log('网盘容量', percent);
+                this.PAGEDATA.netdisk_info = Math.round(percent * 100) / 100;
             })
         }
 
@@ -623,23 +623,72 @@ export class MaterialListMethod {
             this.load.loadproductData(this.navData.value);
         },
 
-        // id\关键词-查询
-        select:()=>{
+        // id-查询
+        search:()=>{
 
-            console.log(this.SelectMaterial.m_id.value,this.SelectMaterial.key_word.value)
+            var material_id = this.SelectMaterial.m_id.value || undefined;// id 如果为'',则置为undefined
+            var key_word = this.SelectMaterial.key_word.value|| undefined;// 关键词 如果为'',则置为undefined
 
-            // 获取关键词
-            // 获取id
-            // 获取类型
-            // 接口查询
+            if(material_id == undefined && key_word == undefined){
+                tool.Fun_.message('warning','请输入查询条件！')// 提示-请输入查询条件
+            }else if(material_id !== undefined && key_word !== undefined){
+                tool.Fun_.message('warning','仅支持输入一个条件查询！')// 提示-请输入查询条件
+            }else if(material_id !== undefined && key_word == undefined){
+                this.SelectMaterial.select_id(material_id)// id查询接口请求
+            }else if(material_id == undefined && key_word !== undefined){
+                this.SelectMaterial.select_key_word(key_word)// 关键词查询接口请求
+            }
+        },
 
-            // 重置接口
-            // 重置内容
 
+        // 关键词-查询
+        select_key_word:(keyword)=>{
+            this.PAGEDATA.querykeyword = true;
+            console.log('关键词查询',this.SelectMaterial.key_word.value)
+            'http://127.0.0.1:5000/douyin/material/searchmaterial'
+
+        },
+        // 素材id查询
+        select_id:(material_id)=>{
+
+            // 查询素材详情
+            axios.post(API.AppSrtoreAPI.material.detaile,{
+            
+                "material_id":material_id
+            
+            }).then((res)=>{
+                
+
+                let code = res.data.code;
+
+                // 请求成功
+                if(code == 10000){
+
+                    console.log('id查询',res)
+
+                    let material_type = res.data.data.material_info.material_type
+
+                    if(material_type == 'photo'){// 图片
+                        
+                        this.PAGEDATA.queryimage = true; // 查询结果-图片-抽屉状态
+                        this.PAGEDATA.seach_photo = res.data.data.material_info; // 查询结果-图片详情
+
+                    }else if(material_type == 'video'){// 视频
+
+                        this.PAGEDATA.queryvideo = true;
+                        this.PAGEDATA.seach_video = res.data.data.material_info; // 查询结果-视频详情
+                    }
+
+                }else{// 请求失败
+
+                    tool.Fun_.message('error', res.data.sub_msg)// 提示-查询失败
+
+                }
+                
+                
+                
+            })
         }
-
-
-        // 关键词查询
     }
 }
 
@@ -887,7 +936,6 @@ export class RecycleBinMethod {
     // 批量删除【确认】方法
     BatchDelMaterial=()=>{
         
-        console.log('批量删除素材ID列表：', this.BatchDelMaterialIdList.value);
         this.PAGEDATA.BatchDeleteButtonVisible = true; // 确认按钮状态-加载
 
         // 请求接口 删除素材
@@ -906,6 +954,8 @@ export class RecycleBinMethod {
                 this.PAGEDATA.BatchDeleteButtonVisible = false; // 确认按钮状态-false
 
                 this.PAGEDATA.BatchDeleteModalVisible = false; // 关闭恢复对话框
+
+                this.checked_status.value = false; // 恢复后重置全选状态
 
                 tool.Fun_.message('success','彻底删除操作成功！')// 提示-恢复成功
 
@@ -973,9 +1023,7 @@ export class RecycleBinMethod {
 
     // 批量恢复【点击确认】方法
     BatchRecoverMaterial=()=>{
-
-        console.log('批量恢复素材ID列表：', this.BatchRecoverMaterialIdList.value);
-
+        this.PAGEDATA.BatchRecoverButtonVisible = true; // 确认按钮状态-加载
         // 请求接口 恢复素材
         axios.post(API.AppSrtoreAPI.material.recovermaterial,{
 
@@ -992,6 +1040,8 @@ export class RecycleBinMethod {
                 this.PAGEDATA.BatchRecoverButtonVisible = false; // 确认按钮状态-false
 
                 this.PAGEDATA.BatchRecoverModalVisible = false; // 关闭恢复对话框
+
+                this.checked_status.value = false; // 恢复后重置全选状态
 
                 tool.Fun_.message('success','恢复操作成功！')// 提示-恢复成功
 

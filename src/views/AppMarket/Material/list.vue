@@ -47,7 +47,7 @@
                 >
                     <p style="padding: 15px 0 0 32px;font-size: 12px;">
                         <a-space style="width: 100%">
-                        <FolderOutlined /> 网盘
+                        <FolderOutlined /> 根目录
                         <a-progress style="width: 100px;margin: 0px 0 0 0;" :percent="PAGEDATA.netdisk_info" size="small" />
                         </a-space>
                     </p>
@@ -84,7 +84,9 @@
                     borderRadius:'4px',
                     overflow:'hidden',
                 }">
+
                     <a-row>
+
                         <!--面包屑导航-->
                         <a-col :span="12">
                             <a-space>
@@ -103,8 +105,9 @@
                                 </div>
                             </a-space>
                         </a-col>
+
                         <a-col :span="12" style="padding:8px 6px 0 0;">
-                            <a-space>
+                            <a-space style="width: 100%;justify-content: flex-end;">
                                 <a-input 
                                     type="text" 
                                     placeholder="输入素材id"
@@ -116,18 +119,21 @@
                                     type="text" 
                                     placeholder="输入关键词"
                                     v-model:value="MaterialListMethod.SelectMaterial.key_word.value"
+                                    clearable
                                     autoComplete="off"
                                 ></a-input>
                                 <a-button 
                                 type="primary" 
                                 size="small"
-                                @click="showQueryDrawer"
+                                @click="MaterialListMethod.SelectMaterial.search"
                                 >查询</a-button>
-                                <a-button type="primary" size="small" @click="showNetImageModal">网络图片上传</a-button>
-                                <a-button type="primary" size="small" @click="showLocalUploadModal">本地图片上传</a-button>
+                                <a-button type="primary" size="small" @click="networkUploadRef.showNetImageModal()">网络图片上传</a-button>
+                                <a-button type="primary" size="small" @click="localUploadRef.showLocalUploadModal()">本地图片上传</a-button>
                             </a-space>
                         </a-col>
+
                     </a-row>
+
                 </div>
                 <!-- 
                     查询导航 
@@ -148,7 +154,6 @@
                 }">
                     <a-checkbox-group  v-model:value="PAGEDATA.check_value" style="width: 100%;height: 100%;">
                     <a-list 
-
                         :grid="{ gutter: 0, column: 5 }"
                         size="default"
                         :data-source="PAGEDATA.datalist"
@@ -224,6 +229,7 @@
 
                 <!-- 翻页 -->
                 <a-layout-footer class="footerStyle">
+
                     <a-row>
 
                         <a-col :span="12" style="text-align: left;">
@@ -262,11 +268,14 @@
                                 </a-space>
                             </p>
                         </a-col>
+
                         <a-col :span="12">
                             <nav_pagination :fandata="PAGEDATA" v-on:complete="MaterialListMethod.page_turning"/>
                         </a-col>
+
                     </a-row>
                 </a-layout-footer>
+
             </a-layout-content>
 
 
@@ -282,7 +291,11 @@
 
             <!--图片信息-->
             <p>所属文件夹ID：{{ Material_Images.image_detaile.value.folder_id }}</p>
-            <p>素材ID：{{ Material_Images.image_detaile.value.material_id }}</P>
+            <p>素材ID：
+                <a-typography-paragraph :copyable="{ text: Material_Images.image_detaile.value.material_id }" style="display: inline-block; margin: 0;">
+                    {{ Material_Images.image_detaile.value.material_id }}
+                </a-typography-paragraph>
+            </P>
             <p>图片名称：{{ Material_Images.image_detaile.value.materil_name }}</p>
             
             <div v-if="Material_Images.image_detaile.value.origin_url !== ''">
@@ -351,7 +364,11 @@
         <div v-if="Material_Images.video_detaile.value !== undefined">
         <!--视频信息-->
             <p>所属文件夹ID：{{ Material_Images.video_detaile.value.folder_id }}</p>
-            <p>素材ID：{{ Material_Images.video_detaile.value.material_id }}</P>
+            <p>素材ID：
+                <a-typography-paragraph :copyable="{ text: Material_Images.video_detaile.value.material_id }" style="display: inline-block; margin: 0;">
+                    {{ Material_Images.video_detaile.value.material_id }}
+                </a-typography-paragraph>
+            </P>
             <p>图片名称：{{ Material_Images.video_detaile.value.materil_name }}</p>
 
             <div v-if="Material_Images.video_detaile.value.origin_url !== ''">
@@ -425,138 +442,83 @@
     </a-modal>
     <!--回收确认 弹出层 结束-->
 
-    <!-- 查询详情抽屉 开始 -->
-    <a-drawer v-model:open="queryDrawer" title="查询详情" width="400" :closable="true">
-        <a-space direction="vertical" style="width: 100%;">
-            <a-input 
-                type="text" 
-                placeholder="输入素材id"
-                v-model:value="MaterialListMethod.SelectMaterial.m_id.value"
-                autoComplete="off"
-            />
-            <a-input 
-                type="text" 
-                placeholder="输入关键词"
-                v-model:value="MaterialListMethod.SelectMaterial.key_word.value"
-                autoComplete="off"
-            />
-            <a-button type="primary" size="small" @click="handleQuery">查询</a-button>
-        </a-space>
+    <!-- id查询-图片结果-抽屉 开始 -->
+    <a-drawer v-model:open="PAGEDATA.queryimage" title="图片详情" width="400" :closable="true">
+
+        <div v-if="PAGEDATA.seach_photo == undefined" class="image_content_" style="height: 100%;">
+            <a-spin />
+        </div>
+        <div v-else style="word-break: break-all;width: 100%;height: 100%;">
+            <p>素材ID：{{ PAGEDATA.seach_photo.material_id }}</p>
+            <p>所属文件夹ID：{{ PAGEDATA.seach_photo.folder_id }}</p>
+            <p>素材源地址：{{ PAGEDATA.seach_photo.origin_url }}</p>
+            <p>素材类型：{{ PAGEDATA.seach_photo.material_type }}</p>
+            <p>状态：{{ PAGEDATA.seach_photo.operate_status }}</p>
+            <p>审核状态：{{ PAGEDATA.seach_photo.audit_status }}</p>
+            <p>审核失败原因：{{ PAGEDATA.seach_photo.audit_reject_desc }}</p>
+            <p>文件大小：{{ PAGEDATA.seach_photo.size }} kb</p>
+            <p>素材名称：{{ PAGEDATA.seach_photo.materil_name }}</p>
+            <p>素材地址：{{ PAGEDATA.seach_photo.byte_url }}</p>
+            <p>图片信息</p>
+            <p>长：{{ PAGEDATA.seach_photo.photo_info.width }} px</p>
+            <p>宽：{{ PAGEDATA.seach_photo.photo_info.height }} px</p>
+            <p>图片格式：{{ PAGEDATA.seach_photo.photo_info.format }}</p>
+            <p>创建时间：{{ PAGEDATA.seach_photo.create_time }}</p>
+            <p>更新时间：{{ PAGEDATA.seach_photo.update_time }}</p>
+            <img :src="PAGEDATA.seach_photo.byte_url" width="100%"></img>
+        </div>
+
     </a-drawer>
-    <!-- 查询详情抽屉 结束 -->
+    <!-- id查询-图片结果-抽屉 结束 -->
 
-    <!-- 上传网络图片 弹出层 开始-->
-    <a-modal 
-        v-model:open="netImageModalVisible" 
-        title="上传网络图片"
-        @ok="handleNetImageOk"
-        @cancel="handleNetImageCancel"
-    >
-        <a-form 
-            ref="netImageFormRef"
-            :model="netImageForm"
-            :rules="netImageRules"
-            layout="vertical"
-            style="padding: 20px 0 0 0;"
-        >
+    <!-- id查询-视频结果-抽屉 开始 -->
+    <a-drawer v-model:open="PAGEDATA.queryvideo" title="视频详情" width="400" :closable="true">
+        <div v-if="PAGEDATA.seach_video == undefined">
+            <a-spin />
+        </div>
+        <div v-else style="word-break: break-all;width: 100%;height: 100%;">
+            <p>视频素材</p>
+            <p>素材ID：{{ PAGEDATA.seach_video.material_id }}</p>
+            <p>所属文件夹ID：{{ PAGEDATA.seach_video.folder_id }}</p>
+            <p>素材名称：{{ PAGEDATA.seach_video.materil_name }}</p>
+            <p>素材地址：{{ PAGEDATA.seach_video.origin_url }}</p>
+            <p>素材类型：{{ PAGEDATA.seach_video.material_type }}</p>
+            <p>状态：{{ PAGEDATA.seach_video.operate_status }}</p>
+            <p>审核状态：{{ PAGEDATA.seach_video.audit_status }}</p>
+            <p>审核失败原因：{{ PAGEDATA.seach_video.audit_reject_desc }}</p>
+            <p>文件大小：{{ PAGEDATA.seach_video.size }} kb</p>
+            <p>素材名称：{{ PAGEDATA.seach_video.materil_name }}</p>
+            <p>素材地址：{{ PAGEDATA.seach_video.byte_url }}</p>
+            <p>图片信息</p>
+            <p>长：{{ PAGEDATA.seach_video.video_info.width }} px</p>
+            <p>宽：{{ PAGEDATA.seach_video.video_info.height }} px</p>
+            <p>图片格式：{{ PAGEDATA.seach_video.video_info.format }}</p>
+            <p>创建时间：{{ PAGEDATA.seach_video.create_time }}</p>
+            <p>更新时间：{{ PAGEDATA.seach_video.update_time }}</p>
+            <video
+                :key="PAGEDATA.seach_video.material_id"
+                controls
+                preload="metadata"
+                width="100%"
+            >
+                <source :src="PAGEDATA.seach_video.origin_url" type="video/mp4">
+                您的浏览器不支持视频播放。
+            </video>
+        </div>
+    </a-drawer>
+    <!-- id查询-视频结果-抽屉 结束 -->
 
-            <a-form-item label="选择文件夹" name="folderId">
-                <a-cascader
-                    v-model:value="netImageForm.folderId"
-                    :options="netImageFolderOptions"
-                    :load-data="loadNetImageFolder"
-                    placeholder="请选择素材文件夹"
-                    change-on-select
-                />
-            </a-form-item>
-            
-            <div style="margin-bottom: 16px;">
+    <!-- id查询-关键词结果-抽屉 开始 -->
+    <a-drawer v-model:open="PAGEDATA.querykeyword" title="素材详情" width="400" :closable="true">
+        <p>关键词详情</p>
+    </a-drawer>
+    <!-- id查询-关键词结果-抽屉 结束 -->
 
-                <label style="display: block; margin: 0 0 8px 0;font-size: 12px;">
-                    <span style="color: #ff4d4f;">*</span> 图片地址 
-                </label>
+    <!-- 网络图片上传组件 -->
+    <networkimageupload_components ref="networkUploadRef" :treeData="PAGEDATA.treeData" />
 
-                <div v-for="(url, index) in netImageForm.imageUrls" :key="index" style="margin-bottom: 8px;">
-                        <a-form-item
-                            :name="['imageUrls', index]"
-                            :rules="[
-                                { required: true, message: '请输入图片地址', trigger: 'blur' },
-                                { pattern: /^http/, message: '图片地址必须以 http 开头', trigger: 'change' }
-                            ]"
-                            style="margin-bottom: 0;"
-                        >
-                            <a-row>
-                                <a-col :span="20">
-                                    <a-input 
-                                        v-model:value="netImageForm.imageUrls[index]"
-                                        :placeholder="'请输入图片地址'"
-                                        size="middle"
-                                        autoComplete="off"
-                                    />
-                                </a-col>
-                                <a-col :span="4">
-                                    <a-button 
-                                        type="dashed" 
-                                        size="small"
-                                        @click="removeImageUrl(index)"
-                                        style="margin: 2px 0 0 10px;width: 80%;"
-                                    >
-                                    删除
-                                    </a-button>
-                                </a-col>
-
-                            </a-row>
-
-                            
-                        </a-form-item>
-
-                </div>
-                <div >
-                    <a-button 
-                        type="dashed" 
-                        size="small"
-                        @click="addImageUrl"
-                        :disabled="netImageForm.imageUrls.length >= 10"
-                        style="margin: 18px 0 18px 0;"
-                    >
-                        <PlusOutlined /> 添加地址
-                    </a-button>
-                    <span v-if="netImageForm.imageUrls.length >= 10" style="color: #ff4d4f; font-size: 12px; margin-left: 8px;">
-                        最多添加10个图片地址
-                    </span>
-                </div>
-            </div>
-        </a-form>
-    </a-modal>
-    <!-- 上传网络图片 弹出层 结束-->
-
-    <!-- 上传本地文件 弹出层 开始-->
-    <a-modal 
-        v-model:open="localUploadModalVisible" 
-        title="上传本地文件"
-        @ok="handleLocalUploadOk"
-        @cancel="handleLocalUploadCancel"
-        :width="560"
-        
-    >
-        <a-upload-dragger
-            v-model:fileList="localFileList"
-            :multiple="true"
-            :beforeUpload="beforeLocalUpload"
-            :customRequest="handleLocalUpload"
-            @change="handleLocalUploadChange"
-            style="margin: 30px 0 20px 0;"
-        >
-            <p class="ant-upload-drag-icon">
-                <InboxOutlined />
-            </p>
-            <p class="ant-upload-text">点击或拖拽文件到此处上传</p>
-            <p class="ant-upload-hint">
-                支持单次上传多个文件，文件大小不超过5MB，最多20个文件
-            </p>
-        </a-upload-dragger>
-    </a-modal>
-    <!-- 上传本地文件 弹出层 结束-->
+    <!-- 本地图片上传组件 -->
+    <localimageupload_components ref="localUploadRef" />
 
     <!--批量删除 确认弹窗-->
     <a-modal 
@@ -588,12 +550,12 @@
 
 </template>
 <script>
-import { computed,ref,reactive,onMounted,h,onUnmounted,watch } from 'vue';
+import { defineAsyncComponent,computed,ref,reactive,onMounted,h,onUnmounted,watch } from 'vue';
 import{Empty, message} from 'ant-design-vue'
 
 import { useStore } from 'vuex'
 // 网络请求工具引用FolderOutlined
-import { FolderOutlined,CloseCircleOutlined,ClearOutlined,EyeOutlined,DownOutlined,FolderOpenOutlined,DeleteOutlined,PictureOutlined,PlaySquareOutlined, PlusOutlined, InboxOutlined} from '@ant-design/icons-vue';
+import { FolderOutlined,CloseCircleOutlined,ClearOutlined,EyeOutlined,DownOutlined,FolderOpenOutlined,DeleteOutlined,PictureOutlined,PlaySquareOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
 import * as MaterialList from '@/assets/douyinshop/productmanagement/material_list';// 商品管理->编辑操作方法
@@ -618,8 +580,11 @@ export default {
         DeleteOutlined,
         PictureOutlined,
         PlaySquareOutlined,
-        PlusOutlined,
-        InboxOutlined
+        // 网络图片上传组件
+        networkimageupload_components: defineAsyncComponent(() => import('@/components/AppMarket/materialmanage/NetWorkImageUpload.vue')),
+        // 本地图片上传组件
+        localimageupload_components: defineAsyncComponent(() => import('@/components/AppMarket/materialmanage/LoaclImageUpload.vue')),
+
    },
 props: {
    data:{typr:Object}
@@ -669,6 +634,16 @@ setup(props,ctx) {
 
         // 网盘信息
         netdisk_info:0,
+
+        //****查询条件-素材id查询、关键词查询 */开始 // 
+        queryimage:false,// 查询结果-图片-抽屉状态
+        queryvideo:false,// 查询结果-视频-抽屉状态
+        querykeyword:false,// 查询结果-关键词-抽屉状态
+
+        seach_photo:ref(undefined),// 查询结果-图片详情
+        seach_video:ref(undefined),// 查询结果-视频详情
+        seach_keyword:ref(undefined),// 查询结果-关键词详情
+        //****查询条件-素材id查询、关键词查询 */结束 // 
     })
 
     MaterialListMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
@@ -678,10 +653,9 @@ setup(props,ctx) {
     const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;   // 默认为空的图标
     const childimgDrawer = ref(false);                  // 图片详情状态
     const childvideoDrawer = ref(false);                // 视频详情状态
-    const queryDrawer = ref(false);                     // 查询详情抽屉状态
-    const netImageModalVisible = ref(false);            // 上传网络图片弹出层状态
-    const netImageFormRef = ref(null);                  // 网络图片表单 ref
 
+    const networkUploadRef = ref(null);                 // 网络图片上传组件 ref
+    const localUploadRef = ref(null);                   // 本地图片上传组件 ref
 
     // 在组件挂载时添加事件监听器
     onMounted(() => {
@@ -718,204 +692,6 @@ setup(props,ctx) {
         }
     };
 
-    // 显示查询详情抽屉
-    const showQueryDrawer = () => {
-        queryDrawer.value = true;
-    };
-
-    // 执行查询并关闭抽屉
-    const handleQuery = () => {
-        MaterialListMethod.SelectMaterial.select();
-        queryDrawer.value = false;
-    };
-
-    // 联级选择器文件夹选项
-    const netImageFolderOptions = ref([]);
-
-    // 将 treeData 转换为 Cascader 选项
-    const convertTreeToCascader = (nodes) => {
-        if (!nodes || nodes.length === 0) return [];
-        return nodes.map(node => ({
-            value: String(node.key),
-            label: node.title,
-            isLeaf: node.isLeaf,
-            children: node.children ? convertTreeToCascader(node.children) : undefined
-        }));
-    };
-
-    // 异步加载联级选择器子文件夹
-    const loadNetImageFolder = (selectedOptions) => {
-        const targetOption = selectedOptions[selectedOptions.length - 1];
-        targetOption.loading = true;
-        
-        const folderId = targetOption.value;
-        
-        tool.Http_.post(API.AppSrtoreAPI.material.getfolder, {
-            "folder_id": folderId,
-            "page_num": 1,
-            "page_size": 10
-        }).then((res) => {
-            const child_folder_list = res.data.data.folder_info.child_folder;
-            
-            if (child_folder_list.length > 0) {
-                targetOption.children = child_folder_list.map(obj => ({
-                    value: String(obj.folder_id),
-                    label: obj.folder_name,
-                    isLeaf: true
-                }));
-                
-                // 检查子文件夹是否还有子文件夹
-                const checks = targetOption.children.map(child => {
-                    return tool.Http_.post(API.AppSrtoreAPI.material.getfolder, {
-                        "folder_id": child.value,
-                        "page_num": 1,
-                        "page_size": 10
-                    }).then((childRes) => {
-                        const grandChildren = childRes.data.data.folder_info.child_folder;
-                        child.isLeaf = grandChildren.length === 0;
-                    });
-                });
-                
-                Promise.all(checks).then(() => {
-                    targetOption.loading = false;
-                    netImageFolderOptions.value = [...netImageFolderOptions.value];
-                });
-            } else {
-                targetOption.isLeaf = true;
-                targetOption.loading = false;
-                netImageFolderOptions.value = [...netImageFolderOptions.value];
-            }
-        });
-    };
-
-    // 网络图片表单数据
-    const netImageForm = reactive({
-        folderId: [],
-        imageUrls: ['']
-    });
-
-    // 网络图片表单验证规则
-    const netImageRules = {
-        folderId: [
-            { required: true, message: '请选择素材文件夹', trigger: 'change', type: 'array' }
-        ]
-    };
-
-    // 显示上传网络图片弹出层
-    const showNetImageModal = () => {
-        netImageModalVisible.value = true;
-        // 初始化文件夹选项（添加根节点素材库）
-        if (PAGEDATA.treeData.value.length > 0) {
-            netImageFolderOptions.value = [{
-                value: '0',
-                label: '素材库',
-                isLeaf: false,
-                children: convertTreeToCascader(PAGEDATA.treeData.value)
-            }];
-        }
-    };
-
-    // 添加图片地址输入框
-    const addImageUrl = () => {
-        if (netImageForm.imageUrls.length < 10) {
-            netImageForm.imageUrls.push('');
-        }
-    };
-
-    // 删除图片地址输入框
-    const removeImageUrl = (index) => {
-        if (netImageForm.imageUrls.length > 1) {
-            netImageForm.imageUrls.splice(index, 1);
-        }
-    };
-
-    // 确认上传网络图片
-    const handleNetImageOk = () => {
-        netImageFormRef.value.validate().then(() => {
-            const folderId = netImageForm.folderId[netImageForm.folderId.length - 1];
-            const urls = netImageForm.imageUrls.filter(url => url.trim() !== '');
-            console.log('选择的文件夹ID：', folderId);
-            console.log('网络图片地址列表：', urls);
-            netImageModalVisible.value = false;
-            // 重置表单
-            netImageForm.folderId = [];
-            netImageForm.imageUrls = [''];
-        }).catch((error) => {
-            console.log('表单验证失败', error);
-        });
-    };
-
-    // 取消上传网络图片
-    const handleNetImageCancel = () => {
-        netImageModalVisible.value = false;
-        netImageForm.folderId = [];
-        netImageForm.imageUrls = [''];
-    };
-
-    // 上传本地文件弹出层状态
-    const localUploadModalVisible = ref(false);
-    const localFileList = ref([]);
-
-    // 显示上传本地文件弹出层
-    const showLocalUploadModal = () => {
-        localUploadModalVisible.value = true;
-    };
-
-    // 本地文件上传前验证
-    const beforeLocalUpload = (file, fileList) => {
-        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
-        const MAX_COUNT = 20;
-
-        // 文件大小验证
-        if (file.size > MAX_SIZE) {
-            message.error(`文件 ${file.name} 超过5MB限制`);
-            return false;
-        }
-
-        // 单次上传数量验证
-        if (file === fileList[0] && fileList.length > MAX_COUNT) {
-            message.error(`一次最多上传${MAX_COUNT}个文件`);
-            return false;
-        }
-
-        return true;
-    };
-
-    // 自定义上传请求
-    const handleLocalUpload = ({ file, onSuccess, onError }) => {
-        console.log('上传触发，文件信息：', {
-            name: file.name,
-            size: file.size,
-            type: file.type
-        });
-        
-        // 模拟上传过程（实际项目中应替换为真实上传接口）
-        setTimeout(() => {
-            onSuccess('ok');
-        }, 500);
-    };
-
-    // 上传状态变化处理
-    const handleLocalUploadChange = (info) => {
-        const status = info.file.status;
-        if (status === 'done') {
-            message.success(`${info.file.name} 上传成功`);
-        } else if (status === 'error') {
-            message.error(`${info.file.name} 上传失败`);
-        }
-    };
-
-    // 确认关闭上传弹窗
-    const handleLocalUploadOk = () => {
-        localUploadModalVisible.value = false;
-        localFileList.value = [];
-    };
-
-    // 取消关闭上传弹窗
-    const handleLocalUploadCancel = () => {
-        localUploadModalVisible.value = false;
-        localFileList.value = [];
-    };
 
     // 图片素材管理
     const Material_Images = {
@@ -927,39 +703,21 @@ setup(props,ctx) {
 
     // 【查询组件 回调方法】========================================结束
 
+
+
        return{
         PAGEDATA,
         store,
         MaterialListMethod, // 外部js方法
         childimgDrawer,
         childvideoDrawer,
-        queryDrawer,
         showChildimgDrawer,
         showChildvideoDrawer,
-        showQueryDrawer,
-        handleQuery,
         Material_Images,
         simpleImage,
         handleResize,
-        netImageModalVisible,
-        netImageFormRef,
-        netImageForm,
-        netImageRules,
-        netImageFolderOptions,
-        showNetImageModal,
-        handleNetImageOk,
-        handleNetImageCancel,
-        addImageUrl,
-        removeImageUrl,
-        loadNetImageFolder,
-        localUploadModalVisible,
-        localFileList,
-        showLocalUploadModal,
-        beforeLocalUpload,
-        handleLocalUpload,
-        handleLocalUploadChange,
-        handleLocalUploadOk,
-        handleLocalUploadCancel
+        networkUploadRef,
+        localUploadRef
 
        }
    }
