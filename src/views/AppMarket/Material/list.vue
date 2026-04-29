@@ -224,6 +224,7 @@
 
                     </a-list>
                 </a-checkbox-group>
+                
                 </div>
 
 
@@ -277,7 +278,6 @@
                 </a-layout-footer>
 
             </a-layout-content>
-
 
         </a-layout>
             
@@ -508,18 +508,16 @@
     </a-drawer>
     <!-- id查询-视频结果-抽屉 结束 -->
 
-    <!-- id查询-关键词结果-抽屉 开始 -->
-    <a-drawer v-model:open="PAGEDATA.querykeyword" title="素材详情" width="400" :closable="true">
-        <p>关键词详情</p>
-    </a-drawer>
-    <!-- id查询-关键词结果-抽屉 结束 -->
+    <!-- 关键词结果-抽屉 开始 -->
+    <keywordseach_components :data="keywordSeachConfig"/>
+    <!-- 关键词结果-抽屉 结束 -->
 
     <!-- 网络图片上传组件 -->
     <networkimageupload_components ref="networkUploadRef" :treeData="PAGEDATA.treeData" />
 
     <!-- 本地图片上传组件 -->
     <localimageupload_components ref="localUploadRef" />
-
+    
     <!--批量删除 确认弹窗-->
     <a-modal 
         v-model:open="MaterialListMethod.del.BatchDelOpenStatus.value" 
@@ -584,6 +582,8 @@ export default {
         networkimageupload_components: defineAsyncComponent(() => import('@/components/AppMarket/materialmanage/NetWorkImageUpload.vue')),
         // 本地图片上传组件
         localimageupload_components: defineAsyncComponent(() => import('@/components/AppMarket/materialmanage/LoaclImageUpload.vue')),
+        // 关键词搜索组件
+        keywordseach_components: defineAsyncComponent(() => import('@/components/AppMarket/materialmanage/KeyWordSeach.vue')),
 
    },
 props: {
@@ -598,6 +598,7 @@ setup(props,ctx) {
 
     // 组件挂之后---请求数据===============================开始
     const PAGEDATA = reactive({
+
         title:'素材列表',
         menudata:{      // 菜单选中配置
             'key':'115',
@@ -646,9 +647,16 @@ setup(props,ctx) {
         //****查询条件-素材id查询、关键词查询 */结束 // 
     })
 
-    MaterialListMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
-    MaterialListMethod.load.getdiskusage();// 网盘使用占比
+    // 关键词查询配置
+    const keywordSeachConfig = reactive({
+        keyword:ref(''),// 查询关键词
+        open:false,// 抽屉状态
+    })
 
+    MaterialListMethod.PAGEDATA = PAGEDATA; // 页面数据加载到脚本文件
+    MaterialListMethod.keywordSeachConfig = keywordSeachConfig; // 关键词搜索配置加载到脚本文件
+
+    MaterialListMethod.load.getdiskusage();// 网盘使用占比
 
     const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;   // 默认为空的图标
     const childimgDrawer = ref(false);                  // 图片详情状态
@@ -717,7 +725,8 @@ setup(props,ctx) {
         simpleImage,
         handleResize,
         networkUploadRef,
-        localUploadRef
+        localUploadRef,
+        keywordSeachConfig
 
        }
    }

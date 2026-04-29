@@ -12,14 +12,13 @@ const API = new utils.A_Patch()     // 请求接口地址合集
 export class MaterialListMethod {
 
     PAGEDATA = undefined; // 页面配置参数
+    keywordSeachConfig= undefined;// 关键词搜索配置
     
     // 页面加载
     load={
 
         // 请求素材列表列表接口数据
         loadproductData:async(data) => {
-
-            console.log(data)
 
             this.PAGEDATA.loading = true;
 
@@ -642,11 +641,11 @@ export class MaterialListMethod {
 
 
         // 关键词-查询
-        select_key_word:(keyword)=>{
-            this.PAGEDATA.querykeyword = true;
-            console.log('关键词查询',this.SelectMaterial.key_word.value)
-            'http://127.0.0.1:5000/douyin/material/searchmaterial'
-
+        select_key_word:()=>{
+            
+            this.keywordSeachConfig.open = true; // 打开关键词查询抽屉
+            this.keywordSeachConfig.keyword = this.SelectMaterial.key_word.value; // 关键词查询结果-关键词
+            
         },
         // 素材id查询
         select_id:(material_id)=>{
@@ -738,6 +737,8 @@ export class RecycleBinMethod {
 
         // 请求回收站素材列表列表接口数据
         getmaterialData:async(data) => {
+
+            console.log('查询条件', data)
 
             this.PAGEDATA.loading = true;
 
