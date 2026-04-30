@@ -16,12 +16,10 @@
             padding:'0 0 0 2px'
 
         }">
-            <a-checkbox-group  v-model:value="PAGEDATA.check_value" @change="SearchFunction.onGroupChange" style="width: 100%;height: 100%;">
-            
             <!-- 批量操作栏 -->
             <p class="font_size_12" style="padding: 0 0 10px 2px;">
                 <a-space>
-                    <a-checkbox v-model:checked="PAGEDATA.checkedAllStatus" @change="SearchFunction.onCheckAllChange">全选</a-checkbox>
+                    <a-checkbox v-model:checked="checkedAllStatus" @change="SearchFunction.onCheckAllChange">全选</a-checkbox>
                     <a-tag :bordered="false"><PictureOutlined /> 已选 {{ PAGEDATA.confirm_img_list.length }} 张</a-tag>
                     <a-button type="dashed" size="small" class="font_size_12" @click="SearchFunction.clearSelected">清空</a-button>
                     <a-button type="dashed" size="small" class="font_size_12" @click="SearchFunction.batchDelOpen">批量删除</a-button>
@@ -29,6 +27,7 @@
                 </a-space>
             </p>
 
+            <a-checkbox-group  v-model:value="PAGEDATA.check_value" style="width: 100%;height: 100%;">
             <!-- 列表数据 -->
             <a-list 
                 :grid="{ gutter: 0, column: 5 }"
@@ -201,8 +200,9 @@ setup(props,ctx) {
         List_conditions:ref({page:1}),// 翻页-当前页数
         check_value:ref([]),// 选中状态-选中素材id列表
         confirm_img_list:[],// 已选素材id列表（用于批量操作）
-        checkedAllStatus:false,// 全选状态
     });
+
+    const checkedAllStatus =ref(false) // 全选状态
 
     // 默认条件
     const navData = ref({
@@ -253,7 +253,7 @@ setup(props,ctx) {
             navData.value.page_size = 10; // 打开抽屉即执行查询，重置每页条数为10
             PAGEDATA.check_value = [];// 重置选中状态
             PAGEDATA.confirm_img_list = [];// 重置已选素材列表
-            PAGEDATA.checkedAllStatus = false;// 重置全选状态
+            checkedAllStatus.value = false;// 重置全选状态
             getKeyThenIncreaseKey(); // 打开抽屉即执行查询
         }
     })
@@ -302,16 +302,6 @@ setup(props,ctx) {
         showChildrenDrawer:(item) => {
             console.log(item)
             SearchFunction.childrenDrawer = true;
-        },
-
-        // 选中素材（由 a-checkbox-group 的 @change 统一同步 confirm_img_list）
-        onGroupChange:(checkedValues) => {
-            PAGEDATA.confirm_img_list = [...checkedValues];
-            if (PAGEDATA.datalist.length > 0 && checkedValues.length === PAGEDATA.datalist.length) {
-                PAGEDATA.checkedAllStatus = true;
-            } else {
-                PAGEDATA.checkedAllStatus = false;
-            }
         },
 
         // 删除确认弹窗
@@ -378,19 +368,22 @@ setup(props,ctx) {
 
         // 全选/取消全选
         onCheckAllChange:(e) => {
+            
+            const checked = e.target.checked;            
 
-            const checked = e.target.checked;
+            checkedAllStatus.value=checked
 
-            // PAGEDATA.checkedAllStatus = checked;
-
-            if (checked) {
+            if (checked == true) {
                 // 全选素材list
                 PAGEDATA.datalist.forEach(item => {
+
                     var material_id = item.material_id;
+
                     // 判断是否在数组中
                     if(!PAGEDATA.check_value.includes(material_id)){
                         PAGEDATA.check_value.push(material_id)
                     }
+
                     if(!PAGEDATA.confirm_img_list.includes(material_id)){ 
                         PAGEDATA.confirm_img_list.push(material_id)
                     }
@@ -400,21 +393,25 @@ setup(props,ctx) {
 
                 PAGEDATA.check_value.length = 0;
                 PAGEDATA.confirm_img_list.length= 0;
+
             }
+
         },
 
         // 清空已选
         clearSelected:() => {
-            PAGEDATA.check_value = [];
-            PAGEDATA.confirm_img_list = [];
-            PAGEDATA.checkedAllStatus = false;
+            PAGEDATA.check_value.length = 0;
+            PAGEDATA.confirm_img_list.length =0;
+            checkedAllStatus.value=false
+
         },
 
         // 批量删除确认弹窗
         batchDelModalOpen: false,
         batchDelConfirmLoading: false,
         batchDelMaterialIds: [],
-
+        
+        // 二次确认批量删除
         batchDelOpen:() => {
             const v_number = PAGEDATA.confirm_img_list.length;
             if (v_number == 0) {
@@ -427,6 +424,7 @@ setup(props,ctx) {
             }
         },
 
+        // 批量删除方法
         batchDelConfirm:() => {
             SearchFunction.batchDelConfirmLoading = true;
             axios.post(API.AppSrtoreAPI.material.deletematerial, {
@@ -464,7 +462,8 @@ setup(props,ctx) {
                 SearchFunction.batchRecycleModalOpen = true;
             }
         },
-
+        
+        // 批量回收方法
         batchRecycleConfirm:() => {
             SearchFunction.batchRecycleConfirmLoading = true;
             axios.post(API.AppSrtoreAPI.material.movematerialrecyclebin, {
@@ -496,7 +495,8 @@ setup(props,ctx) {
             page_turning,
             material_width,
             video_cover_width,
-            SearchFunction
+            SearchFunction,
+            checkedAllStatus
        }
 
    }

@@ -22,6 +22,7 @@
     <a-modal 
         v-model:open="netImageModalVisible" 
         title="上传网络图片"
+        :confirm-loading="confirmLoading"
         @ok="handleNetImageOk"
         @cancel="handleNetImageCancel"
     >
@@ -120,12 +121,14 @@ export default {
          default: () => ({ value: [] })
       }
    },
-   setup(props) {
+   emits: ['uploadSuccess'],
+   setup(props, { emit }) {
 
       const tool = new TOOL.TOOL();
       const API = new utils.A_Patch();
 
       const netImageModalVisible = ref(false);            // 上传网络图片弹出层状态
+      const confirmLoading = ref(false);                  // 确认按钮加载状态
       const netImageFormRef = ref(null);                  // 网络图片表单 ref
       // 联级选择器文件夹选项
       const netImageFolderOptions = ref([]);
@@ -190,15 +193,83 @@ export default {
 
       // 确认上传网络图片
       const handleNetImageOk = () => {
+
          netImageFormRef.value.validate().then(() => {
+
             const folderId = netImageForm.folderId[netImageForm.folderId.length - 1];
             const urls = netImageForm.imageUrls.filter(url => url.trim() !== '');
-            console.log('选择的文件夹ID：', folderId);
-            console.log('网络图片地址列表：', urls);
-            netImageModalVisible.value = false;
-            // 重置表单
-            netImageForm.folderId = [];
-            netImageForm.imageUrls = [''];
+
+            if (urls.length === 0) {
+               tool.Fun_.message('error', '请至少输入一个图片地址');
+               return;
+            }
+
+            // 构建批量上传参数
+            const params = {
+               folder_id: folderId,
+               pic_list: urls.map(url => url.trim())
+            };
+
+            confirmLoading.value = true;
+
+            console.log(params)
+
+            tool.Http_.post(API.AppSrtoreAPI.material.bacthuploadmaterial, params).then((res) => {
+
+               confirmLoading.value = false;
+
+               if (res.data.code === 10000) {
+                  const data = res.data.data;
+                  let successCount = 0;
+                  let failCount = 0;
+
+                  // 判断返回结果结构
+                  if (Array.isArray(data)) {
+                     data.forEach(item => {
+                        if (item.success || item.code === 10000 || item.code === 0) {
+                           successCount++;
+                        } else {
+                           failCount++;
+                        }
+                     });
+                  } else if (data && typeof data === 'object') {
+                     // 可能返回 { success_list: [], fail_list: [] } 或类似结构
+                     successCount = data.success_count || data.success_list?.length || urls.length;
+                     failCount = data.fail_count || data.fail_list?.length || 0;
+                  } else {
+                     // 默认全部成功
+                     successCount = urls.length;
+                  }
+
+                  if (failCount > 0) {
+                     tool.Fun_.message('warning', `上传完成：成功 ${successCount} 张，失败 ${failCount} 张`);
+                  } else {
+                     tool.Fun_.message('success', `上传成功 ${successCount} 张图片`);
+                  }
+
+                  netImageModalVisible.value = false;
+                  // 重置表单
+                  netImageForm.folderId = [];
+                  netImageForm.imageUrls = [''];
+
+                  // 通知父组件上传成功
+                  emit('uploadSuccess', { successCount, failCount, data });
+
+
+               } else {
+
+                  const errorMsg = res.data.sub_msg || res.data.msg || '上传失败';
+                  console.log(errorMsg)
+
+                  tool.Fun_.message('error', errorMsg);
+               }
+
+
+            }).catch((err) => {
+               confirmLoading.value = false;
+               console.log('批量上传接口调用失败', err);
+               tool.Fun_.message('error', '网络请求失败，请稍后重试');
+            });
          }).catch((error) => {
             console.log('表单验证失败', error);
          });
@@ -258,6 +329,7 @@ export default {
 
       return {
          netImageModalVisible,
+         confirmLoading,
          netImageFormRef,
          netImageForm,
          netImageRules,

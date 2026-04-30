@@ -513,7 +513,7 @@
     <!-- 关键词结果-抽屉 结束 -->
 
     <!-- 网络图片上传组件 -->
-    <networkimageupload_components ref="networkUploadRef" :treeData="PAGEDATA.treeData" />
+    <networkimageupload_components ref="networkUploadRef" :treeData="PAGEDATA.treeData" @uploadSuccess="handleUploadSuccess" />
 
     <!-- 本地图片上传组件 -->
     <localimageupload_components ref="localUploadRef" />
@@ -665,6 +665,12 @@ setup(props,ctx) {
     const networkUploadRef = ref(null);                 // 网络图片上传组件 ref
     const localUploadRef = ref(null);                   // 本地图片上传组件 ref
 
+    // 网络图片上传成功回调
+    const handleUploadSuccess = () => {
+        // 刷新当前文件夹素材列表
+        MaterialListMethod.load.loadproductData(MaterialListMethod.navData.value);
+    };
+
     // 在组件挂载时添加事件监听器
     onMounted(() => {
         window.addEventListener('resize', handleResize);// 窗口变换时候
@@ -726,7 +732,8 @@ setup(props,ctx) {
         handleResize,
         networkUploadRef,
         localUploadRef,
-        keywordSeachConfig
+        keywordSeachConfig,
+        handleUploadSuccess
 
        }
    }
