@@ -1,5 +1,5 @@
 // 新建商品组件：方法调用
-import { ref,reactive,toRaw,computed } from 'vue'
+import { ref,reactive,toRaw,computed,nextTick } from 'vue'
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
@@ -28,6 +28,69 @@ const API = new utils.A_Patch()         // 请求接口地址合集
 // 上述两种方式的升级版 - (新)现货+预售： presell_type=2&&new_step_product=true；
 
 
+
+// 获取商品发布规则方法
+// 通过执行Rule.get() 获取数据
+export class ProductUpdateRule {
+
+    category_id=ref(1000003396) // 分类id-3396-26491
+    senses=ref(undefined) // 闪购定制参数，普通发品忽略
+    standard_brand_id=ref(undefined) // 品牌id
+    spu_id=ref(undefined) // spu_id
+    info=ref(undefined) // 发布规则信息对象
+
+    // 获取发布规则
+    get=()=>{
+
+        // 判断类是否选择
+        if (!this.category_id.value) {
+            tool.Fun_.message('info', '请先选择商品类目后，才能查看对应发布规则.')
+            return
+        }
+
+        console.log('当前类目', this.category_id.value)
+
+        axios.post(API.AppSrtoreAPI.dou_product.addrule, {
+
+            category_leaf_id: this.category_id.value,
+
+        }).then((response) => {
+
+            this.info.value = response.data.data; // 规则赋值
+
+            console.log(this.info.value)
+
+        }).catch((error) => {
+
+            console.log(error);
+
+        });
+    }
+
+    // 商品标题推荐规则recommend_name_rule
+    // 参考价相关规则reference_price_rule
+    // 商品主图3:4配置规则main_image_three_to_four_rule
+
+    // 售后服务规则after_sale_rule
+
+    // 商品规格约束product_spec_rule
+
+    // 商品尺码模板配置规则component_template_rule
+
+    // sku规则sku_rule
+
+    // 资质规则，类目属性影响资质必填和资质属性必填qualification_rule
+
+    // spu管控规则spu_control_rule
+    // 交易相关的规则trade_rule
+    // 提取方式规则pick_up_method_rule
+    // 金价信息gold_price_rule
+    // 其他规则extra_rule
+    // 商品【履约发货】
+
+}
+
+// 履约发货=========开始
 // 发货模式 presell_type ，0-现货发货，1-预售发货，2-阶梯发货，默认0
 export const presell_formdata = reactive({
     // 发货模式==字段开始
@@ -54,6 +117,17 @@ export const presell_formdata = reactive({
             disabled:false
         }
     ],
+    reduce_type:1,// 减库存类型：1-拍下减库存 2-付款减库存 number
+    reduce_options:[
+        {
+            label: '拍下减库存',
+            value: 1
+        },
+        {
+            label: '付款减库存',
+            value: 2
+        }
+    ]
 })
 
 // 现货表单
@@ -222,9 +296,129 @@ export const step_formdata_rule = {
 
 }
 
-// 库存
+// 履约方法
+export class Fulfillment {
+
+    // 加载履约方式：：渲染支持的发货方式
+    load(data){
+
+        var data_obj = toRaw(data)
+        console.log(data_obj)
+        var fulfillment_rule = data_obj.fulfillment_rule
+
+        Object.keys(fulfillment_rule).forEach(key=>{
+
+            let obj = fulfillment_rule[key]
+
+            let support = obj.support;// 是否支持
+
+            presell_formdata.options.forEach(item=>{
+                if(item.name === key){
+                    item.disabled = !support
+                }
+            })
+
+            if(key === 'normal_rule' && support === true){
+                // 现货发货表单渲染方法
+                this.rendering_normal(obj)
+            }else if(key === 'step_rule' && support === true){
+                // 阶梯发货模渲染方法
+                this.step_rule(obj)
+            }else if(key === 'product_presell_rule' && support === true){
+                // 全款预售发货渲染方法
+            }
+        })
+    }
+
+    // 渲染【现货]】表单初始值
+    rendering_normal(data){
+        console.log('现货发货', data)
+    }
+
+    // 渲染【全款预售】表单
+    rendering_product_presell(data){
+        console.log('全款预售发货', data)
+    }
+
+    // 渲染【现货+预售】表单
+    step_rule(data){
+        let step_delay_options = data.delay_options; // 现货时效
+        let multi_times = data.multi_times;// 渲染预售发货时效
+        step_formdata.de_op = [] // 清空
+        step_formdata.presell_delay = [multi_times[0].time_type];
+        multi_times.forEach(item=>{
+            item.value = item.time_type;
+            item.label = item.time_desc;
+            step_formdata.de_op.push(item)
+        })
+    }
+
+    // 获取 发货模式 表单值
+    get(){
+
+        if(presell_formdata.presell_type==0){// 现货
+            let obj = {
+                reduce_type:presell_formdata.reduce_type, // 减库存类型
+                presell_type:0,
+                delivery_delay_day:spot_formdata.delivery_delay_day
+            }
+            console.log('现货', obj)
+
+        }else if(presell_formdata.presell_type==1){// 全款预售
+
+            let obj = {
+                reduce_type:presell_formdata.reduce_type,// 减库存类型
+                presell_type:1,
+                presell_config_level:0,
+                presell_delivery_type:presale_formdata.presell_delivery_type, // 0 预售结束后发货(不超过当前距离30天) 1支付完成后发货(无需结束时间点)
+                presell_end_time:presale_formdata.presell_end_time,
+                presell_delay:presale_formdata.presell_delay
+            }
+
+            console.log('全款预售', obj)
+
+        }else if(presell_formdata.presell_type==2){// 新现货+预售
+            
+            // 验证表单
+            step_formRef.value.validate().then(() => {
+                
+                let obj = {
+                    reduce_type:presell_formdata.reduce_type,// 减库存类型
+                    presell_type:2,
+                    presell_config_level:0,
+                    delivery_delay_day:step_formdata.delivery_delay_day,
+                }
+                console.log('新-现货+预售',obj)
+            }).catch(err => {
+                
+                // 指定tab 到 库存发货
+                console.log('校验失败', err);
+                
+                return
+
+            });
+            
+            // spec_prices_v2.stock_num传现货库存
+            // spec_prices_v2.multi_time_stocks数组传各个时效库存
+
+        }
+
+    }
+
+    // 预售库存
+    get_same_value(value){
+        console.log(value)
+    }
+}
+
+// ===============================履约结束
+
+
+
+// 库存===开始
 export const skulistRef = ref(); // 验证库存表单
 export const skulist_formState = reactive({
+    skucolumns:[],
     skudatelist: []
 })
 
@@ -238,168 +432,25 @@ export const stock_operation_formdata = reactive({
     code:undefined// 编码
 })
 
-export class ProductUpdateRule {
+// 现货库存 预售库存 批量设置价格 批量设置现货库存 批量设置预售库存
+export class StockFun {
 
-    category_id=ref(1000003396) // 分类id-3396-26491
-    senses=ref(undefined) // 闪购定制参数，普通发品忽略
-    standard_brand_id=ref(undefined) // 品牌id
-    spu_id=ref(undefined) // spu_id
-    info=ref(undefined) // 发布规则信息对象
-
-    // 获取发布规则
-    get=()=>{
-
-        // 判断类是否选择
-        if (!this.category_id.value) {
-            tool.Fun_.message('info', '请先选择商品类目后，才能查看对应发布规则.')
-            return
-        }
-        console.log(this.category_id.value)
-        axios.post(API.AppSrtoreAPI.dou_product.addrule, {
-            category_leaf_id: this.category_id.value,
-        }).then((response) => {
-
-            this.info.value = response.data.data; // 规则赋值
-
-            console.log(this.info.value)
-
-            this.Fulfillment.load(this.info.value) // 加载发货方式
-
-        }).catch((error) => {
-            console.log(error);
-        });
-    }
-
-    // 履约发货
-    Fulfillment = {
-
-        // 加载履约方式：：渲染支持的发货方式
-        load:(data)=>{
-
-            var data_obj = toRaw(data)
-
-            var fulfillment_rule = data_obj.fulfillment_rule
-
-            Object.keys(fulfillment_rule).forEach(key=>{
-
-                let obj = fulfillment_rule[key]
-
-                let support = obj.support;// 是否支持
-
-                presell_formdata.options.forEach(item=>{
-                    if(item.name === key){
-                        item.disabled = !support
-                    }
-                })
-
-                if(key === 'normal_rule' && support === true){
-                    // 现货发货表单渲染方法
-                    this.Fulfillment.rendering_normal(obj)
-                }else if(key === 'step_rule' && support === true){
-                    // 阶梯发货模渲染方法
-                    this.Fulfillment.step_rule(obj)
-                }else if(key === 'product_presell_rule' && support === true){
-                    // 全款预售发货渲染方法
-                }
-            })
-        },
-
-        // 渲染【现货]】表单初始值
-        rendering_normal:(data)=>{
-            console.log('现货发货', data)
-        },
-
-        // 渲染【全款预售】表单
-        rendering_product_presell:(data)=>{
-            console.log('全款预售发货', data)
-        },
-
-        // 渲染【现货+预售】表单
-        step_rule:(data)=>{
-            let step_delay_options = data.delay_options; // 现货时效
-            let multi_times = data.multi_times;// 渲染预售发货时效
-            step_formdata.de_op = [] // 清空
-            step_formdata.presell_delay = [multi_times[0].time_type];
-            multi_times.forEach(item=>{
-                item.value = item.time_type;
-                item.label = item.time_desc;
-                step_formdata.de_op.push(item)
-            })
-        },
-
-        // 获取 发货模式 表单值
-        get:()=>{
-
-            if(presell_formdata.presell_type==0){// 现货
-                let obj = {
-                    presell_type:0,
-                    delivery_delay_day:spot_formdata.delivery_delay_day
-                }
-                console.log('现货', obj)
-
-            }else if(presell_formdata.presell_type==1){// 全款预售
-
-                let obj = {
-                    presell_type:1,
-                    presell_config_level:0,
-                    presell_delivery_type:presale_formdata.presell_delivery_type, // 0 预售结束后发货(不超过当前距离30天) 1支付完成后发货(无需结束时间点)
-                    presell_end_time:presale_formdata.presell_end_time,
-                    presell_delay:presale_formdata.presell_delay
-                }
-
-                console.log('全款预售', obj)
-
-            }else if(presell_formdata.presell_type==2){// 新现货+预售
-                
-                // 验证表单
-                step_formRef.value.validate().then(() => {
-                    
-                    let obj = {
-                        presell_type:2,
-                        presell_config_level:0,
-                        delivery_delay_day:step_formdata.delivery_delay_day,
-                    }
-                    console.log('新-现货+预售',obj)
-                }).catch(err => {
-                    
-                    // 指定tab 到 库存发货
-                    console.log('校验失败', err);
-                    
-                    return
-
-                });
-                
-                // spec_prices_v2.stock_num传现货库存
-                // spec_prices_v2.multi_time_stocks数组传各个时效库存
-
-            }
-
-        },
-        // 预售库存
-        get_same_value:(value)=>{
-            console.log(value)
-        }
-    }
-
-    // 现货库存 预售库存 批量设置价格 批量设置现货库存 批量设置预售库存
-    Stock = {
-
-        sepec_info:undefined,
+        sepec_info=undefined
 
         // 获取SKU信息
-        get_specs:()=>{
-            let a = this.Stock.get_colums()
-            let b = this.Stock.get_data()
+        get_specs = () =>{
+            let a = this.get_colums()
+            let b = this.get_data()
             console.log('规格信息',a)
             console.log('规格信息',b)
-        },
+        }
 
         // 笛卡尔积方法sku_value数组取值
-        get_value_sku_list:() =>{
+        get_value_sku_list = () =>{
             
             var res_list = []
 
-            var datalist = this.Stock.sepec_info;
+            var datalist = this.sepec_info;
             
             // 规格取值
             for(let i of datalist){
@@ -415,12 +466,12 @@ export class ProductUpdateRule {
 
             return d_list
 
-        },
+        }
 
         // comlum表头取值
-        get_colums:() =>{
+        get_colums=() =>{
 
-            var name_list = this.Stock.get_name_sku_list()
+            var name_list = this.get_name_sku_list()
 
             var res_list = []
 
@@ -442,14 +493,14 @@ export class ProductUpdateRule {
 
             return res_list
 
-        },
+        }
 
         // 规格表单data取值(实时)
-        get_data:() =>{
+        get_data = () =>{
 
-            var name_list = this.Stock.get_name_sku_list()//名称列表
+            var name_list = this.get_name_sku_list()//名称列表
 
-            var d_list = this.Stock.get_value_sku_list()// 笛卡尔积-值列表
+            var d_list = this.get_value_sku_list()// 笛卡尔积-值列表
             
 
             var data_list = []
@@ -473,22 +524,22 @@ export class ProductUpdateRule {
             }
             return data_list
 
-        },
+        }
 
         // 提取sku的name数组
-        get_name_sku_list:() =>{
+        get_name_sku_list = () =>{
             var name_list = []
-            var datalist = this.Stock.sepec_info;
+            var datalist = this.sepec_info;
             for(let i of datalist){
                 name_list.push(i.property_name)
             }
             return name_list
-        },
+        }
 
         // 提取-初始情况下-sku_价格、库存
-        get_p_s_obj:() => {
+        get_p_s_obj = () => {
             var res_obj = {}
-            for(let i of this.Stock.sepec_info){
+            for(let i of this.sepec_info){
                 for(let y of i.values){
                     if(y.price != undefined){
                         var p_s_obj = {}
@@ -500,10 +551,10 @@ export class ProductUpdateRule {
                 }
             }
             return res_obj
-        },
+        }
         
         // 获取库存验证
-        get_sku_list:async()=>{
+        get_sku_list = async()=>{
 
             // 库存未初始化
             if(skulistRef.value === undefined){
@@ -551,62 +602,85 @@ export class ProductUpdateRule {
                 console.log(error)
                 tool.Fun_.message('error',error.errorFields[0].errors[0]);
                 return false
-
             })
 
             return res
-        },
+        }
 
         // 批量设置库存
-        batch_set:()=>{
-
+        batch_set = () =>{
             // console.log('批量设置的表单',stock_operation_formdata)
             // console.log('被修改的skuList',skulist_formState.skudatelist)
             let price = stock_operation_formdata.price
             let stock = stock_operation_formdata.stock
             let presale_stock = stock_operation_formdata.presale_stock
             let code = stock_operation_formdata.code
-            
-
-            
-            // console.log(stock_operation_formdata.stock)// 现货库存
-            // console.log(stock_operation_formdata.presale_stock)// 预售库存
-            // console.log(stock_operation_formdata.code)// 编码
 
             skulist_formState.skudatelist.forEach(item=>{
-                console.log(stock)// 价格
 
-                if(price){item.price = price}
-                if(stock){item.stock_num = stock}
-                if(presale_stock){item.presale_stock = presale_stock}
+                if(price){item.price =Number(price).toFixed(2)}
+                if(stock){item.stock_num = Number(stock)}
+                if(presale_stock){item.presale_stock_num = ''}
                 if(code){item.code = code}
             })
-            
-
+            // ✅ 手动触发验证
+            nextTick(() => {
+                skulistRef.value.validate()
+            })
         }
-    }
+
+        // 预售库存[切换]
+        change_presale=(skumodel)=>{
+
+            if(presell_formdata.presell_type === 2){
+
+                let presale_num_obj = {title:'预售库存',dataIndex:'presale_stock_num',width:'140px'}
+                // 判断预售库存colums是否存在
+                const index = skulist_formState.skucolumns.findIndex(item => item.title === '库存')
+
+                if(!skulist_formState.skucolumns.some(item => item.title === '预售库存')){
+                    skulist_formState.skucolumns.splice(index + 1, 0,presale_num_obj)
+                    console.log(skulist_formState.skucolumns)
+                }
+
+            }else{// 删除'预售库存表头'
+
+                const index = skulist_formState.skucolumns.findIndex(item => item.title === '预售库存')
+                if(index > -1){
+                    skulist_formState.skucolumns.splice(index, 1)
+                }
+
+            }
+        }
+
+        // 查看预售库存
+        set_presale_stock = (value) =>{
+            console.log(value)
+            value.stock_num = 4
+        }
 
 
-    // 商品标题推荐规则recommend_name_rule
-    // 参考价相关规则reference_price_rule
-    // 商品主图3:4配置规则main_image_three_to_four_rule
+        same = () =>{
 
-    // 售后服务规则after_sale_rule
+            // 触发条件 ：：：发货模式为预售 presell_type === 2：且：colums 不为空
+            // 添加表头
+            // 添加数据列-查看预售库存
+            console.log('发货方式',presell_formdata.presell_type)
 
-    // 商品规格约束product_spec_rule
+            // 预售发货时效
+            console.log('预售发货时效', step_formdata.presell_delay)
+            
+            // colums
+            // 触发预售库存，添加预售库存选择栏目
+            console.log('表头',this.get_colums())
 
-    // 商品尺码模板配置规则component_template_rule
+            // datalist
+            // 触发预售库存，添加可输入库存表单
+            console.log('sku数据',skulist_formState.skudatelist.length)
+        }
 
-    // sku规则sku_rule
+        // 插入预售库存-可选有效天数的-如输入input：：3天内、5天内....
 
-    // 资质规则，类目属性影响资质必填和资质属性必填qualification_rule
-
-    // spu管控规则spu_control_rule
-    // 交易相关的规则trade_rule
-    // 提取方式规则pick_up_method_rule
-    // 金价信息gold_price_rule
-    // 其他规则extra_rule
-    // 商品【履约发货】
 
 }
-
+// 库存===结束

@@ -17,18 +17,27 @@
         
         发货模式
         
-        <a-button @click="Rule.Fulfillment.get" size="small" style="margin:0 20px;"> 获取发货模式 </a-button>
+        <a-button @click="Fulfill.get" size="small" style="margin:0 20px;"> 获取发货模式 </a-button>
         
-        <a-button @click="Rule.Stock.get_specs" size="small" style="margin:0 20px;"> 打印库存 </a-button>
+        <a-button @click="Stock.get_specs" size="small" style="margin:0 20px;"> 打印库存 </a-button>
 
-        <a-button @click="Rule.Stock.get_sku_list" size="small" style="margin:0 20px;">验证库存表单</a-button>
+        <a-button @click="Stock.get_sku_list" size="small" style="margin:0 20px;">验证库存表单</a-button>
+        
+        <a-radio-group 
+            v-model:value="presell_formdata.reduce_type" 
+            option-type="button" 
+            :options="presell_formdata.reduce_options" 
+            size="small"
+            style="margin:0 20px;"
+            @change="console.log(presell_formdata.reduce_type)"
+        />
 
         <a-radio-group 
             v-model:value="presell_formdata.presell_type" 
             option-type="button" 
             :options="presell_formdata.options" 
             size="small"
-            @change="console.log(presell_formdata.presell_type)"
+            @change="Stock.change_presale()"
         />
     </a-divider>
 
@@ -154,7 +163,7 @@
                     <a-checkbox-group 
                         v-model:value="step_formdata.presell_delay" 
                         :options="step_formdata.de_op"
-                        @change="Rule.Fulfillment.get_same_value"
+                        @change="Stock.same"
                     />
                 </a-form-item>
             </a-col>
@@ -212,7 +221,7 @@
                 </a-form-item>
             </a-col>
             <a-col :span="4">
-                <a-button @click="Rule.Stock.batch_set">批量设置</a-button>
+                <a-button @click="Stock.batch_set">批量设置</a-button>
             </a-col>
         </a-row>
     </a-form>
@@ -223,7 +232,7 @@
         name="basic"
     >
         <a-table 
-            :columns="skumodel.skucolumns"
+            :columns="skulist_formState.skucolumns"
             :data-source="skulist_formState.skudatelist"
             :pagination="false"
             style="font-size: 12px;"
@@ -253,6 +262,13 @@
                             allow-clear
                             style="font-size: 12px;width: 100%;margin-top: 22px;"/>
                     </a-form-item>
+                </template>
+                <template v-if="column && column.dataIndex === 'presale_stock_num' && presell_formdata.presell_type === 2">
+                    <a-space>
+                        <span>总计</span>
+                        <span>0</span>
+                        <a-button size="small" @click="Stock.set_presale_stock(record)">设置</a-button>
+                    </a-space>
                 </template>
 
                 <template v-if="column && column.dataIndex === 'stock_num'">
@@ -299,7 +315,8 @@
 // 导入方法
 import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed,shallowRef,onBeforeUnmount,toRaw, watch } from 'vue';
 import { 
-    ProductUpdateRule,
+    Fulfillment,
+    StockFun,
     presell_formdata,
     spot_formdata,
     spot_formdata_rule,
@@ -322,25 +339,28 @@ export default defineComponent({
     },
     props: {
         data:{type:Object},
-        specs_info:{type:Object}// 获取规格spec
+        specs_info:{type:Object},// 获取规格spec
+        // 发货规则
+        rule_info: {
+            type: Object,
+            default: ''
+        }
     },
     setup(props,ctx) {
 
-        const Rule = new ProductUpdateRule()        // 实例化商品发布规则
+        const Fulfill = new Fulfillment()
+        const Stock = new StockFun()
+        Fulfill.load(props.rule_info)           //加载发货规则
+        Stock.sepec_info = props.specs_info;   // 规格值--绑定到
 
-        Rule.Stock.sepec_info = props.specs_info;   // 规格值--绑定到视频
 
-        // 库存
-        const skumodel = computed(()=>{
-            return {
-                skucolumns:Rule.Stock.get_colums(),
-            }
-        })
 
         // 监听规格列表变化【form表单绑定必须可变的响应式对象】
-        watch(() => Rule.Stock.sepec_info, (newVal) => {
+        watch(() => Stock.sepec_info, (newVal) => {
             if (newVal) {
-                skulist_formState.skudatelist = Rule.Stock.get_data()
+                skulist_formState.skudatelist = Stock.get_data();
+                skulist_formState.skucolumns = Stock.get_colums();
+                Stock.change_presale()
             }
         }, { immediate: true, deep: true })
 
@@ -349,7 +369,9 @@ export default defineComponent({
 
         return{
 
-            Rule, // 发布规则实力
+            Stock,
+            // ====发货开始
+            Fulfill, 
 
             presell_formdata, // 发货模式
 
@@ -362,9 +384,10 @@ export default defineComponent({
             step_formdata,      // 现货+预售
             step_formRef,
             step_formdata_rule,  // 现货+预售规则
+            // ====发货结束
+
 
             skulistRef,
-            skumodel,
             skulist_formState,
 
             stock_operation_formdata

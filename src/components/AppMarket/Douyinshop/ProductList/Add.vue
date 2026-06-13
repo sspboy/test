@@ -788,18 +788,6 @@
                                     </a-select>
                                 </a-form-item>
                             </a-col>
-                            
-                            <a-col :span="8">
-                                <a-form-item 
-                                    label="库存类型" 
-                                    name="reduce_type"
-                                >
-                                    <a-select v-model:value="formState.reduce_type" placeholder="选择方式">
-                                        <a-select-option value="1">拍下减库存</a-select-option>
-                                        <a-select-option value="2">付款减库存</a-select-option>
-                                    </a-select>
-                                </a-form-item>
-                            </a-col>
 
                             <a-col :span="8">
                                 <a-form-item
@@ -829,6 +817,18 @@
                                     name="remark"
                                 >
                                     <a-input v-model:value="formState.remark" autoComplete="off" placeholder="商家可见备注"  show-count :maxlength="30" />
+                                </a-form-item>
+                            </a-col>
+
+                            <a-col :span="8" >
+                                <a-form-item 
+                                    label="售后服务" 
+                                    name="after_sale_service"
+                                >
+                                    <a-select v-model:value="formState.after_sale_service" placeholder="选择方式">
+                                        <a-select-option value="1">支持7天无理由</a-select-option>
+                                        <a-select-option value="0">不支持7天无理由</a-select-option>
+                                    </a-select>
                                 </a-form-item>
                             </a-col>
 
@@ -868,17 +868,7 @@
                                 </a-form-item>                                    
                             </a-col>
 
-                            <a-col :span="8" >
-                                <a-form-item 
-                                    label="售后服务" 
-                                    name="after_sale_service"
-                                >
-                                    <a-select v-model:value="formState.after_sale_service" placeholder="选择方式">
-                                        <a-select-option value="1">支持7天无理由</a-select-option>
-                                        <a-select-option value="0">不支持7天无理由</a-select-option>
-                                    </a-select>
-                                </a-form-item>
-                            </a-col>
+                            
 
                             <a-col :span="8">
                                 <a-form-item
@@ -1043,7 +1033,7 @@
                     <a-tab-pane key="3" tab="库存发货" :disabled="PAGEDATA.tab_pane_status">
                         
                         <!--发货模式 组件-->
-                        <Preselltype_component :specs_info="SPECS.Obj"/>
+                        <Preselltype_component :specs_info="SPECS.Obj" :rule_info="Rule.info.value"/>
 
                     </a-tab-pane>
 
@@ -1083,7 +1073,8 @@
                     </a-tab-pane>
 
                     <a-tab-pane key="6" tab="资质规则" :disabled="PAGEDATA.tab_pane_status">
-
+                        <!--资质 组件-->
+                        <quality_component :rule_info="Rule.info.value"/>
                     </a-tab-pane>
 
                 </a-tabs>
@@ -1107,7 +1098,7 @@
         <a-float-button-group shape="square" :style="{ right: '100px' }">
             <a-float-button
                 tooltip="商品发布规则" 
-                @click="Rule.get" />
+                @click="console.log('查看规则')" />
 
             <a-float-button
                 tooltip="商品发布记录" 
@@ -1128,7 +1119,7 @@ import { Empty, Space } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
-import { ProductUpdateRule, } from '@/assets/douyinshop/productmanagement/Add';
+import { ProductUpdateRule,Fulfillment } from '@/assets/douyinshop/productmanagement/Add';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 
@@ -1155,6 +1146,8 @@ export default defineComponent({
         format_cp:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/edit_component/format_cp.vue')),// 商品属性组件
         selectbrandid:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/brand/brandlist.vue')),// 商品品牌组件
         Preselltype_component:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/Add_component/preselltype_component.vue')),// 发货模式组件
+        quality_component:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/Add_component/quality_list_component.vue')),// 资质组件
+
         // 产品属性>面料属性》多选组件
         VNodes:defineComponent({
             props: {
@@ -1182,8 +1175,11 @@ export default defineComponent({
         const buttonload = ref(true)            // 新建按钮loading状态；
         const activeKey = ref('1');             // 默认选项卡
 
-        const Rule = new ProductUpdateRule()    // 实例化商品发布规则
 
+        const Rule = new ProductUpdateRule()    // 实例化商品发布规则
+        const Fulfill = new Fulfillment()       // 履约初始化
+        Rule.get()                              // 请求规格【 需要在 获取分类ID后执行】
+        // Fulfill.load(Rule.info.value)        // later::需要在获取商品发布规则后执行
 
         // 添加商品配置
         const PAGEDATA=reactive({
@@ -1459,13 +1455,6 @@ export default defineComponent({
                     trigger: 'change',
             }],
 
-            // 减库存方式
-            reduce_type:[
-                {
-                    required: true,
-                    message: '减库存方式不能为空!',
-                    trigger: 'change',
-            }],
             // 提交方式
             commit:[
                 {
@@ -1490,7 +1479,6 @@ export default defineComponent({
             recommend_remark:undefined,     // 推荐语：不能含emoj表情
             standard_brand_id:{brand_id: undefined, brand_name: undefined},    //品牌id
             pay_type:'1',                   // 支付类型
-            reduce_type:'1',                // 减库存类型
             freight_id:{"name":"包邮","value":0},           // 运费模板
             size_info_template_id:{"name":undefined,"value":undefined},// 尺码模板
             commit:'false',                 // 提交
@@ -2543,7 +2531,6 @@ export default defineComponent({
                 product_data_obj.recommend_remark = pro_info.recommend_remark;// 推荐语
                 product_data_obj.remark = pro_info.remark;              // 商家备注
                 product_data_obj.pay_type = pro_info.pay_type;          // 支付方式
-                product_data_obj.reduce_type = pro_info.reduce_type;    // 减库存类型
                 product_data_obj.mobile = pro_info.mobile;              // 电话
                 product_data_obj.freight_id = pro_info.freight_id.value;// 运费模板
                 product_data_obj.size_info_template_id = pro_info.size_info_template_id.value// 尺码模板
@@ -2710,6 +2697,7 @@ export default defineComponent({
             selectbrand_callback,
             filterOption,
             Rule, // 发布规则实力
+            Fulfill
         }
     }
 })
