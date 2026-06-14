@@ -684,3 +684,36 @@ export class StockFun {
 
 }
 // 库存===结束
+
+// 资质方法===开始
+export class Quality  {
+    
+    rule = undefined;
+
+    list = ref([]); // 列表数据源头
+
+    add = {
+
+        load:()=>{
+
+            let quality_rules_list = this.rule.qualification_rule;
+
+            quality_rules_list.forEach(item=>{
+                this.list.value.push(item)
+                console.log(item.name,item)
+                // name
+                // 是否必填is_required
+                // key
+                // text_list 文字描述
+            })
+
+        }
+
+    }
+
+    edit = {
+
+    }
+}
+
+// 资质方法===结束
