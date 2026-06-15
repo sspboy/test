@@ -265,7 +265,7 @@
                 </template>
                 <template v-if="column && column.dataIndex === 'presale_stock_num' && presell_formdata.presell_type === 2">
                     <a-space>
-                        <span>总计</span>
+                        <span class="font_size_12">总计</span>
                         <span>0</span>
                         <a-button size="small" @click="Stock.set_presale_stock(record)">设置</a-button>
                     </a-space>

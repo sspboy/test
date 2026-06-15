@@ -600,7 +600,7 @@ export default defineComponent({
         data:{typr:Object}
     },
     setup(props,ctx) {
-
+        
         const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE; // 默认为空的图标
         
         // 数据配置

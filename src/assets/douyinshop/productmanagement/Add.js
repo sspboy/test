@@ -631,12 +631,12 @@ export class StockFun {
 
         // 预售库存[切换]
         change_presale=(skumodel)=>{
+            // 判断预售库存colums是否存在
+            const index = skulist_formState.skucolumns.findIndex(item => item.title === '库存')
 
-            if(presell_formdata.presell_type === 2){
+            if(presell_formdata.presell_type === 2 && index > -1){
 
                 let presale_num_obj = {title:'预售库存',dataIndex:'presale_stock_num',width:'140px'}
-                // 判断预售库存colums是否存在
-                const index = skulist_formState.skucolumns.findIndex(item => item.title === '库存')
 
                 if(!skulist_formState.skucolumns.some(item => item.title === '预售库存')){
                     skulist_formState.skucolumns.splice(index + 1, 0,presale_num_obj)
@@ -689,25 +689,76 @@ export class StockFun {
 export class Quality  {
     
     rule = undefined;
-
     list = ref([]); // 列表数据源头
+
+    // 素材组件参数
+    selectimg=reactive(
+        {
+            selectimg_open:false,     // 素材组件开启状态
+            key:undefined          // 选择图片对象：key：name：
+        }
+    )
 
     add = {
 
+        // 加载页面
         load:()=>{
 
             let quality_rules_list = this.rule.qualification_rule;
 
             quality_rules_list.forEach(item=>{
+
                 this.list.value.push(item)
-                console.log(item.name,item)
-                // name
-                // 是否必填is_required
-                // key
-                // text_list 文字描述
+                // console.log(item.name,item)
+
             })
 
+        },
+        // 选择图片::加载素材组件
+        load_img:(key)=>{
+            
+            this.selectimg.selectimg_open = true;
+            this.selectimg.key = key;
+
+        },
+        // 选择素材组件：：回调方法->图片url加载到页面
+        callbak:(data)=>{
+
+            let material_type = data[0].material_type;// 验证仅支持图片素材
+            if(material_type === 'video'){// 非图片提示 return
+                
+                tool.Fun_.message('info','请选择图片素材,资质仅支持图片格式。')
+                return
+
+            }else if(material_type === 'photo'){
+                this.list.value.forEach(item=>{
+                    if(item.key == this.selectimg.key){
+                        console.log(data)
+                        item.byte_url = data[0].byte_url
+                    }
+                })
+            }
+
+        },
+        // 移除图片
+        del_img:(item)=>{
+            delete item.byte_url
+        },
+        // 获取资质图片方法：返回
+        get_image:()=>{
+
+            let quality_rules_list = this.rule.qualification_rule;
+
+            quality_rules_list.forEach(item=>{
+                console.log(item.key,item.byte_url)
+            })
+
+            return {
+
+            }
+
         }
+
 
     }
 
