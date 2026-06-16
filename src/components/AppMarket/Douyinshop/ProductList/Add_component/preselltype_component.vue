@@ -266,9 +266,25 @@
                 <template v-if="column && column.dataIndex === 'presale_stock_num' && presell_formdata.presell_type === 2">
                     <a-space>
                         <span class="font_size_12">总计</span>
-                        <span>0</span>
+                        <span class="font_size_12">{{ record.stock_num }}</span>
                         <a-button size="small" @click="Stock.set_presale_stock(record)">设置</a-button>
                     </a-space>
+
+                    <!--预售发货时效 库存弹窗-->
+                    <a-modal v-model:open="record.open" width="300px" title="预售库存" @ok="console.log('保存库存')">
+                        <a-form :model="record.multi_time_stocks" style="margin-top: 20px;">
+                            <template v-for="item in record.multi_time_stocks">
+                                <a-form-item :label="item.time_desc" name="index">
+                                    <a-input-number  
+                                        placeholder="输入预售库存数量"
+                                        :min="0"
+                                        :max="999999999"
+                                        v-model:value="item.stock_num" 
+                                    ></a-input-number >
+                                </a-form-item>
+                            </template>
+                        </a-form>
+                    </a-modal>
                 </template>
 
                 <template v-if="column && column.dataIndex === 'stock_num'">
@@ -306,6 +322,8 @@
 
     </a-form>
     <!--库存结束-->
+
+
 
 </template>
 

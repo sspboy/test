@@ -27,6 +27,9 @@
   <selectimg v-if="quality.selectimg.selectimg_open" v-on:add_img_callback="quality.add.callbak" :data="quality.selectimg"/>
 
   <div>
+    
+    <a-button @click="quality.add.get_quality_image_result">获取资质内容</a-button>
+    
     <template v-for="item in quality.list.value">
 
       <a-row style="margin: 20px 0;">
@@ -50,8 +53,6 @@
               +图片
             </a-flex>
           </div>
-
-
         </a-col>
 
 

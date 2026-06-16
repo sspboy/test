@@ -435,7 +435,10 @@ export const stock_operation_formdata = reactive({
 // 现货库存 预售库存 批量设置价格 批量设置现货库存 批量设置预售库存
 export class StockFun {
 
-        sepec_info=undefined
+        sepec_info=undefined // 规格详情
+        
+
+        multi_time_list=reactive([])// 预售库存表单绑定
 
         // 获取SKU信息
         get_specs = () =>{
@@ -501,8 +504,9 @@ export class StockFun {
             var name_list = this.get_name_sku_list()//名称列表
 
             var d_list = this.get_value_sku_list()// 笛卡尔积-值列表
-            
 
+            // 发货模式：现货、预售+现货 返回不一样的结果
+            
             var data_list = []
 
             for(let y of d_list){
@@ -514,14 +518,52 @@ export class StockFun {
                 for(var i=0;i<name_list.length;i++){
 
                     data[name_list[i]] = y[i];
-                    data['price'] = '';
-                    data['stock_num'] = '';
+                    data['price'] = ''; // 价格
+                    data['stock_num'] = '';// 库存
+                    data['open'] = ref(false) // 预售库存弹窗状态
+                    data['multi_time_stocks'] = reactive([])//  预售库存表单
+                    
 
                 }
 
                 if(y[0]){data_list.push(data)}
                 
             }
+
+           let spec_prices_v2 = [
+                {
+                    "spec_detail_name1": "全黑色",
+                    "spec_detail_name2": "",
+                    "spec_detail_name3": "",
+                    "stock_num": 11, // 现货库存
+                    "price": 100,
+                    "code": "",
+                    "supplier_id": "", // 供应商ID
+                    "outer_sku_id": "",// 外部sku id
+                    "delivery_infos": [
+                        {
+                            "info_type": "weight",
+                            "info_value": "100",
+                            "info_unit": "mg"
+                        }
+                    ],
+                    "multi_time_stocks": [ // 时效库存，替代原阶梯库存step_stock_num字段
+                        {
+                            "time_type": 25,      // 时效类型，25天内发货
+                            "time_desc": "25天内发货",
+                            "stock_num": 100      // 库存数
+                        },
+                        {
+                            "time_type": 30,
+                            "time_desc": "30天内发货",
+                            "stock_num": 10
+                        }
+                    ]
+                }
+            ]
+
+
+
             return data_list
 
         }
@@ -573,11 +615,14 @@ export class StockFun {
                 var s_list = []
 
                 sku_list_res.forEach(obj=>{
+
                     var o = {}
+
                     var sell_obj = []
 
                     Object.keys(obj).forEach(key=>{
-                        if(key !== 'stock_num' && key !== 'price' && key !== 'code'){
+                        let clear_list = ['stock_num','price','open','code','multi_time_stocks']
+                        if(!clear_list.includes(key)){
                             var s_obj = {}
                             s_obj.property_name = key;
                             s_obj.value_name = obj[key]
@@ -631,35 +676,83 @@ export class StockFun {
 
         // 预售库存[切换]
         change_presale=(skumodel)=>{
+
             // 判断预售库存colums是否存在
             const index = skulist_formState.skucolumns.findIndex(item => item.title === '库存')
-
+            
+            // 预售+现货混合模式且表头不为空（sku信息）
             if(presell_formdata.presell_type === 2 && index > -1){
 
                 let presale_num_obj = {title:'预售库存',dataIndex:'presale_stock_num',width:'140px'}
-
+                
+                // 如果预售库存表头不存在插入
                 if(!skulist_formState.skucolumns.some(item => item.title === '预售库存')){
-                    skulist_formState.skucolumns.splice(index + 1, 0,presale_num_obj)
+
+                    // 插入预售库存表头到库存后面
+                    skulist_formState.skucolumns.splice(index + 1, 0, presale_num_obj)
+                    
                     console.log(skulist_formState.skucolumns)
+
                 }
 
             }else{// 删除'预售库存表头'
 
                 const index = skulist_formState.skucolumns.findIndex(item => item.title === '预售库存')
+
                 if(index > -1){
                     skulist_formState.skucolumns.splice(index, 1)
                 }
 
             }
+
         }
 
-        // 查看预售库存
-        set_presale_stock = (value) =>{
-            console.log(value)
-            value.stock_num = 4
+        // 勾选预售发货时效=设置时效库存数量弹出窗口
+        set_presale_stock = (item) =>{
+
+            console.log(item.open)
+
+            // 预售库存初始化
+            console.log('预售发货时效', step_formdata.presell_delay)
+
+            if(step_formdata.presell_delay.length>0){
+                
+                // 增量添加值
+                step_formdata.presell_delay.forEach(value=>{
+                    
+                    console.log(value)
+
+                    // 查找选中的时效value
+                    var multi_res =  item.multi_time_stocks.find(items=>items.time_type === value)
+                    
+                    // 时效已存在：库存值不变
+                    if(multi_res){
+                        
+                    }else{// 时效不存在：添加
+                        var m_obj = {
+                            "time_type": value,      // 时效类型，25天内发货
+                            "time_desc": value + "天内发货",
+                            "stock_num": 0      // 库存数
+                        }
+                        item.multi_time_stocks.push(m_obj)
+                    }
+                })
+
+                // 清理不需要的值
+                // 方法1: filter 生成新数组（推荐）
+                const remaining = item.multi_time_stocks.filter(obj => step_formdata.presell_delay.includes(obj.time_type));
+                // console.log(remaining)
+                remaining.sort((a, b) => a.time_type - b.time_type);// 按time_type排序
+                item.multi_time_stocks = remaining
+
+
+            }
+
+            item.open = true; // 开启弹窗
+
         }
 
-
+        // 预售发货时效 添加库存
         same = () =>{
 
             // 触发条件 ：：：发货模式为预售 presell_type === 2：且：colums 不为空
@@ -668,15 +761,19 @@ export class StockFun {
             console.log('发货方式',presell_formdata.presell_type)
 
             // 预售发货时效
-            console.log('预售发货时效', step_formdata.presell_delay)
+            // console.log('预售发货时效', step_formdata.presell_delay)
             
             // colums
             // 触发预售库存，添加预售库存选择栏目
-            console.log('表头',this.get_colums())
+            // console.log('表头',this.get_colums())
 
             // datalist
             // 触发预售库存，添加可输入库存表单
             console.log('sku数据',skulist_formState.skudatelist.length)
+
+            
+
+
         }
 
         // 插入预售库存-可选有效天数的-如输入input：：3天内、5天内....
@@ -745,26 +842,59 @@ export class Quality  {
             delete item.byte_url
         },
         // 获取资质图片方法：返回
-        get_image:()=>{
+        get_quality_image_result:()=>{
 
+            var quality_list = [];
+
+            // 结果绑定对象
             let quality_rules_list = this.rule.qualification_rule;
 
             quality_rules_list.forEach(item=>{
-                console.log(item.key,item.byte_url)
+
+                let is_required = item.is_required; // 是否必填
+                let byte_url = item.byte_url
+                let key = item.key
+                let name = item.name
+
+                // 必填且值为空，提示完成必填
+                if(is_required === true && byte_url === undefined){
+
+                    tool.Fun_.message('error',name + '资质图片不能为空！')
+
+                    return false
+
+                }else if(byte_url !== undefined){
+
+                    var res_obj = {
+                        quality_key:item.key,
+                        quality_name:item.name,
+                        quality_attachments:{
+                            url:item.byte_url,
+                            media_type:1
+                        }
+                    }
+
+                    quality_list.push(res_obj)
+
+                }
             })
 
-            return {
-
+            if(quality_list.length>0){
+                console.log(quality_list)
+                return quality_list
+            }else{
+                return false
             }
+            
 
         }
-
 
     }
 
     edit = {
 
     }
+
 }
 
 // 资质方法===结束
