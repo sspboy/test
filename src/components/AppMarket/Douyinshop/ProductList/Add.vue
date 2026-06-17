@@ -956,66 +956,66 @@
                                 <!--规格值 开始-->
                                 <div style="width: 100%;clear: both; margin:4px 0 0 0;">
 
-                                <a-space 
-                                    v-for="(v_item, spec_value_index) in item.values" 
-                                    :key="v_item.index" 
-                                    style="margin:2px 4px 0 0;" 
-                                    align="baseline"
-                                >
-
-                                    <a-form-item 
-                                        v-if="index === 0" 
-                                        :name="[index, 'values', spec_value_index,'value_name']" 
-                                        :rules="{required: true, trigger: 'change', message:''}"
+                                    <a-space 
+                                        v-for="(v_item, spec_value_index) in item.values" 
+                                        :key="v_item.index" 
+                                        style="margin:2px 4px 0 0;" 
+                                        align="baseline"
                                     >
 
-                                        <div style="width: 200px;margin: 0 0 4px 0;">
-                                            <a-input v-model:value="v_item.value_name" 
-                                                placeholder="输入值" 
-                                                style="font-size: 12px;margin:0 0 6px 0;" 
-                                                autocomplete="off"
-                                                allow-clear
-                                            />
-                                        </div>
-                                        
-                                        <div v-if="SPECS.SpecImag">
-
-                                            <span v-if="v_item.url== undefined || v_item.url == ''">
-                                                <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
-                                                    <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor" @click="PAGEDATA.change_spec_imng_fun('spec_img',v_item)"/>
-                                                </span>
-                                            </span>
-
-                                            <span v-else-if="v_item.url != undefined"" style="float: left;">
-
-                                                <a-image style="border-radius:4px;" :width="42" :height="42" :src="v_item.url" />
-
-                                                <a-button type="text" size="small" style="margin-left: 10px;" @click="SPECS.remove_img(v_item)"> 
-                                                    <DeleteOutlined />
-                                                </a-button>
-                                            </span>
-                                        </div>
-
-                                    </a-form-item>
-
-                                    <a-form-item
-                                        v-if="index !== 0"
-                                        :name="[index, 'values', spec_value_index,'value_name']" 
-                                        :rules="{required: true, trigger: 'change', message:''}"
+                                        <a-form-item 
+                                            v-if="index === 0" 
+                                            :name="[index, 'values', spec_value_index,'value_name']" 
+                                            :rules="{required: true, trigger: 'change', message:''}"
                                         >
 
-                                        <a-input 
-                                            v-model:value="v_item.value_name"
-                                            placeholder="输入值" 
-                                            autocomplete="off"
-                                            style="font-size: 12px;width: 200px;" 
-                                        />
+                                            <div style="width: 200px;margin: 0 0 4px 0;">
+                                                <a-input v-model:value="v_item.value_name" 
+                                                    placeholder="输入值" 
+                                                    style="font-size: 12px;margin:0 0 6px 0;" 
+                                                    autocomplete="off"
+                                                    allow-clear
+                                                />
+                                            </div>
+                                            
+                                            <div v-if="SPECS.SpecImag">
 
-                                    </a-form-item>
+                                                <span v-if="v_item.url== undefined || v_item.url == ''">
+                                                    <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
+                                                        <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor" @click="PAGEDATA.change_spec_imng_fun('spec_img',v_item)"/>
+                                                    </span>
+                                                </span>
 
-                                    <MinusCircleOutlined @click="SPECS.removevalue(v_item, index)" style="margin: 0 5px 0 0;" />
+                                                <span v-else-if="v_item.url != undefined"" style="float: left;">
 
-                                </a-space>
+                                                    <a-image style="border-radius:4px;" :width="42" :height="42" :src="v_item.url" />
+
+                                                    <a-button type="text" size="small" style="margin-left: 10px;" @click="SPECS.remove_img(v_item)"> 
+                                                        <DeleteOutlined />
+                                                    </a-button>
+                                                </span>
+                                            </div>
+
+                                        </a-form-item>
+
+                                        <a-form-item
+                                            v-if="index !== 0"
+                                            :name="[index, 'values', spec_value_index,'value_name']" 
+                                            :rules="{required: true, trigger: 'change', message:''}"
+                                            >
+
+                                            <a-input 
+                                                v-model:value="v_item.value_name"
+                                                placeholder="输入值" 
+                                                autocomplete="off"
+                                                style="font-size: 12px;width: 200px;" 
+                                            />
+
+                                        </a-form-item>
+
+                                        <MinusCircleOutlined @click="SPECS.removevalue(v_item, index)" style="margin: 0 5px 0 0;" />
+
+                                    </a-space>
 
                                 </div>
                                 <!--规格值 结束-->
@@ -1027,6 +1027,8 @@
                             </a-form-item>
 
                         </a-form>
+
+                        <spec_component :rule_info="Rule.info.value" />
 
                     </a-tab-pane>
 
@@ -1147,7 +1149,7 @@ export default defineComponent({
         selectbrandid:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/brand/brandlist.vue')),// 商品品牌组件
         Preselltype_component:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/Add_component/preselltype_component.vue')),// 发货模式组件
         quality_component:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/Add_component/quality_list_component.vue')),// 资质组件
-
+        spec_component:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/Add_component/spec_component.vue')),// 规格组件
         // 产品属性>面料属性》多选组件
         VNodes:defineComponent({
             props: {

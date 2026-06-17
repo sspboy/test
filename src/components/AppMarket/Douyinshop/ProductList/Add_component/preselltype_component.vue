@@ -17,7 +17,7 @@
         
         发货模式
         
-        <a-button @click="Fulfill.get" size="small" style="margin:0 20px;"> 获取发货模式 </a-button>
+        <a-button @click="Fulfill.get_presell" size="small" style="margin:0 20px;"> 获取发货模式 </a-button>
         
         <a-button @click="Stock.get_specs" size="small" style="margin:0 20px;"> 打印库存 </a-button>
 
@@ -221,7 +221,10 @@
                 </a-form-item>
             </a-col>
             <a-col :span="4">
+                <a-space>
                 <a-button @click="Stock.batch_set">批量设置</a-button>
+                <a-button @click="Stock.clear_all">清除</a-button>
+                </a-space>
             </a-col>
         </a-row>
     </a-form>
