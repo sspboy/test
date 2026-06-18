@@ -445,7 +445,7 @@ export const stock_operation_formdata = reactive({
 // 现货库存 预售库存 批量设置价格 批量设置现货库存 批量设置预售库存
 export class StockFun {
 
-        sepec_info=undefined // 规格详情
+        sepec_info = SPECS.Obj; // 规格详情
 
         multi_time_list=reactive([])// 预售库存表单绑定
 
@@ -964,6 +964,27 @@ export class Quality  {
 // 资质方法===结束
 
 // 规格===开始
+export const sku_formRef = ref()
+export const SPECS = reactive({
+
+        
+        SpecImag:true,// 是否添加规格图片
+        sku_listRef:ref(null),
+        sku_columns:ref([]),
+        sku_spece_data:ref([]),
+
+        // 规格数据对象
+        Obj:ref([
+            {
+                property_name:undefined,
+                values:[{
+                    value_name:undefined,  // 值名称
+                    url:undefined          // 规格图片
+                }],
+            }
+        ]),
+
+})
 
 export class Spec {
 
@@ -988,33 +1009,10 @@ export class Spec {
         ]
     })
 
-    // 自定义规格
-    sku_formRef = ref()
-
-    SPECS = reactive({
-
-        SpecImag:true,// 是否添加规格图片
-        sku_listRef:ref(null),
-        sku_columns:ref([]),
-        sku_spece_data:ref([]),
-
-        // 规格数据对象
-        Obj:ref([{
-            property_name:undefined,
-            values:[{
-                value_name:undefined,  // 值名称
-                url:undefined      // 规格图片
-            }],
-        }]),
-    })
-
     // 系统推荐规格
-
     SPECS_DIY = reactive({
         image_checked:true,
     })
-
-
 
     add={
 
@@ -1038,7 +1036,143 @@ export class Spec {
         // 查看规则
         get_rule:()=>{
             console.log(this.rule)
-        }
+        },
+
+        // 添加规格
+        insert:() =>{
+
+            var obj_number = SPECS.Obj.length;
+
+            if(obj_number>=3){
+            
+                tool.Fun_.message('info','规格最多不能超过三组！');
+                
+                return false
+
+            }else if(obj_number == 0){
+
+                SPECS.Obj.push({
+                    property_name:undefined,
+                    values:[{
+                        value_name:undefined,   // 值名称
+                        url:undefined           // 图片地址
+                    }],
+                })
+
+            }else if(obj_number >= 1){
+
+                SPECS.Obj.push({
+                    property_name:undefined,
+                    values:[{
+                        value_name:undefined,       // 值名称
+                    }],
+                })
+            }
+        },
+
+        // 删除规格
+        del:(item)=>{
+
+            let index = SPECS.Obj.indexOf(item);
+            if (index !== -1) {
+                SPECS.Obj.splice(index, 1);
+            }
+        },
+
+        // 添加规格值
+        pushvalue:(data)=>{
+            var value_number = SPECS.Obj[data].values.length;
+            if(value_number >= 20){
+                tool.Fun_.message('error', '规格值最多不能超过20组！')
+                return false
+            }else{
+                SPECS.Obj[data].values.push({
+                    value_name:undefined,// 值名称
+                    url:undefined//
+                });
+
+            }
+        },
+
+        // 删除规格值
+        removevalue:(item,data)=>{
+            let index = SPECS.Obj[data].values.indexOf(item);
+            if (index !== -1) {
+                SPECS.Obj[data].values.splice(index, 1);
+            }
+        },
+
+        // 点击勾选
+        SpecImagState_change_fun:()=>{SPECS.SpecImag = !!SPECS.SpecImag},
+
+        // 选择规格图片
+        add_img:(data)=>{
+            var img_byte_url = data[0].byte_url
+            PAGEDATA.sku_img_obj.url = img_byte_url
+        },
+
+        // 清除规格图片
+        remove_img:(item)=>{
+            item.url = ''
+        },
+
+        get_specs_obj: async()=>{
+
+            // 验证规格
+            var res = await sku_formRef.value.validate().then(() => {
+
+                var spec_list = toRaw(SPECS.Obj)  // 
+
+                var spece_value_number = spec_list[0].values.length;// 主规格值 数量;
+
+                var spec_img_list = [] // 规格图片列表
+
+                spec_list[0].values.forEach((obj, index)=>{// 迭代规格图片
+
+                    var o_img_u = obj.url;
+
+                    if(o_img_u !== undefined && o_img_u !== ''){
+                        spec_img_list.push(obj.url)
+                    }
+
+                })
+
+                var s_img_number = spec_img_list.length; // 主规格值图片数量;
+
+                // 如果需要上传图片
+                if(SPECS.SpecImag){
+
+                    if(spece_value_number == s_img_number){
+
+                        var spec_pic = spec_img_list.join(',');// 规格图片:图片数量需要好与主规格值数量一直
+
+                    }else{
+
+                        tool.Fun_.message('error', '规格图片需要填写，图片数量要与规格数量一致！');
+
+                        return false
+                    }
+                }
+
+                var copy_list = structuredClone(spec_list)// 拷贝
+
+                copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
+
+                var result = {"spec_pic": spec_pic, "spec_values":copy_list}// 规格文案对象获取
+                console.log(result)
+                return result
+
+            }).catch( error => {
+
+                tool.Fun_.message('error', '规格信息不能为空！');// 规格错误提示
+                
+                return false
+
+            })
+
+            return res
+        },
+        
     }
 
 }

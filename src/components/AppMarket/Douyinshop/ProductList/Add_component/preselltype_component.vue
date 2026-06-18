@@ -16,7 +16,7 @@
     <a-divider orientation="left" orientation-margin="0px">
         
         发货模式
-        
+        <a-button @click="console.log(Stock.sepec_info)" size="small">打印规格</a-button>
         <a-button @click="Fulfill.get_presell" size="small" style="margin:0 20px;"> 获取发货模式 </a-button>
         
         <a-button @click="Stock.get_specs" size="small" style="margin:0 20px;"> 打印库存 </a-button>
@@ -371,8 +371,9 @@ export default defineComponent({
 
         const Fulfill = new Fulfillment()
         const Stock = new StockFun()
+
         Fulfill.load(props.rule_info)           //加载发货规则
-        Stock.sepec_info = props.specs_info;   // 规格值--绑定到
+        
 
 
 

@@ -919,115 +919,6 @@
 
                     <a-tab-pane key="2" tab="商品规格" :disabled="PAGEDATA.tab_pane_status">
 
-                        <a-divider orientation="left" orientation-margin="0px">
-                            规格
-                            <a-checkbox 
-                                v-model:checked="SPECS.SpecImag" 
-                                @change="SPECS.SpecImagState_change_fun"
-                            >上传图片</a-checkbox>
-                        </a-divider>
-
-                        <a-form ref="sku_formRef" name="SPECS" :model="SPECS.Obj">
-
-                            <a-form-item 
-                                v-for="(item, index) in SPECS.Obj" 
-                                :name="[index, 'property_name']"
-                                :key="item.index"
-                                :rules="{required: true, trigger: 'change', message:' '}"
-                            >
-                                <!--规格名称 开始-->
-                                <a-input 
-                                    v-model:value="item.property_name"
-                                    placeholder="输入规格名称" 
-                                    style="width: 200px;" 
-                                    autocomplete="off"
-                                    allow-clear
-                                />
-                    
-                                <a-button type="dashed" size="small" class="add_btn_class" block @click="SPECS.pushvalue(index)">
-                                    <PlusOutlined />
-                                </a-button>
-
-                                <a-button type="dashed" size="small" class="add_btn_class" block @click="SPECS.del(item,index)">
-                                    <MinusOutlined />
-                                </a-button>
-                                <!--规格名称 结束-->
-
-                                <!--规格值 开始-->
-                                <div style="width: 100%;clear: both; margin:4px 0 0 0;">
-
-                                    <a-space 
-                                        v-for="(v_item, spec_value_index) in item.values" 
-                                        :key="v_item.index" 
-                                        style="margin:2px 4px 0 0;" 
-                                        align="baseline"
-                                    >
-
-                                        <a-form-item 
-                                            v-if="index === 0" 
-                                            :name="[index, 'values', spec_value_index,'value_name']" 
-                                            :rules="{required: true, trigger: 'change', message:''}"
-                                        >
-
-                                            <div style="width: 200px;margin: 0 0 4px 0;">
-                                                <a-input v-model:value="v_item.value_name" 
-                                                    placeholder="输入值" 
-                                                    style="font-size: 12px;margin:0 0 6px 0;" 
-                                                    autocomplete="off"
-                                                    allow-clear
-                                                />
-                                            </div>
-                                            
-                                            <div v-if="SPECS.SpecImag">
-
-                                                <span v-if="v_item.url== undefined || v_item.url == ''">
-                                                    <span style="width: 42px;margin-top: 5px;height: 42px;display: block;border:1px #f2f2f2 solid;border-radius:4px;float: left;">
-                                                        <a-skeleton-avatar :active="false" size="large" shape="avatarShape" class="cursor" @click="PAGEDATA.change_spec_imng_fun('spec_img',v_item)"/>
-                                                    </span>
-                                                </span>
-
-                                                <span v-else-if="v_item.url != undefined"" style="float: left;">
-
-                                                    <a-image style="border-radius:4px;" :width="42" :height="42" :src="v_item.url" />
-
-                                                    <a-button type="text" size="small" style="margin-left: 10px;" @click="SPECS.remove_img(v_item)"> 
-                                                        <DeleteOutlined />
-                                                    </a-button>
-                                                </span>
-                                            </div>
-
-                                        </a-form-item>
-
-                                        <a-form-item
-                                            v-if="index !== 0"
-                                            :name="[index, 'values', spec_value_index,'value_name']" 
-                                            :rules="{required: true, trigger: 'change', message:''}"
-                                            >
-
-                                            <a-input 
-                                                v-model:value="v_item.value_name"
-                                                placeholder="输入值" 
-                                                autocomplete="off"
-                                                style="font-size: 12px;width: 200px;" 
-                                            />
-
-                                        </a-form-item>
-
-                                        <MinusCircleOutlined @click="SPECS.removevalue(v_item, index)" style="margin: 0 5px 0 0;" />
-
-                                    </a-space>
-
-                                </div>
-                                <!--规格值 结束-->
-
-                            </a-form-item>
-
-                            <a-form-item>
-                                <a-button type="dashed" @click="SPECS.add" size="middle">添加规格</a-button>
-                            </a-form-item>
-
-                        </a-form>
-
                         <spec_component :rule_info="Rule.info.value" />
 
                     </a-tab-pane>
@@ -1035,7 +926,7 @@
                     <a-tab-pane key="3" tab="库存发货" :disabled="PAGEDATA.tab_pane_status">
                         
                         <!--发货模式 组件-->
-                        <Preselltype_component :specs_info="SPECS.Obj" :rule_info="Rule.info.value"/>
+                        <Preselltype_component :rule_info="Rule.info.value"/>
 
                     </a-tab-pane>
 
@@ -1117,11 +1008,11 @@
 import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed,shallowRef,onBeforeUnmount,toRaw, watch } from 'vue';
 import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutlined} from '@ant-design/icons-vue';
 import axios from 'axios';
-import { Empty, Space } from 'ant-design-vue';
+import { Empty } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
-import { ProductUpdateRule,Fulfillment } from '@/assets/douyinshop/productmanagement/Add';
+import { ProductUpdateRule,Fulfillment,Spec } from '@/assets/douyinshop/productmanagement/Add';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 
@@ -1180,8 +1071,11 @@ export default defineComponent({
 
         const Rule = new ProductUpdateRule()    // 实例化商品发布规则
         const Fulfill = new Fulfillment()       // 履约初始化
+
         Rule.get()                              // 请求规格【 需要在 获取分类ID后执行】
         // Fulfill.load(Rule.info.value)        // later::需要在获取商品发布规则后执行
+
+        // 规格传值 到 库存发货
 
         // 添加商品配置
         const PAGEDATA=reactive({
@@ -1523,179 +1417,6 @@ export default defineComponent({
 
             return res
         }
-
-        // 规格库存
-        const sku_formRef = ref()
-        const SPECS = reactive({
-
-            SpecImag:true,// 是否添加规格图片
-            sku_listRef:ref(null),
-            sku_columns:ref([]),
-            sku_spece_data:ref([]),
-
-            // 规格数据对象
-            Obj:ref([{
-                property_name:undefined,
-                values:[{
-                    value_name:undefined,  // 值名称
-                    url:undefined      // 规格图片
-                }],
-            }]),
-
-            // 添加规格
-            add:() =>{
-
-                var obj_number = SPECS.Obj.length;
-
-                if(obj_number>=3){
-                
-                    tool.Fun_.message('info','规格最多不能超过三组！');
-                    
-                    return false
-
-                }else if(obj_number == 0){
-
-                    SPECS.Obj.push({
-                        property_name:undefined,
-                        values:[{
-                            value_name:undefined,   // 值名称
-                            url:undefined           // 图片地址
-                        }],
-                    })
-
-                }else if(obj_number >= 1){
-
-                    SPECS.Obj.push({
-                        property_name:undefined,
-                        values:[{
-                            value_name:undefined,       // 值名称
-                        }],
-                    })
-                }
-            },
-
-            // 删除规格
-            del:(item)=>{
-
-                let index = SPECS.Obj.indexOf(item);
-                if (index !== -1) {
-                    SPECS.Obj.splice(index, 1);
-                }
-            },
-
-            // 添加规格值
-            pushvalue:(data)=>{
-                var value_number = SPECS.Obj[data].values.length;
-                if(value_number >= 20){
-                    tool.Fun_.message('error', '规格值最多不能超过20组！')
-                    return false
-                }else{
-                    SPECS.Obj[data].values.push({
-                        value_name:undefined,// 值名称
-                        url:undefined//
-                    });
-
-                }
-            },
-
-            // 删除规格值
-            removevalue:(item,data)=>{
-                let index = SPECS.Obj[data].values.indexOf(item);
-                if (index !== -1) {
-                    SPECS.Obj[data].values.splice(index, 1);
-                }
-            },
-
-            // 点击勾选
-            SpecImagState_change_fun:()=>{SPECS.SpecImag = !!SPECS.SpecImag},
-
-            // 选择规格图片
-            add_img:(data)=>{
-                var img_byte_url = data[0].byte_url
-                PAGEDATA.sku_img_obj.url = img_byte_url
-            },
-
-            // 清除规格图片
-            remove_img:(item)=>{
-                item.url = ''
-            },
-
-            get_specs_obj: async()=>{
-
-                // 规格未初始化
-                if(sku_formRef.value === undefined){
-
-                    tool.Fun_.message('error', '规格信息不能为空！');
-
-                    activeKey.value = '2'
-
-                    return false
-
-                }
-
-                // 验证规格
-                var res = await sku_formRef.value.validate().then(() => {
-
-                    var spec_list = toRaw(SPECS.Obj)  // 
-
-                    var spece_value_number = spec_list[0].values.length;// 主规格值 数量;
-
-                    var spec_img_list = [] // 规格图片列表
-
-                    spec_list[0].values.forEach((obj, index)=>{// 迭代规格图片
-
-                        var o_img_u = obj.url;
-
-                        if(o_img_u !== undefined && o_img_u !== ''){
-                            spec_img_list.push(obj.url)
-                        }
-
-                    })
-
-                    var s_img_number = spec_img_list.length; // 主规格值图片数量;
-
-                    // 如果需要上传图片
-                    if(SPECS.SpecImag){
-
-                        if(spece_value_number == s_img_number){
-
-                            var spec_pic = spec_img_list.join(',');// 规格图片:图片数量需要好与主规格值数量一直
-
-                        }else{
-
-                            tool.Fun_.message('error', '规格图片需要填写，图片数量要与规格数量一致！');
-
-                            activeKey.value = '2';
-
-                            return false
-                        }
-                    }
-
-                    var copy_list = structuredClone(spec_list)// 拷贝
-
-                    copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
-
-                    var result = {"spec_pic": spec_pic, "spec_values":copy_list}// 规格文案对象获取
-
-                    return result
-
-                }).catch( error => {
-
-                    tool.Fun_.message('error', '规格信息不能为空！');// 规格错误提示
-                    
-                    activeKey.value = '2';
-
-                    return false
-
-                })
-
-                return res
-            },
-
-            // 获取价格库存商家编码
-
-        })
-
 
         // 分类&属性
         const CATE = {
@@ -2565,21 +2286,7 @@ export default defineComponent({
             }
 
             // 验证规格信息
-            var specs_info = await SPECS.get_specs_obj()
-            if(specs_info){
-
-                // 规格图片
-                if(specs_info.spec_pic !== undefined){
-                    product_data_obj.spec_pic = specs_info.spec_pic;
-                }
-
-                // 正常获取
-                delete specs_info.spec_pic
-                product_data_obj.spec_info = specs_info;
-
-            }else{
-                return
-            }
+ 
 
             // 库存信息
             // var sku_list_obj = await get_sku_list();
@@ -2684,8 +2391,6 @@ export default defineComponent({
             activeKey,
             formState,
             formRef,
-            sku_formRef,
-            SPECS,
             // -------------分类属性
             CATE,
             simpleImage,
