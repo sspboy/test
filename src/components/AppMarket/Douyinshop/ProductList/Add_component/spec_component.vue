@@ -12,12 +12,25 @@
 -->
 <template>
   
+  <!-- 动态渲染异步组件--选择素材 -->
+  <selectimg v-if="spec.type_formdata.selectimg_open" v-on:add_img_callback="spec.add.select_spec_ima_call_back" :data="spec.type_formdata"/>
 
   <a-divider orientation="left" orientation-margin="0px">
     
     商品规格
     
-    <a-button type="dashed" size="small" @click="spec.add.get_specs_obj">打印规格</a-button>
+    <a-button 
+      type="dashed" 
+      size="small" 
+      style="margin: 0 20px;"
+      @click="spec.add.get_specs_obj">打印自定义规格
+    </a-button>
+
+    <a-button
+      type="dashed" 
+      size="small"
+      style="margin: 0 20px 0 0;"
+    >打印推荐规格</a-button>
 
     <a-radio-group 
       v-model:value="spec.type_formdata.support_property_diy" 
@@ -49,7 +62,7 @@
                   <a-input 
                       v-model:value="item.property_name"
                       style="font-size: 12px;" 
-                      placeholder="输入规格名称" 
+                      placeholder="规格名称" 
                       autocomplete="off"
                       allow-clear
                   />
@@ -94,45 +107,50 @@
                           :rules="{required: true, trigger: 'change', message:''}"
                         >
                             <a-space>
+
                               <a-input 
                                   v-model:value="v_item.value_name" 
-                                  placeholder="输入值" 
+                                  placeholder="规格值" 
                                   style="font-size: 12px;" 
                                   autocomplete="off"
                                   allow-clear
                               />
+                              <!--规格图片-->
 
-                              <span v-if="SPECS.SpecImag ===true && v_item.url== undefined || v_item.url == ''" style="float: left;" >
-                                <a-popconfirm
-                                  ok-text="插入图片"
-                                  cancel-text="清空图片"
-                                  @confirm="console.log('确认')"
-                                  @cancel="console.log('取消')"
-                                >
-                                <template #icon></template>
-                                <a><img
+                              <!--无图片地址-->
+                              <span v-if="SPECS.SpecImag === true && v_item.url=== undefined || v_item.url == ''" style="float: left;" >
+                                <img
                                   style="width: 28px;height: 28px;"
                                   src="/image_defule.png"
                                   class="cursor"
-                                  @click="PAGEDATA.change_spec_imng_fun('spec_img',v_item)"
-                                ></img></a>
-                                </a-popconfirm>
+                                  @click="spec.add.change_spec_img_fun(index, spec_value_index)"
+                                ></img>
                               </span>
 
-                              <span v-else-if="SPECS.SpecImag ===false && v_item.url != undefined"" style="float: left;">
+                              <!--有图片地址-->
+                              <span v-else-if="SPECS.SpecImag === true && v_item.url != undefined"" style="float: left;">
+                                  <a-popconfirm
+                                  ok-text="查看图片"
+                                  cancel-text="清空图片"
+                                  @confirm="spec.add.change_spec_img_fun(index, spec_value_index)"
+                                  @cancel="spec.add.remove_img(v_item)"
+                                >
+                                <template #icon></template>
 
-                                  <a-image style="border-radius:4px;" :width="28" :height="28" :src="v_item.url" />
+                                <a>
+                                  <img
+                                    style="border-radius:4px;width: 28px;height: 28px;"
+                                    :src="v_item.url"
+                                    class="cursor"
+                                    ></img></a></a-popconfirm>
 
-                                  <a-button type="text" size="small" style="margin-left: 10px;" @click="spec.add.remove_img(v_item)"> 
-                                      <DeleteOutlined />
-                                  </a-button>
                               </span>
                             </a-space>
                           
                         </a-form-item>
 
 
-                        <!--不太带图片规格-->
+                        <!--不带图片规格-->
                         <a-form-item
                             v-if="index != 0"
                             :name="[index, 'values', spec_value_index,'value_name']" 
@@ -141,9 +159,9 @@
 
                             <a-input 
                                 v-model:value="v_item.value_name"
-                                placeholder="输入规格值" 
+                                placeholder="规格值" 
                                 autocomplete="off"
-                                style="font-size: 12px;" 
+                                style="font-size: 12px;margin-top: 10px;" 
                                 allow-clear
                             />
 
@@ -183,21 +201,20 @@
 
       <div class="delivery-method" v-for="(item,index) in product_spec_rule.required_spec_details">
         
-        <!--规格名称 -->
-        
-        
+        <!--规格名称 开始-->
         <div style="margin-bottom: 20px;">
 
           <a-space>
             
-             {{ index }} {{ item.sell_property_name }} 
+             {{ index }} {{ item.sell_property_name }}
+
             <!--添加值 按钮-->
             <a-button type="dashed" size="small"><PlusOutlined /></a-button>
 
             <!-- {{ item.property_values }} -->
             <span v-show="index === 0" class="font_size_12">
               规格图片 
-              <a-switch v-model:checked="spec.SPECS_DIY.image_checked" size="small" />
+              <a-switch v-model:checked="SPECS_DIY.image_checked" size="small" />
             </span>
                     
            <span class="font_size_12"> 二次查询规格值 :{{ item.need_paging_query_value }}</span>
@@ -220,13 +237,16 @@
               <a-select
                 v-if="!item.need_paging_query_value"
                 ref="select"
-                v-model:value="SPECS.Obj[index]"
+                placeholder="选择规格值"
+                v-model:value="item.un"
                 :options="item.property_values"
                 :fieldNames="{ 
                   label: 'sell_property_value_name', 
                   value: 'sell_property_value_id', 
                 }"
-                style="width: 170px"
+                style="width: 170px;"
+                class="font_size_12"
+                allow-clear
               />
 
               <a-cascader
@@ -234,7 +254,7 @@
                 v-model:value="spec.SPECS.Obj[index].value"
                 multiple
                 :options="item.property_values"
-                placeholder="Please select"
+                placeholder="选择规格值"
                 suffix-icon="Shopping Around"
                  :fieldNames="{ 
                   label: 'sell_property_value_name', 
@@ -253,7 +273,7 @@
 
             <!--规格值 text 模式-->
             <a-space v-show="item.value_display_style === 'text'">
-              <a-input placeholder="规格值"></a-input>
+              <a-input placeholder="规格值" allow-clear></a-input>
               <a-button type="text" size="small"><DeleteOutlined /></a-button>
             </a-space>
 
@@ -263,10 +283,10 @@
             <div style="margin-top: 10px;" v-show="item.support_remark === true">
               <a-space>
 
-                <a-input placeholder="备注"></a-input>
+                <a-input placeholder="备注" allow-clear></a-input>
 
                 <!--规格图片-->
-                <div v-show="spec.SPECS_DIY.image_checked===true && index ===0" style="width: 28px;height: 28px;border-radius: 4px;">
+                <div v-show="SPECS_DIY.image_checked===true && index ===0" style="width: 28px;height: 28px;border-radius: 4px;">
                   <a-image src="/image_defule.png"></a-image>
                 </div>
 
@@ -290,11 +310,11 @@
 </template>
 
 <script>
-import { defineComponent, ref, computed, watch, onMounted, reactive } from 'vue'
+import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted, reactive } from 'vue'
 import { PlusCircleOutlined,PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutlined} from '@ant-design/icons-vue';
 
 import { 
-  Spec,SPECS,sku_formRef
+  Spec,SPECS,sku_formRef,SPECS_DIY,sku_diy_formRef
 } from '@/assets/douyinshop/productmanagement/Add';
 export default defineComponent({
   
@@ -304,7 +324,9 @@ components: {
     DeleteOutlined,
     PlusCircleOutlined,
     MinusOutlined,MinusCircleOutlined,
-    PlusOutlined
+    PlusOutlined,
+    selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
+
 },
   
 props: {
@@ -384,9 +406,14 @@ props: {
     })
     
     return {
-      SPECS,
-      spec,
-      sku_formRef,
+      SPECS, // 自定义规格表单对象
+      sku_formRef, // 自定义规格表单 验证对象
+      spec, // 方法
+
+      SPECS_DIY, // 系统推荐表单对象
+      sku_diy_formRef,// 系统推荐 表单验证对象
+
+
       product_spec_rule,
       count,
       title,

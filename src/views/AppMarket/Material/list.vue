@@ -323,7 +323,8 @@
             <div v-if="Material_Images.image_detaile.value.origin_url !== ''">
                 <p style="margin: 10px 0 10px 0;">来源地址：</p>
                 <p style="margin: 10px 0 10px 0;">
-                    <img width="50" :src="Material_Images.image_detaile.value.origin_url"></img>
+                    <a-image style="height: 80px;"
+                     :src="Material_Images.image_detaile.value.origin_url"></a-image>
                 </p>
                 <p style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px; margin: 8px 0 0 0;">
                     <a-typography-paragraph :copyable="{ tooltip: false }">
@@ -332,7 +333,8 @@
                 </p>
             </div>
             <p style="margin: 10px 0 10px 0;">素材地址：</p>
-            <p style="margin: 10px 0 10px 0;"><img width="50" :src="Material_Images.image_detaile.value.byte_url"></img></p>
+            <p style="margin: 10px 0 10px 0;">
+                <a-image style="height: 80px;" :src="Material_Images.image_detaile.value.byte_url"></a-image></p>
 
             <div style="width: 90%;font-size:12px;background-color: #f2f2f2;padding: 6px;border-radius: 4px;margin: 0 0 20px 0;">
                     <a-typography-paragraph :copyable="{ tooltip: false }">

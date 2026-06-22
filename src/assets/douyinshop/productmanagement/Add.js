@@ -963,15 +963,16 @@ export class Quality  {
 
 // 资质方法===结束
 
-// 规格===开始
+// 自定义规格===开始
 export const sku_formRef = ref()
 export const SPECS = reactive({
-
         
         SpecImag:true,// 是否添加规格图片
-        sku_listRef:ref(null),
-        sku_columns:ref([]),
-        sku_spece_data:ref([]),
+
+        spec_image_index:{// 规格值 图片url对象index
+            index:undefined,
+            spec_value_index:undefined,
+        },
 
         // 规格数据对象
         Obj:ref([
@@ -986,12 +987,25 @@ export const SPECS = reactive({
 
 })
 
+//系统推荐==表单数据格式
+export const sku_diy_formRef = ref()
+export const SPECS_DIY = reactive({
+
+    image_checked:true, // 规格图片
+
+    // &系统推荐规格模板
+
+})
+
 export class Spec {
+
 
     rule = undefined;// 规格-规则
 
-    // 规格模式：自定义规格&系统推荐规格模板
+    // 规格模式：自定义模式、系统推荐模式
     type_formdata = reactive({
+
+        selectimg_open:false,// 素材组件状态
 
         support_property_diy:0,
 
@@ -1009,29 +1023,13 @@ export class Spec {
         ]
     })
 
-    // 系统推荐规格
-    SPECS_DIY = reactive({
-        image_checked:true,
-    })
 
+    // 自定义add
     add={
 
         load:()=>{
 
         },
-
-        // need_paging_query_value 是否需要二次查询规格值
-        // 二次查询/product/getCategoryPropertyValue
-        // 入参
-        // {
-        //  "category_id": 20219,
-        //     "property_id": 4704,
-        //     "page_size":0,
-        //     "page_num":2000
-        // }
-
-        // value_display_style 规格样式，cascader是为导航样式
-
 
         // 查看规则
         get_rule:()=>{
@@ -1081,7 +1079,9 @@ export class Spec {
 
         // 添加规格值
         pushvalue:(data)=>{
+
             var value_number = SPECS.Obj[data].values.length;
+
             if(value_number >= 20){
                 tool.Fun_.message('error', '规格值最多不能超过20组！')
                 return false
@@ -1115,8 +1115,11 @@ export class Spec {
         remove_img:(item)=>{
             item.url = ''
         },
-
+        // 获取自定已规格
         get_specs_obj: async()=>{
+
+            // 打印选择得规格模式
+            console.log('规格模式',this.type_formdata.support_property_diy)
 
             // 验证规格
             var res = await sku_formRef.value.validate().then(() => {
@@ -1172,7 +1175,43 @@ export class Spec {
 
             return res
         },
-        
+        // 选择素材
+        change_spec_img_fun:(index, spec_value_index)=>{
+            this.type_formdata.selectimg_open = true;
+            SPECS.spec_image_index.index = index;
+            SPECS.spec_image_index.spec_value_index = spec_value_index;
+            // console.log(SPECS.Obj[index].values[spec_value_index])
+        },
+        // 选择素材=>回调方法
+        select_spec_ima_call_back:(data)=>{
+            console.log(data)
+            let material_type= data[0].material_type;
+            let index = SPECS.spec_image_index.index;
+            let spec_value_index = SPECS.spec_image_index.spec_value_index;
+            if(material_type === 'photo'){
+                SPECS.Obj[index].values[spec_value_index].url = data[0].byte_url;
+            }else{
+                tool.Fun_.message('info','请选择图片素材！')
+            }
+
+            console.log(SPECS.Obj[index].values[spec_value_index])
+
+        }
+    }
+
+    // 推荐add
+    recommendation_add={
+        // need_paging_query_value 是否需要二次查询规格值
+        // 二次查询/product/getCategoryPropertyValue
+        // 入参
+        // {
+        //  "category_id": 20219,
+        //     "property_id": 4704,
+        //     "page_size":0,
+        //     "page_num":2000
+        // }
+
+        // value_display_style 规格样式，cascader是为导航样式
     }
 
 }

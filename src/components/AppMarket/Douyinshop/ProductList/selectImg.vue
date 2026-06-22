@@ -597,7 +597,7 @@ export default defineComponent({
     nav_pagination, // 翻页组件
    },
     props: {
-        data:{typr:Object}
+        data:{type:Object}
     },
     setup(props,ctx) {
         

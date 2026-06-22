@@ -938,11 +938,14 @@
 
                                 <a-button 
                                     type="dashed" 
-                                    @click="PAGEDATA.change_material_type('des')" 
+                                    @click="PAGEDATA.change_material_type('des')"
+                                    size="small"
                                     block
                                 >插入素材</a-button>
 
-                                <a-button type="dashed" @click="DES.clear_img" block>清空</a-button>
+                                <a-button type="dashed"
+                                    size="small"
+                                 @click="DES.clear_img" block>清空</a-button>
                             </a-space>
                         </div>
 
