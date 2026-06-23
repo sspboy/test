@@ -993,7 +993,8 @@ export const SPECS_DIY = reactive({
 
     image_checked:true, // 规格图片
 
-    // &系统推荐规格模板
+    // 规格数据对象
+    Obj:[],
 
 })
 
@@ -1020,11 +1021,28 @@ export class Spec {
                 value: 1,
                 disabled:false
             },
-        ]
+        ],
+        // 勾选中的推荐规格
+        selected_value_list:[],
+        // 勾选显示推荐规格
+        selected_diy_spec_options:[],
+        // 切换规格选择模式
+        change_spec_model:()=>{
+            let model_style = this.type_formdata.support_property_diy
+            if(model_style === 0){// 0 自定义规格
+
+            }else if(model_style === 1){// 1 推荐规格
+                this.recommendation_add.load();
+            }
+
+            
+
+        }
     })
 
 
-    // 自定义add
+
+    // 自定义 add
     add={
 
         load:()=>{
@@ -1199,8 +1217,61 @@ export class Spec {
         }
     }
 
-    // 推荐add
+    // 推荐 add
     recommendation_add={
+
+        load:()=>{
+
+            let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
+            
+            this.rule.required_spec_details.forEach((obj, index)=>{
+
+                let name = obj.sell_property_name
+
+                // 初始化规格表单
+                let s_obj = {
+                    property_name:name,
+                    values:[{
+                        value_name:undefined,  // 值名称
+                        url:undefined          // 规格图片
+                    }],
+                }
+
+                SPECS_DIY.Obj.push(s_obj)
+
+
+                let dit_obj = {
+                    label:name,
+                    value:name
+                }
+
+                // 勾选最大数量
+                if(index+1 <= max_spec_num_limit){
+
+                    dit_obj.disabled = false;
+                    this.type_formdata.selected_value_list.push(name);
+                    this.rule.required_spec_details[index].disabled = false; // 显示规格
+                    SPECS_DIY.Obj[index].disabled = false; // 显示规格
+                }else{
+
+                    dit_obj.disabled = true;// 隐藏规格
+                    SPECS_DIY.Obj[index].disabled = true;
+                }
+
+                // 初始化可选规格
+                if(!this.type_formdata.selected_diy_spec_options.some(n=>n.label === name)){
+                    this.type_formdata.selected_diy_spec_options.push(dit_obj)
+
+                }
+
+
+            
+            })
+
+            this.type_formdata.selected_diy_spec_options;
+
+        },
+
         // need_paging_query_value 是否需要二次查询规格值
         // 二次查询/product/getCategoryPropertyValue
         // 入参
@@ -1212,6 +1283,55 @@ export class Spec {
         // }
 
         // value_display_style 规格样式，cascader是为导航样式
+        
+        
+        // 勾选自定义规格
+        change_selected:(value)=>{
+
+            let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
+            
+            // 仅支持勾选最大数量效验
+            if(value.length<max_spec_num_limit){ // 小于最高规格数，全部可选
+                
+                // 勾选框状态全部可选
+                this.type_formdata.selected_diy_spec_options.forEach(o=>o.disabled=false)
+                
+            }else if(value.length >= max_spec_num_limit ){ // 大于等于规格数，超出部分禁用
+                // 勾选框状态，超出部分禁止
+                this.type_formdata.selected_diy_spec_options.forEach(o=>{
+                    if(!value.includes(o.label)){
+                        o.disabled=true
+                    }
+                })
+                
+            }
+
+            // 列表对应勾选规格 显示状态设置 显示选中的规格
+            this.rule.required_spec_details.forEach(r=>{
+
+                if(value.includes(r.sell_property_name)){
+                    r.disabled=false;
+                }else{
+                    r.disabled=true;
+                }
+
+            })
+
+            // 列表对应勾选规格 显示状态设置 显示选中的规格
+            SPECS_DIY.Obj.forEach(r=>{
+
+                if(value.includes(r.property_name)){
+                    r.disabled=false;
+                }else{
+                    r.disabled=true;
+                }
+
+            })
+            
+
+            
+        }
+
     }
 
 }

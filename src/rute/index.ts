@@ -280,13 +280,13 @@ const routes = [
         name: 'introduction',
         component: () => import('../views/AppMarket/Product/IntroductionView.vue'),    // 视图文件
         meta:{
-            title:'产品介绍',
+            title:'抖小二',
         }
     },
     {
         path: '/inefficient',
         name: 'inefficient',
-        component: () => import('../views/AppMarket/DouyinShop/inefficient.vue'),    // 视图文件
+        component: () => import('../views/AppMarket/DouyinShop/Inefficient.vue'),    // 视图文件
         meta:{
             title:'低效商品',
         }
