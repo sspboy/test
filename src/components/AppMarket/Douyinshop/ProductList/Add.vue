@@ -23,22 +23,19 @@
 
             <div style="width: 950px;margin: 0 auto;height: 100%;">
 
-                <a-tabs  v-model:activeKey="activeKey">
+                <!--类目预测 类目id 为空显示-->
+                <product_cate_component 
+                    v-if="showCate"
+                    />
+
+                <!--新建商品 类目id不为空显示-->
+                <a-tabs v-if="CATE.cate_value.value != undefined" v-model:activeKey="activeKey">
 
                     <template #leftExtra >
                         <div style="margin: 0 40px 0 10px;font-size: 18px;font-weight: b;">新建商品</div>
                     </template>
 
-                    <a-tab-pane key="1" tab="主图类目" >
-
-                        <a-alert
-                            message="注意：输入主图>>标题>>预测商品类目后，再进行后续商品信息的录入！"
-                            type="info"
-                            show-icon
-                            closable
-                            class="font_size_12"
-                        />
-
+                    <a-tab-pane key="0" tab="类目预测" >
 
                         <!--基本信息-->
                         <a-row>
@@ -77,7 +74,6 @@
                                 </div>
 
                             </a-col>
-
                         </a-row>
 
 
@@ -656,7 +652,7 @@
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="0" tab="基础信息" :disabled="PAGEDATA.tab_pane_status">
+                    <a-tab-pane key="1" tab="基础信息" :disabled="PAGEDATA.tab_pane_status">
 
                         <a-row>
                             <!--白底图 -- white_back_ground_pic_url -->
@@ -916,14 +912,15 @@
                     </a-form>
 
                     </a-tab-pane>
-
-                    <a-tab-pane key="2" tab="商品规格" :disabled="PAGEDATA.tab_pane_status">
+                    <a-tab-pane key="2" tab="商品属性" :disabled="PAGEDATA.tab_pane_status">
+                    </a-tab-pane>
+                    <a-tab-pane key="3" tab="商品规格" :disabled="PAGEDATA.tab_pane_status">
 
                         <spec_component :rule_info="Rule.info.value" />
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="3" tab="库存发货" :disabled="PAGEDATA.tab_pane_status">
+                    <a-tab-pane key="4" tab="库存发货" :disabled="PAGEDATA.tab_pane_status">
                         
                         <!--发货模式 组件-->
                         <Preselltype_component :rule_info="Rule.info.value"/>
@@ -976,13 +973,9 @@
                 </a-tabs>
 
             </div>
-
-
-        </a-layout-content>
-
         <!--底部按钮--开始-->
-        <a-affix :offset-bottom="1">
-            <div style="width: 950px;margin: 0 auto;text-align: center;padding: 10px 0 0 0;">
+        <a-affix :offset-bottom="1" v-if="CATE.cate_value.value != undefined">
+            <div style="margin: 0 auto;text-align: center;padding: 10px 0 0 0;">
                 <a-space align="end" style="height: 100%;">
                     <a-button type="primary" @click="handleOk" :loading="PAGEDATA.upload_product_loading">发布到线上售卖</a-button>
                     <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
@@ -991,7 +984,12 @@
             </div>
         </a-affix>
         <!--底部按钮--结束-->
-        <a-float-button-group shape="square" :style="{ right: '100px' }">
+        </a-layout-content>
+
+        <!--悬浮按钮-->
+        <a-float-button-group 
+            v-if="CATE.cate_value.value != undefined"
+            shape="square" :style="{ right: '100px' }">
             <a-float-button
                 tooltip="商品发布规则" 
                 @click="console.log('查看规则')" />
@@ -1015,7 +1013,7 @@ import { Empty } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
-import { ProductUpdateRule,Fulfillment,Spec } from '@/assets/douyinshop/productmanagement/Add';
+import { Fulfillment,Spec } from '@/assets/douyinshop/productmanagement/Add';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 
@@ -1036,6 +1034,7 @@ export default defineComponent({
         MinusCircleOutlined,
         Editor, // 详情编辑
         Toolbar, // 编辑工具栏
+        product_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/product_cate.vue')),// 类目预测
         selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
         selectFreightid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templatefreight/selectFreightId.vue')),// 运费模板组件
         selectsizetemplateid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/selectsizetemplateid.vue')),// 尺码模板组件
@@ -1069,14 +1068,11 @@ export default defineComponent({
         const API = new utils.A_Patch()         // 请求接口地址合集
         const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;// 默认为空图标
         const buttonload = ref(true)            // 新建按钮loading状态；
-        const activeKey = ref('1');             // 默认选项卡
+        const activeKey = ref('0');             // 默认选项卡
 
 
-        const Rule = new ProductUpdateRule()    // 实例化商品发布规则
         const Fulfill = new Fulfillment()       // 履约初始化
-
-        Rule.get()                              // 请求规格【 需要在 获取分类ID后执行】
-        // Fulfill.load(Rule.info.value)        // later::需要在获取商品发布规则后执行
+        
 
         // 规格传值 到 库存发货
 
@@ -1089,7 +1085,7 @@ export default defineComponent({
             brand_list_open:false,          // 品牌列表-组件显示状态配置
             setimg_name:'',                 // 添加图片的对象['PicList','long_img_List','white_img','video','des']
             sku_img_obj:'',                 // 规格图片对象
-            tab_pane_status:false,          // 选项卡禁用状态
+            tab_pane_status:true,          // 选项卡禁用状态
 
             // 图片组件获取地址后添加到页面容器：：：回调方法
             Add_Callback:(data)=>{
@@ -1430,7 +1426,7 @@ export default defineComponent({
 
             select_loading:ref(true),  // 预测选项状态
 
-            cate_value:ref(1000003396),  // 选中分类
+            cate_value:ref(undefined),  // 选中分类
 
             options:ref([]),            // 分类选项
 
@@ -1531,7 +1527,6 @@ export default defineComponent({
             // 请求属性:加载到列表
             loadFormat:async()=>{
 
-                Rule.category_id.value =  CATE.cate_value.value; // 商品规则类目id赋值
 
                 var cate_id = CATE.cate_value.value
 
@@ -1846,14 +1841,17 @@ export default defineComponent({
 
                     CATE.cate_value.value = cate_list[0].value; // 下拉选择赋值
 
-                    Rule.category_id.value =  cate_list[0].value; // 商品规则类目id赋值
                     
                     CATE.loadFormat();// 加载对应商品属性
                     
                     CATE.Ceck_format()// 迭代预测的属性到页面
 
                     CATE.predict_status.value = false; // 按钮load状态停止
+
                     CATE.select_loading.value = false; // 下拉禁用状态停止
+
+
+                    
 
                 }else{
 
@@ -2406,7 +2404,6 @@ export default defineComponent({
             selectsizetemplate_callback,
             selectbrand_callback,
             filterOption,
-            Rule, // 发布规则实力
             Fulfill
         }
     }

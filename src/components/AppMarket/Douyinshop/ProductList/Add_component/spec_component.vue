@@ -213,7 +213,7 @@
       </a-space>
 
       <a-form 
-        ref="sku_formRef"
+        ref="sku_diy_formRef"
         :model="SPECS_DIY.Obj"
         style="margin:20px 0 0 0;padding: 10px 0 0 0;" 
         name="SPECS_DIY" >
@@ -230,7 +230,10 @@
               
               <a-space>
                 
-                {{ item.property_name }}
+                {{ item.property_name }} 
+                
+                是否二次请求：{{ props.rule_info.product_spec_rule.required_spec_details[index].need_paging_query_value }}
+                是否二次自定义规格值：{{ props.rule_info.product_spec_rule.required_spec_details[index].support_diy }}
 
                 <a-button 
                 @click="spec.recommendation_add.add_value(index)"
@@ -267,7 +270,7 @@
                         v-if="props.rule_info.product_spec_rule.required_spec_details[index].need_paging_query_value ===false && props.rule_info.product_spec_rule.required_spec_details[index].support_diy===true"
                         v-model:value="v_item.value_name"
                         :options="props.rule_info.product_spec_rule.required_spec_details[index].property_values"
-                        style="width: 200px"
+                        style="width: 154px;font-size: 12px;"
                         placeholder="输入规格值"
                         allow-clear
                         :fieldNames="{ 
@@ -276,7 +279,7 @@
                         }"
                       />
                         
-                        <!--无需二次请求值 不支持自定义输入规格值-->
+                      <!--无需二次请求值 不支持自定义输入规格值-->
                       <a-select
                           v-if="!props.rule_info.product_spec_rule.required_spec_details[index].need_paging_query_value && props.rule_info.product_spec_rule.required_spec_details[index].support_diy===false"
                           ref="select"
@@ -358,6 +361,7 @@
 
                       <!--删除按钮-->
                       <a-button 
+                      v-if="item.values.length>1"
                       @click="spec.recommendation_add.del_value(index, spec_value_index)"
                       type="dashed" size="small">
                         <DeleteOutlined />
@@ -493,5 +497,8 @@ props: {
   padding: 16px 0 16px 0;
   margin: 10px 0 ;
   border: 0px solid #eee;
+}
+:deep(.ant-select-auto-complete input) {
+  font-size: 12px;
 }
 </style>

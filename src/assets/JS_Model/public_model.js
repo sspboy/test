@@ -188,6 +188,11 @@ export class A_Patch{
             "edit":"api/douyin/component/edit",             // 尺码模板编辑
             "delete":"api/douyin/component/delete",         // 尺码模板删除
         },
+        // 规格
+        specification:{
+            "getcategorypropertyvalue":"api/douyin/product/getcategorypropertyvalue",// 规格推荐属性值查询
+            "getformatcascade":"api/douyin/product/getformatcascade"// 规格值联级推荐值查询
+        },
         // 批量修改
         batch:{
             "add":"api/douyin/batchproduct/add",    // 添加

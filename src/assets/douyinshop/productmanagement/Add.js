@@ -8,32 +8,749 @@ const tool = new TOOL.TOOL()            // 工具方法
 const API = new utils.A_Patch()         // 请求接口地址合集
 
 
-// 商品发布规则：跟随分类id变化
-// 支持那些必填字段
-// 字段的输入规范（长度、格式等）
-// 点击[预测商品类目Check_Cate]=>获取到类目触发加载规则==ok 赋值[Rule.category_id.value]
-// 请求属性:加载到列表[loadFormat]=>触发加载规格==ok 赋值[Rule.category_id.value]
-// 监听类目赋值成功后：：启用TAB选项卡：：watch(CATE.cate_value ,(newVal, oldVal)=>{})
-// 点击【库存发货】选项卡后click_tab，加载可用发货模式
-// 对应读取发货规则,渲染可用发货表单Fulfillment.load
 
 
-// 【现货发货说明】
-// 发货模式：：presell_type=1 
-// 承诺发货时间，在现货模式下填写。delivery_delay_day： 承诺发货时间，单位是天,不传则默认为2天。现货发货(presell_type=0)模式下，支持传入9999 、1、 2 （分别表示当日发、次日发、48小时发），具体支持传入的参数范围：/product/getProductUpdateRule。
+// 类目预测==开始
+// 主图对象
+export const Pic_Fun = reactive({
 
-// 【新-现货+预售说明】
-// 现货+预售(逐步下线)：  presell_type=1&&presell_config_level=2；
-// 阶梯发货模式(逐步下线)： presell_type=2&&new_step_product=false；
-// 上述两种方式的升级版 - (新)现货+预售： presell_type=2&&new_step_product=true；
+    PicList:[], // 主图列表
+    name:undefined,// 商品标题
+    selectimg_open:false,
+    
+    // 选择主图图片素材
+    change_material_type:()=>{
+        Pic_Fun.selectimg_open = true;
+    },
+
+    Add_Callback:(data)=>{
+        Pic_Fun.add(data)
+    },
 
 
+    // 删除图片
+    del_pic:(index)=>{
+        Pic_Fun.PicList.splice(index, 1)
+    },
+
+    // 添加图片
+    add:(data)=>{
+
+        data.forEach((obj,idx)=>{
+            // 判断是否图片素材
+            var material_type = obj.material_type;
+
+            // console.log(material_type)
+            // 是图片=>添加到数组
+            if(material_type == 'photo'){
+                var photo_info = obj.photo_info;
+                var pic_width = photo_info.width;      // 宽度
+                var pic_height = photo_info.height;     // 高度
+                if(pic_width == pic_height){
+                    Pic_Fun.PicList.push(obj)
+                }else{
+                
+                    tool.Fun_.message('info','主图长宽比例需要1:1,不小于600X600.')
+                
+                }
+            }else if(material_type == 'video'){
+
+                tool.Fun_.message('info','【主图】不能选择视频，请选择图片素材！')
+            
+            }
+        })
+
+        // 只保留5张主图；
+        if(Pic_Fun.PicList.length > 5){
+            Pic_Fun.PicList = Pic_Fun.PicList.slice(0, 5)
+            tool.Fun_.message('info','最多上传5张主图')
+        }
+
+    },
+    
+    // 获取主图
+    get:()=>{
+
+        var pic = Pic_Fun.PicList;
+        if(pic.length == 0){
+            return false
+        }else{
+            var res_text = ''
+            pic.forEach((obj,index)=>{
+                res_text = res_text + obj.byte_url  + '|'
+            })
+            return res_text.slice(0, -1)
+        }
+    }
+
+})
+
+// 分类&属性
+export const CATE = {
+
+    cate_name:ref([]),          // 分类
+
+    predict_status:ref(false),  // 预测按钮状态
+
+    select_loading:ref(true),  // 预测选项状态
+
+    cate_value:ref(undefined),  // 选中分类
+
+    options:ref([]),            // 分类选项
+
+    // 商品属性结构数据：：渲染表单格式
+    format:ref([]),
+
+    // 表单数据绑定:
+    form_ref:ref(),
+
+    format_formRef:reactive({}),
+
+    // 吊牌-水洗标
+    category_property_pics:ref(undefined),
+
+    // 自定义【面料材质】的名称
+    diy_name:ref(),
+
+    // 添加自定义【面料材质】name -方法
+    addItem:(op) => {
+
+        var diy_name = CATE.diy_name.value; // 自定义名称
+        if(diy_name == undefined){
+            tool.Fun_.message('error','自定义值不能为空')
+        }else{
+            op.unshift({
+                name: diy_name,
+                value: op.length + 1 + '',
+                value_id:op.length + 1,
+                value_text:false // 自定义值标识
+            });
+        }
+
+        CATE.diy_name.value = undefined;
+    },
+    // 对选度量衡添加限制-不超过
+    add_limit:(data_list,maxnumber)=>{
+        if(data_list.length >= maxnumber){
+            tool.Fun_.message('error','超过最大限制数量了，最多10个选项。')
+        }else{
+            data_list.push({value:undefined, percentage:undefined})
+        }
+    },
+    // 删除面料材质属性
+    material_del:(index,data)=>{
+        data.splice(index,1)
+    },
+
+    // 变化选项时禁选
+    material_change:(select_data,data)=>{
+        var s_list = [] // 选中的id
+        select_data.forEach(item=>{
+        if(item.value !== undefined){
+            s_list.push(item.value)
+        }
+        })
+        // 设置下拉选中的值禁用
+        data.forEach(item=>{
+        if(s_list.includes(item.value)){
+            item.disabled = true; // 禁用
+        }else{
+            item.disabled = false;// 启用
+
+        }
+        })
+
+    },
+
+    // 类目列表转换
+    get_cate_list:(obj)=>{
+        var obj_list = []
+        for(let i of obj){
+            let cate_obj = {}
+            cate_obj.value = i.id;
+            cate_obj.label = i.name;
+            cate_obj.isLeaf = i.is_leaf;
+            obj_list.push(cate_obj)
+        }
+        return obj_list
+    },
+    // 选择下级分类加载方法
+    loadData:selectedOptions =>{
+
+        const targetOption = selectedOptions[selectedOptions.length - 1];
+
+        var cid = targetOption.value;       // 分类id
+
+        var isLeaf = targetOption.isLeaf;   // 是否叶子类目
+
+        targetOption.loading = true; // load options
+        
+        axios.post(API.AppSrtoreAPI.dou_product.cate, {"cid":cid}).then(res=>{
+            targetOption.loading = false;
+            targetOption.children = CATE.get_cate_list(res.data.data)
+            CATE.options.value = [...CATE.options.value]
+        })
+    },
+
+    // 请求属性:加载到列表
+    loadFormat:async()=>{
+
+
+        var cate_id = CATE.cate_value.value
+
+        // 请求类目对应的属性值
+        var res = await axios.post(API.AppSrtoreAPI.dou_product.format, {
+            "category_leaf_id":cate_id
+        })
+
+        var data_list = res.data.data.data; // 属性值列表
+
+        Object.keys(CATE.format_formRef).forEach(key => delete CATE.format_formRef[key]); // 清空
+
+        // 加载属性结构
+        data_list.forEach((obj,index)=>{
+
+            // 添加品牌无品牌选项
+            var property_name = obj.property_name
+
+            if(property_name == '品牌'){
+                var No_brand_obj = {
+                    "value_id": 596120136,
+                    "sequence": 0,
+                    "name": "无品牌",
+                    "value": "596120136"
+                }
+                obj.options.push(No_brand_obj)
+            }
+            // 无品牌添加结束
+
+            var type = obj.type; // 属性标签
+
+            if(type == 'select'){// 单选
+
+                CATE.format_formRef[obj.property_id] = undefined;
+
+            }else if(type == 'multi_select'){ // 多选
+
+                CATE.format_formRef[obj.property_id] = undefined;
+
+            }else if(type == 'text'){ // 文本
+
+                CATE.format_formRef[obj.property_id] = undefined;
+            
+            }else if(type == 'multi_value_measure'){// 度量衡-多选-材质属性
+
+                CATE.format_formRef[obj.property_id] = [{}];
+
+            }else if(type =='measure'){// 度量衡-单选
+                
+                console.log(obj)
+
+                const measure_Data= {} // 绑定表单dui像
+
+                obj.measure_templates[0].value_modules.forEach(item=>{
+                    var mo_obj = {}
+                    mo_obj.module_id = item.module_id;
+                    mo_obj.prefix = item.prefix;
+                    mo_obj.suffix = item.suffix;
+                    mo_obj.value = '';
+                    if(item.units.length >0){
+                        mo_obj.unit_id = item.units[0].unit_id;
+                        mo_obj.op = item.units;
+                    }
+                    measure_Data[item.module_id] = mo_obj;
+
+                })
+
+                CATE.format_formRef[obj.property_id] = measure_Data;
+
+            }else if(type =='timestamp'){// - 时间戳timestamp
+
+                CATE.format_formRef[obj.property_id] = undefined;
+
+            }else if(type =='timerange'){// - 时间段timerange
+
+                CATE.format_formRef[obj.property_id] = undefined;
+
+            }
+
+        })
+
+        CATE.format.value = res.data.data.data;
+
+    },
+
+    // 多选-禁用超过限制选项
+    dis_ops:(item, data)=>{
+
+        if(data !== undefined){// 提交数据不为空时
+
+            var type = item.type; // 类别
+            var multi_select_max = item.multi_select_max;
+            var result_value = data; // 选中的值
+            var options = item.options; // 选项
+            var diy_type = item.diy_type; // 是否支撑自定义
+            
+            if(type == 'multi_select' || type == 'multi_value_measure'){ // 多选 'multi_select' & 'multi_value_measure'
+
+                // 选中值--超过限制
+                if(result_value.length >= multi_select_max){
+
+                    // 非选中值添加禁用属性
+                    options.forEach((obj,index)=>{
+
+                        var value = obj.value_id;
+
+                        // 过滤选中值
+                        if(!result_value.includes(value)){
+                            obj.disabled = true
+                        }
+                    })
+
+                }else{// 选中值--没有超过限制
+
+                    // 非选中值添加禁用属性
+                    options.forEach((obj,index)=>{
+                        obj.disabled = false
+                    })
+
+                }
+            }
+        }
+    },
+
+    // 获取多选属性值
+    select_name:(v_id,op)=>{
+        var r_name = ''
+        op.forEach((obj,index)=>{
+            var name = obj.name;
+            if(v_id == obj.value_id){
+                r_name = name
+            }
+        })
+        return r_name
+
+    },
+    
+    // 获取分类
+    get_cate:()=>{
+        var cate_values = toRaw(CATE.cate_value.value)
+        if(cate_values > 0){// 分类不为空
+            return cate_values
+        }else{ // 分类为空
+            tool.Fun_.message('error', '商品分类不能为空！');
+            activeKey.value = '1';
+            return false
+        }
+    },
+
+    // 获取属性
+    get_format: async()=>{
+
+        // 验证是否必填全部填写
+        var res = await CATE.form_ref.value?.validate().then(()=>{
+            
+            var selected_mat = toRaw(CATE.format_formRef)// 选中的属性
+            var show_mat= toRaw(CATE.format.value)      // 当前展示的属性
+            var f_res_obj = {}
+            show_mat.forEach(obj => {
+                let property_id = obj.property_id;
+                if(selected_mat[property_id] !== undefined){
+                    var result_list = CATE.de_format_detail(obj, selected_mat[property_id])
+                    f_res_obj[property_id] = result_list
+                }
+            });
+
+            return f_res_obj
+
+        }).catch(error => {
+
+            tool.Fun_.message('error',error.errorFields[0].errors[0]);
+
+            activeKey.value = '1';
+
+            return false
+        })
+        
+        console.log('属性', res) // 打印获取去的商品属性
+
+        return res
+    },
+
+    // 获取属性时候-转义属性格式：：提交上传商品
+    de_format_detail:(item, data)=>{
+
+        let property_id = item.property_id;
+        let type = item.type; // 类别
+        let result_value = data; // 选中的值
+        let multi_select_max = item.multi_select_max;
+        let options = item.options; // 选项
+        let diy_type = item.diy_type; // 是否支撑自定义
+
+
+        // 文本 text
+        if(type == 'text'){
+
+            var result = [{"value":0,"name":result_value,"diy_type":diy_type}]
+            return result
+
+        }else if(type == 'select'){// 单选 select
+
+            // 单选 [{"value":data,"name":v_name,"diy_type":diy_type}]
+            var v_name = ''
+            options.forEach((obj,index)=>{
+                if(obj.value_id == data){v_name = obj.name}
+            })
+
+            var result = [{"value":data,"name":v_name,"diy_type":diy_type}]
+
+            return result
+
+        }else if(type == 'multi_select'){ // 多选
+
+            var res_lisr = []
+
+            // 如果不是数组类型转换为数组
+            if(!Array.isArray(result_value)){result_value = [result_value]}
+            result_value.forEach((obj,index)=>{
+                var r_name = CATE.select_name(obj,options)
+                var r_obj = {"value":obj,"name":r_name,"diy_type":diy_type}
+                res_lisr.push(r_obj)
+            })
+
+            return res_lisr
+
+        }else if(type == 'multi_value_measure'){// 度量衡-多选-材质属性
+
+            // item参数参考值 data：获取值；
+            // console.log('面料材质多选', item, data)
+            var result = CATE.de_m_v_m(item, data) // 转义数据格式-返回给-提交对象de_m_v_m方法
+            return result
+
+        }else if(type =='measure'){// 度量衡-单选
+
+            let value_modules = item.measure_templates[0].value_modules;
+            if(value_modules.length == 1){// 单值 
+                var result = CATE.de_m_v_one(item, data) // 转义数据格式-返回给-提交对象de_m_v_m方法
+                return result
+            }else if(value_modules.length > 1){ // 多值-长宽高等
+                var result = CATE.de_m_v_more(item, data) // 转义数据格式-返回给-提交对象de_m_v_m方法
+                return result
+            }
+
+        }else if(type =='timestamp'){// - 时间戳timestamp
+
+            console.log('时间戳',item, data)
+
+            // 时间戳：面条(24814) — 生产日期
+
+        }else if(type =='timerange'){// - 时间段timerange
+
+            console.log('时间段',item, data)
+
+            // 时间段：阿胶块(28948) — 生产日期
+
+        }
+
+    },
+
+    // 类目预测
+    Check_Cate:async(formdata)=>{
+        
+        var name = Pic_Fun.name; // 标题
+        var pic = Pic_Fun.get(); // 主图
+
+        CATE.predict_status.value = true;
+
+        // 判断标题是否为空
+        if(name === undefined || name === ''){ 
+            
+            tool.Fun_.message('error', '预测类目>标题不能为空！');
+            CATE.predict_status.value = false;
+            return false
+        }
+
+        // 判断主图是否为空
+        if(!pic){
+            tool.Fun_.message('error', '预测分类>商品主图不能为空！');
+            CATE.predict_status.value = false;
+            return false
+        }
+        // 迭代图片数组格式
+        var pic_list = pic.split('|');
+        pic_list.forEach((obj,index)=>{
+            pic_list[index] = {"url":obj}
+        })
+
+        // 请求接口
+        var res = await axios.post(API.AppSrtoreAPI.dou_product.cate_predict,{
+            "scene":"category_infer",
+            // "scene":"smart_publish",
+            "pic":pic_list,
+            "name":name
+        })
+
+        var categoryDetails = res.data.data.categoryDetails;
+
+        if(categoryDetails.length > 0){
+
+            var cate_list = []
+
+            categoryDetails.forEach((obj,index)=>{
+
+                var op = CATE.de_cate_detaile(obj) // 迭代预测类目选项obj
+
+                cate_list.push(op)
+
+            })
+
+            tool.Fun_.message('success', '预测分类成功！');
+
+            CATE.options.value = cate_list;
+            
+
+            CATE.cate_value.value = cate_list[0].value; // 下拉选择赋值
+                        
+            CATE.loadFormat();// 加载对应商品属性
+            
+            CATE.Ceck_format()// 迭代预测的属性到页面
+
+            CATE.predict_status.value = false; // 按钮load状态停止
+
+            CATE.select_loading.value = false; // 下拉禁用状态停止
+
+            productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
+
+        }else{
+
+            tool.Fun_.message('error', '预测分类失败，请更换主图或标题！');
+            CATE.predict_status.value = false;
+            return false
+        }
+    },
+
+    // 迭代预测类目选项obj
+    de_cate_detaile:(obj)=>{
+
+        var cate_obj = {}
+        var qualification_status = obj.qualification_status; // 类目资质qualification_status: 0-有资质；1-资质过期；2-无资质// disabled: true,
+        var category_detail = obj.category_detail;           // 类目信息
+
+
+        let first_cname = category_detail.first_cname;
+        let second_cname = category_detail.second_cname;
+        let third_cname = category_detail.third_cname;
+        let fourth_cname = category_detail.fourth_cname;
+
+        let first_cid = category_detail.first_cid;
+        let second_cid = category_detail.second_cid;
+        let third_cid = category_detail.third_cid;
+        let fourth_cid = category_detail.fourth_cid;
+        // ids
+        var value_id_list = [first_cid,second_cid,third_cid,fourth_cid];
+        // 名称
+        var value_label_list = [first_cname,second_cname,third_cname,fourth_cname];
+        value_id_list.forEach((id,index)=>{
+            if(id == 0){
+                value_id_list = value_id_list.slice(0, index)
+                value_label_list = value_label_list.slice(0, index)
+            }
+        })
+        
+        cate_obj.value = value_id_list.at(-1)
+        cate_obj.label = value_label_list.join('>')
+        // 判断资质是否过期
+        if(qualification_status !== 0){
+            cate_obj.disabled = true
+        }
+
+        return cate_obj
+    },
+
+    // 预测属性：填充到页面
+    Ceck_format:async()=>{
+
+        var c_id = CATE.cate_value.value // id
+
+        if(c_id == undefined || c_id == ''){
+            tool.Fun_.message('error', '需要分类才能预测');
+            return
+        }
+        var pic = Pic_Fun.get().split('|'); // 主图
+        var title_name = Pic_Fun.name; // 标题
+
+        // 请求接口
+        var res = await axios.post(API.AppSrtoreAPI.dou_product.format_recommend,{
+            "category_id":c_id,// 类目id-必填
+            "img_urls":pic,// 商品图片-非必填
+            "name":title_name// 商品标题-非必填
+        })
+        var checkformat_result_list = res.data.data.properties;
+        checkformat_result_list.forEach(obj=>{
+            var property_id = obj.property_id;
+            var property_values_id = obj.property_values[0].value_id;
+            Object.keys(CATE.format_formRef).forEach(key=>{
+                if(key == property_id && property_values_id !== 0)(
+                    CATE.format_formRef[key] = property_values_id
+                )
+            })
+        })
+    },
+
+    // 清空商品属性
+    Clear_format:()=>{
+        Object.keys(CATE.format_formRef).forEach(key=>{
+            CATE.format_formRef[key] = undefined
+        })
+    },
+
+    // 度量衡 多选-上传商品json-转义
+    de_m_v_m:(item, data)=>{
+
+        // item参数参考值 data：获取值；
+        // 我们将data选中得值id+百分比转义为提交新建商品得json数据格式
+
+        var resultList = []
+        let template_id = item.measure_templates[0].template_id;// 模板id
+        let value_modules_list = item.measure_templates[0].value_modules; // 输入值的模板
+        // console.log(value_modules_list)
+
+        data.forEach(obj=>{
+
+            var n_obj = {}
+            let value_id = obj.value;// 选中的材质id
+            let percentage = obj.percentage + '%'; // 百分比
+
+            // 从 options 中查找对应的 name
+            let selected = item.options.find(opt => opt.value_id === value_id)
+            let name_text = selected?.name || '';
+            let name = name_text + percentage; // 例如："name": "亚麻10%",
+            // 第一层级
+            n_obj.diy_type = 1;
+            n_obj.value = 0;
+            n_obj.name =  name;
+
+            // 第二层级measure_info      
+            n_obj.measure_info = {
+                "values": [
+                {
+                    "module_id": value_modules_list[0].module_id,
+                    "value": name_text,
+                    "unit_id": 0
+                },
+                {
+                    "module_id": value_modules_list[1].module_id,
+                    "unit_name": value_modules_list[1].units[0].unit_name,
+                    "unit_id": value_modules_list[1].units[0].unit_id,
+                    "value": obj.percentage + ''
+                }
+                ],
+                "template_id": template_id,
+                "value_name": name
+            }
+
+            resultList.push(n_obj)
+        })
+
+        // console.log(resultList)
+        return resultList
+
+    },
+
+    // 度量衡 单选 单值- 上传商品json-转义
+    de_m_v_one:(item, data)=>{
+
+        var resultList = []
+        let value_modules = item.measure_templates[0].value_modules;
+        let template_id = item.measure_templates[0].template_id;// 模板id
+        let module_id = parseInt(Object.keys(data)[0]);
+        let obj = data[module_id]
+        // console.log('度量衡-单选-单值',obj)
+
+        let selected = obj.op.find(opt => opt.unit_id === obj.unit_id)
+
+        let unit_name = selected?.unit_name || '';
+
+        // console.log('度量衡-单选-单值',unit_name)
+
+        let name = obj.value + unit_name;  // 选中的材质id
+
+        let n_obj = {
+                    "measure_info": {
+                        "template_id": template_id,
+                        "values": [
+                            {
+                            "module_id": module_id,
+                            "prefix": obj.prefix,
+                            "suffix": obj.suffix,
+                            "value": String(obj.value),
+                            "unit_id": obj.unit_id,
+                            "unit_name": unit_name
+                            }
+                        ]
+                    },
+                    "value": 0,
+                    "diy_type": 1,
+                    "name": name
+        }
+
+        resultList.push(n_obj)
+
+        return resultList
+    },
+
+    // 度量衡 单选 多值-上传商品json-转义
+    de_m_v_more:(item, data)=>{
+
+        console.log('度量衡-单选-多值',item,data)
+
+        var resultList = []
+        let value_modules = item.measure_templates[0].value_modules;
+        let demo = [
+                {
+                    "measure_info": {
+                    "template_id": 126,
+                    "values": [
+                        {
+                        "module_id": 185,
+                        "prefix": "",
+                        "suffix": "-",
+                        "value": "300",
+                        "unit_id": 38,
+                        "unit_name": "cm"
+                        }
+                    ]
+                    },
+                    "value": 0,
+                    "diy_type": 1,
+                    "name": "300cm-"
+                }
+            ]
+        return resultList
+    },
+    // 水洗标-吊牌图片
+    add_img:(data)=>{
+        var img_byte_url = data[0].byte_url
+        CATE.category_property_pics.value = img_byte_url
+        console.log(CATE.category_property_pics.value)
+    },
+    // 清除水洗标-吊牌图片
+    clear_img:()=>{
+        CATE.category_property_pics.value = undefined;
+    }
+
+}
+export const Predict_message = reactive({
+    pic:[],
+    name:'',
+})
+
+// 预测类目==开始
 
 // 获取商品发布规则方法
 // 通过执行Rule.get() 获取数据
 export class ProductUpdateRule {
 
-    category_id=ref(1000003396) // 分类id-3396-26491
     senses=ref(undefined) // 闪购定制参数，普通发品忽略
     standard_brand_id=ref(undefined) // 品牌id
     spu_id=ref(undefined) // spu_id
@@ -43,16 +760,16 @@ export class ProductUpdateRule {
     get=()=>{
 
         // 判断类是否选择
-        if (!this.category_id.value) {
+        if (!CATE.cate_value.value) {
             tool.Fun_.message('info', '请先选择商品类目后，才能查看对应发布规则.')
             return
         }
 
-        console.log('当前类目', this.category_id.value)
+        console.log('当前类目', CATE.cate_value.value)
 
         axios.post(API.AppSrtoreAPI.dou_product.addrule, {
 
-            category_leaf_id: this.category_id.value,
+            category_leaf_id: CATE.cate_value.value,
 
         }).then((response) => {
 
@@ -89,6 +806,42 @@ export class ProductUpdateRule {
     // 商品【履约发货】
 
 }
+const productRule = new ProductUpdateRule()
+// 基础信息
+
+// 商品属性
+
+
+
+
+// 商品发布规则：跟随分类id变化
+// 支持那些必填字段
+// 字段的输入规范（长度、格式等）
+// 点击[预测商品类目Check_Cate]=>获取到类目触发加载规则==ok 赋值[Rule.category_id.value]
+// 请求属性:加载到列表[loadFormat]=>触发加载规格==ok 赋值[Rule.category_id.value]
+// 监听类目赋值成功后：：启用TAB选项卡：：watch(CATE.cate_value ,(newVal, oldVal)=>{})
+// 点击【库存发货】选项卡后click_tab，加载可用发货模式
+// 对应读取发货规则,渲染可用发货表单Fulfillment.load
+
+
+// 【现货发货说明】
+// 发货模式：：presell_type=1 
+// 承诺发货时间，在现货模式下填写。delivery_delay_day： 承诺发货时间，单位是天,不传则默认为2天。现货发货(presell_type=0)模式下，支持传入9999 、1、 2 （分别表示当日发、次日发、48小时发），具体支持传入的参数范围：/product/getProductUpdateRule。
+
+// 【新-现货+预售说明】
+// 现货+预售(逐步下线)：  presell_type=1&&presell_config_level=2；
+// 阶梯发货模式(逐步下线)： presell_type=2&&new_step_product=false；
+// 上述两种方式的升级版 - (新)现货+预售： presell_type=2&&new_step_product=true；
+
+
+
+
+
+
+
+
+
+
 
 // 履约发货=========开始
 // 发货模式 presell_type ，0-现货发货，1-预售发货，2-阶梯发货，默认0
@@ -1373,7 +2126,22 @@ export class Spec {
         },
         // 获取推荐规格
         get_spec_diy_obj:()=>{
-            console.log(SPECS_DIY.Obj)
+
+            sku_diy_formRef.value.validate().then(() => {
+                
+                console.log(SPECS_DIY.Obj)
+
+                // 过滤隐藏的规格
+
+
+
+            }).catch( error => {
+
+                tool.Fun_.message('error', '规格信息不能为空！');// 规格错误提示
+                
+                return false
+
+            })
         }
     }
 
