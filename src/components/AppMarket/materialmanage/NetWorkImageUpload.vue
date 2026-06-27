@@ -18,9 +18,10 @@
     - 无
 -->
 <template>
+
     <!-- 上传网络图片 弹出层 开始-->
     <a-modal 
-        v-model:open="netImageModalVisible" 
+        v-model:open="netImageModalVisible"
         title="上传网络图片"
         :confirm-loading="confirmLoading"
         @ok="handleNetImageOk"
@@ -43,69 +44,93 @@
                     change-on-select
                 />
             </a-form-item>
-            
-            <div style="margin-bottom: 16px;">
+
+            <a-form-item label="图片上传方式" name="upload_model">
+               <a-radio-group             
+                  size="small"
+                  v-model:value="netImageForm.upload_model">
+               <a-radio-button style="font-size: 12px;" value="0">批量上传</a-radio-button>
+               <a-radio-button style="font-size: 12px;" value="1">简单上传</a-radio-button>
+               </a-radio-group>
+            </a-form-item>
+
+            <!--批量上传 -->
+            <a-form-item
+               name="imageUrlText" 
+               v-if="netImageForm.upload_model === '0'" 
+               label="图片地址:含Http开头的网络图片地址">
+               <a-textarea
+                  style="height: 300px;" 
+                  v-model:value="netImageForm.imageUrlText" 
+                  placeholder="粘贴多个图片地址文本-最多50张-单张图片最大不能超过10MB" 
+                  allow-clear />
+            </a-form-item>
+
+            <!--简单上传 -->
+            <div v-if="netImageForm.upload_model === '1'" style="margin-bottom: 16px;">
 
                <label style="display: block; margin: 0 0 8px 0;font-size: 12px;">
-                    <span style="color: #ff4d4f;">*</span> 图片地址 
-                </label>
+                  <span style="color: #ff4d4f;">*</span> 图片地址 
+               </label>
 
                 <div v-for="(url, index) in netImageForm.imageUrls" :key="index" style="margin-bottom: 8px;">
-                        <a-form-item
-                            :name="['imageUrls', index]"
-                            :rules="[
-                                { required: true, message: '请输入图片地址', trigger: 'blur' },
-                                { pattern: /^http/, message: '图片地址必须以 http 开头', trigger: 'change' }
-                            ]"
-                            style="margin-bottom: 0;"
-                        >
-                            <a-row>
-                                <a-col :span="20">
-                                    <a-input 
-                                        v-model:value="netImageForm.imageUrls[index]"
-                                        :placeholder="'请输入图片地址'"
-                                        size="middle"
-                                        autoComplete="off"
-                                    />
-                                </a-col>
-                                <a-col :span="4">
-                                    <a-button 
-                                        type="dashed" 
-                                        size="small"
-                                        @click="removeImageUrl(index)"
-                                        style="margin: 2px 0 0 10px;width: 80%;"
-                                    >
-                                    删除
-                                    </a-button>
-                                </a-col>
+                  
+                  <a-form-item
+                        :name="['imageUrls', index]"
+                        :rules="[
+                           { required: true, message: '请输入图片地址', trigger: 'blur' },
+                           { pattern: /^http/, message: '图片地址必须以 http 开头', trigger: 'change' }
+                        ]"
+                        style="margin-bottom: 0;"
+                  >
+                        <a-row>
+                           <a-col :span="20">
+                              <a-input 
+                                    v-model:value="netImageForm.imageUrls[index]"
+                                    :placeholder="'请输入图片地址'"
+                                    size="middle"
+                                    autoComplete="off"
+                              />
+                           </a-col>
+                           <a-col :span="4">
+                              <a-button 
+                                    type="dashed" 
+                                    size="small"
+                                    @click="removeImageUrl(index)"
+                                    style="margin: 2px 0 0 10px;width: 80%;"
+                              >
+                              删除
+                              </a-button>
+                           </a-col>
 
-                            </a-row>
+                        </a-row>
 
-                            
-                        </a-form-item>
+                  </a-form-item>
 
                 </div>
+
                 <div >
                     <a-button 
                         type="dashed" 
                         size="small"
                         @click="addImageUrl"
-                        :disabled="netImageForm.imageUrls.length >= 10"
+                        :disabled="netImageForm.imageUrls.length >= 50"
                         style="margin: 18px 0 18px 0;"
                     >
                         <PlusOutlined /> 添加地址
                     </a-button>
-                    <span v-if="netImageForm.imageUrls.length >= 10" style="color: #ff4d4f; font-size: 12px; margin-left: 8px;">
-                        最多添加10个图片地址
+                    <span v-if="netImageForm.imageUrls.length >= 50" style="color: #ff4d4f; font-size: 12px; margin-left: 8px;">
+                        最多添加50个图片地址
                     </span>
                 </div>
             </div>
+
         </a-form>
     </a-modal>
     <!-- 上传网络图片 弹出层 结束-->
 </template>
 <script>
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as utils from '@/assets/JS_Model/public_model';
@@ -129,20 +154,49 @@ export default {
       const netImageModalVisible = ref(false);            // 上传网络图片弹出层状态
       const confirmLoading = ref(false);                  // 确认按钮加载状态
       const netImageFormRef = ref(null);                  // 网络图片表单 ref
-      const netImageFolderOptions = ref([]);// 联级选择器文件夹选项
+      const netImageFolderOptions = ref([]);              // 联级选择器文件夹选项
+
+
 
       // 网络图片表单数据
       const netImageForm = reactive({
          folderId: [],
-         imageUrls: ['']
+         imageUrls: [''],
+         imageUrlText:'',
+         upload_model:'0'
       });
+      
+      // 重置表单
+      const resetForm = () => {
+         netImageForm.folderId = []
+         netImageForm.imageUrls = ['']
+         netImageForm.imageUrlText = ''
+         netImageForm.upload_model = '0'
+         netImageFormRef.value?.resetFields()
+      }
 
       // 网络图片表单验证规则
       const netImageRules = {
          folderId: [
             { required: true, message: '请选择素材文件夹', trigger: 'change', type: 'array' }
+         ],
+         imageUrlText:[
+            { required: true, message: '请输入图片地址', trigger: 'change'},
+            {
+               validator: async (rule, value) => {
+                     if (value && !value.includes('http')) {
+                        return Promise.reject(new Error('图片地址必须包含 http 或 https'))
+                     }
+                     return Promise.resolve()
+               },
+               trigger: 'change'
+            }
+         ],
+         upload_model:[
+            { required: true, message: '', trigger: 'change'}
          ]
       };
+
 
       // 将 treeData 转换为 Cascader 选项
       const convertTreeToCascader = (nodes) => {
@@ -191,25 +245,46 @@ export default {
       // 确认上传网络图片
       const handleNetImageOk = () => {
 
+         // 打印上传模式
+         console.log(netImageForm.upload_model)
+
          netImageFormRef.value.validate().then(() => {
 
+            
             const folderId = netImageForm.folderId[netImageForm.folderId.length - 1];
-            const urls = netImageForm.imageUrls.filter(url => url.trim() !== '');
 
-            if (urls.length === 0) {
-               tool.Fun_.message('error', '请至少输入一个图片地址');
-               return;
+            if(netImageForm.upload_model === '0'){ // 批量上传图片
+               //
+               console.log(netImageForm.imageUrlText)
+
+               var urls = tool.Fun_.extractUrls(netImageForm.imageUrlText)
+
+               // 构建批量上传参数
+               var params = {
+                  folder_id: folderId,
+                  pic_list: urls
+               };
+
+            }else if(netImageForm.upload_model === '1'){// 简单上传图片
+
+               var urls = netImageForm.imageUrls.filter(url => url.trim() !== '');
+
+               if (urls.length === 0) {
+                  tool.Fun_.message('error', '请至少输入一个图片地址');
+                  return;
+               }
+
+               // 构建批量上传参数
+               var params = {
+                  folder_id: folderId,
+                  pic_list: urls.map(url => url.trim())
+               };
+
             }
-
-            // 构建批量上传参数
-            const params = {
-               folder_id: folderId,
-               pic_list: urls.map(url => url.trim())
-            };
 
             confirmLoading.value = true;
 
-            console.log(params)
+            // console.log(params)
 
             tool.Http_.post(API.AppSrtoreAPI.material.bacthuploadmaterial, params).then((res) => {
 
@@ -245,6 +320,7 @@ export default {
                   }
 
                   netImageModalVisible.value = false;
+
                   // 重置表单
                   netImageForm.folderId = [];
                   netImageForm.imageUrls = [''];
@@ -256,41 +332,51 @@ export default {
                } else {
 
                   const errorMsg = res.data.sub_msg || res.data.msg || '上传失败';
-                  console.log(errorMsg)
 
                   tool.Fun_.message('error', errorMsg);
                }
 
 
             }).catch((err) => {
+
                confirmLoading.value = false;
-               console.log('批量上传接口调用失败', err);
+
                tool.Fun_.message('error', '网络请求失败，请稍后重试');
+
             });
+
          }).catch((error) => {
+
             console.log('表单验证失败', error);
+
          });
       };
 
       // 取消上传网络图片
       const handleNetImageCancel = () => {
          netImageModalVisible.value = false;
-         netImageForm.folderId = [];
-         netImageForm.imageUrls = [''];
+         resetForm()// 重置表单值
       };
 
       // 异步加载联级选择器子文件夹
       const loadNetImageFolder = (selectedOptions) => {
+         
          const targetOption = selectedOptions[selectedOptions.length - 1];
+         
          targetOption.loading = true;
          
          const folderId = targetOption.value;
          
+         console.log(folderId)
+
          tool.Http_.post(API.AppSrtoreAPI.material.getfolder, {
+
             "folder_id": folderId,
             "page_num": 1,
-            "page_size": 10
+            "page_size": 100
+
          }).then((res) => {
+            
             const child_folder_list = res.data.data.folder_info.child_folder;
             
             if (child_folder_list.length > 0) {
@@ -336,10 +422,13 @@ export default {
          handleNetImageCancel,
          addImageUrl,
          removeImageUrl,
-         loadNetImageFolder
+         loadNetImageFolder,
       };
    }
 }
 </script>
 <style scoped>
+:deep(.ant-radio-wrapper) {
+  font-size: 12px;
+}
 </style>

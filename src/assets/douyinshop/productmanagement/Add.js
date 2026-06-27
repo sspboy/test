@@ -81,12 +81,19 @@ export const Pic_Fun = reactive({
             })
             return res_text.slice(0, -1)
         }
+    },
+
+    // 填写商品信息按钮
+    fill_in_product_info:()=>{
+        
     }
 
 })
 
 // 分类&属性
 export const CATE = {
+
+    cate_status:ref(true),      // 预测类目是否显示状态
 
     cate_name:ref([]),          // 分类
 
@@ -195,8 +202,9 @@ export const CATE = {
     // 请求属性:加载到列表
     loadFormat:async()=>{
 
-
         var cate_id = CATE.cate_value.value
+
+        productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
 
         // 请求类目对应的属性值
         var res = await axios.post(API.AppSrtoreAPI.dou_product.format, {
@@ -476,13 +484,17 @@ export const CATE = {
             CATE.predict_status.value = false;
             return false
         }
+
         // 迭代图片数组格式
         var pic_list = pic.split('|');
+
         pic_list.forEach((obj,index)=>{
+
             pic_list[index] = {"url":obj}
+
         })
 
-        // 请求接口
+        // 请求类目预测接口
         var res = await axios.post(API.AppSrtoreAPI.dou_product.cate_predict,{
             "scene":"category_infer",
             // "scene":"smart_publish",
@@ -508,9 +520,8 @@ export const CATE = {
 
             CATE.options.value = cate_list;
             
-
             CATE.cate_value.value = cate_list[0].value; // 下拉选择赋值
-                        
+
             CATE.loadFormat();// 加载对应商品属性
             
             CATE.Ceck_format()// 迭代预测的属性到页面
@@ -519,12 +530,14 @@ export const CATE = {
 
             CATE.select_loading.value = false; // 下拉禁用状态停止
 
-            productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
+            // productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
 
         }else{
 
             tool.Fun_.message('error', '预测分类失败，请更换主图或标题！');
+
             CATE.predict_status.value = false;
+
             return false
         }
     },
@@ -567,7 +580,7 @@ export const CATE = {
         return cate_obj
     },
 
-    // 预测属性：填充到页面
+    // 预测属性：===> 填充到页面
     Ceck_format:async()=>{
 
         var c_id = CATE.cate_value.value // id
@@ -744,7 +757,6 @@ export const Predict_message = reactive({
     pic:[],
     name:'',
 })
-
 // 预测类目==开始
 
 // 获取商品发布规则方法

@@ -98,7 +98,9 @@ const API = new utils.A_Patch()// 请求接口
             }
             document.body.removeChild(textarea);
         },
-
+        extractUrls:(text) => {
+            return text.match(/https?:\/\/[^\s\n]+/g) || []
+        }
     }
 
 
