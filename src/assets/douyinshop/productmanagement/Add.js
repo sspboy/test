@@ -16,7 +16,7 @@ export const Pic_Fun = reactive({
 
     PicList:[], // 主图列表
     name:undefined,// 商品标题
-    selectimg_open:false,
+    selectimg_open:false, // 选择主图素材
     
     // 选择主图图片素材
     change_material_type:()=>{
@@ -85,7 +85,19 @@ export const Pic_Fun = reactive({
 
     // 填写商品信息按钮
     fill_in_product_info:()=>{
-        
+
+        if(CATE.cate_value.value){// 填写了分类
+
+            console.log('请选择商品类目', CATE.cate_value.value)
+            console.log('跳转到-基本信息')// 进入商品信息填写
+            CATE.cate_status.value = false; // 显示填写信息
+
+        }else{ // 未填写分类
+
+            tool.Fun_.message('info','请选择商品类目' +  CATE.cate_value.value)
+
+        }
+
     }
 
 })
@@ -818,7 +830,7 @@ export class ProductUpdateRule {
     // 商品【履约发货】
 
 }
-const productRule = new ProductUpdateRule()
+const productRule = new ProductUpdateRule() // 初始化 规格调用方法
 // 基础信息
 
 // 商品属性
@@ -1766,7 +1778,7 @@ export const SPECS_DIY = reactive({
 export class Spec {
 
 
-    rule = undefined;// 规格-规则
+    rule = productRule.info.value;// 规格-规则
 
     // 规格模式：自定义模式、系统推荐模式
     type_formdata = reactive({
@@ -1986,6 +1998,7 @@ export class Spec {
     recommendation_add={
 
         load:()=>{
+
             console.log('初始化规格')
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
             
@@ -1995,11 +2008,16 @@ export class Spec {
             // 初始化 推荐规格表单配置
             this.recommendation_add.set_load_spec_diy_obj();
         },
+
         // 推荐规格可选项目
         set_load_selected:()=>{
 
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
             
+            console.log(this.rule)
+
+            return
+
             this.rule.required_spec_details.forEach((obj, index)=>{
 
                 let name = obj.sell_property_name
@@ -2035,6 +2053,10 @@ export class Spec {
             
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
             
+            console.log(this.rule)
+
+            return
+
             // 迭代 推荐规格
             this.rule.required_spec_details.forEach((obj, index)=>{
 

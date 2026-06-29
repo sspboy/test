@@ -200,6 +200,7 @@ export default defineComponent({
         // 添加商品信息
         const show_add = () =>{
             props.data.AddDate = true;
+            props.data.AddKey++;
         }
 
         // 列表菜单切换方法

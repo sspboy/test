@@ -3,7 +3,12 @@
 <template>
   
   <!-- 动态渲染异步组件 -->
-  <add_components v-if="PAGEDATA.AddDate" :data="PAGEDATA" @add_call_back="add_call_back"/>
+  <add_components 
+    :key="PAGEDATA.AddKey"
+    v-if="PAGEDATA.AddDate" 
+    :data="PAGEDATA" 
+    @add_call_back="add_call_back"
+  />
   <edit_components v-if="PAGEDATA.EditDate" :data="PAGEDATA"/>
   <detaile_components v-if="PAGEDATA.DetaileDate" :data="PAGEDATA"/>
   <more_select :data="PAGEDATA" @moer_select_callback="sift_select"/><!--更多筛选组件-->
@@ -533,6 +538,8 @@ export default {
       innerWidth: ref(window.innerWidth - 230), // 初始化列表高度
 
       AddDate:ref(false),              // 新建显示状态
+      AddKey:ref(0),// 新建组件key
+
       EditDate:ref(false),             // 编辑显示状态
       DetaileDate:ref(false),          // 详情页显示状态
       ImageDate:ref(false),            // 图片预览显示状态

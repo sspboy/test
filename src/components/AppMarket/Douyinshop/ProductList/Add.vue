@@ -2,22 +2,40 @@
 <template>
 
     <!-- 动态渲染异步组件--选择素材 -->
-    <selectimg v-if="PAGEDATA.selectimg_open" v-on:add_img_callback="PAGEDATA.Add_Callback" :data="PAGEDATA"/>
+    <selectimg 
+        v-if="PAGEDATA.selectimg_open" 
+        v-on:add_img_callback="PAGEDATA.Add_Callback" 
+        :data="PAGEDATA"
+    />
 
     <!-- 动态渲染异步组件--选择运费模板 -->
-    <selectFreightid v-if="PAGEDATA.freighttemplate_open" v-on:freight_callback="selectfreight_callback" :data="PAGEDATA"/>
+    <selectFreightid 
+        v-if="PAGEDATA.freighttemplate_open" 
+        v-on:freight_callback="selectfreight_callback" 
+        :data="PAGEDATA"
+    />
 
     <!-- 动态渲染异步组件--选择尺码模板 -->
-    <selectsizetemplateid v-if="PAGEDATA.sizetemplate_open" v-on:sizetemplate_callback="selectsizetemplate_callback" :data="PAGEDATA"/>
+    <selectsizetemplateid 
+        v-if="PAGEDATA.sizetemplate_open" 
+        v-on:sizetemplate_callback="selectsizetemplate_callback" 
+        :data="PAGEDATA"
+    />
 
     <!--dynamic rendering asynchronous component--select brand template-->
-    <selectbrandid v-if="PAGEDATA.brand_list_open" v-on:selectbrand_callback="selectbrand_callback" :data="PAGEDATA" :FormData="CATE"/>
+    <selectbrandid 
+        v-if="PAGEDATA.brand_list_open" 
+        v-on:selectbrand_callback="selectbrand_callback" 
+        :data="PAGEDATA" 
+        :FormData="CATE"
+    />
 
     <a-modal
       v-model:open="props.data.AddDate"
       width="100%"
       wrap-class-name="full-modal"
       :footer="null"
+      :destroyOnClose="true"
     >
         <a-layout-content class="content">
 
@@ -812,7 +830,7 @@
 
                     <a-tab-pane key="2" tab="商品规格" :disabled="PAGEDATA.tab_pane_status">
 
-                        <spec_component :rule_info="Rule.info.value" />
+                        <spec_component />
 
                     </a-tab-pane>
 
@@ -1031,8 +1049,6 @@ export default defineComponent({
             // 上传按钮状态
             upload_product_loading:ref(false)
         })
-
-
 
         // 3:4长图
         const Longimg_Fun = {

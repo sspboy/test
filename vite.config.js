@@ -34,8 +34,8 @@ export default defineConfig({
       '/api': {
         // target: 'http://192.168.2.106:5000', // 家里环境
         // target: 'http://172.17.57.178:5000', // aliyun
-        // target: 'http://192.168.1.5:5000', // 公司-wifi
-        target: 'http://192.168.100.38:5000', // 公司-100网线
+        // target: 'http://192.168.11.16:5000', // 公司-wifi
+        target: 'http://192.168.100.15:5000', // 公司-100网线
 
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '') // 替代 pathRewrite

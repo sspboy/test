@@ -428,7 +428,6 @@ props: {
     // 上传商品发布规则
     rule_info: {
       type: Object,
-      default: ''
     }
 },
   
@@ -437,9 +436,9 @@ props: {
 
     const spec = new Spec() 
     
-    spec.rule = props.rule_info.product_spec_rule; // 规格规则
+    // spec.rule = props.rule_info.product_spec_rule; // 规格规则
     
-    console.log('sku-规则',props.rule_info.sku_rule)
+    // console.log('sku-规则',props.rule_info.sku_rule)
 
     spec.recommendation_add.load(); // 初始化 推荐规格
     

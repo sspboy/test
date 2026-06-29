@@ -89,7 +89,7 @@
         </a-input-group>
       </a-col>
       <a-col :span="24" style="text-align: center;margin-top: 12px;">
-        <a-button type="primary">填写商品信息</a-button>
+        <a-button type="primary" @click="Pic_Fun.fill_in_product_info">填写商品信息</a-button>
 
       </a-col>
     </a-row>
@@ -125,6 +125,14 @@ export default defineComponent({
   emits: ['update', 'change'],
   
   setup(props, { emit, attrs, slots, expose }) {
+
+    // 初始化表单内容
+    // Pic_Fun.PicList=[]
+    // Pic_Fun.name=undefined
+
+
+
+
 
     const count = ref(0)
     const title = ref('类目预测')
