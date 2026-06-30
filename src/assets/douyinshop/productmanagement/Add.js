@@ -1077,10 +1077,12 @@ export const step_formdata_rule = {
 export class Fulfillment {
 
     // 加载履约方式：：渲染支持的发货方式
-    load(data){
+    load(){
 
-        var data_obj = toRaw(data)
-        console.log(data_obj)
+        var data_obj = toRaw(productRule.info.value)
+
+        console.log('发货模式-读取规则',data_obj)
+
         var fulfillment_rule = data_obj.fulfillment_rule
 
         Object.keys(fulfillment_rule).forEach(key=>{
@@ -1626,7 +1628,7 @@ export class StockFun {
 
 export class Quality  {
     
-    rule = undefined;
+    rule = productRule.info.value;
     list = ref([]); // 列表数据源头
 
     // 素材组件参数

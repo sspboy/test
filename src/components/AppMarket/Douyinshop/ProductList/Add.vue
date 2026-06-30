@@ -51,7 +51,7 @@
                         <div style="margin: 0 40px 0 10px;font-size:18px;font-weight:bold;">新建商品</div>
                     </template>
 
-                    <a-tab-pane key="0" tab="基础信息" :disabled="PAGEDATA.tab_pane_status">
+                    <a-tab-pane key="0" tab="基础信息">
 
                         <a-row>
                             <!--白底图 -- white_back_ground_pic_url -->
@@ -312,7 +312,7 @@
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="1" tab="商品属性" >
+                    <a-tab-pane key="1" tab="商品属性">
 
                        <div style="width: 100%;">                  
 
@@ -828,20 +828,20 @@
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="2" tab="商品规格" :disabled="PAGEDATA.tab_pane_status">
+                    <a-tab-pane key="2" tab="商品规格">
 
                         <spec_component />
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="3" tab="库存发货" :disabled="PAGEDATA.tab_pane_status">
+                    <a-tab-pane key="3" tab="库存发货" >
                         
                         <!--发货模式 组件-->
-                        <Preselltype_component :rule_info="Rule.info.value"/>
+                        <Preselltype_component />
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="4" tab="描述详情" :disabled="PAGEDATA.tab_pane_status">
+                    <a-tab-pane key="4" tab="描述详情" >
 
                         <div style="margin: 0 0 10px 0;">
 
@@ -879,9 +879,9 @@
                         </div>
                     </a-tab-pane>
 
-                    <a-tab-pane key="5" tab="资质规则" :disabled="PAGEDATA.tab_pane_status">
+                    <a-tab-pane key="5" tab="资质规则" >
                         <!--资质 组件-->
-                        <quality_component :rule_info="Rule.info.value"/>
+                        <quality_component />
                     </a-tab-pane>
 
                 </a-tabs>
@@ -986,12 +986,13 @@ export default defineComponent({
         const buttonload = ref(true)            // 新建按钮loading状态；
         const activeKey = ref('0');             // 默认选项卡
 
-        // 响应式数据
-        CATE.cate_value.value = undefined
+        
+        CATE.cate_status.value = true;  // 类目预测初始化 
+
+
 
         const Fulfill = new Fulfillment()       // 履约初始化
         
-
         // 规格传值 到 库存发货
 
         // 添加商品配置
@@ -1003,7 +1004,6 @@ export default defineComponent({
             brand_list_open:false,          // 品牌列表-组件显示状态配置
             setimg_name:'',                 // 添加图片的对象['PicList','long_img_List','white_img','video','des']
             sku_img_obj:'',                 // 规格图片对象
-            tab_pane_status:true,          // 选项卡禁用状态
 
             // 图片组件获取地址后添加到页面容器：：：回调方法
             Add_Callback:(data)=>{
@@ -1579,14 +1579,7 @@ export default defineComponent({
         };
 
 
-        // 监听商品类目是否填写：：如果填写了商品类目，才能填写其它商品信息
-        watch(CATE.cate_value ,(newVal, oldVal)=>{
 
-            if(CATE.cate_value.value !== '' && CATE.cate_value.value !== undefined){
-                PAGEDATA.tab_pane_status = false;
-            }
-
-        })
 
         return{
             PAGEDATA,

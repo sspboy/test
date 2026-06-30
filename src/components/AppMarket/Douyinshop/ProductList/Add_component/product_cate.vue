@@ -126,10 +126,16 @@ export default defineComponent({
   
   setup(props, { emit, attrs, slots, expose }) {
 
-    // 初始化表单内容
-    // Pic_Fun.PicList=[]
-    // Pic_Fun.name=undefined
+    // 初始化表单内容=开始
+    Pic_Fun.PicList=[]
+    Pic_Fun.name=undefined
+    CATE.cate_value.value = undefined
+    CATE.options.value=[]
 
+    // 响应式数据
+    CATE.select_loading.value = true;
+    
+    // 初始化表单内容=结束
 
 
 

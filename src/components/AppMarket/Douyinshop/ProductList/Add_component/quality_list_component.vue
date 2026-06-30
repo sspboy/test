@@ -107,19 +107,13 @@ export default defineComponent({
     //   required: true,
     //   default: () => ({})
     },
-    // 资质规则
-    rule_info: {
-      type: Object,
-      default: ''
-    }
+
   },
     
   setup(props, { emit, attrs, slots, expose }) {
     
-    console.log('资质规则',props.rule_info)
 
     const quality = new Quality(); // 实例 初始化
-    quality.rule = props.rule_info; // 加载规则
 
     // 调用渲染方法
     quality.add.load();

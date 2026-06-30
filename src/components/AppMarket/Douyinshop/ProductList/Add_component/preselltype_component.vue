@@ -362,17 +362,13 @@ export default defineComponent({
         data:{type:Object},
         specs_info:{type:Object},// 获取规格spec
         // 发货规则
-        rule_info: {
-            type: Object,
-            default: ''
-        }
+
     },
     setup(props,ctx) {
 
         const Fulfill = new Fulfillment()
         const Stock = new StockFun()
 
-        Fulfill.load(props.rule_info)           //加载发货规则
         
 
 
