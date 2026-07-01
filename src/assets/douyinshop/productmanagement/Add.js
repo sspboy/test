@@ -88,8 +88,6 @@ export const Pic_Fun = reactive({
 
         if(CATE.cate_value.value){// 填写了分类
 
-            console.log('请选择商品类目', CATE.cate_value.value)
-            console.log('跳转到-基本信息')// 进入商品信息填写
             CATE.cate_status.value = false; // 显示填写信息
 
         }else{ // 未填写分类
@@ -98,6 +96,10 @@ export const Pic_Fun = reactive({
 
         }
 
+        // 测试用流程
+        productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
+        // 加载属性
+        CATE.loadFormat();// 加载对应商品属性
     }
 
 })
@@ -531,8 +533,10 @@ export const CATE = {
             tool.Fun_.message('success', '预测分类成功！');
 
             CATE.options.value = cate_list;
-            
+            // console.log('可选分类', cate_list)
+
             CATE.cate_value.value = cate_list[0].value; // 下拉选择赋值
+            // console.log('预测类目', CATE.cate_value.value)
 
             CATE.loadFormat();// 加载对应商品属性
             
@@ -542,8 +546,6 @@ export const CATE = {
 
             CATE.select_loading.value = false; // 下拉禁用状态停止
 
-            // productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
-
         }else{
 
             tool.Fun_.message('error', '预测分类失败，请更换主图或标题！');
@@ -552,6 +554,8 @@ export const CATE = {
 
             return false
         }
+
+
     },
 
     // 迭代预测类目选项obj
@@ -771,7 +775,7 @@ export const Predict_message = reactive({
 })
 // 预测类目==开始
 
-// 获取商品发布规则方法
+
 // 通过执行Rule.get() 获取数据
 export class ProductUpdateRule {
 
@@ -789,7 +793,7 @@ export class ProductUpdateRule {
             return
         }
 
-        console.log('当前类目', CATE.cate_value.value)
+        // console.log('当前类目', CATE.cate_value.value)
 
         axios.post(API.AppSrtoreAPI.dou_product.addrule, {
 
@@ -799,7 +803,7 @@ export class ProductUpdateRule {
 
             this.info.value = response.data.data; // 规则赋值
 
-            console.log(this.info.value)
+            // console.log(this.info.value)
 
         }).catch((error) => {
 
@@ -831,7 +835,272 @@ export class ProductUpdateRule {
 
 }
 const productRule = new ProductUpdateRule() // 初始化 规格调用方法
-// 基础信息
+// 获取商品发布规则方法===结束、
+
+
+// 基础信息===========开始
+
+// 基础信息【验证】
+export const Basedata = reactive({
+    freighttemplate_open:false,     // 运费模板-图片显示状态配置
+    sizetemplate_open:false,        // 尺码模板-图片显示状态配置
+    brand_list_open:false,          // 品牌列表-组件显示状态配置
+    // 变更添加素材类型
+    change_material_type:(typeName)=>{
+        PAGEDATA.selectimg_open = true;
+        PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
+    },
+    // 规格图片
+    change_spec_imng_fun:(typeName, item)=>{
+        PAGEDATA.selectimg_open = true;
+        PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
+        PAGEDATA.sku_img_obj = item;
+    },
+    // 选择尺码
+    chang_sizetemplate:()=>{
+        PAGEDATA.sizetemplate_open = true;
+    },
+    // 选择运费模板
+    chang_freighttemplate:()=>{
+        PAGEDATA.freighttemplate_open = true;
+    },
+    // 选择品牌
+    change_brand_list:()=>{
+        PAGEDATA.brand_list_open = true;
+    },
+    // 选择运费模板==回调方法
+    selectfreight_callback: (data)=>{
+        // 填充id
+        var f_id = data.id
+        var f_name = data.name
+        // 填充名称
+        formState.freight_id.value = f_id
+        formState.freight_id.name = f_name
+        // console.log(formState.freight_id)
+    },
+
+    // 选择尺码模板==回调方法
+    selectsizetemplate_callback: (data)=>{
+        // 填充id
+        var s_id = data.id;
+        var s_name = data.name;
+        // 填充名称
+        formState.size_info_template_id.value = s_id
+        formState.size_info_template_id.name = s_name
+        // console.log(formState.size_info_template_id)
+    },
+
+    // 选择品牌回调方法
+    selectbrand_callback: (data) => {
+            // 填充id
+        formState.standard_brand_id.brand_id = data.brand_id;
+        formState.standard_brand_id.brand_name = data.name_cn;
+        console.log(data)
+    }
+})
+
+export const formRef = ref();// 验证对象
+// 表单数据绑定
+export const formState = reactive({
+    product_type:'0',               // 商品类别
+    mobile:'18888888888',           // 客服电话
+    name:undefined,                 // 商品标题
+    recommend_remark:undefined,     // 推荐语：不能含emoj表情
+    standard_brand_id:{brand_id: undefined, brand_name: undefined},    //品牌id
+    pay_type:'1',                   // 支付类型
+    freight_id:{"name":"包邮","value":0},           // 运费模板
+    size_info_template_id:{"name":undefined,"value":undefined},// 尺码模板
+    commit:'false',                 // 提交
+    remark:undefined,               // 商家备注
+    presell_type:undefined,         // 发货模式
+    presell_delay_time:undefined,   // 预售发货时间
+    
+    // 限购
+    limit_per_buyer:undefined,          // 每个用户累计限购件数
+    maximum_per_order:undefined,        // 每个用户每次下单限购件数
+    minimum_per_order:undefined,        // 每个用户每次下单至少购买的件数
+
+    // 导购短标题
+    short_product_name:undefined,
+
+    // 售后保障-7天无理由 "after_sale_service":"{\"supply_day_return_selector\":\"7-0\"}" 
+    after_sale_service:"1",
+    
+})
+
+// 基础信息验证规则
+export const rules = {
+
+    // 标题
+    name: [
+        {
+            required: true,
+            message: '商品标题不能为空',
+            trigger: 'change',
+        },
+        {
+            min: 4,
+            max: 30,
+            message: '至少4个汉字,不超过30个汉字,不能含emoj表情.',
+            trigger: 'blur',
+        },
+    ],
+
+    // 客服电话
+    mobile:[{
+            required: true,
+            message: '客服电话不能为空',
+            trigger: 'change',
+    }],
+
+    // 商品类型
+    product_type:[{
+        required: true,
+        message: '类型不能为空!',
+        trigger: 'change',
+    }],
+
+    // 支付方式
+    pay_type:[
+        {
+            required: true,
+            message: '支付方式不能为空!',
+            trigger: 'change',
+    }],
+
+    // 提交方式
+    commit:[
+        {
+            required: true,
+            message: '提交方式不能为空!',
+            trigger: 'change',
+    }],
+    // 运费模板
+    freight_id:[
+        {
+            required: true,
+            message: '运费模板不能为空!',
+            trigger: 'change',
+    }],
+}
+// 3:4长图
+export const Longimg_Fun = {
+
+    PicList:ref([]),
+    // 删除长图
+    del:(idx)=>{
+        Longimg_Fun.PicList.value.splice(idx, 1);
+    },
+    // 添加长图
+    add:(data)=>{
+        data.forEach((obj,idx)=>{
+            Longimg_Fun.PicList.value.push(obj)
+        })
+        if(Longimg_Fun.PicList.value.length > 5){
+            Longimg_Fun.PicList.value = Longimg_Fun.PicList.value.slice(0, 5)
+        }
+    },
+    // 获取长图
+    get:()=>{
+
+        var res = Longimg_Fun.PicList.value;
+
+        if(res.length >0){
+
+            var res_text = ''
+            res.forEach((obj,index)=>{
+                res_text = res_text + obj.byte_url  + '|'
+            })
+
+            return res_text.slice(0, -1)
+
+        }else{
+            return false
+        }
+    }
+}
+
+// 白底图
+export const whiteimg_Fun={
+
+    PicList:ref([]),
+
+    // 删除白底图
+    del:()=>{
+        whiteimg_Fun.PicList.value.length = 0
+    },
+    // 添加白底图
+    add:(data)=>{
+        whiteimg_Fun.PicList.value.length = 0;
+        var obj = data[0];
+        var material_type = obj.material_type;
+        if(material_type == 'photo'){
+            var photo_info = obj.photo_info;
+            var pic_width = photo_info.width;      // 宽度
+            var pic_height = photo_info.height;     // 高度
+            if(pic_width == pic_height){
+                whiteimg_Fun.PicList.value.push(obj)
+            }else{
+                tool.Fun_.message('info','主图长宽比例需要1:1,不小于600X600.')
+            }
+        }else if(material_type == 'video'){
+            tool.Fun_.message('info','【白底图】不能选择视频，请选择图片素材！')
+        }
+    },
+    // 验证白底图
+    get:()=>{
+        var res = whiteimg_Fun.PicList.value;
+        if(res.length >0){
+            return res[0].byte_url
+        }else{
+            return false
+        }
+    }
+}
+
+// 视频video
+export const video_Fun={
+
+    PicList:ref([]),
+
+    // 删除视频
+    del:()=>{
+        video_Fun.PicList.value.length = 0;
+    },
+    // 添加视频
+    add:(data)=>{
+
+        var obj = data[0]
+        var material_type = obj.material_type; // 对象类型图片、视频
+
+        // 判断添加素材类型：仅允许添加
+        if(material_type == 'photo'){
+            tool.Fun_.message('info', '请选择视频文件')
+        }else if(material_type == 'video'){
+            video_Fun.PicList.value.length = 0;
+            video_Fun.PicList.value.push(data[0])
+        }
+    },
+    get:()=>{
+
+        var res = video_Fun.PicList.value;
+
+        if(res.length >0){
+            
+            return res
+        
+        }else{
+        
+            return false
+        
+        }
+    }
+}
+
+
+// 基础信息===========结束
+
+
 
 // 商品属性
 

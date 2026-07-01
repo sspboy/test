@@ -1,8 +1,5 @@
 <!--
     类目预测
-    主图
-    标题
-    类目
 -->
 <template>
 
@@ -100,7 +97,7 @@
 
 <script>
 import { defineComponent,defineAsyncComponent, ref, computed, watch, onMounted } from 'vue'
-import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutlined} from '@ant-design/icons-vue';
+import { DeleteOutlined} from '@ant-design/icons-vue';
 
 import { 
   Pic_Fun,CATE
@@ -129,9 +126,21 @@ export default defineComponent({
     // 初始化表单内容=开始
     Pic_Fun.PicList=[]
     Pic_Fun.name=undefined
-    CATE.cate_value.value = undefined
-    CATE.options.value=[]
-
+    CATE.cate_value.value = 1000003346 // undefined // 1000003346
+    CATE.options.value=[
+        {
+            "value": 1000003346,
+            "label": "服装>女装>连衣裙"
+        },
+        {
+            "value": 1000003327,
+            "label": "服装>特殊服装>婚纱/礼服"
+        },
+        {
+            "value": 1000003330,
+            "label": "服装>特殊服装>其他特殊服装"
+        }
+    ]
     // 响应式数据
     CATE.select_loading.value = true;
     
@@ -139,44 +148,17 @@ export default defineComponent({
 
 
 
-
-    const count = ref(0)
-    const title = ref('类目预测')
-    
-    // 计算属性
-    const displayTitle = computed(() => {
-      return `${title.value} - ${props.data2 || '默认'}`
-    })
-    
-    // 方法
-    const handleClick = () => {
-      count.value++
-      emit('update', { count: count.value, data: props.data })
-    }
-    
-    // 监听器
-    watch(() => props.data, (newVal, oldVal) => {
-      console.log('data changed:', newVal)
-    }, { deep: true })
     
     // 生命周期
     onMounted(() => {
-      console.log('预测类目 组件已挂载')
+      // console.log('预测类目 组件已挂载')
       // 每次挂载 清空 数据
     })
     
-    // 暴露给父组件的方法
-    expose({
-      reset: () => { count.value = 0 }
-    })
     
     return {
       Pic_Fun,
       CATE,
-      count,
-      title,
-      displayTitle,
-      handleClick
     }
   }
 })
