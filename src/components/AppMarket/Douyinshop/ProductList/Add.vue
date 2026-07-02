@@ -634,20 +634,6 @@
 
             </div>
 
-            <!--底部按钮--开始-->
-            <!-- <a-affix :offset-bottom="1" v-if="CATE.cate_status.value === false">
-                <div style="margin: 0 auto;text-align: center;padding: 10px 0 0 0;">
-                    <a-space align="end" style="height: 100%;">
-                        <a-button type="primary" @click="handleOk" :loading="PAGEDATA.upload_product_loading">发布到线上售卖</a-button>
-                        <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
-                        <a-button @click="closed">关闭</a-button>
-                    </a-space>
-                </div>
-            </a-affix> -->
-            <!--底部按钮--结束-->
-
-
-
         </a-layout-content>
 
         <!--悬浮按钮-->
@@ -670,9 +656,9 @@
         <!--底部按钮-->
         <template #footer>
             <div v-if="CATE.cate_status.value === false" style="display: flex; justify-content: center; gap: 8px;">
-                <a-button type="primary" @click="">发布到线上</a-button>
-                <a-button @click="">放入草稿箱</a-button>
-                <a-button @click="">取消</a-button>
+                <a-button type="primary" @click="" :loading="PAGEDATA.upload_product_loading">发布到线上</a-button>
+                <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
+                <a-button>取消</a-button>
 
             </div>
         </template>
@@ -955,13 +941,13 @@ export default defineComponent({
             var product_data_obj = {} // 商品上传JSON
 
             // 主图
-            // if(Pic_Fun.get()){// 不为空
-            //     product_data_obj.pic = Pic_Fun.get()
-            // }else{
-            //     tool.Fun_.message('error','主图不能为空！')
-            //     activeKey.value = '1'
-            //     return
-            // }
+            if(Pic_Fun.get()){// 不为空
+                product_data_obj.pic = Pic_Fun.get()
+            }else{
+                tool.Fun_.message('error','主图不能为空！')
+                activeKey.value = '1'
+                return
+            }
 
             // 白底图
             if(whiteimg_Fun.get()){

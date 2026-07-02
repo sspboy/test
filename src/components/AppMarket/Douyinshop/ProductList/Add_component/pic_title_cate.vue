@@ -4,8 +4,16 @@
 
 -->
  <template>
+
+    <!-- 动态渲染异步组件--选择素材 -->
+    <selectimg 
+        v-if="Basedata.selectimg_open" 
+        v-on:add_img_callback="Basedata.Add_Callback" 
+        :data="Basedata"
+    />
+
    <a-button
-    @click="console.log('获取基础信息')"
+    @click="Basedata.get_basedata"
    >获取基础信息</a-button>
 
     <a-row>
@@ -150,40 +158,6 @@
 
             <a-col :span="8">
                 <a-form-item
-                    label="推荐语"
-                    name="recommend_remark"
-                >
-                    <a-input v-model:value="formState.recommend_remark" 
-                    autoComplete="off" 
-                    show-count :maxlength="30" 
-                    placeholder="输入商品推荐语"
-                    />
-                </a-form-item>
-            </a-col>
-
-            <a-col :span="8">
-                <a-form-item
-                    label="商家备注"
-                    name="remark"
-                >
-                    <a-input v-model:value="formState.remark" autoComplete="off" placeholder="商家可见备注"  show-count :maxlength="30" />
-                </a-form-item>
-            </a-col>
-
-            <a-col :span="8" >
-                <a-form-item 
-                    label="售后服务" 
-                    name="after_sale_service"
-                >
-                    <a-select v-model:value="formState.after_sale_service" placeholder="选择方式">
-                        <a-select-option value="1">支持7天无理由</a-select-option>
-                        <a-select-option value="0">不支持7天无理由</a-select-option>
-                    </a-select>
-                </a-form-item>
-            </a-col>
-
-            <a-col :span="8">
-                <a-form-item
                     label="运费模板"
                     name="freight_id"
                 >
@@ -216,6 +190,40 @@
                         <a-button @click="Basedata.chang_sizetemplate">选择</a-button>
                     </a-input-group>
                 </a-form-item>                                    
+            </a-col>
+
+            <a-col :span="8">
+                <a-form-item
+                    label="推荐语"
+                    name="recommend_remark"
+                >
+                    <a-input v-model:value="formState.recommend_remark" 
+                    autoComplete="off" 
+                    show-count :maxlength="30" 
+                    placeholder="输入商品推荐语"
+                    />
+                </a-form-item>
+            </a-col>
+
+            <a-col :span="8">
+                <a-form-item
+                    label="商家备注"
+                    name="remark"
+                >
+                    <a-input v-model:value="formState.remark" autoComplete="off" placeholder="商家可见备注"  show-count :maxlength="30" />
+                </a-form-item>
+            </a-col>
+
+            <a-col :span="8" >
+                <a-form-item 
+                    label="售后服务" 
+                    name="after_sale_service"
+                >
+                    <a-select v-model:value="formState.after_sale_service" placeholder="选择方式">
+                        <a-select-option value="1">支持7天无理由</a-select-option>
+                        <a-select-option value="0">不支持7天无理由</a-select-option>
+                    </a-select>
+                </a-form-item>
             </a-col>
 
             
@@ -268,7 +276,7 @@
  </template>
  
  <script>
- import { defineComponent, ref, computed, watch, onMounted } from 'vue'
+ import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted } from 'vue'
  import { 
   formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata
 } from '@/assets/douyinshop/productmanagement/Add';
@@ -278,7 +286,9 @@ import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutli
    name: '基础信息',
    
    components: {
-     DeleteOutlined
+     DeleteOutlined,
+    selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
+
    },
    
    props: {
@@ -319,6 +329,7 @@ import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutli
      })
      
      return {
+        formRef,
        count,
        title,
        displayTitle,

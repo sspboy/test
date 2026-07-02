@@ -769,10 +769,11 @@ export const CATE = {
     }
 
 }
-export const Predict_message = reactive({
-    pic:[],
-    name:'',
-})
+
+// export const Predict_message = reactive({
+//     pic:[],
+//     name:'',
+// })
 // 预测类目==开始
 
 
@@ -842,32 +843,39 @@ const productRule = new ProductUpdateRule() // 初始化 规格调用方法
 
 // 基础信息【验证】
 export const Basedata = reactive({
+
     freighttemplate_open:false,     // 运费模板-图片显示状态配置
     sizetemplate_open:false,        // 尺码模板-图片显示状态配置
     brand_list_open:false,          // 品牌列表-组件显示状态配置
+    selectimg_open:false,           // 选择图片素材-组件显示状态配置
+    setimg_name:undefined,              // 指定添加图片的对象
+
     // 变更添加素材类型
     change_material_type:(typeName)=>{
-        PAGEDATA.selectimg_open = true;
-        PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
+        Basedata.selectimg_open = true;
+        Basedata.setimg_name = typeName; // 指定添加图片的对象
     },
     // 规格图片
     change_spec_imng_fun:(typeName, item)=>{
-        PAGEDATA.selectimg_open = true;
-        PAGEDATA.setimg_name = typeName; // 指定添加图片的对象
-        PAGEDATA.sku_img_obj = item;
+        Basedata.selectimg_open = true;
+        Basedata.setimg_name = typeName; // 指定添加图片的对象
+        Basedata.sku_img_obj = item;
     },
     // 选择尺码
     chang_sizetemplate:()=>{
-        PAGEDATA.sizetemplate_open = true;
+        Basedata.sizetemplate_open = true;
     },
+
     // 选择运费模板
     chang_freighttemplate:()=>{
-        PAGEDATA.freighttemplate_open = true;
+        Basedata.freighttemplate_open = true;
     },
+
     // 选择品牌
     change_brand_list:()=>{
-        PAGEDATA.brand_list_open = true;
+        Basedata.brand_list_open = true;
     },
+
     // 选择运费模板==回调方法
     selectfreight_callback: (data)=>{
         // 填充id
@@ -892,14 +900,120 @@ export const Basedata = reactive({
 
     // 选择品牌回调方法
     selectbrand_callback: (data) => {
-            // 填充id
+        // 填充id
         formState.standard_brand_id.brand_id = data.brand_id;
         formState.standard_brand_id.brand_name = data.name_cn;
         console.log(data)
+    },
+
+    // 选择图片回调
+    Add_Callback:(data)=>{
+
+        var type = Basedata.setimg_name;        // 添加类型
+        if(type == 'long_img_List'){            // 判断回调type：：：3:4长图添加
+            Longimg_Fun.add(data)               // 添加长图方法
+        }else if(type == 'white_img'){          // 判断回调type：：：白底图添加
+            whiteimg_Fun.add(data)              // 添加白底图方法
+        }else if(type == 'video_info'){
+            video_Fun.add(data)                 // 添加视频方法
+        }
+    },
+
+    // 转移售后服务0-8
+    after_sale_list:(data)=> {
+
+        var value = "7-"+ data
+        return {"supply_day_return_selector":value}
+        // {value:0,name:'不支持退换'},
+        // {value:1,name:'支持7天无理由退换'},
+        // {value:2,name:'支持15天无理由退换'},
+        // {value:3,name:'支持30天无理由退换'},
+        // {value:4,name:'支持60天无理由退换'},
+        // {value:5,name:'支持90天无理由退换'},
+        // {value:6,name:'支持180天无理由退换'},
+        // {value:7,name:'支持365天无理由退换'},
+        // {value:8,name:'其他售后服务'}
+    },
+
+    
+    // 获取基础信息
+    get_basedata:()=>{
+
+        var product_data_obj = {} // 商品上传JSON
+
+        // 验证表单必填
+        formRef.value.validate().then((res) => {
+            
+            console.log(res)
+
+            // 主图验证
+            if(Pic_Fun.get()){// 不为空
+                product_data_obj.pic = Pic_Fun.get()
+            }else{
+                tool.Fun_.message('error','主图不能为空！')
+                // activeKey.value = '1'
+                return
+            }
+
+            // 白底图
+            if(whiteimg_Fun.get()){
+                product_data_obj.white_back_ground_pic_url = whiteimg_Fun.get();// 白底图：url(仅素材中心url有效)，白底图比例要求1:1
+                console.log('白底图', whiteimg_Fun.get())
+            }
+
+            // 长图
+            if(Longimg_Fun.get()){
+                product_data_obj.long_pic_url = Longimg_Fun.get();// 长图
+                console.log('长图', Longimg_Fun.get())
+            }
+
+            // 视频信息
+            if(video_Fun.get()){
+                var video_obj = video_Fun.get()
+                var material_video_id = video_obj[0].video_info.vid;
+                product_data_obj.material_video_id = material_video_id;// 视频id
+                // console.log('视频素材id', material_video_id)
+            }
+
+            // 分类
+            var cate_obj = CATE.get_cate()
+            if(cate_obj){
+                // 正常获取分类
+                product_data_obj.category_leaf_id = cate_obj;
+            }else{
+                return
+            }
+
+            // 正常获取
+            product_data_obj.name = Pic_Fun.name;              // 标题-必填
+            product_data_obj.product_type = res.product_type;  // 商品类型-必填
+            product_data_obj.recommend_remark = res.recommend_remark;// 推荐语
+            product_data_obj.remark = res.remark;              // 商家备注
+            product_data_obj.pay_type = res.pay_type;          // 支付方式
+            product_data_obj.mobile = res.mobile;              // 电话
+            product_data_obj.freight_id = res.freight_id.value;// 运费模板
+            product_data_obj.size_info_template_id = res.size_info_template_id.value// 尺码模板
+            product_data_obj.standard_brand_id = res.standard_brand_id.brand_id;// 品牌id
+            product_data_obj.minimum_per_order = res.minimum_per_order; // 最少下单购买件数
+            product_data_obj.maximum_per_order = res.maximum_per_order; // 最多下单购买件数
+            product_data_obj.limit_per_buyer = res.limit_per_buyer; // 累计购买件数
+            product_data_obj.short_product_name = res.short_product_name;// 导购短标题
+            product_data_obj.after_sale_service = Basedata.after_sale_list(res.after_sale_service);//售后服务
+
+            console.log('获取基础信息，验证通过', product_data_obj)
+            
+        }).catch((error) => {
+            
+            console.log('验证失败', error)
+
+        })
+
     }
+
 })
 
 export const formRef = ref();// 验证对象
+
 // 表单数据绑定
 export const formState = reactive({
     product_type:'0',               // 商品类别
@@ -912,8 +1026,6 @@ export const formState = reactive({
     size_info_template_id:{"name":undefined,"value":undefined},// 尺码模板
     commit:'false',                 // 提交
     remark:undefined,               // 商家备注
-    presell_type:undefined,         // 发货模式
-    presell_delay_time:undefined,   // 预售发货时间
     
     // 限购
     limit_per_buyer:undefined,          // 每个用户累计限购件数
@@ -983,6 +1095,7 @@ export const rules = {
             trigger: 'change',
     }],
 }
+
 // 3:4长图
 export const Longimg_Fun = {
 
@@ -1096,7 +1209,6 @@ export const video_Fun={
         }
     }
 }
-
 
 // 基础信息===========结束
 
