@@ -8,27 +8,7 @@
         :data="PAGEDATA"
     />
 
-    <!-- 动态渲染异步组件--选择运费模板 -->
-    <selectFreightid 
-        v-if="PAGEDATA.freighttemplate_open" 
-        v-on:freight_callback="selectfreight_callback" 
-        :data="PAGEDATA"
-    />
 
-    <!-- 动态渲染异步组件--选择尺码模板 -->
-    <selectsizetemplateid 
-        v-if="PAGEDATA.sizetemplate_open" 
-        v-on:sizetemplate_callback="selectsizetemplate_callback" 
-        :data="PAGEDATA"
-    />
-
-    <!--dynamic rendering asynchronous component--select brand template-->
-    <selectbrandid 
-        v-if="PAGEDATA.brand_list_open" 
-        v-on:selectbrand_callback="selectbrand_callback" 
-        :data="PAGEDATA" 
-        :FormData="CATE"
-    />
 
     <a-modal
       v-model:open="props.data.AddDate"
@@ -53,7 +33,7 @@
                     </template>
 
                     <a-tab-pane key="0" tab="基础信息">
-                            
+                        <!--基础信息 组件-->
                         <pic_title_cate_component />
                     
                     </a-tab-pane>
@@ -575,7 +555,7 @@
                     </a-tab-pane>
 
                     <a-tab-pane key="2" tab="商品规格">
-
+                        <!--规格 组件-->
                         <spec_component />
 
                     </a-tab-pane>
@@ -626,8 +606,10 @@
                     </a-tab-pane>
 
                     <a-tab-pane key="5" tab="资质规则" >
+
                         <!--资质 组件-->
                         <quality_component />
+
                     </a-tab-pane>
 
                 </a-tabs>
@@ -656,7 +638,7 @@
         <!--底部按钮-->
         <template #footer>
             <div v-if="CATE.cate_status.value === false" style="display: flex; justify-content: center; gap: 8px;">
-                <a-button type="primary" @click="" :loading="PAGEDATA.upload_product_loading">发布到线上</a-button>
+                <a-button type="primary" @click="uploadproduct.get()" :loading="PAGEDATA.upload_product_loading">发布到线上</a-button>
                 <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
                 <a-button>取消</a-button>
 
@@ -672,7 +654,7 @@ import { Empty } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
-import { Fulfillment,Spec,CATE } from '@/assets/douyinshop/productmanagement/Add';
+import { Fulfillment,Spec,CATE,UploadProduct } from '@/assets/douyinshop/productmanagement/Add';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 
@@ -696,10 +678,7 @@ export default defineComponent({
         product_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/product_cate.vue')),// 类目预测
         pic_title_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/pic_title_cate.vue')),// 基础信息
         selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
-        selectFreightid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templatefreight/selectFreightId.vue')),// 运费模板组件
-        selectsizetemplateid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/selectsizetemplateid.vue')),// 尺码模板组件
         format_cp:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/edit_component/format_cp.vue')),// 商品属性组件
-        selectbrandid:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/brand/brandlist.vue')),// 商品品牌组件
         Preselltype_component:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/Add_component/preselltype_component.vue')),// 发货模式组件
         quality_component:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/Add_component/quality_list_component.vue')),// 资质组件
         spec_component:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/Add_component/spec_component.vue')),// 规格组件
@@ -734,7 +713,7 @@ export default defineComponent({
         CATE.cate_status.value = true;          // 类目预测初始化 
 
         const Fulfill = new Fulfillment()       // 履约初始化
-        
+        const uploadproduct = new UploadProduct()  // 上传商品
 
         // 添加商品配置
         const PAGEDATA=reactive({
@@ -1114,6 +1093,7 @@ export default defineComponent({
             simpleImage,
             // -------------描述详情
             editorRef,DES,
+            uploadproduct,
             // 提交，关闭
             handleOk,closed,
             selectfreight_callback,

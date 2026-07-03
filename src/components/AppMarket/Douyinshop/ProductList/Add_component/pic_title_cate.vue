@@ -12,15 +12,33 @@
         :data="Basedata"
     />
 
-   <a-button
-    @click="Basedata.get_basedata"
-   >获取基础信息</a-button>
+    <!-- 动态渲染异步组件--选择运费模板 -->
+    <selectFreightid 
+        v-if="Basedata.freighttemplate_open" 
+        v-on:freight_callback="Basedata.selectfreight_callback" 
+        :data="Basedata"
+    />
+
+    <!-- 动态渲染异步组件--选择尺码模板 -->
+    <selectsizetemplateid 
+        v-if="Basedata.sizetemplate_open" 
+        v-on:sizetemplate_callback="Basedata.selectsizetemplate_callback" 
+        :data="Basedata"
+    />
+
+    <!--动态渲染异步组件--选择品牌模板 -->
+    <selectbrandid 
+        v-if="Basedata.brand_list_open" 
+        v-on:selectbrand_callback="Basedata.selectbrand_callback" 
+        :data="Basedata" 
+        :FormData="CATE"
+    />
 
     <a-row>
         <!--白底图 -- white_back_ground_pic_url -->
         <a-col :span="4">
             
-            <div style="width: 100%;height:120px;margin: 20px 0 0 0;">
+            <div style="width: 100%;height:130px;margin: 20px 0 0 0;">
 
                 <p class="img_pic" v-for="item in whiteimg_Fun.PicList.value">
 
@@ -51,7 +69,7 @@
         <!--视频 -- material_video_id -->
         <a-col :span="4">
 
-            <div style="width: 100%;height:120px;margin: 20px 0 0 0;">
+            <div style="width: 100%;height:130px;margin: 20px 0 0 0;">
 
                 <p class="img_3_4_pic" v-for="item in video_Fun.PicList.value">
                     <a-image :height="80" :src="item.video_info.video_cover_url" />
@@ -78,7 +96,7 @@
         <!--3比4长图 -- long_pic_url -->
         <a-col :span="16">
             
-            <div style="width: 100%;height: 160px;margin: 20px 0 0 0;">
+            <div style="width: 100%;height: 130px;margin: 20px 0 0 0;">
 
                 <p class="img_3_4_pic" v-for="(item,index) in Longimg_Fun.PicList.value">
                     
@@ -113,7 +131,7 @@
 
     <!-- 基础信息 -->
     <a-form
-        ref="formRef"
+        ref="Base_formRef"
         name="ProductInfo"
         :model="formState"
         :rules="rules"
@@ -278,7 +296,7 @@
  <script>
  import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted } from 'vue'
  import { 
-  formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata
+  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata
 } from '@/assets/douyinshop/productmanagement/Add';
 import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutlined} from '@ant-design/icons-vue';
 
@@ -288,6 +306,9 @@ import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutli
    components: {
      DeleteOutlined,
     selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
+    selectFreightid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templatefreight/selectFreightId.vue')),// 运费模板组件
+    selectsizetemplateid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/selectsizetemplateid.vue')),// 尺码模板组件
+    selectbrandid:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/brand/brandlist.vue')),// 商品品牌组件
 
    },
    
@@ -329,7 +350,7 @@ import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutli
      })
      
      return {
-        formRef,
+        Base_formRef,
        count,
        title,
        displayTitle,
