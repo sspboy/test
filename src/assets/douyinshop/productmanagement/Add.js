@@ -104,6 +104,23 @@ export const Pic_Fun = reactive({
 
 })
 
+// 水洗标图片选择
+export const Select_shuixi_Img = reactive({
+
+    // 素材组件状态
+    selectimg_open:false,
+
+    // 选择-水洗标图片
+    change_material_type:()=>{
+        Select_shuixi_Img.selectimg_open = true;
+    },
+    // 选择-水洗标图片回调
+    Add_Callback:(data)=>{
+        console.log('选择水洗标图片',data)
+    },
+})
+
+
 // 分类&属性
 export const CATE = {
 
@@ -129,7 +146,7 @@ export const CATE = {
 
     // 吊牌-水洗标
     category_property_pics:ref(undefined),
-
+    
     // 自定义【面料材质】的名称
     diy_name:ref(),
 
@@ -152,6 +169,9 @@ export const CATE = {
     },
     // 对选度量衡添加限制-不超过
     add_limit:(data_list,maxnumber)=>{
+        
+        console.log('成分添加限制',data_list, maxnumber)
+
         if(data_list.length >= maxnumber){
             tool.Fun_.message('error','超过最大限制数量了，最多10个选项。')
         }else{
@@ -389,8 +409,6 @@ export const CATE = {
 
             tool.Fun_.message('error',error.errorFields[0].errors[0]);
 
-            activeKey.value = '1';
-
             return false
         })
         
@@ -626,13 +644,6 @@ export const CATE = {
         })
     },
 
-    // 清空商品属性
-    Clear_format:()=>{
-        Object.keys(CATE.format_formRef).forEach(key=>{
-            CATE.format_formRef[key] = undefined
-        })
-    },
-
     // 度量衡 多选-上传商品json-转义
     de_m_v_m:(item, data)=>{
 
@@ -770,10 +781,6 @@ export const CATE = {
 
 }
 
-// export const Predict_message = reactive({
-//     pic:[],
-//     name:'',
-// })
 // 预测类目==开始
 
 
@@ -1804,6 +1811,8 @@ export class StockFun {
         // 预售库存[切换]
         change_presale=(skumodel)=>{
 
+            console.log('切换预售库存',skumodel)
+            
             // 判断预售库存colums是否存在
             const index = skulist_formState.skucolumns.findIndex(item => item.title === '库存')
             
@@ -1827,7 +1836,9 @@ export class StockFun {
                 const index = skulist_formState.skucolumns.findIndex(item => item.title === '预售库存')
 
                 if(index > -1){
+
                     skulist_formState.skucolumns.splice(index, 1)
+                
                 }
 
             }
@@ -2071,6 +2082,25 @@ export const SPECS = reactive({
         ]),
 
 })
+// 或者更彻底的重置（完全替换整个对象）
+export const resetSPECSFull = () => {
+    Object.assign(SPECS, {
+        SpecImag: true,
+        spec_image_index: {
+            index: undefined,
+            spec_value_index: undefined,
+        },
+        Obj: ref([
+            {
+                property_name: undefined,
+                values: [{
+                    value_name: undefined,
+                    url: undefined
+                }],
+            }
+        ]),
+    })
+}
 
 //系统推荐==表单数据格式
 export const sku_diy_formRef = ref()
@@ -2086,7 +2116,7 @@ export const SPECS_DIY = reactive({
 export class Spec {
 
 
-    rule = productRule.info.value;// 规格-规则
+    rule = productRule.info.value.product_spec_rule;// 规格-规则
 
     // 规格模式：自定义模式、系统推荐模式
     type_formdata = reactive({
@@ -2119,9 +2149,6 @@ export class Spec {
             }else if(model_style === 1){// 1 推荐规格
                 
             }
-
-            
-
         }
     })
 
@@ -2307,7 +2334,6 @@ export class Spec {
 
         load:()=>{
 
-            console.log('初始化规格')
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
             
             // 初始化 推荐规格可选项目
@@ -2321,11 +2347,9 @@ export class Spec {
         set_load_selected:()=>{
 
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
+
+            console.log('推荐规格', this.rule)
             
-            console.log(this.rule)
-
-            return
-
             this.rule.required_spec_details.forEach((obj, index)=>{
 
                 let name = obj.sell_property_name
@@ -2360,12 +2384,10 @@ export class Spec {
         set_load_spec_diy_obj:()=>{
             
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
-            
-            console.log(this.rule)
-
-            return
 
             // 迭代 推荐规格
+            console.log('推荐规格', this.rule.required_spec_details)
+
             this.rule.required_spec_details.forEach((obj, index)=>{
 
                 let name = obj.sell_property_name

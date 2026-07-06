@@ -139,6 +139,7 @@ export default defineComponent({
         
         // category_id 必填 - 按类目id推荐品牌
         var category_id = props.FormData.cate_value.value; // 当前选择的类目id
+        console.log(props.FormData)
         
         // 查询表单
         const formState = reactive({

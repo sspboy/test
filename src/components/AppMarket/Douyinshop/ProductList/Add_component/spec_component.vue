@@ -17,12 +17,10 @@
 
   <a-divider orientation="left" orientation-margin="0px">
     
-    商品规格
-    
     <a-button 
       type="dashed" 
       size="small" 
-      style="margin: 0 20px;"
+      style="margin:0 20px 0 0;"
       @click="spec.add.get_specs_obj">打印自定义规格
     </a-button>
 
@@ -232,8 +230,8 @@
                 
                 {{ item.property_name }} 
                 
-                是否二次请求：{{ props.rule_info.product_spec_rule.required_spec_details[index].need_paging_query_value }}
-                是否二次自定义规格值：{{ props.rule_info.product_spec_rule.required_spec_details[index].support_diy }}
+                是否二次请求：{{ spec.rule.required_spec_details[index].need_paging_query_value }}
+                是否二次自定义规格值：{{ spec.rule.required_spec_details[index].support_diy }}
 
                 <a-button 
                 @click="spec.recommendation_add.add_value(index)"
@@ -262,14 +260,14 @@
 
                     <a-space>
                       <!--规格值 cascader 模式-->
-                      <span v-if="props.rule_info.product_spec_rule.required_spec_details[index].value_display_style === 'cascader_multi_select'">
+                      <span v-if="spec.rule.required_spec_details[index].value_display_style === 'cascader_multi_select'">
                       
                       <!--无需二次请求值 支持自定义输入规格值-->
 
                       <a-auto-complete
-                        v-if="props.rule_info.product_spec_rule.required_spec_details[index].need_paging_query_value ===false && props.rule_info.product_spec_rule.required_spec_details[index].support_diy===true"
+                        v-if="spec.rule.required_spec_details[index].need_paging_query_value ===false && spec.rule.required_spec_details[index].support_diy===true"
                         v-model:value="v_item.value_name"
-                        :options="props.rule_info.product_spec_rule.required_spec_details[index].property_values"
+                        :options="spec.rule.required_spec_details[index].property_values"
                         style="width: 154px;font-size: 12px;"
                         placeholder="输入规格值"
                         allow-clear
@@ -281,11 +279,11 @@
                         
                       <!--无需二次请求值 不支持自定义输入规格值-->
                       <a-select
-                          v-if="!props.rule_info.product_spec_rule.required_spec_details[index].need_paging_query_value && props.rule_info.product_spec_rule.required_spec_details[index].support_diy===false"
+                          v-if="!spec.rule.required_spec_details[index].need_paging_query_value && spec.rule.required_spec_details[index].support_diy===false"
                           ref="select"
                           placeholder="选择规格值"
                           v-model:value="v_item.value_name"
-                          :options="props.rule_info.product_spec_rule.required_spec_details[index].property_values"
+                          :options="spec.rule.required_spec_details[index].property_values"
                           :fieldNames="{ 
                             label: 'sell_property_value_name', 
                             value: 'sell_property_value_id', 
@@ -297,10 +295,10 @@
 
                       <!--需要 二次查询规格值-->
                       <a-cascader
-                        v-else-if="props.rule_info.product_spec_rule.required_spec_details[index].need_paging_query_value"
+                        v-else-if="spec.rule.required_spec_details[index].need_paging_query_value"
                         v-model:value="v_item.value_name"
                         multiple
-                        :options="props.rule_info.product_spec_rule.required_spec_details[index].property_values"
+                        :options="spec.rule.required_spec_details[index].property_values"
                         placeholder="选择规格值"
                         suffix-icon="Shopping Around"
                         :fieldNames="{ 
@@ -319,7 +317,7 @@
                       </span>
                       
                       <!-- 文本值-->
-                      <span v-else-if="props.rule_info.product_spec_rule.required_spec_details[index].value_display_style === 'text'">
+                      <span v-else-if="spec.rule.required_spec_details[index].value_display_style === 'text'">
                         <a-input
                           v-model:value="v_item.value_name"
                           placeholder="规格值"
@@ -409,7 +407,7 @@ import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted, 
 import { PlusCircleOutlined,PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutlined} from '@ant-design/icons-vue';
 
 import { 
-  Spec,SPECS,sku_formRef,SPECS_DIY,sku_diy_formRef
+  Spec,SPECS,resetSPECSFull,sku_formRef,SPECS_DIY,sku_diy_formRef
 } from '@/assets/douyinshop/productmanagement/Add';
 export default defineComponent({
   
@@ -436,26 +434,11 @@ props: {
 
     const spec = new Spec() 
     
-    // spec.rule = props.rule_info.product_spec_rule; // 规格规则
-    
-    // console.log('sku-规则',props.rule_info.sku_rule)
-
     spec.recommendation_add.load(); // 初始化 推荐规格
-    
-    // 响应式数据
-    const count = ref(0)
-    const title = ref('规格设置')
-    
-    // 计算属性
-    const displayTitle = computed(() => {
-      return `${title.value} - ${props.data2 || '默认'}`
-    })
-    
-    // 方法
-    const handleClick = () => {
-      count.value++
-      emit('update', { count: count.value, data: props.data })
-    }
+
+    // 重置表单 需要重置时调用
+    resetSPECSFull()
+
     
     // 监听器
     watch(() => props.data, (newVal, oldVal) => {
@@ -468,9 +451,9 @@ props: {
     })
     
     // 暴露给父组件的方法
-    expose({
-      reset: () => { count.value = 0 }
-    })
+    // expose({
+    //   reset: () => { count.value = 0 }
+    // })
     
     return {
       props,
@@ -481,11 +464,6 @@ props: {
       SPECS_DIY, // 系统推荐表单对象
       sku_diy_formRef,// 系统推荐 表单验证对象
 
-
-      count,
-      title,
-      displayTitle,
-      handleClick
     }
   }
 })

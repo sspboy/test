@@ -7,9 +7,9 @@
 
     <!-- 动态渲染异步组件--选择素材 -->
     <selectimg 
-        v-if="Basedata.selectimg_open" 
-        v-on:add_img_callback="Basedata.Add_Callback" 
-        :data="Basedata"
+        v-if="Select_shuixi_Img.selectimg_open" 
+        v-on:add_img_callback="Select_shuixi_Img.Add_Callback" 
+        :data="Select_shuixi_Img"
     />
 
     <!-- 动态渲染异步组件--选择运费模板 -->
@@ -296,9 +296,9 @@
  <script>
  import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted } from 'vue'
  import { 
-  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata
+  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata,CATE,Select_shuixi_Img
 } from '@/assets/douyinshop/productmanagement/Add';
-import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutlined} from '@ant-design/icons-vue';
+import { DeleteOutlined} from '@ant-design/icons-vue';
 
  export default defineComponent({
    name: '基础信息',
@@ -341,7 +341,7 @@ import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutli
      
      // 生命周期
      onMounted(() => {
-       console.log('模板名称 组件已挂载')
+       console.log('基础信息 组件已挂载')
      })
      
      // 暴露给父组件的方法
@@ -351,6 +351,8 @@ import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutli
      
      return {
         Base_formRef,
+        CATE,
+        Select_shuixi_Img,
        count,
        title,
        displayTitle,

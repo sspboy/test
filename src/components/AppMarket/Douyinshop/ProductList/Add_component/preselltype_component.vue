@@ -15,7 +15,6 @@
 
     <a-divider orientation="left" orientation-margin="0px">
         
-        发货模式
         <a-button @click="console.log(Stock.sepec_info)" size="small">打印规格</a-button>
         <a-button @click="Fulfill.get_presell" size="small" style="margin:0 20px;"> 获取发货模式 </a-button>
         
