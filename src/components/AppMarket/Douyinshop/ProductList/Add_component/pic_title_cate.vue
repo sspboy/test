@@ -7,9 +7,9 @@
 
     <!-- 动态渲染异步组件--选择素材 -->
     <selectimg 
-        v-if="Select_shuixi_Img.selectimg_open" 
-        v-on:add_img_callback="Select_shuixi_Img.Add_Callback" 
-        :data="Select_shuixi_Img"
+        v-if="Basedata.selectimg_open" 
+        v-on:add_img_callback="Basedata.Add_Callback" 
+        :data="Basedata"
     />
 
     <!-- 动态渲染异步组件--选择运费模板 -->
@@ -296,7 +296,7 @@
  <script>
  import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted } from 'vue'
  import { 
-  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata,CATE,Select_shuixi_Img
+  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata,CATE,
 } from '@/assets/douyinshop/productmanagement/Add';
 import { DeleteOutlined} from '@ant-design/icons-vue';
 
@@ -352,7 +352,6 @@ import { DeleteOutlined} from '@ant-design/icons-vue';
      return {
         Base_formRef,
         CATE,
-        Select_shuixi_Img,
        count,
        title,
        displayTitle,

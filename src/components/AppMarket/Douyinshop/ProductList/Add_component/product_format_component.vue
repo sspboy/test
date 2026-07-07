@@ -2,9 +2,9 @@
 
     <!-- 动态渲染异步组件--选择素材 -->
     <selectimg 
-        v-if="CATE.selectimg_open" 
-        v-on:add_img_callback="CATE.Add_Callback" 
-        :data="CATE"
+        v-if="Select_shuixi_Img.selectimg_open" 
+        v-on:add_img_callback="Select_shuixi_Img.Add_Callback" 
+        :data="Select_shuixi_Img"
     />
   <div class="delivery-method">
 
@@ -525,7 +525,7 @@ import { PlusOutlined,DeleteOutlined} from '@ant-design/icons-vue';
 import { Empty } from 'ant-design-vue';
 
 import { 
-  CATE
+  CATE,Select_shuixi_Img
 } from '@/assets/douyinshop/productmanagement/Add';
 export default defineComponent({
   name: '商品属性组件',
@@ -592,6 +592,7 @@ export default defineComponent({
     };
     return {
       CATE,
+      Select_shuixi_Img,
       count,
       title,
       displayTitle,

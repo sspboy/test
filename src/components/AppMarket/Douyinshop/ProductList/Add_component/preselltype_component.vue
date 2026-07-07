@@ -366,9 +366,11 @@ export default defineComponent({
     setup(props,ctx) {
 
         const Fulfill = new Fulfillment()
+        
+        Fulfill.load()// 加载支持的发货方式
+
         const Stock = new StockFun()
 
-        
 
 
 

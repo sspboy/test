@@ -146,7 +146,13 @@ export const CATE = {
 
     // 吊牌-水洗标
     category_property_pics:ref(undefined),
-    
+    // 提交格式
+    // {
+    //     "785": {
+    //         "urls": ["https"]
+    //     }
+    // }
+
     // 自定义【面料材质】的名称
     diy_name:ref(),
 
@@ -251,6 +257,8 @@ export const CATE = {
 
         // 加载属性结构
         data_list.forEach((obj,index)=>{
+            
+            console.log(obj.property_name, obj)
 
             // 添加品牌无品牌选项
             var property_name = obj.property_name
@@ -1192,19 +1200,19 @@ export const presell_formdata = reactive({
             label: '现货发货',
             value: 0,
             name:'normal_rule',
-            disabled:false // 禁用状态
+            disabled:true // 禁用状态
         },
         {
             label: '现货预售混合发货',
             value: 2,
             name:'step_rule',
-            disabled:false
+            disabled:true
         },
         {
             label: '预售发货',
             value: 1,
             name:'product_presell_rule',
-            disabled:false
+            disabled:true
         }
     ],
     reduce_type:1,// 减库存类型：1-拍下减库存 2-付款减库存 number
@@ -1403,13 +1411,15 @@ export class Fulfillment {
             let obj = fulfillment_rule[key]
 
             let support = obj.support;// 是否支持
+            
+            console.log('发货模式',key, support)
 
             // 设置支持的发货模式
-            // presell_formdata.options.forEach(item=>{
-            //     if(item.name === key){
-            //         item.disabled = !support
-            //     }
-            // })
+            presell_formdata.options.forEach(item=>{
+                if(item.name === key){
+                    item.disabled = !support
+                }
+            })
 
             if(key === 'normal_rule' && support === true){
                 // 现货发货表单渲染方法
@@ -1811,8 +1821,9 @@ export class StockFun {
         // 预售库存[切换]
         change_presale=(skumodel)=>{
 
-            console.log('切换预售库存',skumodel)
-            
+            console.log('切换预售库存', skumodel)
+            console.log('规则',productRule.info.value.fulfillment_rule)        
+
             // 判断预售库存colums是否存在
             const index = skulist_formState.skucolumns.findIndex(item => item.title === '库存')
             
@@ -2117,41 +2128,74 @@ export class Spec {
 
 
     rule = productRule.info.value.product_spec_rule;// 规格-规则
+    
+    // 规格-加载
+    load=()=>{
+
+        console.log('推荐规格', this.rule)
+
+        let support_property_diy = this.rule.support_property_diy; // 是否支持规格项自定义
+        let required_spec_details = this.rule.required_spec_details; // 必填规格项
+        // 判断是否支持自定义规格
+        if(support_property_diy){// true=支持-自定义规格
+            this.type_formdata.support_property_options[0].disabled = false;  // 0-自定义规格
+            this.type_formdata.support_property_diy = 0; // 默认选择自定义规格
+        }else{// false=不支持-系统推荐规格
+            this.type_formdata.support_property_options[0].disabled = true;  // 1-系统推荐规格
+        }
+
+        if(required_spec_details.length>0){// 必填规格项
+
+            this.type_formdata.support_property_options[1].disabled = false;  // 有-系统推荐规格
+            this.type_formdata.support_property_diy = 1; // 默认选择自定义规格
+            this.recommendation_add.load(); // 初始化 推荐规格
+
+        }else{
+            this.type_formdata.support_property_options[1].disabled = true;  // 无-系统推荐规格
+        }   
+
+    }
 
     // 规格模式：自定义模式、系统推荐模式
     type_formdata = reactive({
 
         selectimg_open:false,// 素材组件状态
 
-        support_property_diy:0,
+        support_property_diy:undefined,// 规格模式：0-自定义规格，1-系统推荐规格
 
         support_property_options:[
             {
                 label: '自定义规格',
                 value: 0,
-                disabled:false // 禁用状态
+                disabled:true // 禁用状态
             },
             {
                 label: '系统推荐规格',
                 value: 1,
-                disabled:false
+                disabled:true
             },
         ],
         // 勾选中的推荐规格
         selected_value_list:[],
         // 勾选显示推荐规格
         selected_diy_spec_options:[],
+
+
         // 切换规格选择模式
         change_spec_model:()=>{
+
             let model_style = this.type_formdata.support_property_diy
+            
+            console.log('推荐规格', this.rule)
+
             if(model_style === 0){// 0 自定义规格
 
             }else if(model_style === 1){// 1 推荐规格
-                
+
+
             }
         }
     })
-
 
 
     // 自定义 add
@@ -2333,6 +2377,7 @@ export class Spec {
     recommendation_add={
 
         load:()=>{
+
 
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
             

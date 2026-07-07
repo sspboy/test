@@ -434,7 +434,10 @@ props: {
 
     const spec = new Spec() 
     
-    spec.recommendation_add.load(); // 初始化 推荐规格
+    spec.load() // 初始化 规格规则
+
+
+
 
     // 重置表单 需要重置时调用
     resetSPECSFull()
