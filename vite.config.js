@@ -38,6 +38,7 @@ export default defineConfig({
         target: 'http://192.168.100.15:5000', // 公司-100网线
 
         changeOrigin: true,
+        
         rewrite: (path) => path.replace(/^\/api/, '') // 替代 pathRewrite
       }
     },

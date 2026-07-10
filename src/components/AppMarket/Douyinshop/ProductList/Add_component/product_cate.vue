@@ -54,8 +54,32 @@
         </div>
 
       </a-col>
+      <!--标题前缀-->
+      <!-- <a-col :span="14" :offset="5">
+        
+        <a-input 
+          v-model:value="Pic_Fun.undefined"
+          autoComplete="off" 
+          show-count 
+          :maxlength="10"
+          placeholder="输入标题前缀"
+        ></a-input>
+      </a-col> -->
+
+      <!--标题后缀-->
+      <!-- <a-col :span="14" :offset="5">
+        
+        <a-input
+          v-model:value="Pic_Fun.title_suffix"
+          autoComplete="off" 
+          show-count 
+          :maxlength="10"
+          placeholder="输入标题后缀"
+        ></a-input>
+      </a-col> -->
 
       <!--商品标题-->
+
       <a-col :span="14" :offset="5">
         <a-input
           v-model:value="Pic_Fun.name"
@@ -63,8 +87,15 @@
           placeholder="输入商品标题"
           show-count 
           :maxlength="30"
+          @blur="e => {
+            const trimmed = e.target.value.replace(/\s/g, '')
+            e.target.value = trimmed      // 先改 DOM
+            Pic_Fun.name = trimmed        // 再改数据
+          }"
         >
         </a-input>
+
+
       </a-col>
       <a-col :span="14" :offset="5">
         <a-input-group style="display: flex;" compact>
@@ -96,7 +127,7 @@
 </template>
 
 <script>
-import { defineComponent,defineAsyncComponent, ref, computed, watch, onMounted } from 'vue'
+import { defineComponent,defineAsyncComponent, ref, computed, watch, onMounted, nextTick  } from 'vue'
 import { DeleteOutlined} from '@ant-design/icons-vue';
 
 import { 
@@ -146,6 +177,19 @@ export default defineComponent({
     
     // 初始化表单内容=结束
 
+    // 实时过滤标题中得空格
+    watch(
+      () => Pic_Fun.name,
+      (val) => {
+        const trimmed = val.replace(/\s/g, '')
+        if (val !== trimmed) {
+          Pic_Fun.name = trimmed
+        }
+      }
+    )
+
+
+    
 
 
     

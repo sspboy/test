@@ -171,7 +171,9 @@ export class A_Patch{
             "getShopHostingInfo":"api/douyin/product/getShopHostingInfo",// 查询商家是否已开启AI生图托管
             "getProductSuggestionList":"api/douyin/product/getProductSuggestionList",// 查询下架商品列表及其处理建议
             "setoffline":"api/douyin/product/offline", // 下架商品
-            "setOnline":"api/douyin/product/setOnline" // 上架商品
+            "setOnline":"api/douyin/product/setOnline", // 上架商品
+
+            "publishPreCheck":"api/douyin/product/check"// 商品发布前置校验接口
         },
         // 运费模板
         freight:{

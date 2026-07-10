@@ -54,7 +54,7 @@
                                     <div v-if="CATE.category_property_pics.value != undefined" class="cursor call_shui_img">
                                         <a-image style="height:78px;" :src="CATE.category_property_pics.value"></a-image>
                                         <span class="clear_shui_img">
-                                            <a-button type="text" size="small" @click="CATE.clear_img"> 
+                                            <a-button type="text" size="small" @click="Select_shuixi_Img.clear_img"> 
                                                 <DeleteOutlined />
                                             </a-button>
                                         </span>

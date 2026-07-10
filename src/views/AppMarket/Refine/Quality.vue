@@ -60,63 +60,79 @@
                 :data-source="PAGEDATA.datalist"
                 :loading="PAGEDATA.loading" 
                 style="width: 100%;"
-                :split="true"
+                :split="false"
+                class="quality-list"
                 >
 
                 <template #renderItem="{ item }">
                     
-                    <a-list-item style="padding:14px 0;">
-                        <a-list-item-meta>
+                    <a-list-item class="quality-card">
 
-                            <template #title>
+                        <!-- 卡片头部 -->
+                        <div class="card-header">
+                            <div class="header-left">
+                                <a-tag v-if="item.meet_standard == 1" color="green" class="status-tag">已达标</a-tag>
+                                <a-tag v-else color="red" class="status-tag">未达标</a-tag>
+                                <span class="product-id">商品ID: {{ item.product_id || '-' }}</span>
+                                <span class="company-name">{{ item.product_name }}</span>
+                                <a-rate v-model:value="item.quality_score.score" disabled class="header-rate"/>
+                            </div>
+                        </div>
 
-                                <!--商品id-->
-                                
-                                <!-- {{ item.product_id }} -->
-                                
-                                <!--商品标题-->
-                                <div>
+                        <!-- 卡片主体 -->
+                        <div class="card-body">
 
-                                    <!--是否达标-->
-                                    <a-tag v-if="item.meet_standard == 1" color="green" class="font_size_12" style="margin: 0 10px 0 0;">
-                                        已达标
-                                    </a-tag>
-                                    <a-tag v-else-if="item.meet_standard !== 1" color="red" class="font_size_12" style="margin: 0 10px 0 0;">
-                                        未达标
-                                    </a-tag>
-
-                                    <a href="#"> {{ item.product_name }} </a>
-
-                                    <a-rate v-model:value="item.quality_score.score" disabled style="margin: 0 0 0 10px;"/>
-
+                            <!-- 诊断问题 -->
+                            <div class="info-col problem-col">
+                                <div class="col-title">诊断问题</div>
+                                <div class="col-content">
+                                    <span v-if="!item.field_problem || item.field_problem.length === 0" class="empty-text">暂无问题</span>
+                                    <div v-else class="problem-tags">
+                                        <a-tag v-for="i in item.field_problem" :key="i.field_name + i.problem_name" class="problem-tag">
+                                            <a-tooltip>
+                                                {{ i.field_name }} - {{ i.problem_name }}
+                                                <template #title>
+                                                    <div v-html="i.suggestion" class="font_size_12"></div>
+                                                </template>
+                                            </a-tooltip>
+                                        </a-tag>
+                                    </div>
                                 </div>
+                            </div>
 
-                                <!--可优化问题项 list-->
-                                <div style="margin: 10px 0 0 0;" class="font_size_12">
-                                    诊断问题：
-                                    <span v-for="i in item.field_problem" class="cursor">
-                                            <a-tag>
-                                                <a-tooltip>
-                                                        {{ i.field_name }} - {{ i.problem_name }}
-                                                    <template #title>
-                                                        <div v-html="i.suggestion" class="font_size_12"></div>
-                                                    </template>
-                                                </a-tooltip>
-                                            </a-tag>
+                            <!-- 问题统计 -->
+                            <div class="info-col count-col">
+                                <div class="col-title">待优化问题</div>
+                                <div class="col-content">
+                                    <span class="count-value">{{ item.problem_num_to_improve || 0 }}</span>
+                                    <span class="count-unit">项</span>
+                                </div>
+                            </div>
+
+                            <!-- 优化建议摘要 -->
+                            <div class="info-col suggestion-col">
+                                <div class="col-title">优化建议</div>
+                                <div class="col-content">
+                                    <span v-if="!item.field_problem || item.field_problem.length === 0" class="empty-text">-</span>
+                                    <span v-else class="suggestion-text">
+                                        {{ item.field_problem[0].suggestion ? item.field_problem[0].suggestion.replace(/<[^>]+>/g, '').slice(0, 40) : '-' }}
+                                        <template v-if="item.field_problem[0].suggestion && item.field_problem[0].suggestion.replace(/<[^>]+>/g, '').length > 40">...</template>
                                     </span>
                                 </div>
+                            </div>
 
+                            <!-- 右侧评分与操作 -->
+                            <div class="info-col action-col">
+                                <div class="score-block">
+                                    <div class="score-value">{{ item.quality_score.score || 0 }}</div>
+                                    <div class="score-label">质量分</div>
+                                </div>
+                                <div class="action-block">
+                                    <a key="list-loadmore-edit" class="detail-link" @click="openDetail(item)">查看详情</a>
+                                </div>
+                            </div>
 
-                            <!--待优化问题数-->
-                            <!-- {{ item.problem_num_to_improve }} -->
-
-                                    
-                            </template>
-                        </a-list-item-meta>
-
-                        <template #actions>
-                            <a key="list-loadmore-edit" class="font_size_12">查看详情</a>
-                        </template>
+                        </div>
 
                     </a-list-item>
 
@@ -135,6 +151,54 @@
             </span>
             
             <nav_pagination :fandata="PAGEDATA" v-on:complete="page_turning"/>
+
+            <!-- 详情抽屉 -->
+            <a-drawer
+                v-model:open="drawerVisible"
+                title="商品质量详情"
+                placement="right"
+                :width="520"
+                :closable="true"
+                class="quality-detail-drawer"
+            >
+                <div v-if="selectedItem" class="drawer-content">
+                    <!-- 基本信息 -->
+                    <div class="drawer-section">
+                        <div class="section-title">基本信息</div>
+                        <a-descriptions :column="1" size="small" bordered>
+                            <a-descriptions-item label="商品ID">{{ selectedItem.product_id || '-' }}</a-descriptions-item>
+                            <a-descriptions-item label="商品名称">{{ selectedItem.product_name || '-' }}</a-descriptions-item>
+                            <a-descriptions-item label="达标状态">
+                                <a-tag v-if="selectedItem.meet_standard == 1" color="green">已达标</a-tag>
+                                <a-tag v-else color="red">未达标</a-tag>
+                            </a-descriptions-item>
+                            <a-descriptions-item label="质量评分">
+                                <a-rate v-model:value="selectedItem.quality_score.score" disabled />
+                                <span class="score-number">{{ selectedItem.quality_score.score || 0 }} 分</span>
+                            </a-descriptions-item>
+                            <a-descriptions-item label="待优化问题">{{ selectedItem.problem_num_to_improve || 0 }} 项</a-descriptions-item>
+                        </a-descriptions>
+                    </div>
+
+                    <!-- 诊断问题 -->
+                    <div class="drawer-section">
+                        <div class="section-title">诊断问题与建议</div>
+                        <div v-if="!selectedItem.field_problem || selectedItem.field_problem.length === 0" class="empty-block">暂无诊断问题</div>
+                        <a-collapse v-else ghost class="problem-collapse">
+                            <a-collapse-panel
+                                v-for="(problem, index) in selectedItem.field_problem"
+                                :key="index"
+                                :header="problem.field_name + ' - ' + problem.problem_name"
+                            >
+                                <div class="suggestion-content">
+                                    <div class="suggestion-label">优化建议：</div>
+                                    <div v-html="problem.suggestion" class="suggestion-html"></div>
+                                </div>
+                            </a-collapse-panel>
+                        </a-collapse>
+                    </div>
+                </div>
+            </a-drawer>
 
             <!--翻页组件 -->
         </a-layout-content>
@@ -199,6 +263,16 @@ export default {
     });
 
     // 【组件挂载】========================================结束
+
+    // 详情抽屉状态
+    const drawerVisible = ref(false);
+    const selectedItem = ref(null);
+
+    // 打开详情抽屉
+    const openDetail = (item) => {
+        selectedItem.value = item;
+        drawerVisible.value = true;
+    }
 
     const PAGEDATA = reactive({
 
@@ -296,7 +370,10 @@ export default {
             conditionData,
           store,
           page_turning,
-          Tabchange
+          Tabchange,
+          drawerVisible,
+          selectedItem,
+          openDetail
 
        }
    }
@@ -305,4 +382,305 @@ export default {
 <style scoped>
 .FlexBox{overflow:auto; transition:height 0.5s ease;margin:4px 0 0 0;}
 
+/* 列表容器 */
+.quality-list {
+    padding: 8px 4px;
+}
+
+/* 卡片整体样式 */
+.quality-card {
+    background: #ffffff;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    padding: 16px 20px !important;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    flex-direction: column !important;
+    align-items: stretch !important;
+}
+
+.quality-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+/* 卡片头部 */
+.card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.status-tag {
+    margin: 0 !important;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 0 8px;
+    border-radius: 4px;
+}
+
+.product-id {
+    font-size: 13px;
+    color: #8c8c8c;
+    font-weight: 500;
+}
+
+.company-name {
+    font-size: 15px;
+    color: #262626;
+    font-weight: 600;
+}
+
+.header-rate {
+    margin: 0 0 0 4px;
+    font-size: 14px;
+}
+
+/* 卡片主体：多列布局 */
+.card-body {
+    display: flex;
+    align-items: stretch;
+    gap: 24px;
+}
+
+.info-col {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.col-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #262626;
+    line-height: 20px;
+}
+
+.col-content {
+    font-size: 13px;
+    color: #595959;
+    line-height: 20px;
+}
+
+.empty-text {
+    color: #bfbfbf;
+}
+
+/* 诊断问题列 */
+.problem-col {
+    flex: 1.6;
+}
+
+.problem-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.problem-tag {
+    margin: 0 !important;
+    font-size: 12px;
+    color: #595959;
+    background: #f5f5f5;
+    border-color: #d9d9d9;
+    cursor: pointer;
+}
+
+.problem-tag:hover {
+    color: #1890ff;
+    border-color: #1890ff;
+}
+
+/* 问题统计列 */
+.count-col {
+    flex: 0.5;
+    min-width: 90px;
+}
+
+.count-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #262626;
+}
+
+.count-unit {
+    font-size: 13px;
+    color: #8c8c8c;
+    margin-left: 4px;
+}
+
+/* 建议列 */
+.suggestion-col {
+    flex: 1.2;
+}
+
+.suggestion-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: #595959;
+}
+
+/* 右侧操作列 */
+.action-col {
+    flex: 0 0 120px;
+    border-left: 1px solid #f0f0f0;
+    padding-left: 20px;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: right;
+    gap: 8px;
+}
+
+.score-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.score-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1890ff;
+    line-height: 32px;
+}
+
+.score-label {
+    font-size: 12px;
+    color: #8c8c8c;
+    line-height: 18px;
+}
+
+.action-block {
+    margin-top: 4px;
+}
+
+.detail-link {
+    font-size: 13px;
+    color: #1890ff;
+    font-weight: 500;
+}
+
+.detail-link:hover {
+    color: #40a9ff;
+}
+
+/* 详情抽屉样式 */
+.quality-detail-drawer :deep(.ant-drawer-body) {
+    padding: 16px 20px;
+    background: #f5f5f5;
+}
+
+.drawer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.drawer-section {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #262626;
+    margin-bottom: 12px;
+    padding-left: 10px;
+    border-left: 3px solid #1890ff;
+}
+
+.score-number {
+    margin-left: 8px;
+    color: #595959;
+    font-size: 13px;
+}
+
+.empty-block {
+    padding: 24px 0;
+    text-align: center;
+    color: #bfbfbf;
+    font-size: 13px;
+    background: #fafafa;
+    border-radius: 6px;
+}
+
+.problem-collapse :deep(.ant-collapse-header) {
+    font-size: 13px;
+    font-weight: 500;
+    color: #262626;
+    padding: 10px 0 !important;
+}
+
+.problem-collapse :deep(.ant-collapse-content-box) {
+    padding: 8px 0 12px 0 !important;
+}
+
+.suggestion-content {
+    background: #f6ffed;
+    border: 1px solid #b7eb8f;
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.suggestion-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #389e0d;
+    margin-bottom: 6px;
+}
+
+.suggestion-html {
+    font-size: 13px;
+    color: #595959;
+    line-height: 1.6;
+}
+
+.suggestion-html :deep(p) {
+    margin: 0 0 6px 0;
+}
+
+.suggestion-html :deep(p:last-child) {
+    margin-bottom: 0;
+}
+
+/* 响应式：小屏幕下改为垂直堆叠 */
+@media (max-width: 900px) {
+    .card-body {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .action-col {
+        border-left: none;
+        border-top: 1px solid #f0f0f0;
+        padding-left: 0;
+        padding-top: 12px;
+        flex: 1 1 auto;
+        align-items: flex-start;
+        text-align: left;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .score-block {
+        align-items: flex-start;
+    }
+}
 </style>

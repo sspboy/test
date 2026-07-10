@@ -16,6 +16,8 @@ export const Pic_Fun = reactive({
 
     PicList:[], // 主图列表
     name:undefined,// 商品标题
+    title_prefix:undefined,//标题前缀
+    title_suffix:undefined,//标题后缀
     selectimg_open:false, // 选择主图素材
     
     // 选择主图图片素材
@@ -76,9 +78,11 @@ export const Pic_Fun = reactive({
             return false
         }else{
             var res_text = ''
+            
             pic.forEach((obj,index)=>{
                 res_text = res_text + obj.byte_url  + '|'
             })
+
             return res_text.slice(0, -1)
         }
     },
@@ -86,20 +90,31 @@ export const Pic_Fun = reactive({
     // 填写商品信息按钮
     fill_in_product_info:()=>{
 
-        if(CATE.cate_value.value){// 填写了分类
+        // 标题过滤所有空格
+        console.log(Pic_Fun.name)
 
-            CATE.cate_status.value = false; // 显示填写信息
+        // 验证标题
 
-        }else{ // 未填写分类
+        // 验证分类
 
-            tool.Fun_.message('info','请选择商品类目' +  CATE.cate_value.value)
+        // 分类预测 无对应分类提示
 
-        }
+        // if(CATE.cate_value.value){// 填写了分类
 
-        // 测试用流程
-        productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
-        // 加载属性
-        CATE.loadFormat();// 加载对应商品属性
+        //     CATE.cate_status.value = false; // 显示填写信息
+
+        // }else{ // 未填写分类
+
+        //     tool.Fun_.message('info','请选择商品类目' +  CATE.cate_value.value)
+
+        // }
+
+        // // 测试用流程
+        // productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
+
+        // // 加载属性
+        // CATE.loadFormat();// 加载对应商品属性
+
     }
 
 })
@@ -116,8 +131,21 @@ export const Select_shuixi_Img = reactive({
     },
     // 选择-水洗标图片回调
     Add_Callback:(data)=>{
-        console.log('选择水洗标图片',data)
+        var img_byte_url = data[0].byte_url
+        CATE.category_property_pics.value = img_byte_url
     },
+    // 清除水洗标-吊牌图片
+    clear_img:()=>{
+        CATE.category_property_pics.value = undefined;
+    },
+    // 获取水洗表图片地址
+    get_img_url:()=>{
+        // 判断是否有水洗标必填
+        // 必填水洗标
+        // 非必填水洗标
+        return CATE.category_property_pics.value;
+    }
+
 })
 
 
@@ -776,17 +804,6 @@ export const CATE = {
             ]
         return resultList
     },
-    // 水洗标-吊牌图片
-    add_img:(data)=>{
-        var img_byte_url = data[0].byte_url
-        CATE.category_property_pics.value = img_byte_url
-        console.log(CATE.category_property_pics.value)
-    },
-    // 清除水洗标-吊牌图片
-    clear_img:()=>{
-        CATE.category_property_pics.value = undefined;
-    }
-
 }
 
 // 预测类目==开始
