@@ -89,7 +89,10 @@ export const Pic_Fun = reactive({
 
     // 填写商品信息按钮
     fill_in_product_info:()=>{
-
+        
+        // 按钮加载状态
+        CATE.predict_status.value = true;
+        
         // 标题过滤所有空格
         console.log(Pic_Fun.name)
 
@@ -99,15 +102,15 @@ export const Pic_Fun = reactive({
 
         // 分类预测 无对应分类提示
 
-        // if(CATE.cate_value.value){// 填写了分类
+        if(CATE.cate_value.value){// 填写了分类
 
-        //     CATE.cate_status.value = false; // 显示填写信息
+            CATE.cate_status.value = false; // 显示填写信息
 
-        // }else{ // 未填写分类
+        }else{ // 未填写分类
 
-        //     tool.Fun_.message('info','请选择商品类目' +  CATE.cate_value.value)
+            tool.Fun_.message('info','请选择商品类目' +  CATE.cate_value.value)
 
-        // }
+        }
 
         // // 测试用流程
         // productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】

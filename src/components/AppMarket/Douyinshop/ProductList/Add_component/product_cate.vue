@@ -80,7 +80,8 @@
 
       <!--商品标题-->
 
-      <a-col :span="14" :offset="5">
+      <a-col :span="14" :offset="5" style="height: 54px;">
+
         <a-input
           v-model:value="Pic_Fun.name"
           autoComplete="off" 
@@ -94,6 +95,14 @@
           }"
         >
         </a-input>
+
+        <a-alert 
+          class="font_size_12" 
+          style="padding: 4px;margin: 4px 0 0 0;border-radius: 4px;" 
+          message="提示信息显示" 
+          type="success" 
+          show-icon
+        />
 
 
       </a-col>
@@ -157,21 +166,23 @@ export default defineComponent({
     // 初始化表单内容=开始
     Pic_Fun.PicList=[]
     Pic_Fun.name=undefined
-    CATE.cate_value.value = 1000003346 // undefined // 1000003346
-    CATE.options.value=[
-        {
-            "value": 1000003346,
-            "label": "服装>女装>连衣裙"
-        },
-        {
-            "value": 1000003327,
-            "label": "服装>特殊服装>婚纱/礼服"
-        },
-        {
-            "value": 1000003330,
-            "label": "服装>特殊服装>其他特殊服装"
-        }
-    ]
+
+    // 测试跳过分类选择用例
+    // CATE.cate_value.value = 1000003346 // undefined // 1000003346
+    // CATE.options.value=[
+    //     {
+    //         "value": 1000003346,
+    //         "label": "服装>女装>连衣裙"
+    //     },
+    //     {
+    //         "value": 1000003327,
+    //         "label": "服装>特殊服装>婚纱/礼服"
+    //     },
+    //     {
+    //         "value": 1000003330,
+    //         "label": "服装>特殊服装>其他特殊服装"
+    //     }
+    // ]
     // 响应式数据
     CATE.select_loading.value = true;
     
@@ -188,11 +199,6 @@ export default defineComponent({
       }
     )
 
-
-    
-
-
-    
     // 生命周期
     onMounted(() => {
       // console.log('预测类目 组件已挂载')

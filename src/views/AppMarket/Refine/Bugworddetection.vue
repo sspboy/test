@@ -17,9 +17,17 @@
         </a-layout-sider>
         <!--左侧 菜单组件  结束-->
 
-        <a-layout-content class="content_border" >
+        <a-layout-content class="content_border" style="background-color: #f6f7f9">
 
-          <h1>违禁词检测</h1>
+          <!-- <h1>违禁词检测</h1> -->
+
+          <iframe
+                src="https://g3703z5411.qicp.vip/chatbot/eFe5l99NuYCR2wx2"
+                style="width: 100%; height: 100%;
+                background-color: #fff; min-height: 700px"
+                frameborder="0"
+                allow="microphone">
+            </iframe>
 
         </a-layout-content>
 
