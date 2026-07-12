@@ -98,7 +98,7 @@
 
         <a-alert 
           class="font_size_12" 
-          style="padding: 4px;margin: 4px 0 0 0;border-radius: 4px;" 
+          style="padding: 4px;margin:4px 0 0 0 ;border-radius: 4px;" 
           message="提示信息显示" 
           type="success" 
           show-icon
@@ -126,7 +126,11 @@
         </a-input-group>
       </a-col>
       <a-col :span="24" style="text-align: center;margin-top: 12px;">
-        <a-button type="primary" @click="Pic_Fun.fill_in_product_info">填写商品信息</a-button>
+        <a-button 
+          type="primary" 
+          @click="Pic_Fun.fill_in_product_info"
+          :loading="Pic_Fun.fill_in_product_info_button_stats"  
+        >填写商品信息</a-button>
 
       </a-col>
     </a-row>

@@ -19,6 +19,7 @@ export const Pic_Fun = reactive({
     title_prefix:undefined,//标题前缀
     title_suffix:undefined,//标题后缀
     selectimg_open:false, // 选择主图素材
+    fill_in_product_info_button_stats:false,// 填写商品信息按钮状态
     
     // 选择主图图片素材
     change_material_type:()=>{
@@ -87,28 +88,36 @@ export const Pic_Fun = reactive({
         }
     },
 
+    // 标题验证\分类验证
+    verification_title_cate:()=>{
+        
+        // 请求标题前置验证
+        // 返回信息：true通过验证
+        // 返回false：验证不通过原因，修改后继续提交，直至通过；
+
+    },
     // 填写商品信息按钮
     fill_in_product_info:()=>{
-        
-        // 按钮加载状态
-        CATE.predict_status.value = true;
-        
-        // 标题过滤所有空格
-        console.log(Pic_Fun.name)
 
-        // 验证标题
-
-        // 验证分类
+        // 填写商品信息按钮加载状态
+        // Pic_Fun.fill_in_product_info_button_stats = true;
 
         // 分类预测 无对应分类提示
-
         if(CATE.cate_value.value){// 填写了分类
+            
+            // 验证标题
+            axios.post().then((res)=>{
 
-            CATE.cate_status.value = false; // 显示填写信息
+            })
+            console.log(Pic_Fun.name)
+
+            // 验证分类
+
+            // CATE.cate_status.value = false; // 显示填写信息
 
         }else{ // 未填写分类
 
-            tool.Fun_.message('info','请选择商品类目' +  CATE.cate_value.value)
+            tool.Fun_.message('info','请选择商品类目')
 
         }
 
