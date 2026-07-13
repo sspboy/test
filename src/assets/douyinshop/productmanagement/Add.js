@@ -19,7 +19,17 @@ export const Pic_Fun = reactive({
     title_prefix:undefined,//标题前缀
     title_suffix:undefined,//标题后缀
     selectimg_open:false, // 选择主图素材
+
+    
     fill_in_product_info_button_stats:false,// 填写商品信息按钮状态
+    
+    verification_title_stats:false,// 标题验证提示状态
+    verification_title_type:'info',// 标题验证提示类型
+    verification_title_msg:undefined,// 标题验证提示信息
+
+    verification_cate_stats:false,// 分类验证提示状态
+    verification_cate_type:'info',// 分类验证提示类型
+    verification_cate_msg:undefined,// 分类验证提示信息
     
     // 选择主图图片素材
     change_material_type:()=>{
@@ -100,32 +110,95 @@ export const Pic_Fun = reactive({
     fill_in_product_info:()=>{
 
         // 填写商品信息按钮加载状态
-        // Pic_Fun.fill_in_product_info_button_stats = true;
+        Pic_Fun.fill_in_product_info_button_stats = true;
 
         // 分类预测 无对应分类提示
         if(CATE.cate_value.value){// 填写了分类
             
-            // 验证标题
-            axios.post().then((res)=>{
+
+            // 验证标题、分类
+            let verification_data = {
+                "check_types":[
+                    "product_title_illegal_check",
+                    "shop_use_category_access"
+                ],
+                "title": Pic_Fun.name,
+                "category_id":CATE.cate_value.value
+            }
+            
+            // 验证标题&分类信息
+            axios.post(API.AppSrtoreAPI.dou_product.publishPreCheck,verification_data).then((res)=>{
+                
+
+                console.log('标题、分类验证结果', res)
+
+                let common_check_results = res.data.data.common_check_results;
+                let cate_res = '';
+                let title_res = '';
+                common_check_results.forEach(item=>{
+                    // 标题验证
+                    if(item.check_type == 'product_title_illegal_check'){
+                        title_res = item
+                    }else if(item.check_type == 'shop_use_category_access'){// 分类验证
+                        cate_res = item
+                    }
+                })
+
+                let title_code = title_res.check_result_code;// 标题验证返回code
+                let cate_code = cate_res.check_result_code;// 分类验证返回code
+
+                if(title_code === 0){// 标题通过
+
+                    Pic_Fun.verification_title_stats = true;// 是否显示
+                    Pic_Fun.verification_title_type = 'success'// 状态
+                    Pic_Fun.verification_title_msg = '标题验证通过' // 文案提示
+                    Pic_Fun.fill_in_product_info_button_stats = false; // 按钮load状态
+
+                }else{// 标题未通过
+
+                    Pic_Fun.verification_title_stats = true;// 是否显示
+                    Pic_Fun.verification_title_type = 'error'
+                    Pic_Fun.verification_title_msg = title_res.check_result_msg // 文案提示
+                    Pic_Fun.fill_in_product_info_button_stats = false; // 按钮load状态
+
+                    return
+                }
+
+                if(cate_code ===0){// 分类通过
+
+                    Pic_Fun.verification_cate_stats = true;// 是否显示
+                    Pic_Fun.verification_cate_type = 'success'// 状态
+                    Pic_Fun.verification_cate_msg = '类目验证通过' // 文案提示
+                    Pic_Fun.fill_in_product_info_button_stats = false; // 按钮load状态
+
+                    CATE.cate_status.value = false; // 显示填写【基础信息】信息
+
+                }else{// 分类未通过
+                    Pic_Fun.verification_cate_stats = true;// 是否显示
+                    Pic_Fun.verification_cate_type = 'error'
+                    Pic_Fun.verification_cate_msg = cate_res.check_result_msg // 文案提示
+
+                    Pic_Fun.fill_in_product_info_button_stats = false; // 按钮load状态
+                    return
+                }
 
             })
-            console.log(Pic_Fun.name)
 
-            // 验证分类
+            // // 测试用流程
+            // productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
 
-            // CATE.cate_status.value = false; // 显示填写信息
+            // // 加载属性
+            // CATE.loadFormat();// 加载对应商品属性
+
 
         }else{ // 未填写分类
 
             tool.Fun_.message('info','请选择商品类目')
+            Pic_Fun.fill_in_product_info_button_stats = true;
 
         }
 
-        // // 测试用流程
-        // productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
 
-        // // 加载属性
-        // CATE.loadFormat();// 加载对应商品属性
 
     }
 

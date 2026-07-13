@@ -55,7 +55,6 @@ const checkProductRelease = reactive({
             "title_prefix": data.title_prefix,
             "title_suffix": data.title_suffix
         }
-        
     },
     // 类目验证
     getReleaseCheckCategory:()=>{

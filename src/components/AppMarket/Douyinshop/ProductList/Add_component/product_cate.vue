@@ -85,7 +85,7 @@
         <a-input
           v-model:value="Pic_Fun.name"
           autoComplete="off" 
-          placeholder="输入商品标题"
+          placeholder="商品标题推荐结构：核心名 + 关键属性 + 规格参数 + 必要补充信息"
           show-count 
           :maxlength="30"
           @blur="e => {
@@ -96,15 +96,20 @@
         >
         </a-input>
 
+        <!--标题验证提示-->
         <a-alert 
-          class="font_size_12" 
-          style="padding: 4px;margin:4px 0 0 0 ;border-radius: 4px;" 
-          message="提示信息显示" 
-          type="success" 
+          v-if="Pic_Fun.verification_title_stats"
+          :type="Pic_Fun.verification_title_type" 
+          style="padding:4px;margin:4px 0 0 0;border-radius:4px;"
           show-icon
-        />
-
-
+        >
+          <template #message>
+            <span 
+              class="font_size_12"
+              v-html="Pic_Fun.verification_title_msg">
+            </span>
+          </template>
+      </a-alert>
       </a-col>
       <a-col :span="14" :offset="5">
         <a-input-group style="display: flex;" compact>
@@ -118,12 +123,33 @@
               style="width: 100%;"
           >
           </a-select>
+
+
           <a-button 
               @click="CATE.Check_Cate(formState)"
               :loading="CATE.predict_status.value"
               >点击预测商品类目
           </a-button>
+
         </a-input-group>
+
+
+        <!--分类验证提示-->
+        <a-alert 
+            v-if="Pic_Fun.verification_cate_stats"
+            class="font_size_12" 
+            style="padding: 4px;margin:4px 0 0 0 ;border-radius: 4px;" 
+            :type="Pic_Fun.verification_cate_type" 
+            show-icon
+        >
+          <template #message>
+            <span 
+              class="font_size_12"
+              v-html="Pic_Fun.verification_cate_msg">
+            </span>
+          </template>
+        </a-alert>
+
       </a-col>
       <a-col :span="24" style="text-align: center;margin-top: 12px;">
         <a-button 
@@ -170,6 +196,9 @@ export default defineComponent({
     // 初始化表单内容=开始
     Pic_Fun.PicList=[]
     Pic_Fun.name=undefined
+    CATE.cate_value.value = undefined; // 1000003346
+    Pic_Fun.verification_title_stats = false;// 是否显示
+    Pic_Fun.verification_cate_stats = false;// 是否显示
 
     // 测试跳过分类选择用例
     // CATE.cate_value.value = 1000003346 // undefined // 1000003346

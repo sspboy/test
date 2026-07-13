@@ -21,13 +21,7 @@
 
           <!-- <h1>违禁词检测</h1> -->
 
-          <iframe
-                src="https://g3703z5411.qicp.vip/chatbot/eFe5l99NuYCR2wx2"
-                style="width: 100%; height: 100%;
-                background-color: #fff; min-height: 700px"
-                frameborder="0"
-                allow="microphone">
-            </iframe>
+            
 
         </a-layout-content>
 
