@@ -17,13 +17,12 @@
             @click="CATE.Ceck_format"
         >智能预测填充属性
         </a-button>
-        <a-button 
-            type="dashed"
+
+        <a-button
             size="small"
             style="margin-left: 10px;"
-            @click="CATE.get_format"
-        >打印属性
-        </a-button>
+            @click="Select_shuixi_Img.get_img_url"
+        >打印吊牌信息</a-button>
 
     </a-divider>
 
@@ -35,126 +34,135 @@
 
                 <!--度量衡-多选-->
                 <template v-if="item.type == 'multi_value_measure'">
+                    
+                    <!--洗水标 吊牌-->
+                    <a-col :span="6" style="margin-bottom: 20px;">
+                        <p>洗水标/吊牌
+                            <span v-if="item.property_pic_rule.required == true" style="color: red;">-必填</span>
+                            <span v-else-if="item.property_pic_rule.required == false">-非必填</span>
+                        </p>
 
-                      <a-col :span="24" style="margin-bottom: 10px;">
+                        <!-- 吊牌 开始-->
+                        <!--洗水标上传 开始
+                            available    是否可用	true-可用，false-不可用
+                            required     是否必填	true-必填，false-选填
+                        -->
+                        <template v-if="item.property_pic_rule.available == true">
+
+                            <div v-if="CATE.category_property_pics.value != undefined" class="cursor call_shui_img">
+                                <a-image style="height:78px;" :src="CATE.category_property_pics.value"></a-image>
+                                <span class="clear_shui_img">
+                                    <a-button type="text" size="small" @click="Select_shuixi_Img.clear_img"> 
+                                        <DeleteOutlined />
+                                    </a-button>
+                                </span>
+                            </div>
+
+                            <!-- <p>水洗标/吊牌图</p> -->
+                            <div class="cursor Add_shui_img" v-else-if="CATE.category_property_pics.value == undefined" 
+                                @click="Select_shuixi_Img.change_material_type">
+                                <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                                + 水洗标/吊牌
+                                </a-flex>
+                            </div>
+
+                        </template>
+                        <!--吊牌 结束-->
+                    </a-col>
+                    
+                    <!--面料材质-->
+                    <a-col :span="24" style="margin-bottom: 10px;">
+                    
+                    <!-- 内层嵌套 row -->
+                    <p>面料材质 <span v-show="item.required ==1" style="color: red;">*必填</span></p>
+
+                    <a-row :gutter="[16,6]">
                         
-                        <!-- 内层嵌套 row -->
-                          <p>面料材质 <span v-show="item.required ==1" style="color: red;">*必填</span></p>
+                        
 
-                        <a-row :gutter="[16,6]">
-                            
-                            <a-col :span="6">
-                                <!-- 吊牌 开始-->
-                                <!--洗水标上传 开始
-                                    available    是否可用	true-可用，false-不可用
-                                    required     是否必填	true-必填，false-选填
-                                -->
-                                <template v-if="item.property_pic_rule.available == true">
+                        <!--多材质列表 开始-->
+                        <a-col :span="6" v-for="(olist, dIndex) in CATE.format_formRef[item.property_id]">
 
-                                    <div v-if="CATE.category_property_pics.value != undefined" class="cursor call_shui_img">
-                                        <a-image style="height:78px;" :src="CATE.category_property_pics.value"></a-image>
-                                        <span class="clear_shui_img">
-                                            <a-button type="text" size="small" @click="Select_shuixi_Img.clear_img"> 
-                                                <DeleteOutlined />
-                                            </a-button>
-                                        </span>
-                                    </div>
+                            <a-form-item 
+                                :name="[item.property_id, dIndex, 'value']"
+                                :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
+                            >
 
-                                    <!-- <p>水洗标/吊牌图</p> -->
-                                    <div class="cursor Add_shui_img" v-else-if="CATE.category_property_pics.value == undefined" 
-                                        @click="Select_shuixi_Img.change_material_type">
-                                        <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
-                                        + 水洗标/吊牌
-                                        </a-flex>
-                                    </div>
-
-                                </template>
-                                <!--吊牌 结束-->
-                            </a-col>
-
-                            <!--多材质列表 开始-->
-                            <a-col :span="6" v-for="(olist, dIndex) in CATE.format_formRef[item.property_id]">
-
-                                <a-form-item 
-                                    :name="[item.property_id, dIndex, 'value']"
-                                    :rules="[{ required: true, message: item.property_name + '不能为空！',trigger: 'change',}]"
+                                <a-select
+                                    v-model:value="olist.value"
+                                    placeholder="请选择材质"
+                                    style="width: 100%"
+                                    allow-clear
+                                    show-search
+                                    :filter-option="filterOption"
+                                    :options="item.options"
+                                    :field-names="{
+                                        label: 'name',
+                                        value: 'value_id',
+                                    }"
+                                    @focus="CATE.material_change(CATE.format_formRef[item.property_id],item.options)"
                                 >
 
-                                    <a-select
-                                        v-model:value="olist.value"
-                                        placeholder="请选择材质"
-                                        style="width: 100%"
-                                        allow-clear
-                                        show-search
-                                        :filter-option="filterOption"
-                                        :options="item.options"
-                                        :field-names="{
-                                            label: 'name',
-                                            value: 'value_id',
-                                        }"
-                                        @focus="CATE.material_change(CATE.format_formRef[item.property_id],item.options)"
-                                    >
+                                    <template #dropdownRender="{ menuNode: menu }">
+                                        <component :is="menu" />
+                                        <a-divider style="margin: 4px 0" />
+                                        <a-space style="padding: 4px 8px">
+                                        <a-input ref="inputRef" 
+                                            v-model:value="CATE.diy_name.value" 
+                                            placeholder="自定义面料"
+                                            autoComplete="off"
+                                        />
+                                        <a-button type="text" @click="CATE.addItem(item.options)">
+                                            <template #icon><PlusOutlined /></template>添加
+                                        </a-button>
+                                        </a-space>
+                                    </template>
 
-                                        <template #dropdownRender="{ menuNode: menu }">
-                                            <component :is="menu" />
-                                            <a-divider style="margin: 4px 0" />
-                                            <a-space style="padding: 4px 8px">
-                                            <a-input ref="inputRef" 
-                                                v-model:value="CATE.diy_name.value" 
-                                                placeholder="自定义面料"
-                                                autoComplete="off"
-                                            />
-                                            <a-button type="text" @click="CATE.addItem(item.options)">
-                                                <template #icon><PlusOutlined /></template>添加
-                                            </a-button>
-                                            </a-space>
-                                        </template>
+                                </a-select>
 
-                                    </a-select>
+                            </a-form-item>
 
-                                </a-form-item>
+                            <a-form-item
+                                :name="[item.property_id, dIndex, 'percentage']"
+                                :rules="[{ required: true, message:'数值不能为空！',trigger: 'change',}]"
+                            >
+                                <a-space-compact block size="middle">
+                                    
+                                    <a-input-number
+                                        v-model:value="olist.percentage"
+                                        placeholder="输入百分比"
+                                        suffix="%"
+                                        :min="0"
+                                        :max="100"
+                                        addon-after="%"
+                                        style="width: 100%;"
+                                    ></a-input-number>
 
-                                <a-form-item
-                                    :name="[item.property_id, dIndex, 'percentage']"
-                                    :rules="[{ required: true, message:'数值不能为空！',trigger: 'change',}]"
-                                >
-                                    <a-space-compact block size="middle">
-                                        
-                                        <a-input-number
-                                            v-model:value="olist.percentage"
-                                            placeholder="输入百分比"
-                                            suffix="%"
-                                            :min="0"
-                                            :max="100"
-                                            addon-after="%"
-                                            style="width: 100%;"
-                                        ></a-input-number>
+                                    <!--删除按钮-->
+                                    <a-button
+                                        v-show="CATE.format_formRef[item.property_id].length > 1"
+                                        type="dashed"
+                                        style="margin-left: 10px;"
+                                        @click="CATE.material_del(dIndex,CATE.format_formRef[item.property_id])"
+                                    >删除</a-button>
+                                </a-space-compact>
 
-                                        <!--删除按钮-->
-                                        <a-button
-                                            v-show="CATE.format_formRef[item.property_id].length > 1"
-                                            type="dashed"
-                                            style="margin-left: 10px;"
-                                            @click="CATE.material_del(dIndex,CATE.format_formRef[item.property_id])"
-                                        >删除</a-button>
-                                    </a-space-compact>
+                            </a-form-item>
 
-                                </a-form-item>
+                        </a-col>
+                        <!--多材质列表 结束-->
 
-                            </a-col>
-                            <!--多材质列表 结束-->
-
-                            <!--添加材质 开始-->
-                            <a-col :span="6">
-                                <div class="cursor Add_shui_img" " 
-                                    @click="CATE.add_limit(CATE.format_formRef[item.property_id],item.multi_select_max)">
-                                    <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
-                                    + 添加材质
-                                    </a-flex>
-                                </div>
-                            </a-col>
-                            <!--添加材质 结束-->
-                        </a-row>
+                        <!--添加材质 开始-->
+                        <a-col :span="6">
+                            <div class="cursor Add_shui_img" " 
+                                @click="CATE.add_limit(CATE.format_formRef[item.property_id],item.multi_select_max)">
+                                <a-flex justify="center" align="center" style="height: 100%;font-size: 12px;">
+                                + 添加材质
+                                </a-flex>
+                            </div>
+                        </a-col>
+                        <!--添加材质 结束-->
+                    </a-row>
                     </a-col>
 
                 </template>

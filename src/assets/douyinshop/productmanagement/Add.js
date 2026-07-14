@@ -127,14 +127,14 @@ export const Pic_Fun = reactive({
             }
             
             // 验证标题&分类信息
-            axios.post(API.AppSrtoreAPI.dou_product.publishPreCheck,verification_data).then((res)=>{
-                
+            axios.post(API.AppSrtoreAPI.dou_product.publishPreCheck, verification_data).then((res)=>{
 
-                console.log('标题、分类验证结果', res)
+                console.log('标题、分类验证结果', verification_data, res)
 
                 let common_check_results = res.data.data.common_check_results;
                 let cate_res = '';
                 let title_res = '';
+
                 common_check_results.forEach(item=>{
                     // 标题验证
                     if(item.check_type == 'product_title_illegal_check'){
@@ -184,17 +184,18 @@ export const Pic_Fun = reactive({
 
             })
 
-            // // 测试用流程
-            // productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
+            // 测试用流程
+            productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
 
-            // // 加载属性
-            // CATE.loadFormat();// 加载对应商品属性
+            // 加载属性
+            CATE.loadFormat();// 加载对应商品属性
 
 
         }else{ // 未填写分类
 
-            tool.Fun_.message('info','请选择商品类目')
-            Pic_Fun.fill_in_product_info_button_stats = true;
+            tool.Fun_.message('info','请预测商品类目')
+
+            Pic_Fun.fill_in_product_info_button_stats = false;
 
         }
 
@@ -214,21 +215,80 @@ export const Select_shuixi_Img = reactive({
     change_material_type:()=>{
         Select_shuixi_Img.selectimg_open = true;
     },
+
     // 选择-水洗标图片回调
     Add_Callback:(data)=>{
-        var img_byte_url = data[0].byte_url
-        CATE.category_property_pics.value = img_byte_url
+        let material_type = data[0].material_type;
+        console.log(data, material_type)
+        if(material_type === "photo"){
+            CATE.category_property_pics.value = data[0].byte_url
+        }else if(material_type === "video"){
+            tool.Fun_.message('info','请选择图片素材！')
+        }
+        
     },
+
     // 清除水洗标-吊牌图片
     clear_img:()=>{
         CATE.category_property_pics.value = undefined;
     },
+
     // 获取水洗表图片地址
     get_img_url:()=>{
-        // 判断是否有水洗标必填
-        // 必填水洗标
-        // 非必填水洗标
-        return CATE.category_property_pics.value;
+
+        var res_list = []
+
+        let f_data_list = CATE.format.value; // id请求的属性列表
+
+        f_data_list.forEach(item=>{
+
+
+            let available = item.property_pic_rule.available;   // 是否支持上传属性图
+            let required = item.property_pic_rule.required;     // 属性图是否必填
+
+            if(available && required){ // 必填=true
+
+                console.log(item, item.property_name, '必填')
+
+                var result = {
+                    "type":"true",
+                    "msg":"支持填写吊牌/水洗标，必填！",
+                    "property_id":item.property_id,//属性id
+                    "property_name":item.property_name,//属性名
+                    "url":CATE.category_property_pics.value// 素材图片地址
+                }
+
+                res_list.push(result)
+
+            }if(available===true && required===false){ // 非必填=false
+
+                console.log(item, item.property_name, '非必填')
+
+                var ressult = {
+                    "type":"false",
+                    "msg":"支持填写吊牌/水洗标，但非必填",
+                    "property_id":item.property_id,//属性id
+                    "property_name":item.property_name,//属性名
+                    "url":CATE.category_property_pics.value// 素材图片地址
+                }
+
+                res_list.push(ressult)
+
+            }else{ // 不用填=返回None
+
+                // console.log(item, item.property_name, '不用填')
+
+                var ressult = {
+                    "type":"None",
+                    "msg":"不支持填写吊牌/水洗标"
+                }
+
+            }
+        })
+
+        // console.log(res_list)
+        return res_list
+
     }
 
 })
@@ -371,7 +431,7 @@ export const CATE = {
         // 加载属性结构
         data_list.forEach((obj,index)=>{
             
-            console.log(obj.property_name, obj)
+            // console.log(obj.property_name, obj)
 
             // 添加品牌无品牌选项
             var property_name = obj.property_name
@@ -508,34 +568,21 @@ export const CATE = {
     },
 
     // 获取属性
-    get_format: async()=>{
+    get_format: ()=>{
 
-        // 验证是否必填全部填写
-        var res = await CATE.form_ref.value?.validate().then(()=>{
-            
-            var selected_mat = toRaw(CATE.format_formRef)// 选中的属性
-            var show_mat= toRaw(CATE.format.value)      // 当前展示的属性
-            var f_res_obj = {}
-            show_mat.forEach(obj => {
-                let property_id = obj.property_id;
-                if(selected_mat[property_id] !== undefined){
-                    var result_list = CATE.de_format_detail(obj, selected_mat[property_id])
-                    f_res_obj[property_id] = result_list
-                }
-            });
+        var selected_mat = toRaw(CATE.format_formRef)// 选中的属性
+        var show_mat= toRaw(CATE.format.value)      // 当前展示的属性
+        var f_res_obj = {}
+        show_mat.forEach(obj => {
+            let property_id = obj.property_id;
+            if(selected_mat[property_id] !== undefined){
+                var result_list = CATE.de_format_detail(obj, selected_mat[property_id])
+                f_res_obj[property_id] = result_list
+            }
+        });
 
-            return f_res_obj
+        return f_res_obj
 
-        }).catch(error => {
-
-            tool.Fun_.message('error',error.errorFields[0].errors[0]);
-
-            return false
-        })
-        
-        console.log('属性', res) // 打印获取去的商品属性
-
-        return res
     },
 
     // 获取属性时候-转义属性格式：：提交上传商品
@@ -1148,8 +1195,21 @@ export const Longimg_Fun = {
     },
     // 添加长图
     add:(data)=>{
-        data.forEach((obj,idx)=>{
-            Longimg_Fun.PicList.value.push(obj)
+
+        data.forEach((obj, idx)=>{
+
+            var material_type = obj.material_type;
+            if(material_type === 'video'){
+                
+                tool.Fun_.message('info','【3:4长图】不能选择视频，请选择图片素材！')
+                return
+
+            }else{
+
+                Longimg_Fun.PicList.value.push(obj)
+
+            }
+
         })
         if(Longimg_Fun.PicList.value.length > 5){
             Longimg_Fun.PicList.value = Longimg_Fun.PicList.value.slice(0, 5)
@@ -2673,7 +2733,9 @@ export class UploadProduct {
 
             await Base_formRef.value.validate() // 验证基础信息表单
 
-            // 验证商品属性
+            await CATE.form_ref.value.validate()// 验证商品属性
+
+            // 验证水洗标/吊牌
 
             // 验证商品规格
 
@@ -2682,10 +2744,13 @@ export class UploadProduct {
             // 验证描述详情
 
             this.get_base_info(product_data_obj)// 基础信息验证
+            this.get_attr_info()// 属性信息获取
 
         }catch (error) {
             
             console.log('验证失败', error)
+
+            tool.Fun_.message('error', error.errorFields[0].errors[0])
 
         }
 
@@ -2753,10 +2818,13 @@ export class UploadProduct {
     }
     
     // 获取属性信息
-    get_attr_info=(product_data_obj)=>{
-        // 吊牌、水系标图片
-        // 属性结果
+    get_attr_info=()=>{
+        let res = CATE.get_format();// 属性结果
+        console.log(res)
     }
+
+    // 吊牌、水系标图片
+
     // 获取规格信息
 
 

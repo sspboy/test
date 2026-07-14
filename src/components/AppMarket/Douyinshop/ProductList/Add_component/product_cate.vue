@@ -8,7 +8,7 @@
 
   <div class="delivery-method">
     
-    <a-divider>类目预测</a-divider>
+    <a-divider>新建商品 - 类目预测</a-divider>
     
     <a-alert
         message="提示：输入主图>>标题>>预测商品类目后，再进行后续商品信息的录入！"
@@ -194,28 +194,31 @@ export default defineComponent({
   setup(props, { emit, attrs, slots, expose }) {
 
     // 初始化表单内容=开始
-    Pic_Fun.PicList=[]
-    Pic_Fun.name=undefined
-    CATE.cate_value.value = undefined; // 1000003346
-    Pic_Fun.verification_title_stats = false;// 是否显示
-    Pic_Fun.verification_cate_stats = false;// 是否显示
+    // Pic_Fun.PicList=[]
+    // Pic_Fun.name=undefined
+    // CATE.cate_value.value = undefined; // 1000003346
+    // Pic_Fun.verification_title_stats = false;// 是否显示
+    // Pic_Fun.verification_cate_stats = false;// 是否显示
 
     // 测试跳过分类选择用例
-    // CATE.cate_value.value = 1000003346 // undefined // 1000003346
-    // CATE.options.value=[
-    //     {
-    //         "value": 1000003346,
-    //         "label": "服装>女装>连衣裙"
-    //     },
-    //     {
-    //         "value": 1000003327,
-    //         "label": "服装>特殊服装>婚纱/礼服"
-    //     },
-    //     {
-    //         "value": 1000003330,
-    //         "label": "服装>特殊服装>其他特殊服装"
-    //     }
-    // ]
+    
+    Pic_Fun.name='女子连衣裙夏季最新款'
+    CATE.cate_value.value = 1000008386//  1000003346// undefined // 1000003346
+    CATE.options.value=[
+        {
+            "value": 1000003346,
+            "label": "服装>女装>连衣裙"
+        },
+        {
+            "value": 1000003327,
+            "label": "服装>特殊服装>婚纱/礼服"
+        },
+        {
+            "value": 1000003330,
+            "label": "服装>特殊服装>其他特殊服装"
+        }
+    ]
+
     // 响应式数据
     CATE.select_loading.value = true;
     

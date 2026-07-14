@@ -9,8 +9,7 @@
         <!--head 导航组件  开始-->
         <menu_head />
         <!--head 导航组件  结束-->
-        
-        
+
         <!--内容部分 菜单 右侧列表 开始-->
         <a-layout>
 
@@ -57,9 +56,10 @@
                         marginTop:'0px',
                         marginBottom:'10px',
                         padding:'10px 0 0 2px',
+                        
                     }"
                 >
-                    
+
 
                     <a-tree
                         v-model:expandedKeys="PAGEDATA.expandedKeys"
