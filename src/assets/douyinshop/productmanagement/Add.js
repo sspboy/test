@@ -129,7 +129,7 @@ export const Pic_Fun = reactive({
             // 验证标题&分类信息
             axios.post(API.AppSrtoreAPI.dou_product.publishPreCheck, verification_data).then((res)=>{
 
-                console.log('标题、分类验证结果', verification_data, res)
+                // console.log('标题、分类验证结果', verification_data, res)
 
                 let common_check_results = res.data.data.common_check_results;
                 let cate_res = '';
@@ -223,7 +223,7 @@ export const Select_shuixi_Img = reactive({
         if(material_type === "photo"){
             CATE.category_property_pics.value = data[0].byte_url
         }else if(material_type === "video"){
-            tool.Fun_.message('info','请选择图片素材！')
+            tool.Fun_.message('info','属性-水洗标/吊牌-请选择图片素材！')
         }
         
     },
@@ -248,7 +248,7 @@ export const Select_shuixi_Img = reactive({
 
             if(available && required){ // 必填=true
 
-                console.log(item, item.property_name, '必填')
+                // console.log(item, item.property_name, '必填水洗标/吊牌的属性')
 
                 var result = {
                     "type":"true",
@@ -319,12 +319,7 @@ export const CATE = {
 
     // 吊牌-水洗标
     category_property_pics:ref(undefined),
-    // 提交格式
-    // {
-    //     "785": {
-    //         "urls": ["https"]
-    //     }
-    // }
+
 
     // 自定义【面料材质】的名称
     diy_name:ref(),
@@ -2264,13 +2259,13 @@ export const resetSPECSFull = () => {
             spec_value_index: undefined,
         },
         Obj: ref([
-            {
-                property_name: undefined,
-                values: [{
-                    value_name: undefined,
-                    url: undefined
-                }],
-            }
+            // {
+            //     property_name: undefined,
+            //     values: [{
+            //         value_name: undefined,
+            //         url: undefined
+            //     }],
+            // }
         ]),
     })
 }
@@ -2296,25 +2291,40 @@ export class Spec {
 
         console.log('推荐规格', this.rule)
 
+        // 是否有推荐sku
+        this.add.load()
+
+        // 是否有必填
+        // 是否支持自定义
+
         let support_property_diy = this.rule.support_property_diy; // 是否支持规格项自定义
+
         let required_spec_details = this.rule.required_spec_details; // 必填规格项
+
         // 判断是否支持自定义规格
-        if(support_property_diy){// true=支持-自定义规格
+        if(support_property_diy){// true= 支持-自定义规格
+
             this.type_formdata.support_property_options[0].disabled = false;  // 0-自定义规格
+
             this.type_formdata.support_property_diy = 0; // 默认选择自定义规格
+
         }else{// false=不支持-系统推荐规格
+
             this.type_formdata.support_property_options[0].disabled = true;  // 1-系统推荐规格
+        
         }
 
-        if(required_spec_details.length>0){// 必填规格项
+        // if(required_spec_details.length>0){// 必填规格项
 
-            this.type_formdata.support_property_options[1].disabled = false;  // 有-系统推荐规格
-            this.type_formdata.support_property_diy = 1; // 默认选择自定义规格
-            this.recommendation_add.load(); // 初始化 推荐规格
+        //     this.type_formdata.support_property_options[1].disabled = false;  // 有-系统推荐规格
+        //     this.type_formdata.support_property_diy = 1;                      // 默认选择自定义规格
+        //     this.recommendation_add.load();                                   // 初始化 推荐规格
 
-        }else{
-            this.type_formdata.support_property_options[1].disabled = true;  // 无-系统推荐规格
-        }   
+        // }else{// 没有推荐必填规格
+
+        //     this.type_formdata.support_property_options[1].disabled = true;   // 无-系统推荐规格
+        
+        // }
 
     }
 
@@ -2357,6 +2367,7 @@ export class Spec {
 
             }
         }
+
     })
 
 
@@ -2364,6 +2375,37 @@ export class Spec {
     add={
 
         load:()=>{
+
+            this.rule.required_spec_details.forEach((obj, index)=>{
+
+                let name = obj.sell_property_name
+
+                obj.property_name = name;
+                obj.values = [{
+                    value_name:undefined,  // 值名称
+                    url:undefined          // 规格图片
+                }]
+                
+                SPECS.Obj.push(obj)
+
+                console.log('1111',SPECS.Obj)
+
+                // if(!SPECS_DIY.Obj.some(r=>r.property_name ===name)){
+
+                //     // 添加最大允许数量的规格 为显示状态
+                //     if(SPECS_DIY.Obj.length < max_spec_num_limit){
+
+                //         SPECS_DIY.Obj.push(o)
+
+                //     }else{ // 添加超出数量的规格 为隐藏状态
+                        
+                //         o.disabled = true;
+
+                //         SPECS_DIY.Obj.push(o)
+                //     }
+
+                // }
+            })
 
         },
 
@@ -2554,8 +2596,6 @@ export class Spec {
         set_load_selected:()=>{
 
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
-
-            console.log('推荐规格', this.rule)
             
             this.rule.required_spec_details.forEach((obj, index)=>{
 
@@ -2593,7 +2633,7 @@ export class Spec {
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
 
             // 迭代 推荐规格
-            console.log('推荐规格', this.rule.required_spec_details)
+            // console.log('推荐规格', this.rule.required_spec_details)
 
             this.rule.required_spec_details.forEach((obj, index)=>{
 
@@ -2644,7 +2684,7 @@ export class Spec {
         // 勾选自定义规格
         change_selected:(value)=>{
 
-            // console.log(value)
+            console.log(value)
 
             let max_spec_num_limit = this.rule.max_spec_num_limit;// 最大可选规格数量
             
@@ -2731,27 +2771,84 @@ export class UploadProduct {
 
         try{
 
-            await Base_formRef.value.validate() // 验证基础信息表单
+            await Base_formRef.value.validate().catch(err => {// 验证基础信息表单
+                err.formName = '基础信息'
+                throw err
+            }) 
 
-            await CATE.form_ref.value.validate()// 验证商品属性
+            await CATE.form_ref.value.validate().catch(err => {// 验证商品属性
+                err.formName = '商品属性'
+                throw err
+            })
 
-            // 验证水洗标/吊牌
+            // 验证水洗标/吊牌===开始
+            var category_pics_list = Select_shuixi_Img.get_img_url();
+            
+            var category_obj = {}
 
-            // 验证商品规格
+            // console.log(category_pics_list) // 获取的属性吊牌/水洗标列表
+            for (const item of category_pics_list) {
 
-            // 验证库存发货
+                if(item.type){// true支持+必填
 
-            // 验证描述详情
+                    if(item.url === undefined || item.url === ''){
 
-            this.get_base_info(product_data_obj)// 基础信息验证
-            this.get_attr_info()// 属性信息获取
+                        // tool.Fun_.message('error', item.property_name + '-吊牌/水洗标图片必填！')
+                        // 终止外部 try 提示错误
+                        throw new Error(item.property_name + '-吊牌/水洗标图片必填！')
+
+                    }else{
+
+                        // 提交格式
+                        category_obj[item.property_id] =  {"urls": [item.url]}
+                    }
+                    
+                }else{// false支持+非必填
+
+                    if(item.url !== undefined && item.url !== ''){
+                        category_obj[item.property_id] =  {"urls": [item.url]}
+                    }
+
+                }
+            }
+
+            // 上传数据对象：水洗标/吊牌赋值
+            if(Object.keys(category_obj).length !== 0){ // 对象为空
+                product_data_obj.category_property_pics = category_obj
+            }
+            // 验证水洗标/吊牌===结束
+
+            // 验证商品规格==开始
+            await sku_formRef.value.validate().catch(err => {
+                err.formName = '商品规格'
+                throw err
+            })
+
+
+            // 验证发货模式==开始
+
+            // 验证SKU库存==开始
+
+            // 验证描述详情==开始
+
+            // 商品资质验证==开始
+
+            this.get_base_info(product_data_obj)// 基础信息获取
+
+            this.get_attr_info(product_data_obj)// 属性信息获取
 
         }catch (error) {
             
-            console.log('验证失败', error)
-
-            tool.Fun_.message('error', error.errorFields[0].errors[0])
-
+            // console.log('验证失败', error)
+            // tool.Fun_.message('error',error.formName + '-' +  error.errorFields[0]?.errors[0])
+            // tool.Fun_.message('error',error.formName + '-' +  error.errorFields[0]?.errors[0])
+            // 统一处理
+            if (error.formName) {
+                tool.Fun_.message('error', `${error.formName}-${error.errorFields?.[0]?.errors?.[0]}`)
+            } else {
+                // 水洗标/吊牌或其他自定义错误
+                tool.Fun_.message('error', error.message || '验证失败')
+            }
         }
 
     }
@@ -2772,13 +2869,13 @@ export class UploadProduct {
         // 白底图
         if(whiteimg_Fun.get()){
             product_data_obj.white_back_ground_pic_url = whiteimg_Fun.get();// 白底图：url(仅素材中心url有效)，白底图比例要求1:1
-            console.log('白底图', whiteimg_Fun.get())
+            // console.log('白底图', whiteimg_Fun.get())
         }
 
         // 长图
         if(Longimg_Fun.get()){
             product_data_obj.long_pic_url = Longimg_Fun.get();// 长图
-            console.log('长图', Longimg_Fun.get())
+            // console.log('长图', Longimg_Fun.get())
         }
 
         // 视频信息
@@ -2818,12 +2915,12 @@ export class UploadProduct {
     }
     
     // 获取属性信息
-    get_attr_info=()=>{
-        let res = CATE.get_format();// 属性结果
-        console.log(res)
-    }
+    get_attr_info=(product_data_obj)=>{
 
-    // 吊牌、水系标图片
+        let res = CATE.get_format(product_data_obj);// 属性结果
+        product_data_obj.product_format_new =JSON.stringify(res)
+    
+    }
 
     // 获取规格信息
 

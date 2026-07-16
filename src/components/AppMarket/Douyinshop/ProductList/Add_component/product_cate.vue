@@ -194,7 +194,9 @@ export default defineComponent({
   setup(props, { emit, attrs, slots, expose }) {
 
     // 初始化表单内容=开始
-    // Pic_Fun.PicList=[]
+    Pic_Fun.PicList=[
+      {"byte_url":"https://p3-aio.ecombdimg.com/obj/ecom-shop-material/jpeg_m_c124d97081b6090f568b6a79497968e2_sx_88594_www800-800"}
+    ]
     // Pic_Fun.name=undefined
     // CATE.cate_value.value = undefined; // 1000003346
     // Pic_Fun.verification_title_stats = false;// 是否显示
