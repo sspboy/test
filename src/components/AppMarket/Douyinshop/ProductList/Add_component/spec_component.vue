@@ -37,13 +37,6 @@
       @click="spec.recommendation_add.get_spec_diy_obj"
     >打印推荐规格</a-button>
 
-    <a-radio-group 
-      v-model:value="spec.type_formdata.support_property_diy" 
-      option-type="button" 
-      :options="spec.type_formdata.support_property_options" 
-      size="small"
-      @change="spec.type_formdata.change_spec_model"
-    />
 
     <span class="font_size_12"> ---- 是否支持自定义：：{{ spec.rule.support_property_diy }}</span>
   </a-divider>
@@ -53,20 +46,6 @@
   <!--自定义规格 开始-->
   <div>
 
-    <!--系统推荐 规格不为空 显示勾选系统sku-->
-    <a-space style="margin: 10px 0;">
-
-      <span class="font_size_12">选择系统推荐规格-最多不超过{{ spec.rule.max_spec_num_limit }}个</span>
-      
-      <a-checkbox-group 
-        v-model:value="spec.type_formdata.selected_value_list" 
-        name="checkboxgroup" 
-        :options="spec.type_formdata.selected_diy_spec_options" 
-        @change="spec.recommendation_add.change_selected"
-      />
-
-    </a-space>
-
 
 
     <a-form 
@@ -75,52 +54,108 @@
       style="margin-bottom: 0;padding: 10px 0 0 0;" 
       name="SPECS" >
 
-        <template v-for="(item, index) in SPECS.Obj"  :key="item.index">
+        <template v-for="(item, index) in SPECS.Obj" :key="item.index">
+
+          <div class="font_size_12 box_style">
+          
 
           <a-form-item 
+              v-if="!item.disabled"
               :name="[index, 'property_name']"
               :rules="{required: true, trigger: 'change', message:'规格名称不能为空'}"
           >
               <!--规格名称 开始-->
-              <a-space >
-                <a-input 
-                    v-model:value="item.property_name"
-                    style="font-size: 12px;" 
-                    placeholder="规格名称" 
-                    autocomplete="off"
-                    allow-clear
-                />
-    
-                <a-button type="dashed" size="small" class="add_btn_class" block @click="spec.add.pushvalue(index)">
-                    <PlusOutlined />
-                </a-button>
+              <a-row>
+                <a-col :span="18">
+                  <a-space>
 
-                <a-button type="dashed" size="small" class="add_btn_class" block @click="spec.add.del(item,index)">
-                    <DeleteOutlined />
-                </a-button>
-
-                <a-form-item-rest>
-                  <span v-show="index == 0" class="font_size_12">
-                    规格图片 
-                    <a-switch 
-                      v-model:checked="SPECS.SpecImag" size="small" 
-                      @change="spec.add.SpecImagState_change_fun"
-                      name="switch"
+                    <a-input 
+                        v-model:value="item.property_name"
+                        style="font-size: 12px;" 
+                        placeholder="规格名称" 
+                        autocomplete="off"
+                        allow-clear
+                        :disabled="item.Recommendation"
                     />
-                  </span>
-                </a-form-item-rest>
-              </a-space >
-              <!--规格名称 结束-->
+
+                    <!--添加按钮-->
+                    <a-button
+                      type="dashed" 
+                      size="small" 
+                      class="add_btn_class" 
+                      block
+                      :disabled="item.enabled_status"
+                      @click="spec.add.pushvalue(index)">
+                        <PlusOutlined />
+                    </a-button>
+
+                    <!--删除按钮-->
+                    <a-button
+                      v-if="item.value_display_style === 'diy'"
+                      type="dashed" 
+                      size="small" 
+                      class="add_btn_class" 
+                      block
+                      :disabled="item.enabled_status"
+                      @click="spec.add.del(item,index)">
+                        <DeleteOutlined />
+                    </a-button>
+                  </a-space >
+                </a-col>
+                <!--规格名称 结束-->
+                <a-col :span="6">
+
+                  <a-form-item-rest>
+                    <!--规格图片-->
+                    <span v-show="index == 0" class="font_size_12" style="margin-right: 10px;">
+                      <a-switch 
+                        v-model:checked="SPECS.SpecImag" 
+                        size="small"
+                        checked-children="开启图片" 
+                        un-checked-children="关闭图片"
+                        class="font_size_12"
+                        @change="spec.add.SpecImagState_change_fun"
+                        name="switch"
+                        :disabled="item.enabled_status"
+                      />
+                    </span>
+
+                    <span v-if="item.Recommendation && !item.is_required" class="font_size_12" style="margin-right: 10px;">
+                      <a-switch
+                          checked-children="启用" 
+                          un-checked-children="禁用"
+                          v-model:checked="item.enabled_status" 
+                          size="small" 
+                          @change="console.log(value)"
+                          name="switch"
+                      />
+                    </span>
+
+                    <!--规格是否必填项目===开始-->
+                    <span 
+                      class="font_size_12" 
+                      v-if="item.is_required"
+                      style="color: red;float:right;"
+                    >必填</span>
+                    
+                    <span class="font_size_12" style="float:right;" v-else>
+                      非必填
+                    </span>
+                    <!--规格是否必填项目===结束-->
+
+                  </a-form-item-rest>
+                </a-col>
+              </a-row>
 
           </a-form-item>
 
           <!--规格值 开始-->
-          <a-row style="padding: 0 0 0 0;" :gutter="[16]">
+          <a-row
+            v-if="!item.disabled" 
+            style="padding: 0 0 0 0;margin-bottom: 10px;" :gutter="[16,16]">
 
-            <a-col 
-              :span="6"
-              v-for="(v_item, spec_value_index) in item.values"
-            >
+            <a-col :span="6" v-for="(v_item, spec_value_index) in item.values">
+
               <a-space 
                   :key="v_item.index" 
                   style="margin:2px 4px 0 0;" 
@@ -128,24 +163,101 @@
               >
                   <!--带图片规格-->
                   <a-form-item 
-                    v-if="index === 0" 
                     :name="[index, 'values', spec_value_index,'value_name']" 
                     :rules="{required: true, trigger: 'change', message:'值不能为空'}"
                   >
                       <a-space>
 
-                        <a-input 
-                            v-model:value="v_item.value_name" 
-                            placeholder="规格值" 
-                            style="font-size: 12px;" 
-                            autocomplete="off"
+                        <!--规格值 cascader 模式-->
+                        <span v-if="item.value_display_style === 'cascader_multi_select'">
+                        
+                          <!--无需二次请求值 支持自定义输入规格值-->
+                          <a-auto-complete
+                            :disabled="item.enabled_status"
+                            v-if="item.need_paging_query_value ===false && item.support_diy===true"
+                            v-model:value="v_item.value_name"
+                            :options="item.property_values"
+                            style="width: 154px;font-size: 12px;"
+                            placeholder="输入规格值"
                             allow-clear
-                        />
+                            :fieldNames="{ 
+                              label: 'sell_property_value_name', 
+                              value: 'sell_property_value_name', 
+                            }"
+                          />
+                            
+                          <!--无需二次请求值 不支持自定义输入规格值-->
+                          <a-select
+                              :disabled="item.enabled_status"
+                              v-else-if="item.need_paging_query_value===false && item.support_diy===false"
+                              ref="select"
+                              placeholder="选择规格值"
+                              v-model:value="v_item.value_name"
+                              :options="item.property_values"
+                              :fieldNames="{ 
+                                label: 'sell_property_value_name', 
+                                value: 'sell_property_value_name', 
+                              }"
+                            class="font_size_12"
+                            style="width: 154px;"
+                            allow-clear
+                          />
+
+                          <!--需要 二次查询规格值-->
+                          <a-cascader 
+                            :disabled="item.enabled_status"
+                            v-else-if="item.need_paging_query_value"
+                            v-model:value="v_item.value_name"
+                            multiple
+                            :options="item.property_values"
+                            placeholder="选择规格值"
+                            suffix-icon="Shopping Around"
+                            :fieldNames="{ 
+                              label: 'sell_property_value_name', 
+                              value: 'sell_property_value_id', 
+                              children: 'children' 
+                              }"
+                              style="width: 80%;"
+                            allow-clear
+                          >
+                            <template #tagRender="data">
+                              <a-tag :key="data.value" color="blue">{{ data.label }}</a-tag>
+                            </template>
+                          </a-cascader>
+
+                        </span>
+                        
+                        <!-- 文本值-->
+                        <span v-else-if="item.value_display_style === 'text'">
+                          <a-input
+                            :disabled="item.enabled_status"
+                            v-model:value="v_item.value_name"
+                            placeholder="规格值"
+                            autocomplete="off"
+                            class="font_size_12"
+                            allow-clear></a-input>
+                        </span>
+
+                        <!-- 自定义 -->
+                        <span v-else-if="item.value_display_style === 'diy'">
+                          <a-input
+                            v-model:value="v_item.value_name"
+                            placeholder="规格值"
+                            autocomplete="off"
+                            class="font_size_12"
+                            style="width: 100%;"
+                            allow-clear></a-input>
+                        </span>
+
+                        <!-- 度量衡-->
+
+
                         <!--规格图片-->
 
                         <!--无图片地址-->
-                        <span v-if="SPECS.SpecImag === true && v_item.url=== undefined || v_item.url == ''" style="float: left;" >
+                        <span v-if="SPECS.SpecImag === true && index === 0 && v_item.url=== undefined || v_item.url == ''" style="float: left;" >
                           <img
+                            :disabled="item.enabled_status"
                             style="width: 28px;height: 28px;"
                             src="/image_defule.png"
                             class="cursor"
@@ -154,8 +266,9 @@
                         </span>
 
                         <!--有图片地址-->
-                        <span v-else-if="SPECS.SpecImag === true && v_item.url != undefined" style="float: left;">
-                            <a-popconfirm
+                        <span v-else-if="SPECS.SpecImag === true && index === 0 && v_item.url != undefined" style="float: left;">
+                          <a-popconfirm
+                            :disabled="item.enabled_status"
                             ok-text="查看图片"
                             cancel-text="清空图片"
                             @confirm="spec.add.change_spec_img_fun(index, spec_value_index)"
@@ -165,34 +278,22 @@
 
                           <a>
                             <img
+                              :disabled="item.enabled_status"
                               style="border-radius:4px;width: 28px;height: 28px;"
                               :src="v_item.url"
                               class="cursor"
-                              ></img></a></a-popconfirm>
+                              ></img>
+                            </a>
+                          </a-popconfirm>
 
                         </span>
                       </a-space>
                     
                   </a-form-item>
 
-                  <!--不带图片规格-->
-                  <a-form-item
-                      v-if="index != 0"
-                      :name="[index, 'values', spec_value_index,'value_name']" 
-                      :rules="{required: true, trigger: 'change', message:'值不能为空'}"
-                      >
-                      <a-input 
-                          v-model:value="v_item.value_name"
-                          placeholder="规格值" 
-                          autocomplete="off"
-                          style="font-size: 12px;" 
-                          allow-clear
-                      />
-
-                  </a-form-item>
-
                   <!--删除规格值-->
                   <a-button 
+                    :disabled="item.enabled_status"
                     type="dashed" 
                     @click="spec.add.removevalue(v_item, index)"
                     size="small"
@@ -201,230 +302,38 @@
                   </a-button>
 
               </a-space>
+
+              <!--备注-->
+              <div v-if="item.support_remark === true">
+                <a-form-item-rest> 
+                  <a-input
+                    :disabled="item.enabled_status"
+                    v-model:value="v_item.info"
+                    placeholder="备注"
+                    style="font-size: 12px;" 
+                    allow-clear></a-input>
+                  </a-form-item-rest> 
+              </div>
+
             </a-col>
           </a-row>
           <!--规格值 结束-->
 
+          
+          </div>
         </template>
 
-        <a-form-item>
-            <a-button 
-              type="dashed" 
-              @click="spec.add.insert" 
-              size="middle"
-              style="margin-top: 20px;"
-              >添加规格</a-button>
+        <a-form-item v-if="spec.rule.support_property_diy">
+          <a-button 
+            type="dashed" 
+            @click="spec.add.insert" 
+            size="middle"
+            >添加规格</a-button>
         </a-form-item>
-        
-
     </a-form>
 
   </div>
   <!--自定义规格 结束-->
-
-
-  <!--系统推荐规格 开始-->
-  <div v-if="spec.type_formdata.support_property_diy === 1">
-
-    <a-space style="margin-top: 10px;">
-
-      <span class="font_size_12">选择系统推荐规格-最多不超过{{ spec.rule.max_spec_num_limit }}个</span>
-      
-      <a-checkbox-group 
-        v-model:value="spec.type_formdata.selected_value_list" 
-        name="checkboxgroup" 
-        :options="spec.type_formdata.selected_diy_spec_options" 
-        @change="spec.recommendation_add.change_selected"
-      />
-
-    </a-space>
-
-    <a-form 
-      ref="sku_diy_formRef"
-      :model="SPECS_DIY.Obj"
-      style="margin:20px 0 0 0;padding: 10px 0 0 0;" 
-      name="SPECS_DIY" >
-
-    <div v-for="(item, index) in SPECS_DIY.Obj">
-
-      <a-form-item 
-        v-if="item.disabled===false"
-        :name="[index, 'property_name']"
-        :key="item.index"
-        :rules="{required: true, trigger: 'change', message:' '}"
-      >
-          <!--规格名称 不可编辑 -->
-            
-            <a-space>
-              
-              {{ item.property_name }} 
-              
-              是否二次请求：{{ spec.rule.required_spec_details[index].need_paging_query_value }}
-              是否二次自定义规格值：{{ spec.rule.required_spec_details[index].support_diy }}
-
-              <a-button 
-              @click="spec.recommendation_add.add_value(index)"
-              type="dashed" 
-              size="small"><PlusOutlined /></a-button>
-              <!--图片切换按钮-->
-              <span v-show="index === 0" class="font_size_12">
-                规格图片
-                <a-switch v-model:checked="SPECS_DIY.image_checked" size="small" />
-              </span>
-            </a-space>
-
-            <!--规格值 -->
-            <a-row style="margin-top: 20px;" :gutter="[16]">
-
-              <a-col :span="6" v-for="(v_item, spec_value_index) in item.values">
-
-                <!--选择值--> 
-                <a-form-item 
-                  :name="[index, 'values', spec_value_index, 'value_name']" 
-                  :rules="{
-                    required: true, 
-                    trigger: 'change', 
-                    message:''}"
-                >
-
-                  <a-space>
-                    <!--规格值 cascader 模式-->
-                    <span v-if="spec.rule.required_spec_details[index].value_display_style === 'cascader_multi_select'">
-                    
-                    <!--无需二次请求值 支持自定义输入规格值-->
-
-                    <a-auto-complete
-                      v-if="spec.rule.required_spec_details[index].need_paging_query_value ===false && spec.rule.required_spec_details[index].support_diy===true"
-                      v-model:value="v_item.value_name"
-                      :options="spec.rule.required_spec_details[index].property_values"
-                      style="width: 154px;font-size: 12px;"
-                      placeholder="输入规格值"
-                      allow-clear
-                      :fieldNames="{ 
-                        label: 'sell_property_value_name', 
-                        value: 'sell_property_value_name', 
-                      }"
-                    />
-                      
-                    <!--无需二次请求值 不支持自定义输入规格值-->
-                    <a-select
-                        v-if="!spec.rule.required_spec_details[index].need_paging_query_value && spec.rule.required_spec_details[index].support_diy===false"
-                        ref="select"
-                        placeholder="选择规格值"
-                        v-model:value="v_item.value_name"
-                        :options="spec.rule.required_spec_details[index].property_values"
-                        :fieldNames="{ 
-                          label: 'sell_property_value_name', 
-                          value: 'sell_property_value_id', 
-                        }"
-                      style="width: 152px;"
-                      class="font_size_12"
-                      allow-clear
-                    />
-
-                    <!--需要 二次查询规格值-->
-                    <a-cascader
-                      v-else-if="spec.rule.required_spec_details[index].need_paging_query_value"
-                      v-model:value="v_item.value_name"
-                      multiple
-                      :options="spec.rule.required_spec_details[index].property_values"
-                      placeholder="选择规格值"
-                      suffix-icon="Shopping Around"
-                      :fieldNames="{ 
-                        label: 'sell_property_value_name', 
-                        value: 'sell_property_value_id', 
-                        children: 'children' 
-                        }"
-                      style="width: 100%;"
-                      allow-clear
-                    >
-                      <template #tagRender="data">
-                        <a-tag :key="data.value" color="blue">{{ data.label }}</a-tag>
-                      </template>
-                    </a-cascader>
-
-                    </span>
-                    
-                    <!-- 文本值-->
-                    <span v-else-if="spec.rule.required_spec_details[index].value_display_style === 'text'">
-                      <a-input
-                        v-model:value="v_item.value_name"
-                        placeholder="规格值"
-                        autocomplete="off"
-                        allow-clear></a-input>
-                    </span>
-
-                    <!-- 度量衡-->
-
-                    
-                    <span v-if="index === 0">
-                    <!--无图片地址-->
-                    <img
-                      v-if="SPECS_DIY.image_checked === true && v_item.url=== undefined || v_item.url == ''"
-                      style="width: 28px;height: 28px;"
-                      src="/image_defule.png"
-                      class="cursor"
-                      @click="spec.add.change_spec_img_fun(index, spec_value_index)"
-                    />
-
-                    <!--有图片地址-->
-                    <a-popconfirm
-                        v-else-if="SPECS_DIY.image_checked === true && v_item.url != undefined"
-                        ok-text="查看图片"
-                        cancel-text="清空图片"
-                        @confirm="spec.add.change_spec_img_fun(index, spec_value_index)"
-                        @cancel="spec.add.remove_img(v_item)"
-                      >
-                        <template #icon></template>
-
-                      <a>
-                        <img
-                          style="border-radius:4px;width: 28px;height: 28px;"
-                          :src="v_item.url"
-                          class="cursor"
-                          ></img></a>
-                    </a-popconfirm>
-                    </span>
-
-                    <!--删除按钮-->
-                    <a-button 
-                    v-if="item.values.length>1"
-                    @click="spec.recommendation_add.del_value(index, spec_value_index)"
-                    type="dashed" size="small">
-                      <DeleteOutlined />
-                    </a-button>
-                  </a-space>
-
-
-                  <!--备注-->
-                  <div style="margin-top: 10px;" v-if="props.rule_info?.product_spec_rule?.required_spec_details[index]?.support_remark == true">
-                    <a-form-item-rest> 
-                    <a-input 
-                      v-model:value="v_item.info"
-                      placeholder="备注" 
-                      allow-clear></a-input>
-                      </a-form-item-rest> 
-                  </div>
-
-
-                </a-form-item>
-              </a-col>
-
-
-
-            </a-row>
-
-
-      </a-form-item>
-
-    </div>
-    </a-form>
-
-
-  </div>
-  <!--系统推荐规格 结束-->
-
-  <!-- <a-button style="margin-top: 20px;">添加规格</a-button> -->
 
 
 </template>
@@ -501,5 +410,9 @@ props: {
 }
 :deep(.ant-select-auto-complete input) {
   font-size: 12px;
+}
+.box_style{border: 1px #f2f2f2 solid;margin-bottom: 20px;border-radius: 4px;padding: 18px 14px 14px 14px;}
+.custom-switch :deep(.ant-switch-inner) {
+  font-size: 12px;  /* 修改文字大小 */
 }
 </style>

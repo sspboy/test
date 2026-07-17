@@ -3,11 +3,11 @@
     <a-menu 
       class="font_size_12"
       v-model:selectedKeys="state.key"
+      :openKeys="state.openKeys"
       mode="inline"
       theme="light"
       :inline-collapsed="state.collapsed"
       :items="items?.value"
-      :openKeys="state.openKeys"
       @click="handleClick"
       @openChange="onOpenChange"
     >
