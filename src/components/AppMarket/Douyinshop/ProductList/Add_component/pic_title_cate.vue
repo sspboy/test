@@ -34,9 +34,10 @@
         :FormData="CATE"
     />
 
-    <a-row>
+    <a-row :gutter="[16,0]">
+
         <!--白底图 -- white_back_ground_pic_url -->
-        <a-col :span="4">
+        <a-col :span="3">
             
             <div style="width: 100%;height:130px;margin: 20px 0 0 0;">
 
@@ -58,7 +59,7 @@
                     v-if="whiteimg_Fun.PicList.value < 1"
                 >
                     <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
-                        + 白底图
+                        <a>+ 白底图</a>
                     </a-flex>
                 </p>
 
@@ -66,8 +67,19 @@
 
         </a-col>
 
+        <a-col :span="3">
+            <div style="width: 100%;height:130px;margin: 20px 0 0 0;">
+                <p class="creat_white_button">
+                    <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12"><a>主图创建白底图</a></a-flex>
+                </p>
+                <p class="creat_white_button">
+                    <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12"><a>素材创建白底图</a></a-flex>
+                </p>
+            </div>
+        </a-col>
+
         <!--视频 -- material_video_id -->
-        <a-col :span="4">
+        <a-col :span="3">
 
             <div style="width: 100%;height:130px;margin: 20px 0 0 0;">
 
@@ -86,17 +98,22 @@
                     class="cursor Add_3_4_img font_size_12"
                     v-if="video_Fun.PicList.value.length < 1"
                 >
-                    <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
-                        + 视频
+                    <a-flex justify="center" align="center" style="height: 60%;" class="font_size_12">
+                        <a>+ 选择视频</a>
                     </a-flex>
+
+                    <a-flex justify="center" align="center" style="height: 10%;" class="font_size_12">
+                        <a >+ 创建视频</a>
+                        </a-flex>
+                    
                 </p>
             </div>
         </a-col>
 
         <!--3比4长图 -- long_pic_url -->
-        <a-col :span="16">
+        <a-col :span="13">
             
-            <div style="width: 100%;height: 130px;margin: 20px 0 0 0;">
+            <div style="width: 100%;height: 130px;margin: 20px 0 0 20px;">
 
                 <p class="img_3_4_pic" v-for="(item,index) in Longimg_Fun.PicList.value">
                     
@@ -117,7 +134,7 @@
                     v-if="Longimg_Fun.PicList.value.length < 5"
                 >
                     <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
-                        + 3:4长图
+                        <a>+ 3:4长图</a>
                     </a-flex>
                 </p>
 
@@ -125,9 +142,24 @@
 
         </a-col>
 
-        
-
     </a-row>
+
+    <!--白底图验证 提示 === 开始-->
+    <a-alert
+      message="Warning"
+      description="This is a warning notice about copywriting."
+      type="warning"
+      show-icon
+      closable
+      style="margin: 10px 0 40px 0;"
+    >
+        <template #action>
+            <a-button size="small" type="text">操作按钮</a-button>
+        </template>
+    </a-alert>
+
+    <!--白底图验证 提示 === 结束-->
+
 
     <!-- 基础信息 -->
     <a-form
@@ -135,6 +167,7 @@
         name="ProductInfo"
         :model="formState"
         :rules="rules"
+        style="margin-top: 20px;"
     >
         <a-row :gutter="[16,0]">
 
@@ -370,10 +403,8 @@ import { DeleteOutlined} from '@ant-design/icons-vue';
  .content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 90vh;}
 .img_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
 .img_3_4_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
-.Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
-.Add_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
-.Add_3_4_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
-.Add_3_4_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
+.Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;float: left;text-align: center;}
+.Add_3_4_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;float: left;text-align: center;}
 .add_btn_class{width: 40px; margin:0 0 0 20px;}
 /* .ant-form-item{margin-bottom: 0px ! important} */
 .Add_shui_img{height: 90px;width: 100%;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
@@ -383,4 +414,6 @@ import { DeleteOutlined} from '@ant-design/icons-vue';
 /*履约模式选项卡字体大小设置*/
 :deep(.ant-radio-button-wrapper) {font-size: 12px;}
 .custom-radio :deep(.ant-radio + span) {font-size: 12px;}
+/*白底图创建==按钮*/
+.creat_white_button{height: 34%;text-align: center;border: 1px silver dotted;border-radius: 4px;}
  </style>
