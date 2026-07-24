@@ -1121,6 +1121,7 @@ export default defineComponent({
                isLeaf: false,
             }]
         })
+        
         // 添加输入地址input
         const addimaginput=()=>{
             var list_number = uploadimglist.list.length;

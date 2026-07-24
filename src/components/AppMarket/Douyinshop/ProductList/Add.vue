@@ -39,41 +39,27 @@
                     
                     </a-tab-pane>
 
-                    <a-tab-pane key="1" tab="白底图">
-                        
-                        <!--白底图 组件-->
-                        <white_image_component />
-                    
-                    </a-tab-pane>
-
-                    <a-tab-pane key="2" tab="主图视频">
-                        
-                        <!--主图视频 组件-->
-                        <main_image_video_component />
-                        
-                    </a-tab-pane>
-
-                    <a-tab-pane key="3" tab="商品属性">
+                    <a-tab-pane key="1" tab="商品属性">
                         
                         <!--商品属性 组件-->
                         <product_format_component />
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="4" tab="商品规格">
+                    <a-tab-pane key="2" tab="商品规格">
                         <!--规格 组件-->
                         <spec_component />
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="5" tab="库存发货" >
+                    <a-tab-pane key="3" tab="库存发货" >
                         
                         <!--发货模式 组件-->
                         <Preselltype_component />
 
                     </a-tab-pane>
 
-                    <a-tab-pane key="6" tab="描述详情" >
+                    <a-tab-pane key="4" tab="描述详情" >
 
                         <div style="margin: 0 0 10px 0;">
 
@@ -111,7 +97,7 @@
                         </div>
                     </a-tab-pane>
 
-                    <a-tab-pane key="7" tab="资质规则" >
+                    <a-tab-pane key="5" tab="资质规则" >
 
                         <!--资质 组件-->
                         <quality_component />
@@ -184,8 +170,6 @@ export default defineComponent({
         Toolbar, // 编辑工具栏
         product_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/product_cate.vue')),// 类目预测
         pic_title_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/pic_title_cate.vue')),// 基础信息
-        white_image_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/white_image.vue')),// 白底图组件
-        main_image_video_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/main_image_video.vue')),// 主图视频组件
         selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
         format_cp:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/edit_component/format_cp.vue')),// 商品属性组件
         Preselltype_component:defineAsyncComponent(()=>import('@/components/AppMarket/Douyinshop/ProductList/Add_component/preselltype_component.vue')),// 发货模式组件

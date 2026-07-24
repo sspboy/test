@@ -1,69 +1,51 @@
+<!--
+创建 白底图 组件--
+接受处理图片的url
+返回白底图地址
+验证白底图是否通过检测
+通过：写入页面白底图容器
+不通过：重新选择图片素材创建
+-->
+
 <template>
-    <a-row>
-        <!--白底图 -- white_back_ground_pic_url -->
-        <a-col :span="4">
-            
-            <div style="width: 100%;height:130px;margin: 20px 0 0 0;">
+  
+  <a-modal
+      v-model:open="props.data.open"
+      title="创建白底图"
+      centered
+      @ok="console.log('创建白底图')"
+    >
+      <div class="delivery-method">
 
-                <p class="img_pic" v-for="item in whiteimg_Fun.PicList.value">
-
-                    <a-image :src="item.byte_url" />
-
-                    <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
-                        <a-button type="text" size="small" @click="whiteimg_Fun.del"> 
-                            <DeleteOutlined />
-                        </a-button>
-                    </span>
-                </p>
-
-                <!--添加按钮-->
-                <p 
-                    @click="Basedata.change_material_type('white_img')" 
-                    class="cursor Add_img"
-                    v-if="whiteimg_Fun.PicList.value < 1"
-                >
-                    <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
-                        + 白底图
-                    </a-flex>
-                </p>
-
+        <a-row>
+          <a-col :span="12">
+            <div style="width: 100px;text-align: center;">
+            <a-image
+              :src="props.data.byte_url"
+              style="width: 100px;height: 100px;"
+            />
+            <p style="margin: 10px 0 0 0;">原图</p>
             </div>
+          </a-col>
 
-        </a-col>
-
-        <!--选择 主图创建白底图-->
-        <a-col :span="4">
-            <div class="cursor Add_img" style="margin-top: 20px;">
+          <a-col :span="12">
+            <div style="width: 100px;text-align: center;">
+              <div style="width: 100px;height: 100px;background-color: #f2f2f2;">
                 <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
-                    + 选择主图<br />
-                    创建白底图
+                  <a-spin size="small" />
                 </a-flex>
+              </div>
+              <p style="margin: 10px 0 0 0;">处理ing...</p>
             </div>
-        </a-col>
+          </a-col>
 
-        <!--选择 素材创建白底图-->
-        <a-col :span="4">
-            <div class="cursor Add_img" style="margin-top: 20px;">
-                <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
-                    + 选择素材<br />创建白底图
-                </a-flex>
-            </div>
-        </a-col>
-
-        <a-col :span="24">
-            <a-divider orientation="left" orientation-margin="0px">白底图创建记录</a-divider>
-
-        </a-col>
-
-    </a-row>
-    <div> 
+        </a-row>
         
-    </div>
-  <div class="delivery-method">
+
     
-    
-    
-  </div>
+      </div>
+  </a-modal>
+
 </template>
 
 <script>
@@ -81,32 +63,33 @@ export default defineComponent({
   },
   
   props: {
+    // 传图需要处理白底图的url
     data: {
       type: Object,
-    },
-    data2: {
-      type: String,
-      default: ''
     }
   },
   
   emits: ['update', 'change'],
   
   setup(props, { emit, attrs, slots, expose }) {
-    // 响应式数据
-    const count = ref(0)
-    const title = ref('发货方式设置')
+
+    const white_iamge_url = props.data.byte_url; // 素材图片url
+    const folder_id = props.data.folder_id; // 存储素材文件夹id
+
+    // 处理白底图方法
+
+    // 请求白底图接口
     
-    // 计算属性
-    const displayTitle = computed(() => {
-      return `${title.value} - ${props.data2 || '默认'}`
-    })
+    // 结果返回-地址写入页面
     
-    // 方法
-    const handleClick = () => {
-      count.value++
-      emit('update', { count: count.value, data: props.data })
-    }
+    // 上传到素材中心==返回地址
+
+    // 检测是否合格
+    
+    
+    // 
+
+
     
     // 监听器
     watch(() => props.data, (newVal, oldVal) => {
@@ -118,17 +101,11 @@ export default defineComponent({
       console.log('模板名称 组件已挂载')
     })
     
-    // 暴露给父组件的方法
-    expose({
-      reset: () => { count.value = 0 }
-    })
     
     return {
-        whiteimg_Fun,
-      count,
-      title,
-      displayTitle,
-      handleClick
+      props,
+      whiteimg_Fun,
+
     }
   }
 })

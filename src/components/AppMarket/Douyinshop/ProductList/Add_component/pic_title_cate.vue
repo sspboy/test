@@ -40,7 +40,7 @@
         <a-col :span="3">
             
             <div style="width: 100%;height:130px;margin: 20px 0 0 0;">
-
+                <!--白底图列表 不未为空显示 图片 -->
                 <p class="img_pic" v-for="item in whiteimg_Fun.PicList.value">
 
                     <a-image :src="item.byte_url" />
@@ -52,30 +52,32 @@
                     </span>
                 </p>
 
-                <!--添加按钮-->
+                <!--白底图列表 未空 显示添加按钮 添加按钮-->
                 <p 
-                    @click="Basedata.change_material_type('white_img')" 
                     class="cursor Add_img"
-                    v-if="whiteimg_Fun.PicList.value < 1"
+                    v-if="whiteimg_Fun.PicList.value < 1 && whiteimg_Fun.check_load.value === false"
                 >
-                    <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
-                        <a>+ 白底图</a>
+                    <a-flex justify="center" align="center" style="height: 60%;" class="font_size_12">
+                        <a @click="Basedata.change_material_type('white_img')" >+ 选择白底图</a>
+                    </a-flex>
+                    <a-flex justify="center" align="center" style="height: 10%;" class="font_size_12">
+                        <a @click="PAGEDATA.on_pic_creat_whiteimage">+ 创建白底图</a>
+                    </a-flex>
+
+                </p>
+
+                <!--白底图列表 为空 且为检测状态true 显示load-->
+                <p
+                    class="cursor Add_img" 
+                    v-if="whiteimg_Fun.PicList.value < 1 && whiteimg_Fun.check_load.value === true">
+                    <a-flex vertical justify="center" align="center" style="height: 100%;gap: 2px;" class="font_size_12">
+                        <a-spin size="small" />
+                        <span style="color: #999;">...检测ing...</span>
                     </a-flex>
                 </p>
 
             </div>
 
-        </a-col>
-
-        <a-col :span="3">
-            <div style="width: 100%;height:130px;margin: 20px 0 0 0;">
-                <p class="creat_white_button">
-                    <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12"><a>主图创建白底图</a></a-flex>
-                </p>
-                <p class="creat_white_button">
-                    <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12"><a>素材创建白底图</a></a-flex>
-                </p>
-            </div>
         </a-col>
 
         <!--视频 -- material_video_id -->
@@ -94,17 +96,16 @@
 
                 <!--添加按钮-->
                 <p 
-                    @click="Basedata.change_material_type('video_info')" 
                     class="cursor Add_3_4_img font_size_12"
                     v-if="video_Fun.PicList.value.length < 1"
                 >
                     <a-flex justify="center" align="center" style="height: 60%;" class="font_size_12">
-                        <a>+ 选择视频</a>
+                        <a @click="Basedata.change_material_type('video_info')" >+ 主图视频</a>
                     </a-flex>
 
                     <a-flex justify="center" align="center" style="height: 10%;" class="font_size_12">
-                        <a >+ 创建视频</a>
-                        </a-flex>
+                        <a @click="PAGEDATA.on_creat_pic_video">+ 创建视频</a>
+                    </a-flex>
                     
                 </p>
             </div>
@@ -145,17 +146,26 @@
     </a-row>
 
     <!--白底图验证 提示 === 开始-->
+    <!-- message="白底图检测未通过" :description="whiteimg_Fun.alert_text.value"-->
     <a-alert
-      message="Warning"
-      description="This is a warning notice about copywriting."
+        v-if="whiteimg_Fun.alert_state.value"
       type="warning"
-      show-icon
       closable
+      class="font_size_12"
       style="margin: 10px 0 40px 0;"
     >
-        <template #action>
-            <a-button size="small" type="text">操作按钮</a-button>
+        <template #message>
+            <div style="float: left;">
+                <a-image :src="whiteimg_Fun.alert_text_image.value.image_url" style="width: 50px; height: 50px;border-radius: 6px;" />
+            </div>
+            <div style="float: left;margin: 4px 0 0 20px;">
+                <p style="margin-bottom: 4px;font-size: 14px;">白底图检测未通过</p>
+                <span style="color:red;">{{ whiteimg_Fun.alert_text_image.value.text }}</span>
+            </div>
         </template>
+        <!-- <template #action>
+            <a-button size="small" type="text">去优化当前图片</a-button>
+        </template> -->
     </a-alert>
 
     <!--白底图验证 提示 === 结束-->
@@ -323,21 +333,178 @@
 
         </a-row>
     </a-form>
+
+
+    <!--白底图 选择主图 抽屉-->
+    <template>
+        <a-drawer
+            v-model:open="PAGEDATA.select_pic_to_whiteimage_open"
+            class="custom-class"
+            root-class-name="root-class-name"
+            :root-style="{ color: 'blue' }"
+            title="创建白底图"
+            placement="right"
+        >
+            <!--主图列表-->
+            <a-radio-group v-model:value="white_value" >
+
+                <a-row :gutter="[16,16]">
+                    <a-col
+                        v-for="(item,index) in Pic_Fun.PicList" 
+                        :span="8"
+                        style="text-align: center;"
+                        >
+                        <a-image :src="item.byte_url"></a-image>
+                        <a-radio :value="item" style="margin-top: 10px;"></a-radio>
+                    </a-col>
+                </a-row>
+
+            </a-radio-group>
+
+            <a-row :gutter="[16,16]" >
+                <a-col :spen="24" style="margin-top: 30px;width: 100%;">
+                    <p style="color: black;">选择生成白底图后存储的文件夹</p>
+                    <!--联级选择-文件夹-->
+                    <a-cascader
+                        v-model:value="uploadimglist.folder_value"
+                        :options="uploadimglist.netImageFolderOptions"
+                        :load-data="loadNetImageFolder"
+                        placeholder="请选择文件夹"
+                        change-on-select
+                        style="width: 100%;"
+                    />
+                </a-col>
+            </a-row>
+
+
+            <template #footer>
+                <a-flex justify="flex-start" gap="8">
+                    <a-button type="primary" @click="white_image_onConfirm">
+                        选择
+                    </a-button>
+                    <a-button @click="PAGEDATA.select_pic_to_whiteimage_open = false">取消</a-button>
+                    
+                </a-flex>
+            </template>
+
+        </a-drawer>
+    </template>
+
+    <!--白底图 创建 组件-->
+    <white_image_component 
+        v-on:creat_white_image_callback="white_image_call_back" 
+        :data="white_data"/>
+
+    
+    <!--主图视频 选择主图 抽屉-->
+    <template>
+        <a-drawer
+            v-model:open="PAGEDATA.select_pic_to_video_open"
+            class="custom-class"
+            root-class-name="root-class-name"
+            :root-style="{ color: 'blue' }"
+            title="创建视频"
+            placement="right"
+        >
+            <!--主图列表-->
+            <a-checkbox-group v-model:value="pic_video_data.checkedList">
+                <a-row :gutter="[16,16]">
+                    <a-col
+                        v-for="(item,index) in Pic_Fun.PicList" 
+                        :span="8"
+                        style="text-align: center;"
+                        >
+                        <a-image :src="item.byte_url"></a-image>
+                        <p>
+                        <a-checkbox :value="item" style="margin-top: 10px;"></a-checkbox>
+                        </p>
+                    </a-col>
+                </a-row>
+
+            </a-checkbox-group>
+
+            <a-row :gutter="[16,16]" >
+                <a-col :spen="24" style="margin-top: 30px;width: 100%;">
+                    <p style="color: black;">选择生成白底图后存储的文件夹</p>
+                    <!--联级选择-文件夹-->
+                    <a-cascader
+                        v-model:value="uploadimglist.folder_value"
+                        :options="uploadimglist.netImageFolderOptions"
+                        :load-data="loadNetImageFolder"
+                        placeholder="请选择文件夹"
+                        change-on-select
+                        style="width: 100%;"
+                    />
+                </a-col>
+
+            </a-row>
+
+            <a-form
+                ref="formRef"
+                :model="videoformState"
+                :rules="rules"
+                layout="vertical"
+                style="margin-top: 20px;"
+            >
+                <a-form-item label="类型">
+                    <a-select v-model:value="videoformState.scene" placeholder="please select your zone">
+                        <a-select-option value="costume">服饰/服饰</a-select-option>
+                        <a-select-option value="general">通用</a-select-option>
+                    </a-select>
+                </a-form-item>
+                <a-form-item label="风格">
+                    <a-select v-model:value="videoformState.style" placeholder="please select your zone">
+                        <a-select-option value="shanghai">Zone one</a-select-option>
+                        <a-select-option value="beijing">Zone two</a-select-option>
+                    </a-select>
+                </a-form-item>
+                <a-form-item label="专场">
+                    <a-select v-model:value="videoformState.transitionStyle" placeholder="please select your zone">
+                        <a-select-option value="shanghai">Zone one</a-select-option>
+                        <a-select-option value="beijing">Zone two</a-select-option>
+                    </a-select>
+                </a-form-item>
+            </a-form>
+
+
+            <template #footer>
+                <a-flex justify="flex-start" gap="8">
+                    <a-button type="primary" @click="pic_video_onConfirm">
+                        选择
+                    </a-button>
+                    <a-button @click="PAGEDATA.select_pic_to_video_open = false">取消</a-button>
+                    
+                </a-flex>
+            </template>
+
+        </a-drawer>
+    </template>
+
+
+    <!--主图视频 创建 组件-->
+    <main_image_video_component 
+        v-on:creat_pic_video_callback="pic_video_call_back" 
+        :data="pic_video_data"/>
+
      
  </template>
  
  <script>
- import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted } from 'vue'
+ import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted, reactive } from 'vue'
  import { 
-  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata,CATE,
+  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata,CATE,Pic_Fun
 } from '@/assets/douyinshop/productmanagement/Add';
 import { DeleteOutlined} from '@ant-design/icons-vue';
+import * as TOOL from '@/assets/JS_Model/tool';
+import * as utils from '@/assets/JS_Model/public_model';
 
  export default defineComponent({
    name: '基础信息',
    
    components: {
      DeleteOutlined,
+    white_image_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/white_image.vue')),// 白底图组件
+    main_image_video_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/main_image_video.vue')),// 主图视频组件
     selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
     selectFreightid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templatefreight/selectFreightId.vue')),// 运费模板组件
     selectsizetemplateid:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/templateSize/selectsizetemplateid.vue')),// 尺码模板组件
@@ -352,43 +519,218 @@ import { DeleteOutlined} from '@ant-design/icons-vue';
    emits: ['update', 'change'],
    
    setup(props, { emit, attrs, slots, expose }) {
-     // 响应式数据
-     const count = ref(0)
-     const title = ref('发货方式设置')
-     
-     // 计算属性
-     const displayTitle = computed(() => {
-       return `${title.value} - ${props.data2 || '默认'}`
-     })
-     
-     // 方法
-     const handleClick = () => {
-       count.value++
-       emit('update', { count: count.value, data: props.data })
-     }
-     
-     // 监听器
-     watch(() => props.data, (newVal, oldVal) => {
-       console.log('data changed:', newVal)
-     }, { deep: true })
+
+    const tool = new TOOL.TOOL()            // 工具方法
+    const API = new utils.A_Patch()         // 请求接口地址合集
+
+    const PAGEDATA = reactive({
+        select_pic_to_whiteimage_open:false, // 选择主图抽屉状态
+        on_pic_creat_whiteimage:()=>{//选择主图 开启
+            PAGEDATA.select_pic_to_whiteimage_open = true;
+            white_data.byte_url = undefined;
+            white_data.folder_id = undefined;
+            uploadimglist.folder_value = []
+
+        },
+        select_pic_to_video_open:false, // 选择主图视频-抽屉状态
+        on_creat_pic_video:()=>{//创建主图视频 开启
+            PAGEDATA.select_pic_to_video_open = true;
+            pic_video_data.checkedList=[],// 创建视频的图片列表对象
+            pic_video_data.folder_id=undefined// 存储视频的素材文件夹地址
+            uploadimglist.folder_value = []
+
+        }
+    })
+
+    // 异步加载联级选择器子文件夹
+    const loadNetImageFolder = (selectedOptions) => {
+
+        const targetOption = selectedOptions[selectedOptions.length - 1];
+
+        targetOption.loading = true;
+        
+        const folderId = targetOption.value;
+        
+        tool.Http_.post(API.AppSrtoreAPI.material.getfolder, {
+            
+            "folder_id": folderId,
+            "page_num": 1,
+            "page_size": 1000
+
+        }).then((res) => {
+
+            const child_folder_list = res.data.data.folder_info.child_folder;
+            
+            if (child_folder_list.length > 0) {
+                targetOption.children = child_folder_list.map(obj => ({
+                    value: String(obj.folder_id),
+                    label: obj.folder_name,
+                    isLeaf: true
+                }));
+                
+                // 检查子文件夹是否还有子文件夹
+                const checks = targetOption.children.map(child => {
+                    return tool.Http_.post(API.AppSrtoreAPI.material.getfolder, {
+                        "folder_id": child.value,
+                        "page_num": 1,
+                        "page_size": 10
+                    }).then((childRes) => {
+                        const grandChildren = childRes.data.data.folder_info.child_folder;
+                        child.isLeaf = grandChildren.length === 0;
+                    });
+                });
+                
+                Promise.all(checks).then(() => {
+                    targetOption.loading = false;
+                    uploadimglist.netImageFolderOptions = [...uploadimglist.netImageFolderOptions];
+                });
+
+            } else {
+
+                targetOption.isLeaf = true;
+                targetOption.loading = false;
+                uploadimglist.netImageFolderOptions = [...uploadimglist.netImageFolderOptions];
+            }
+        });
+    };
+    const childnetDrawer = ref(false);// 图片地址上传抽屉--按钮状态
+    const shownetDrawer = () => {// 抽屉关闭
+        uploadimglist.folder_value = ['0']
+        childnetDrawer.value = !childnetDrawer.value;
+    };
+    // 图片地址上传列表
+    const uploadimglist=reactive({
+        list:[{value:''}],
+        folder_value:[], // 文件夹id
+        netImageFolderOptions:[{ // 文件夹联级选项
+            value: '0',
+            label: '素材库',
+            isLeaf: false,
+        }]
+    })
+
+
+
+
+
+
+
+
+
+
+    // 白底图创建方法 ===================开始
+    // 主图选择白底图
+    const white_value = ref(undefined);
+
+    // 创建白底图 组件调用数据
+    const white_data = reactive({
+        open:false, // 组件展现状态
+        byte_url:undefined,// 白底图处理素材库对象
+        folder_id:undefined// 储存素材文件夹地址
+    })
+
+    // 主图选择白底图-确认方法
+    const white_image_onConfirm = () =>{
+
+        if(white_value.value && uploadimglist.folder_value.length !== 0){
+
+            white_data.byte_url = white_value.value.byte_url;// 赋值给创建组件的数据对象=图片地址
+            white_data.folder_id = uploadimglist.folder_value.at(-1);// 赋值给创建组件的数据对象=文件夹id
+            PAGEDATA.select_pic_to_whiteimage_open = false;// 选择主图抽屉关闭
+            white_data.open = true;// 显示 创建 组件
+            console.log(white_data)
+
+        }else if(!white_value.value){
+            tool.Fun_.message('info','请选择图片')
+        }else if(uploadimglist.folder_value.length == 0){
+            tool.Fun_.message('info','请选择存储白底图的文件夹')
+        }
+    }
+
+    // 创建白底图 回调方法：将处理好的白底图素材图片填充到页面
+    const white_image_call_back= ()=>{
+        console.log('填充白底图素材')
+    }
+    // 白底图创建方法 ===================结束
+
+
+
+
+
+
+
+
+
+    // 主图视频 创建方法 ===================开始
+
+    const videoformRef = ref(); // 表单验证对象
+    // 表单绑定值
+    const videoformState = reactive({
+        scene:'',// 类型
+        style:'',// 节奏
+        transitionStyle:''//专场动画 
+
+    }) 
+
+    // 创建主图视频 组件调用数据
+    const pic_video_data = reactive({
+        open:false, // 组件展现状态
+        checkedList:[],// 创建视频的图片列表对象
+        folder_id:undefined// 存储视频的素材文件夹地址
+    })
+
+    // 主图选择白底图-确认方法
+    const pic_video_onConfirm = () =>{
+        
+        console.log('创建视频流程')
+
+        if(pic_video_data.checkedList.length !== 0 && uploadimglist.folder_value.length !== 0){
+            pic_video_data.folder_id = uploadimglist.folder_value.at(-1);// 赋值给创建组件的数据对象=文件夹id
+            PAGEDATA.select_pic_to_video_open = false;// 选择主图抽屉关闭
+            pic_video_data.open = true;// 显示 创建 组件
+            console.log(pic_video_data)
+        }else if(pic_video_data.checkedList.length == 0){
+            tool.Fun_.message('info','请选择图片')
+        }else if(uploadimglist.folder_value.length == 0){
+            tool.Fun_.message('info','请选择存储视频的文件夹')
+        }
+
+
+    }
+
+
+    // 创建主图视频 回调方法：将处理好的主图视频 填充到页面
+    const pic_video_call_back= ()=>{
+        console.log('存储主图视频素材')
+    }  
+
+    // 主图视频 创建方法 ===================结束
      
      // 生命周期
      onMounted(() => {
        console.log('基础信息 组件已挂载')
      })
-     
-     // 暴露给父组件的方法
-     expose({
-       reset: () => { count.value = 0 }
-     })
-     
+
      return {
+        PAGEDATA,
+        white_value,
+        white_data,
+        white_image_onConfirm,
+        white_image_call_back,
+
+        pic_video_data,
+        pic_video_call_back,
+        pic_video_onConfirm,
+
+        loadNetImageFolder,// 联级地址
+        uploadimglist,
+
+        videoformRef,
+        videoformState,
+
         Base_formRef,
         CATE,
-       count,
-       title,
-       displayTitle,
-       handleClick,
+        Pic_Fun,
        whiteimg_Fun,
        Longimg_Fun,
        video_Fun,

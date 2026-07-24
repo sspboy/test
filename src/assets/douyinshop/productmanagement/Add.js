@@ -1233,6 +1233,12 @@ export const Longimg_Fun = {
 // 白底图
 export const whiteimg_Fun={
 
+    check_load:ref(false),//提交白底图检测状态
+    alert_state:ref(false),// 白底图验证提示状态该-隐藏-显示
+    alert_text_image:ref({
+        image_url:undefined,
+        text:undefined
+    }),//白底图验证提示语句-文本
     PicList:ref([]),
 
     // 删除白底图
@@ -1241,6 +1247,13 @@ export const whiteimg_Fun={
     },
     // 添加白底图
     add:(data)=>{
+
+        // 提示初始化 == 开始
+        whiteimg_Fun.alert_state.value = false;
+        whiteimg_Fun.alert_text_image.value.text = undefined;
+        whiteimg_Fun.alert_text_image.value.image_url = undefined;
+        // 提示初始化 == 结束
+
         whiteimg_Fun.PicList.value.length = 0;
         var obj = data[0];
         var material_type = obj.material_type;
@@ -1249,9 +1262,14 @@ export const whiteimg_Fun={
             var pic_width = photo_info.width;      // 宽度
             var pic_height = photo_info.height;     // 高度
             if(pic_width == pic_height){
-                whiteimg_Fun.PicList.value.push(obj)
+                
+                // 验证白底图
+                // console.log(obj)
+                // whiteimg_Fun.PicList.value.push(obj)
+                whiteimg_Fun.oncheck(obj) // 检测白底图
+
             }else{
-                tool.Fun_.message('info','主图长宽比例需要1:1,不小于600X600.')
+                tool.Fun_.message('info','【白底图】长宽比例需要1:1,不小于600X600.')
             }
         }else if(material_type == 'video'){
             tool.Fun_.message('info','【白底图】不能选择视频，请选择图片素材！')
@@ -1265,6 +1283,66 @@ export const whiteimg_Fun={
         }else{
             return false
         }
+    },
+    // 白底图验证
+    oncheck:(url_obj)=>{
+        
+        whiteimg_Fun.check_load.value = true;// 检测load状态开启
+
+        // pred 预测是否完成。判断成功的条件： pred == 1 且 type == 0
+        // type 0 代表合规，1 为边界问题，2 为无主体，3 含水印 / Logo，4 画面不居中，5 存在色块遮挡，6 背景非白底。
+
+        let url = url_obj.byte_url;// 素材图片地址
+
+        axios.post(API.AppSrtoreAPI.dou_product.imgwhiteCheck,{
+
+            "image_url":url
+
+        }).then((res)=>{
+            
+            console.log(res)
+            var pred = res.data.data.pred;
+            var type = res.data.data.type;
+
+            if(pred ==1 && type[0] == 0){
+                whiteimg_Fun.check_load.value = false;// 检测load状态关闭
+                whiteimg_Fun.alert_state.value = false;
+                whiteimg_Fun.alert_text_image.value.text = undefined;
+                whiteimg_Fun.alert_text_image.value.image_url = undefined;
+                whiteimg_Fun.PicList.value.push(url_obj) // 添加到页面
+
+            }else{
+                var m_text = '驳回原因为：图片'
+                type.forEach(value=>{
+                    if(value==1){
+                        whiteimg_Fun.alert_state.value = true;
+                        m_text = m_text + '边界问题' + " "
+                    }else if(value==2){
+                        whiteimg_Fun.alert_state.value = true;
+                        m_text = m_text + '无主体' + " "
+                    }else if(value==3){
+                        whiteimg_Fun.alert_state.value = true;
+                        m_text = m_text + '含水印/Logo' + " "
+                    }else if(value==4){
+                        whiteimg_Fun.alert_state.value = true;
+                        m_text = m_text + '画面不居中' + " "
+                    }else if(value==5){
+                        whiteimg_Fun.alert_state.value = true;
+                        m_text = m_text + '存在色块遮挡' + " "
+                    }else if(value==6){
+                        whiteimg_Fun.alert_state.value = true;
+                        m_text = m_text + '背景非白底' + " "
+                    }
+                })
+                console.log(m_text)
+                whiteimg_Fun.alert_text_image.value.text = m_text
+                whiteimg_Fun.alert_text_image.value.image_url = url;
+                whiteimg_Fun.check_load.value = false;// 检测load状态关闭
+
+            }
+
+        })
+
     }
 }
 
@@ -2611,10 +2689,20 @@ export class UploadProduct {
 
         try{
 
+
+
             await Base_formRef.value.validate().catch(err => {// 验证基础信息表单
                 err.formName = '基础信息'
                 throw err
             }) 
+
+            // 白底图 必填验证
+            if(!whiteimg_Fun.get()){
+                tool.Fun_.message('error','白底图必填-不能为空')
+                return
+            }
+
+            // 主图视频 必填验证
 
             await CATE.form_ref.value.validate().catch(err => {// 验证商品属性
                 err.formName = '商品属性'
@@ -2707,9 +2795,11 @@ export class UploadProduct {
         }
 
         // 白底图
+        // console.log('白底图', whiteimg_Fun.get())
         if(whiteimg_Fun.get()){
             product_data_obj.white_back_ground_pic_url = whiteimg_Fun.get();// 白底图：url(仅素材中心url有效)，白底图比例要求1:1
-            // console.log('白底图', whiteimg_Fun.get())
+        }else{
+            tool.Fun_.message('error','白底图必填-不能为空')
         }
 
         // 长图

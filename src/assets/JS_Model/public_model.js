@@ -150,7 +150,8 @@ export class A_Patch{
             "product_img":"api/douyin/material/uploadproductimage" 
         },
         // 抖音商品
-        dou_product:{   
+        dou_product:{
+            
             "list":"api/douyin/product/list",                   // 商品列表
             "add":"api/douyin/product/add",                     // 商品添加
             "detaile":"api/douyin/product/detaile",             // 商品详情
@@ -173,7 +174,9 @@ export class A_Patch{
             "setoffline":"api/douyin/product/offline", // 下架商品
             "setOnline":"api/douyin/product/setOnline", // 上架商品
 
-            "publishPreCheck":"api/douyin/product/check"// 商品发布前置校验接口
+            "publishPreCheck":"api/douyin/product/check",// 商品发布前置校验接口
+            "imgwhiteCheck":"api/douyin/product/imgwhitegroundcheck"// 白底图校验
+
         },
         // 运费模板
         freight:{

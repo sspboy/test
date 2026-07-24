@@ -1,27 +1,28 @@
+<!--
+创建 主图视频 弹出窗口 组件--
+接受主图地址列表
+提交接口创建主图视频
+存储到素材库
+返回素材地址
+-->
 <template>
 
-<a-row>
-  <a-col :span="10">
-    <div style="height: 640px;width: 340px;margin-top: 20px;background-color: black;border-radius: 18px;">
-      <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
-
-      <p style="color: aliceblue;">+ 选择视频</p>
-      </a-flex>
-
+<a-modal
+      v-model:open="props.data.open"
+      title="创建主图视频"
+      centered
+      @ok="console.log('创建主图视频')"
+    >
+      <div style="padding: 20px 0 50px 0;">
+        <div style="width: 140px;height: 140px;border: 1px #f2f2f2 solid;text-align: center;" class="font_size_12">
+          <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
+            <a-spin size="small" />
+          </a-flex>
+          <p style="margin: 10px 0 0 0;">处理ing...</p>
+        </div>
+      
     </div>
-  </a-col>
-  <a-col :span="14">
-    <div class="cursor Add_img" style="margin: 20px 0 20px 0;">
-      <a-flex justify="center" align="center" style="height: 100%;" class="font_size_12">
-          + 创建<br />
-          主图视频
-      </a-flex>
-    </div>
-    <a-divider orientation="left" orientation-margin="0px">主图视频-创建记录</a-divider>
-
-  </a-col>
-
-</a-row>
+    </a-modal>
 
 </template>
 
@@ -38,52 +39,22 @@ export default defineComponent({
   props: {
     data: {
       type: Object,
-      default: () => ({})
-    },
-    data2: {
-      type: String,
-      default: ''
     }
   },
   
   emits: ['update', 'change'],
   
   setup(props, { emit, attrs, slots, expose }) {
-    // 响应式数据
-    const count = ref(0)
-    const title = ref('发货方式设置')
     
-    // 计算属性
-    const displayTitle = computed(() => {
-      return `${title.value} - ${props.data2 || '默认'}`
-    })
-    
-    // 方法
-    const handleClick = () => {
-      count.value++
-      emit('update', { count: count.value, data: props.data })
-    }
-    
-    // 监听器
-    watch(() => props.data, (newVal, oldVal) => {
-      console.log('data changed:', newVal)
-    }, { deep: true })
     
     // 生命周期
     onMounted(() => {
       console.log('模板名称 组件已挂载')
     })
     
-    // 暴露给父组件的方法
-    expose({
-      reset: () => { count.value = 0 }
-    })
-    
     return {
-      count,
-      title,
-      displayTitle,
-      handleClick
+      props,
+
     }
   }
 })
