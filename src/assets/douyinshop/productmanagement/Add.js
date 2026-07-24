@@ -1305,6 +1305,7 @@ export const whiteimg_Fun={
             var type = res.data.data.type;
 
             if(pred ==1 && type[0] == 0){
+                
                 whiteimg_Fun.check_load.value = false;// 检测load状态关闭
                 whiteimg_Fun.alert_state.value = false;
                 whiteimg_Fun.alert_text_image.value.text = undefined;
