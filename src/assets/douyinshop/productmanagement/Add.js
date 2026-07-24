@@ -1264,7 +1264,7 @@ export const whiteimg_Fun={
             if(pic_width == pic_height){
                 
                 // 验证白底图
-                // console.log(obj)
+                console.log(obj)
                 // whiteimg_Fun.PicList.value.push(obj)
                 whiteimg_Fun.oncheck(obj) // 检测白底图
 

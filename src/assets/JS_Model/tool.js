@@ -98,9 +98,60 @@ const API = new utils.A_Patch()// 请求接口
             }
             document.body.removeChild(textarea);
         },
+        // 正则获取文本中的http链接地址
         extractUrls:(text) => {
             return text.match(/https?:\/\/[^\s\n]+/g) || []
+        },
+        // 轮询接口是否成功
+        polling:async function poll(taskId, options = {}) {
+            const {
+                interval = 3000,      // 间隔 ms
+                maxAttempts = 20,     // 最大轮询次数
+                timeout = 60000,      // 总超时 ms
+                onProgress,           // 进度回调
+            } = options;
+            
+            const startTime = Date.now();
+            
+            for (let i = 0; i < maxAttempts; i++) {
+                // 检查总超时
+                if (Date.now() - startTime > timeout) {
+                    throw new Error('轮询超时');
+                }
+                
+                const res = await fetch(`/api/status/${taskId}`);
+                const data = await res.json();
+                
+                onProgress?.(data, i + 1);
+                
+                if (data.status === 'done') {
+                    return data.result;
+                }
+                
+                if (data.status === 'failed') {
+                    throw new Error(data.error || '处理失败');
+                }
+                
+                // 等待后下一次
+                await new Promise(r => setTimeout(r, interval));
+            }
+            
+            throw new Error('超过最大轮询次数');
         }
+        // 轮询的使用方法的使用 例子
+        // try {
+        //     const result = await tool.Fun_.polling('task-123', {
+        //         interval: 2000,// 间隔 ms
+        //         maxAttempts: 30,// 最大轮询次数
+        //         timeout = 60000,      // 总超时 ms
+        //         onProgress: (data, count) => {
+        //         console.log(`第 ${count} 次查询: ${data.status}`);
+        //     }
+        //     });
+        //     console.log('结果:', result);
+        // } catch (err) {
+        //     console.error('轮询失败:', err.message);
+        // }
     }
 
 

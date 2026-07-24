@@ -380,7 +380,7 @@
             <template #footer>
                 <a-flex justify="flex-start" gap="8">
                     <a-button type="primary" @click="white_image_onConfirm">
-                        选择
+                        去创建
                     </a-button>
                     <a-button @click="PAGEDATA.select_pic_to_whiteimage_open = false">取消</a-button>
                     
@@ -392,7 +392,7 @@
 
     <!--白底图 创建 组件-->
     <white_image_component 
-        v-on:creat_white_image_callback="white_image_call_back" 
+        v-on:create_white_image_callback="white_image_call_back" 
         :data="white_data"/>
 
     
@@ -483,7 +483,7 @@
 
     <!--主图视频 创建 组件-->
     <main_image_video_component 
-        v-on:creat_pic_video_callback="pic_video_call_back" 
+        v-on:create_pic_video_callback="pic_video_call_back" 
         :data="pic_video_data"/>
 
      
@@ -527,6 +527,7 @@ import * as utils from '@/assets/JS_Model/public_model';
         select_pic_to_whiteimage_open:false, // 选择主图抽屉状态
         on_pic_creat_whiteimage:()=>{//选择主图 开启
             PAGEDATA.select_pic_to_whiteimage_open = true;
+            white_value.value=undefined
             white_data.byte_url = undefined;
             white_data.folder_id = undefined;
             uploadimglist.folder_value = []
@@ -632,7 +633,9 @@ import * as utils from '@/assets/JS_Model/public_model';
     // 主图选择白底图-确认方法
     const white_image_onConfirm = () =>{
 
-        if(white_value.value && uploadimglist.folder_value.length !== 0){
+        console.log(uploadimglist.folder_value)
+
+        if(white_value.value && Array.isArray(uploadimglist.folder_value) && uploadimglist.folder_value.length !== 0){
 
             white_data.byte_url = white_value.value.byte_url;// 赋值给创建组件的数据对象=图片地址
             white_data.folder_id = uploadimglist.folder_value.at(-1);// 赋值给创建组件的数据对象=文件夹id
@@ -642,14 +645,20 @@ import * as utils from '@/assets/JS_Model/public_model';
 
         }else if(!white_value.value){
             tool.Fun_.message('info','请选择图片')
-        }else if(uploadimglist.folder_value.length == 0){
+        }else if(!Array.isArray(uploadimglist.folder_value)){
+            tool.Fun_.message('info','请选择存储白底图的文件夹')
+        }else if(Array.isArray(uploadimglist.folder_value) && uploadimglist.folder_value.length == 0){
             tool.Fun_.message('info','请选择存储白底图的文件夹')
         }
     }
 
     // 创建白底图 回调方法：将处理好的白底图素材图片填充到页面
-    const white_image_call_back= ()=>{
-        console.log('填充白底图素材')
+    const white_image_call_back= (data)=>{
+
+        console.log('检测白底图素材',data)
+
+        whiteimg_Fun.oncheck(data) // 检测白底图
+
     }
     // 白底图创建方法 ===================结束
 

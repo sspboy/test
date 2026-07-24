@@ -209,6 +209,11 @@ export class A_Patch{
             "Mctoken":"api/douyin/order/getMCToken",  // 前端token
             "MessagePlus_SDK":"http://lf1-fe.ecombdstatic.com/obj/ecom-fe-open-public/component/index.js", // 消息组件SDK地址
 
+        },
+        // 阿里云
+        oss:{
+            "CreateWhiteImage":"api/oss/whitebg", // 创建白底图
+            "CreatePicVideo":"api/oss/createvideo" // 创建ppt视频
         }
     }
 }

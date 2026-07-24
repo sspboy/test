@@ -42,7 +42,7 @@ export default defineComponent({
     }
   },
   
-  emits: ['update', 'change'],
+  emits: ['update', 'change','create_pic_video_callback'],
   
   setup(props, { emit, attrs, slots, expose }) {
     
