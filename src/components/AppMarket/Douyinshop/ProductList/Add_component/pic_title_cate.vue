@@ -405,6 +405,7 @@
             :root-style="{ color: 'blue' }"
             title="创建视频"
             placement="right"
+            forceRender
         >
             <!--选择 主图 创建视频 列表-->
             <a-checkbox-group v-model:value="pic_video_data.checkedList">
@@ -679,7 +680,7 @@ import * as utils from '@/assets/JS_Model/public_model';
 
     // 主图视频 创建方法 ===================开始
 
-    const videoformRef = ref(null); // 表单验证对象
+    const videoformRef = ref(); // 表单验证对象
     const videoformrule = {
         folder_id:[{
             required: true,
@@ -783,13 +784,28 @@ import * as utils from '@/assets/JS_Model/public_model';
     // 创建视频选择主图-确认方法
     const pic_video_onConfirm = async() =>{
 
+
+        console.log(videoformRef.value)
+        
+        // 检查表单 ref 是否挂载（Drawer 动画期间可能为 null）
+        if (!videoformRef.value) {
+            tool.Fun_.message('warning', '表单未加载完成，请稍后再试')
+            return
+        }
+
+        // 用 try/catch 包裹，不要用 .catch(err => throw err)
+        try {
+            await videoformRef.value.validate()
+        } catch (err) {
+            // 验证失败，Ant Design Vue 会自动显示错误提示
+            console.log('表单验证未通过')
+            return  // 直接 return，不执行后续
+        }
+
         if(pic_video_data.checkedList.length !== 0 ){
             
             
-            await videoformRef.value.validate().catch(err => {
-                err.formName = '表单信息未填写'
-                throw err
-            })  // 验证创建视频 参数表单
+            
             
             pic_video_data.folder_id = videoformState.folder_id.at(-1);// 赋值给创建组件的数据对象=文件夹id
 
