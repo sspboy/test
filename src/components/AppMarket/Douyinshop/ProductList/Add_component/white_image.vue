@@ -110,7 +110,7 @@ export default defineComponent({
       process_text:"白底图处理中...",
       process_load:false, // 白底图处理load状态
       process_button_load:false, // 开启处理按钮状态
-      process_image_url:'https://p3-aio.ecombdimg.com/obj/ecom-shop-material/jpeg_m_c124d97081b6090f568b6a79497968e2_sx_88594_www800-800', // 处理好的图片地址
+      process_image_url:undefined, // 处理好的图片地址
       m_obj:undefined,// 获取成功的素材对象
 
       // 请求白底图接口

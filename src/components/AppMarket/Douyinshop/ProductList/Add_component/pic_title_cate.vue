@@ -406,7 +406,7 @@
             title="创建视频"
             placement="right"
         >
-            <!--主图列表-->
+            <!--选择 主图 创建视频 列表-->
             <a-checkbox-group v-model:value="pic_video_data.checkedList">
                 <a-row :gutter="[16,16]">
                     <a-col
@@ -420,52 +420,64 @@
                         </p>
                     </a-col>
                 </a-row>
-
             </a-checkbox-group>
+            <!--选择 主图 创建视频 列表-->
 
-            <a-row :gutter="[16,16]" >
-                <a-col :spen="24" style="margin-top: 30px;width: 100%;">
-                    <p style="color: black;">选择生成白底图后存储的文件夹</p>
+            <a-form
+                ref="videoformRef"
+                :model="videoformState"
+                :rules="videoformrule"
+                layout="vertical"
+                style="margin-top: 20px;"
+            >
+                <a-form-item label="储存文件夹" name="folder_id">
                     <!--联级选择-文件夹-->
                     <a-cascader
-                        v-model:value="uploadimglist.folder_value"
-                        :options="uploadimglist.netImageFolderOptions"
-                        :load-data="loadNetImageFolder"
+                        v-model:value="videoformState.folder_id"
+                        :options="videouploadimglist.netImageFolderOptions"
+                        :load-data="VideoloadNetImageFolder"
                         placeholder="请选择文件夹"
                         change-on-select
                         style="width: 100%;"
                     />
-                </a-col>
+                </a-form-item>
 
-            </a-row>
-
-            <a-form
-                ref="formRef"
-                :model="videoformState"
-                :rules="rules"
-                layout="vertical"
-                style="margin-top: 20px;"
-            >
-                <a-form-item label="类型">
-                    <a-select v-model:value="videoformState.scene" placeholder="please select your zone">
-                        <a-select-option value="costume">服饰/服饰</a-select-option>
+                <a-form-item label="视频类型" name="scene">
+                    <a-select v-model:value="videoformState.scene" placeholder="请选择类型">
+                        <a-select-option value="costume">服装/服饰</a-select-option>
                         <a-select-option value="general">通用</a-select-option>
+                          <a-select-option value="keeporder">按素材顺序生成</a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="风格">
-                    <a-select v-model:value="videoformState.style" placeholder="please select your zone">
-                        <a-select-option value="shanghai">Zone one</a-select-option>
-                        <a-select-option value="beijing">Zone two</a-select-option>
+
+                <a-form-item label="播放节奏" name="style">
+                    <a-select v-model:value="videoformState.style" placeholder="请选择播放节奏">
+                        <a-select-option value="normal">正常</a-select-option>
+                        <a-select-option value="fast">快节奏</a-select-option>
+                        <a-select-option value="slow">慢节奏</a-select-option>
                     </a-select>
                 </a-form-item>
-                <a-form-item label="专场">
-                    <a-select v-model:value="videoformState.transitionStyle" placeholder="please select your zone">
-                        <a-select-option value="shanghai">Zone one</a-select-option>
-                        <a-select-option value="beijing">Zone two</a-select-option>
+
+                <a-form-item label="专场特效" name="transitionStyle">
+                    <a-select v-model:value="videoformState.transitionStyle" placeholder="请选择专场特效">
+                        <a-select-option value="basic">无特效</a-select-option>
+                        <a-select-option value="slow">舒缓</a-select-option>
+                        <a-select-option value="fast">动感</a-select-option>
+                        <a-select-option value="normal">自然</a-select-option>
+                        <a-select-option value="ink">水墨</a-select-option>
+                        <a-select-option value="glitch">机械故障</a-select-option>
+                        <a-select-option value="shift">切换</a-select-option>
+                        <a-select-option value="mosaic">马赛克</a-select-option>
+                        <a-select-option value="shutter">百叶窗</a-select-option>
+                        <a-select-option value="zoom">缩放</a-select-option>
+                        <a-select-option value="mask">遮罩</a-select-option>
+                        <a-select-option value="brush">笔刷</a-select-option>
+                        <a-select-option value="wind">风舞</a-select-option>
+                        <a-select-option value="smog">烟雾</a-select-option>
+
                     </a-select>
                 </a-form-item>
             </a-form>
-
 
             <template #footer>
                 <a-flex justify="flex-start" gap="8">
@@ -543,7 +555,7 @@ import * as utils from '@/assets/JS_Model/public_model';
         }
     })
 
-    // 异步加载联级选择器子文件夹
+    // 白底图==异步加载联级选择器子文件夹===开始
     const loadNetImageFolder = (selectedOptions) => {
 
         const targetOption = selectedOptions[selectedOptions.length - 1];
@@ -594,11 +606,6 @@ import * as utils from '@/assets/JS_Model/public_model';
             }
         });
     };
-    const childnetDrawer = ref(false);// 图片地址上传抽屉--按钮状态
-    const shownetDrawer = () => {// 抽屉关闭
-        uploadimglist.folder_value = ['0']
-        childnetDrawer.value = !childnetDrawer.value;
-    };
     // 图片地址上传列表
     const uploadimglist=reactive({
         list:[{value:''}],
@@ -609,7 +616,7 @@ import * as utils from '@/assets/JS_Model/public_model';
             isLeaf: false,
         }]
     })
-
+    // 白底图===异步加载联级选择器子文件夹===结束
 
 
 
@@ -672,13 +679,98 @@ import * as utils from '@/assets/JS_Model/public_model';
 
     // 主图视频 创建方法 ===================开始
 
-    const videoformRef = ref(); // 表单验证对象
+    const videoformRef = ref(null); // 表单验证对象
+    const videoformrule = {
+        folder_id:[{
+            required: true,
+            message: '文件夹不能为空!',
+            trigger: 'change',
+        }],
+        scene:[{
+            required: true,
+            message: '视频类型不能为空!',
+            trigger: 'change',
+        }],
+        style:[{
+            required: true,
+            message: '播放节奏不能为空!',
+            trigger: 'change',
+        }],
+        transitionStyle:[{
+            required: true,
+            message: '专场风格不能为空!',
+            trigger: 'change',
+        }],
+    }
+
+    // 视频创建 选择文件夹路径方法
+    const VideoloadNetImageFolder = (selectedOptions) => {
+
+        const targetOption = selectedOptions[selectedOptions.length - 1];
+
+        targetOption.loading = true;
+        
+        const folderId = targetOption.value;
+        
+        tool.Http_.post(API.AppSrtoreAPI.material.getfolder, {
+            
+            "folder_id": folderId,
+            "page_num": 1,
+            "page_size": 1000
+
+        }).then((res) => {
+
+            const child_folder_list = res.data.data.folder_info.child_folder;
+            
+            if (child_folder_list.length > 0) {
+                targetOption.children = child_folder_list.map(obj => ({
+                    value: String(obj.folder_id),
+                    label: obj.folder_name,
+                    isLeaf: true
+                }));
+                
+                // 检查子文件夹是否还有子文件夹
+                const checks = targetOption.children.map(child => {
+                    return tool.Http_.post(API.AppSrtoreAPI.material.getfolder, {
+                        "folder_id": child.value,
+                        "page_num": 1,
+                        "page_size": 10
+                    }).then((childRes) => {
+                        const grandChildren = childRes.data.data.folder_info.child_folder;
+                        child.isLeaf = grandChildren.length === 0;
+                    });
+                });
+                
+                Promise.all(checks).then(() => {
+                    targetOption.loading = false;
+                    videouploadimglist.netImageFolderOptions = [...videouploadimglist.netImageFolderOptions];
+                });
+
+            } else {
+
+                targetOption.isLeaf = true;
+                targetOption.loading = false;
+                videouploadimglist.netImageFolderOptions = [...videouploadimglist.netImageFolderOptions];
+            }
+        });
+    };
+
+    // 图片路径地址对象
+    const videouploadimglist=reactive({
+        list:[{value:''}],
+        netImageFolderOptions:[{ // 文件夹联级选项
+            value: '0',
+            label: '素材库',
+            isLeaf: false,
+        }]
+    })
+
     // 表单绑定值
     const videoformState = reactive({
-        scene:'',// 类型
-        style:'',// 节奏
-        transitionStyle:''//专场动画 
-
+        folder_id:undefined,// 文件夹地址
+        scene:undefined,// 类型
+        style:undefined,// 节奏
+        transitionStyle:undefined//专场动画 
     }) 
 
     // 创建主图视频 组件调用数据
@@ -688,19 +780,32 @@ import * as utils from '@/assets/JS_Model/public_model';
         folder_id:undefined// 存储视频的素材文件夹地址
     })
 
-    // 主图选择白底图-确认方法
-    const pic_video_onConfirm = () =>{
-        
-        console.log('创建视频流程')
+    // 创建视频选择主图-确认方法
+    const pic_video_onConfirm = async() =>{
 
-        if(pic_video_data.checkedList.length !== 0 && uploadimglist.folder_value.length !== 0){
-            pic_video_data.folder_id = uploadimglist.folder_value.at(-1);// 赋值给创建组件的数据对象=文件夹id
-            PAGEDATA.select_pic_to_video_open = false;// 选择主图抽屉关闭
-            pic_video_data.open = true;// 显示 创建 组件
-            console.log(pic_video_data)
+        if(pic_video_data.checkedList.length !== 0 ){
+            
+            
+            await videoformRef.value.validate().catch(err => {
+                err.formName = '表单信息未填写'
+                throw err
+            })  // 验证创建视频 参数表单
+            
+            pic_video_data.folder_id = videoformState.folder_id.at(-1);// 赋值给创建组件的数据对象=文件夹id
+
+            console.log('图片列表',pic_video_data.checkedList)
+
+            console.log('文件夹id',pic_video_data.folder_id)
+
+            console.log('创建视频数据',videoformState)
+
+            // PAGEDATA.select_pic_to_video_open = false;// 选择主图 => 抽屉关闭
+
+            // pic_video_data.open = true;// 显示 创建 组件
+
         }else if(pic_video_data.checkedList.length == 0){
             tool.Fun_.message('info','请选择图片')
-        }else if(uploadimglist.folder_value.length == 0){
+        }else if(videoformState.folder_id.length == 0){
             tool.Fun_.message('info','请选择存储视频的文件夹')
         }
 
@@ -735,7 +840,10 @@ import * as utils from '@/assets/JS_Model/public_model';
         uploadimglist,
 
         videoformRef,
+        videoformrule,
         videoformState,
+        videouploadimglist,
+        VideoloadNetImageFolder,
 
         Base_formRef,
         CATE,
