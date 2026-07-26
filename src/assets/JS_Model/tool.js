@@ -102,13 +102,17 @@ const API = new utils.A_Patch()// 请求接口
         extractUrls:(text) => {
             return text.match(/https?:\/\/[^\s\n]+/g) || []
         },
-        // 轮询接口是否成功
+        // 创建视频 = = 轮询接口是否成功
         polling:async function poll(taskId, options = {}) {
+
             const {
                 interval = 3000,      // 间隔 ms
                 maxAttempts = 20,     // 最大轮询次数
                 timeout = 60000,      // 总超时 ms
                 onProgress,           // 进度回调
+                APIurl = undefined,// post-API-地址
+                postdata = undefined// post-data发送数据
+                // 状态字段
             } = options;
             
             const startTime = Date.now();
@@ -118,19 +122,25 @@ const API = new utils.A_Patch()// 请求接口
                 if (Date.now() - startTime > timeout) {
                     throw new Error('轮询超时');
                 }
-                
-                const res = await fetch(`/api/status/${taskId}`);
-                const data = await res.json();
+                // api 地址 `/api/status/${taskId}`
+                const data = await axios.post(APIurl, postdata)
+
+                // console.log(data)
+                // const data = await res.json();
                 
                 onProgress?.(data, i + 1);
                 
-                if (data.status === 'done') {
-                    return data.result;
+                if (data.data.Data.Status === "PROCESS_SUCCESS") {
+
+                    return data;
+
                 }
                 
-                if (data.status === 'failed') {
-                    throw new Error(data.error || '处理失败');
-                }
+                // if (data.data.Data.Status !== 'failed') {
+
+                //     throw new Error(data.error || '处理失败');
+
+                // }
                 
                 // 等待后下一次
                 await new Promise(r => setTimeout(r, interval));

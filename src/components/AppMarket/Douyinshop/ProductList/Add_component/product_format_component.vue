@@ -580,9 +580,9 @@ export default defineComponent({
     }, { deep: true })
     
     // 生命周期
-    onMounted(() => {
-      console.log('商品属性 组件已挂载')
-    })
+    // onMounted(() => {
+    //   console.log('商品属性 组件已挂载')
+    // })
     
     // 暴露给父组件的方法
     expose({

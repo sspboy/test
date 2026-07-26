@@ -1358,6 +1358,8 @@ export const video_Fun={
     },
     // 添加视频
     add:(data)=>{
+        console.log(data)
+
 
         var obj = data[0]
         var material_type = obj.material_type; // 对象类型图片、视频
@@ -1366,8 +1368,10 @@ export const video_Fun={
         if(material_type == 'photo'){
             tool.Fun_.message('info', '请选择视频文件')
         }else if(material_type == 'video'){
+
             video_Fun.PicList.value.length = 0;
             video_Fun.PicList.value.push(data[0])
+
         }
     },
     get:()=>{
@@ -2705,6 +2709,11 @@ export class UploadProduct {
 
             // 主图视频 必填验证
 
+            if(!video_Fun.get()){
+                tool.Fun_.message('error','主图视频必填-不能为空')
+                return
+            }
+
             await CATE.form_ref.value.validate().catch(err => {// 验证商品属性
                 err.formName = '商品属性'
                 throw err
@@ -2814,7 +2823,9 @@ export class UploadProduct {
             var video_obj = video_Fun.get()
             var material_video_id = video_obj[0].video_info.vid;
             product_data_obj.material_video_id = material_video_id;// 视频id
-            // console.log('视频素材id', material_video_id)
+            console.log('视频素材id', material_video_id)
+        }else{
+            tool.Fun_.message('error','主图视频必填-不能为空')
         }
 
         // 分类

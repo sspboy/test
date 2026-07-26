@@ -86,7 +86,11 @@
             <div style="width: 100%;height:130px;margin: 20px 0 0 0;">
 
                 <p class="img_3_4_pic" v-for="item in video_Fun.PicList.value">
-                    <a-image :height="80" :src="item.video_info.video_cover_url" />
+                    
+                    <a>
+                        <img :height="80" :src="item.video_info.video_cover_url" />
+                    </a>
+                    
                     <span style="display:block;margin: 16px 0 0 0;width: 100%;text-align: center;">
                         <a-button type="text" size="small" @click="video_Fun.del"> 
                             <DeleteOutlined />
@@ -100,7 +104,7 @@
                     v-if="video_Fun.PicList.value.length < 1"
                 >
                     <a-flex justify="center" align="center" style="height: 60%;" class="font_size_12">
-                        <a @click="Basedata.change_material_type('video_info')" >+ 主图视频</a>
+                        <a @click="Basedata.change_material_type('video_info')" >+ 选择视频</a>
                     </a-flex>
 
                     <a-flex justify="center" align="center" style="height: 10%;" class="font_size_12">
@@ -403,7 +407,7 @@
             class="custom-class"
             root-class-name="root-class-name"
             :root-style="{ color: 'blue' }"
-            title="创建视频"
+            title="填写创建视频选项"
             placement="right"
             forceRender
         >
@@ -483,7 +487,7 @@
             <template #footer>
                 <a-flex justify="flex-start" gap="8">
                     <a-button type="primary" @click="pic_video_onConfirm">
-                        选择
+                        去创建
                     </a-button>
                     <a-button @click="PAGEDATA.select_pic_to_video_open = false">取消</a-button>
                     
@@ -544,16 +548,22 @@ import * as utils from '@/assets/JS_Model/public_model';
             white_data.byte_url = undefined;
             white_data.folder_id = undefined;
             uploadimglist.folder_value = []
-
         },
+        // 重置 创建白底图 表单信息
         select_pic_to_video_open:false, // 选择主图视频-抽屉状态
         on_creat_pic_video:()=>{//创建主图视频 开启
             PAGEDATA.select_pic_to_video_open = true;
+            
+            // 重置创建视频组件表单信息
             pic_video_data.checkedList=[],// 创建视频的图片列表对象
             pic_video_data.folder_id=undefined// 存储视频的素材文件夹地址
             uploadimglist.folder_value = []
-
+            videoformState.folder_id=undefined,// 文件夹地址
+            videoformState.scene=undefined,// 类型
+            videoformState.style=undefined,// 节奏
+            videoformState.transitionStyle=undefined//专场动画 
         }
+
     })
 
     // 白底图==异步加载联级选择器子文件夹===开始
@@ -684,22 +694,22 @@ import * as utils from '@/assets/JS_Model/public_model';
     const videoformrule = {
         folder_id:[{
             required: true,
-            message: '文件夹不能为空!',
+            message: '文件夹不能为空',
             trigger: 'change',
         }],
         scene:[{
             required: true,
-            message: '视频类型不能为空!',
+            message: '视频类型不能为空',
             trigger: 'change',
         }],
         style:[{
             required: true,
-            message: '播放节奏不能为空!',
+            message: '播放节奏不能为空',
             trigger: 'change',
         }],
         transitionStyle:[{
             required: true,
-            message: '专场风格不能为空!',
+            message: '专场风格不能为空',
             trigger: 'change',
         }],
     }
@@ -774,6 +784,62 @@ import * as utils from '@/assets/JS_Model/public_model';
         transitionStyle:undefined//专场动画 
     }) 
 
+    // 创建视频选择主图-确认方法
+    const pic_video_onConfirm = async() =>{
+
+
+        // 视频图片为空验证
+        if(pic_video_data.checkedList.length == 0){  // 选择图片列表为空
+
+            tool.Fun_.message('info','请选择创建视频的图片')
+
+            return
+
+        }
+        
+        // 检查表单 ref 是否挂载（Drawer 动画期间可能为 null）
+        if (!videoformRef.value) {
+
+            tool.Fun_.message('warning', '表单未加载完成，请稍后再试')
+            
+            return
+
+        }
+
+        // 用 try/catch 包裹，不要用 .catch(err => throw err)
+        try {
+
+            await videoformRef.value.validate()
+
+            var checkedList = pic_video_data.checkedList;
+            
+            var folder_id = videoformState.folder_id.at(-1);// 赋值给创建组件的数据对象=文件夹id
+            
+            pic_video_data.checkedList = checkedList; // 图片列表
+
+            pic_video_data.folder_id = folder_id;// 文件夹id
+            pic_video_data.scene = videoformState.scene;// 类型
+            pic_video_data.style= videoformState.style;// 节奏
+            pic_video_data.transitionStyle = videoformState.transitionStyle;//专场动画 
+
+            // console.log('创建数据',videoformState)
+            
+            PAGEDATA.select_pic_to_video_open = false;// 选择主图 => 抽屉关闭
+
+            pic_video_data.open = true;// 显示 创建 组件
+
+        } catch (err) {
+
+            // 验证失败，Ant Design Vue 会自动显示错误提示
+            // console.log('表单验证未通过')
+
+            return  // 直接 return，不执行后续
+
+        }
+
+    }
+
+
     // 创建主图视频 组件调用数据
     const pic_video_data = reactive({
         open:false, // 组件展现状态
@@ -781,67 +847,24 @@ import * as utils from '@/assets/JS_Model/public_model';
         folder_id:undefined// 存储视频的素材文件夹地址
     })
 
-    // 创建视频选择主图-确认方法
-    const pic_video_onConfirm = async() =>{
-
-
-        console.log(videoformRef.value)
-        
-        // 检查表单 ref 是否挂载（Drawer 动画期间可能为 null）
-        if (!videoformRef.value) {
-            tool.Fun_.message('warning', '表单未加载完成，请稍后再试')
-            return
-        }
-
-        // 用 try/catch 包裹，不要用 .catch(err => throw err)
-        try {
-            await videoformRef.value.validate()
-        } catch (err) {
-            // 验证失败，Ant Design Vue 会自动显示错误提示
-            console.log('表单验证未通过')
-            return  // 直接 return，不执行后续
-        }
-
-        if(pic_video_data.checkedList.length !== 0 ){
-            
-            
-            
-            
-            pic_video_data.folder_id = videoformState.folder_id.at(-1);// 赋值给创建组件的数据对象=文件夹id
-
-            console.log('图片列表',pic_video_data.checkedList)
-
-            console.log('文件夹id',pic_video_data.folder_id)
-
-            console.log('创建视频数据',videoformState)
-
-            // PAGEDATA.select_pic_to_video_open = false;// 选择主图 => 抽屉关闭
-
-            // pic_video_data.open = true;// 显示 创建 组件
-
-        }else if(pic_video_data.checkedList.length == 0){
-            tool.Fun_.message('info','请选择图片')
-        }else if(videoformState.folder_id.length == 0){
-            tool.Fun_.message('info','请选择存储视频的文件夹')
-        }
-
-
-    }
-
-
     // 创建主图视频 回调方法：将处理好的主图视频 填充到页面
-    const pic_video_call_back= ()=>{
-        console.log('存储主图视频素材')
+    const pic_video_call_back= (data)=>{
+        console.log('添加商品存储主图视频素材对象',data)
+        video_Fun.add(data)
     }  
 
     // 主图视频 创建方法 ===================结束
+
+
+
      
      // 生命周期
-     onMounted(() => {
-       console.log('基础信息 组件已挂载')
-     })
+    //  onMounted(() => {
+    //    console.log('基础信息 组件已挂载')
+    //  })
 
      return {
+
         PAGEDATA,
         white_value,
         white_data,
@@ -891,4 +914,12 @@ import * as utils from '@/assets/JS_Model/public_model';
 .custom-radio :deep(.ant-radio + span) {font-size: 12px;}
 /*白底图创建==按钮*/
 .creat_white_button{height: 34%;text-align: center;border: 1px silver dotted;border-radius: 4px;}
+ 
+ /*表单提示字体大小设置*/
+:deep(.ant-form-item-explain) {
+  font-size: 12px;  /* 改成你需要的大小 */
+}
+:deep(.ant-form-item-explain-error) {
+  font-size: 12px;
+}
  </style>

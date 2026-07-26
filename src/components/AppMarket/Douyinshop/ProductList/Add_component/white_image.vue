@@ -205,8 +205,6 @@ export default defineComponent({
     White_Create.process_image_url=undefined // 处理好的图片地址
     White_Create.m_obj=undefined// 获取成功的素材对象
 
-    // 创建白底图开始
-    // White_Create.get_oss()
 
 
     // 监听器
@@ -215,9 +213,9 @@ export default defineComponent({
     }, { deep: true })
     
     // 生命周期
-    onMounted(() => {
-      console.log('模板名称 组件已挂载')
-    })
+    // onMounted(() => {
+    //   console.log('模板名称 组件已挂载')
+    // })
     
     
     return {

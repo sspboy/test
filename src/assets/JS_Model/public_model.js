@@ -137,11 +137,13 @@ export class A_Patch{
             "easyshuttle":"api/douyin/material/easyshuttle",// 一键删除
             "edit":"api/douyin/material/", // 编辑素材
             "add":"api/douyin/material/add", // 添加素材
-            "videolist":"api/douyin/material/batchgetvideodetaile", // 视频列表
+
             "recovermaterial":"api/douyin/material/recovermaterial",// 回收站恢复素材
             "getcapinfo":"api/douyin/material/getcapinfo", // 网盘容量查询
             "uploadmaterial":"api/douyin/material/uploadmaterial", // 素材上传接口-单张
             "bacthuploadmaterial":"api/douyin/material/bacthuploadmaterial", // 素材上传接口-批量
+            
+            "batchgetvideodetaile":"api/douyin/material/batchgetvideodetaile", // 批量获取视频详情
             "batchuploadvideo":"api/douyin/material/batchuploadvideo",// 视频上传-批量
             // 视频上传-单个
         },
@@ -213,7 +215,8 @@ export class A_Patch{
         // 阿里云
         oss:{
             "CreateWhiteImage":"api/oss/whitebg", // 创建白底图
-            "CreatePicVideo":"api/oss/createvideo" // 创建ppt视频
+            "CreatePicVideo":"api/oss/createvideo", // 创建ppt视频video任务
+            "SelectTaskProgress":"api/oss/selecttaskprogress"// 查询视频任务进度(视频url)
         }
     }
 }
