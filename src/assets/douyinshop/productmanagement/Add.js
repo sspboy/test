@@ -937,6 +937,7 @@ export const CATE = {
 
 
 // 通过执行Rule.get() 获取数据
+export const PageproductRuleOcject = ref(undefined) // ADD页面规则展示对象
 export class ProductUpdateRule {
 
     senses=ref(undefined) // 闪购定制参数，普通发品忽略
@@ -961,9 +962,8 @@ export class ProductUpdateRule {
 
         }).then((response) => {
 
-            this.info.value = response.data.data; // 规则赋值
-
-            // console.log(this.info.value)
+            this.info.value = response.data.data; // js属性规则赋值
+            PageproductRuleOcject.value = response.data.data // 页面规则传值
 
         }).catch((error) => {
 
@@ -996,6 +996,11 @@ export class ProductUpdateRule {
 }
 const productRule = new ProductUpdateRule() // 初始化 规格调用方法
 // 获取商品发布规则方法===结束、
+
+
+
+
+
 
 
 // 基础信息===========开始
@@ -1395,9 +1400,6 @@ export const video_Fun={
 
 
 // 商品属性
-
-
-
 
 // 商品发布规则：跟随分类id变化
 // 支持那些必填字段
@@ -2688,36 +2690,51 @@ export class Spec {
 export class UploadProduct {
 
     // 获取基础信息
-    get= async ()=>{
+    get = async ()=>{
 
         var product_data_obj = {} // 商品上传JSON
 
         try{
 
+            console.log('主图', toRaw(Pic_Fun.PicList))
 
+            console.log('标题', toRaw(Pic_Fun.name))
 
-            await Base_formRef.value.validate().catch(err => {// 验证基础信息表单
-                err.formName = '基础信息'
-                throw err
-            }) 
+            console.log('类目', toRaw(CATE.cate_value.value))
 
             // 白底图 必填验证
             if(!whiteimg_Fun.get()){
                 tool.Fun_.message('error','白底图必填-不能为空')
                 return
             }
+            console.log('白底图', toRaw(whiteimg_Fun.PicList.value))
+
 
             // 主图视频 必填验证
-
             if(!video_Fun.get()){
                 tool.Fun_.message('error','主图视频必填-不能为空')
                 return
             }
+            console.log('主图视频', toRaw(video_Fun.PicList.value))
+
+
+            // 验证基础信息表单
+            await Base_formRef.value.validate().catch(err => {
+                err.formName = '基础信息'
+                throw err
+            })
+            console.log('基本信息', toRaw(formState))
+
+
+
 
             await CATE.form_ref.value.validate().catch(err => {// 验证商品属性
                 err.formName = '商品属性'
                 throw err
             })
+            console.log('商品属性', toRaw(CATE.get_format()))
+
+
 
             // 验证水洗标/吊牌===开始
             var category_pics_list = Select_shuixi_Img.get_img_url();
@@ -2753,8 +2770,13 @@ export class UploadProduct {
             // 上传数据对象：水洗标/吊牌赋值
             if(Object.keys(category_obj).length !== 0){ // 对象为空
                 product_data_obj.category_property_pics = category_obj
+                console.log('水洗标/吊牌', toRaw(category_obj))
+
             }
             // 验证水洗标/吊牌===结束
+
+
+
 
             // 验证商品规格==开始
             await sku_formRef.value.validate().catch(err => {
@@ -2774,6 +2796,8 @@ export class UploadProduct {
             this.get_base_info(product_data_obj)// 基础信息获取
 
             this.get_attr_info(product_data_obj)// 属性信息获取
+
+            console.log('发布到线上')
 
         }catch (error) {
             
@@ -2869,9 +2893,12 @@ export class UploadProduct {
 
 
     // 发布上线
-    upload=()=>{
+    upload_online=()=>{
 
     }
 
     // 放入草稿
+    upload_draft = ()=>{
+
+    }
 }

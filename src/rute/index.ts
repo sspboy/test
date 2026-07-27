@@ -284,6 +284,14 @@ const routes = [
         }
     },
     {
+        path: '/productupload',
+        name: 'productupload',
+        component: () => import('../views/AppMarket/DouyinShop/ProductUpload.vue'),    // 视图文件
+        meta:{
+            title:'发布商品',
+        }
+    },
+    {
         path: '/inefficient',
         name: 'inefficient',
         component: () => import('../views/AppMarket/DouyinShop/Inefficient.vue'),    // 视图文件

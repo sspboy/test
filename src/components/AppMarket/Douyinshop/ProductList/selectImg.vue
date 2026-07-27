@@ -951,7 +951,9 @@ export default defineComponent({
                 navData.value.folder_id = keys[0]
                 navData.value.page_num = 1;
                 navData.value.page_size = 10;
+
                 loadproductData(navData.value)
+
             }
         }
 
@@ -982,6 +984,7 @@ export default defineComponent({
                 PAGEDATA.datalist = [];
                 PAGEDATA.total_number = 0
             }else{
+
                 setTimeout(() => {
                     PAGEDATA.loading = false;
                     PAGEDATA.justify = 'start';
@@ -989,7 +992,8 @@ export default defineComponent({
                     // 请求数据不为空
                     PAGEDATA.datalist = [...child_material];
                     PAGEDATA.total_number = total;
-                }, 1000);
+                }, 4000);
+                
             }
         }
 

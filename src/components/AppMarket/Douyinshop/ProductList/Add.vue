@@ -94,6 +94,7 @@
                                 :mode="DES.mode.value"
                                 @onCreated="DES.handleCreated"
                             />
+
                         </div>
                     </a-tab-pane>
 
@@ -115,8 +116,9 @@
             v-if="CATE.cate_value.value != undefined"
             shape="square" :style="{ right: '100px' }">
             <a-float-button
-                tooltip="商品发布规则" 
-                @click="console.log('查看规则')" />
+                tooltip="商品发布规则"
+                v-if="PageproductRuleOcject !== undefined"
+                @click="console.log(PageproductRuleOcject)" />
 
             <a-float-button
                 tooltip="商品发布记录" 
@@ -129,7 +131,9 @@
 
         <!--底部按钮-->
         <template #footer>
-            <div v-if="CATE.cate_status.value === false" style="display: flex; justify-content: center; gap: 8px;">
+            <div 
+                v-if="CATE.cate_status.value === false" 
+                style="display: flex; justify-content: center; gap: 18px;border-top: 1px #f2f2f2 dotted;height: 50px;padding: 20px 0 0 0;">
                 <a-button type="primary" @click="uploadproduct.get()" :loading="PAGEDATA.upload_product_loading">发布到线上</a-button>
                 <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
                 <a-button>取消</a-button>
@@ -146,7 +150,7 @@ import { Empty } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
-import { Fulfillment,Spec,CATE,UploadProduct } from '@/assets/douyinshop/productmanagement/Add';
+import { Fulfillment,Spec,CATE,UploadProduct, PageproductRuleOcject } from '@/assets/douyinshop/productmanagement/Add';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 import Product_format_component from './Add_component/product_format_component.vue';
@@ -209,6 +213,7 @@ export default defineComponent({
         const Fulfill = new Fulfillment()       // 履约初始化
         const uploadproduct = new UploadProduct()  // 上传商品
 
+        
         // 添加商品配置
         const PAGEDATA=reactive({
 
@@ -594,14 +599,15 @@ export default defineComponent({
             selectsizetemplate_callback,
             selectbrand_callback,
             filterOption,
-            Fulfill
+            Fulfill,
+            PageproductRuleOcject,// 发布规则
         }
     }
 })
 
 </script>
 <style scoped>
-.content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: 90vh;}
+.content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: calc(90vh - 40px);}
 .img_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
 .img_3_4_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
 .Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}

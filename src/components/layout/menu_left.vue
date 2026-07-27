@@ -111,15 +111,25 @@ export default defineComponent({
       
       let se_obj = e.keyPath
       let name = e.item.id
+      console.log(name)
+
       // console.log(se_obj)
       // 首页功能字符 introduction
+      // 自定义一级目录点击路径
+      var field = e.item.field;
+
+      if (name === 'productupload') {
+        window.open(`${window.location.origin}/productupload`, '_blank')
+        return
+      }
+
+
       if(name != undefined){
         router.push('/' +  name);
         state.openKeys = [se_obj[0]]
         state.key = [se_obj[1]]
       }
-      // 自定义一级目录点击路径
-      var field = e.item.field;
+
       if(field === 'introduction'){
         // 去主页
         router.push('/introduction')
@@ -127,6 +137,7 @@ export default defineComponent({
         // 去批量修改
         router.push('/batchedit')
       }
+      
 
     };
 
