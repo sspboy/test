@@ -2397,7 +2397,7 @@ export class Spec {
     })
 
 
-    // 自定义 add
+    // 操作方法
     add={
 
         load:()=>{
@@ -2533,11 +2533,12 @@ export class Spec {
         remove_img:(item)=>{
             item.url = ''
         },
+
         // 获取自定已规格
         get_specs_obj: async()=>{
 
             // 打印选择得规格模式
-            console.log('规格模式',this.type_formdata.support_property_diy)
+            console.log('规格模式', this.type_formdata.support_property_diy)
 
             // 验证规格
             var res = await sku_formRef.value.validate().then(() => {
@@ -2580,7 +2581,7 @@ export class Spec {
                 copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
 
                 var result = {"spec_pic": spec_pic, "spec_values":copy_list}// 规格文案对象获取
-                console.log(result)
+
                 return result
 
             }).catch( error => {
@@ -2617,69 +2618,6 @@ export class Spec {
         }
     }
 
-    // 推荐 add
-    recommendation_add={
-
-        load:()=>{
-
-        },
-
-
-
-        // need_paging_query_value 是否需要二次查询规格值
-        // 二次查询/product/getCategoryPropertyValue
-        // 入参
-        // {
-        //  "category_id": 20219,
-        //     "property_id": 4704,
-        //     "page_size":0,
-        //     "page_num":2000
-        // }
-
-        // value_display_style 规格样式，cascader是为导航样式
-        
-        
-
-        // 添加值
-        add_value:(index)=>{
-            console.log('添加值', index)
-            var value_number = SPECS_DIY.Obj[index].values.length;
-
-            if(value_number >= 20){
-                tool.Fun_.message('error', '规格值最多不能超过20组！')
-                return
-            }else{
-                SPECS_DIY.Obj[index].values.push({
-                    value_name:undefined,// 值名称
-                    url:undefined//
-                });
-            }
-        },
-        // 删除值
-        del_value:(index,spec_value_index)=>{
-            console.log('删除值', index, spec_value_index)
-            SPECS_DIY.Obj[index].values.splice(spec_value_index, 1);
-        },
-        // 获取推荐规格
-        get_spec_diy_obj:()=>{
-
-            sku_diy_formRef.value.validate().then(() => {
-                
-                console.log(SPECS_DIY.Obj)
-
-                // 过滤隐藏的规格
-
-
-
-            }).catch( error => {
-
-                tool.Fun_.message('error', '规格信息不能为空！');// 规格错误提示
-                
-                return false
-
-            })
-        }
-    }
 
 }
 
@@ -2783,6 +2721,13 @@ export class UploadProduct {
                 err.formName = '商品规格'
                 throw err
             })
+
+            // 获取规格信息
+            var spec = new Spec()
+
+            var spec_value = await spec.add.get_specs_obj()
+
+            console.log('规格信息',spec_value)
 
 
             // 验证发货模式==开始
@@ -2889,7 +2834,6 @@ export class UploadProduct {
     }
 
     // 获取规格信息
-
 
 
     // 发布上线

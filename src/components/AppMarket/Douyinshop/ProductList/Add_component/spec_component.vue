@@ -30,12 +30,6 @@
       打印自定义规格
     </a-button>
 
-    <a-button
-      type="dashed" 
-      size="small"
-      style="margin: 0 20px 0 0;"
-      @click="spec.recommendation_add.get_spec_diy_obj"
-    >打印推荐规格</a-button>
 
 
     <span class="font_size_12"> ---- 是否支持自定义：：{{ spec.rule.support_property_diy }}</span>

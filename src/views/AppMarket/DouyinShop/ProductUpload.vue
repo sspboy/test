@@ -9,14 +9,25 @@
     />
 
 
-
-
     <a-layout-content class="content">
 
-        <div style="width: 950px;margin: 0 auto;height: 100%;">
+        <!--发布规则 查看 开始-->
+       
+        <product_upload_rule_component :open="Rulestate" :data="PageproductRuleOcject"/>
 
-            <!--类目预测 类目id 为空显示-->
-            <product_cate_component v-if="CATE.cate_status.value === true"/>
+        <!--发布规则 查看 结束-->
+        <div style="width: 950px;height: 100%;margin: 0 auto;">
+
+
+            <!--类目预测 类目id 为空显示 -->
+            <a-flex
+                v-if="CATE.cate_status.value === true"
+                justify="center" 
+                align="center" 
+                style="height: 100%;" 
+                class="font_size_12">
+                <product_cate_component />
+            </a-flex>
 
             <!--新建商品 类目id不为空显示-->
             <a-tabs v-if="CATE.cate_status.value === false" v-model:activeKey="activeKey">
@@ -104,6 +115,8 @@
 
     </a-layout-content>
 
+
+
     <!--悬浮按钮-->
     <a-float-button-group 
         v-if="CATE.cate_value.value != undefined"
@@ -111,7 +124,7 @@
         <a-float-button
             tooltip="商品发布规则"
             v-if="PageproductRuleOcject !== undefined"
-            @click="console.log(PageproductRuleOcject)" />
+            @click="openuploadrule" />
 
         <a-float-button
             tooltip="商品发布记录" 
@@ -122,17 +135,25 @@
         </a-float-button>
     </a-float-button-group>
 
-    <!--底部按钮-->
-    <!-- <template #footer>
-        <div 
-            v-if="CATE.cate_status.value === false" 
-            style="display: flex; justify-content: center; gap: 18px;border-top: 1px #f2f2f2 dotted;height: 50px;padding: 20px 0 0 0;">
-            <a-button type="primary" @click="uploadproduct.get()" :loading="PAGEDATA.upload_product_loading">发布到线上</a-button>
-            <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
-            <a-button>取消</a-button>
 
-        </div>
-    </template> -->
+
+
+    <!--底部按钮 开始-->
+    <div 
+        v-if="CATE.cate_status.value === false"
+        class="bottombutton"
+    >
+
+        <a-button 
+            type="primary" 
+            @click="uploadproduct.get()" 
+            :loading="PAGEDATA.upload_product_loading">发布到线上</a-button>
+        <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
+        <a-button @click="closed">关闭</a-button>
+
+    </div>
+    <!--底部按钮 结束-->
+
 </template>
 <script>
 import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed,shallowRef,onBeforeUnmount,toRaw, watch } from 'vue';
@@ -142,7 +163,7 @@ import { Empty } from 'ant-design-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
-import { Fulfillment,Spec,CATE,UploadProduct, PageproductRuleOcject } from '@/assets/douyinshop/productmanagement/Add';
+import { Fulfillment, Spec, CATE, UploadProduct, PageproductRuleOcject } from '@/assets/douyinshop/productmanagement/Add';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
 import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 
@@ -163,6 +184,7 @@ export default {
         MinusCircleOutlined,
         Editor, // 详情编辑
         Toolbar, // 编辑工具栏
+        product_upload_rule_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/ProductUploadRule.vue')),// 发布规则
         product_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/product_cate.vue')),// 类目预测
         pic_title_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/pic_title_cate.vue')),// 基础信息
         selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
@@ -189,6 +211,7 @@ export default {
     },
     // ✅ 必须添加 emits 声明:指定该组件可能会触发的事件
     emits: ['add_call_back'],
+
     setup(props,ctx) {
         
         const tool = new TOOL.TOOL()            // 工具方法
@@ -197,6 +220,9 @@ export default {
         const simpleImage = Empty.PRESENTED_IMAGE_SIMPLE;// 默认为空图标
         const buttonload = ref(true)            // 新建按钮loading状态；
         const activeKey = ref('0');             // 默认选项卡
+
+
+        const Rulestate = ref(false);           // 商品发布规则抽屉状态
 
         
         CATE.cate_status.value = true;          // 类目预测初始化 
@@ -238,30 +264,6 @@ export default {
             upload_product_loading:ref(false)
         })
 
-
-
-        // 获取商品基础信息
-        const GetInfo = async()=>{
-
-           var res = await formRef.value.validate().then(() => {
-
-                var res = toRaw(formState)// 标题
-                // Object.keys(res).forEach(key=>{
-                //     if(res.key === undefined){delete res.key} // 清除值为undefind的键值
-                // })
-
-                return res
-                
-            }).catch(error => {
-
-                tool.Fun_.message('error',error.errorFields[0].errors[0]);
-                activeKey.value = '1';
-                return false
-
-            })
-
-            return res
-        }
 
 
 
@@ -404,171 +406,18 @@ export default {
             console.log(data)
         }
 
-        // 确认按钮===>>>获取产品信息+验证
-        const handleOk = async() => {
-
-            var product_data_obj = {} // 商品上传JSON
-
-            // 主图
-            if(Pic_Fun.get()){// 不为空
-                product_data_obj.pic = Pic_Fun.get()
-            }else{
-                tool.Fun_.message('error','主图不能为空！')
-                activeKey.value = '1'
-                return
-            }
-
-            // 白底图
-            if(whiteimg_Fun.get()){
-                product_data_obj.white_back_ground_pic_url = whiteimg_Fun.get();// 白底图：url(仅素材中心url有效)，白底图比例要求1:1
-                console.log('白底图', whiteimg_Fun.get())
-            }
-
-            // 长图
-            if(Longimg_Fun.get()){
-                product_data_obj.long_pic_url = Longimg_Fun.get();// 长图
-                console.log('长图', Longimg_Fun.get())
-            }
-
-            // 视频信息
-            if(video_Fun.get()){
-                var video_obj = video_Fun.get()
-                var material_video_id = video_obj[0].video_info.vid;
-                product_data_obj.material_video_id = material_video_id;// 视频id
-                // console.log('视频素材id', material_video_id)
-            }
-
-            // 基础信息
-            var pro_info = await GetInfo();
-
-            if(pro_info){
-                // 正常获取
-                product_data_obj.name = pro_info.name;                  // 标题-必填
-                product_data_obj.product_type = pro_info.product_type;  // 商品类型-必填
-                product_data_obj.recommend_remark = pro_info.recommend_remark;// 推荐语
-                product_data_obj.remark = pro_info.remark;              // 商家备注
-                product_data_obj.pay_type = pro_info.pay_type;          // 支付方式
-                product_data_obj.mobile = pro_info.mobile;              // 电话
-                product_data_obj.freight_id = pro_info.freight_id.value;// 运费模板
-                product_data_obj.size_info_template_id = pro_info.size_info_template_id.value// 尺码模板
-                product_data_obj.standard_brand_id = pro_info.standard_brand_id.brand_id;// 品牌id
-                product_data_obj.minimum_per_order = pro_info.minimum_per_order; // 最少下单购买件数
-                product_data_obj.maximum_per_order = pro_info.maximum_per_order; // 最多下单购买件数
-                product_data_obj.limit_per_buyer = pro_info.limit_per_buyer; // 累计购买件数
-                product_data_obj.presell_type = pro_info.presell_type; // 发货模式
-                product_data_obj.short_product_name = pro_info.short_product_name;// 导购短标题
-                product_data_obj.after_sale_service = after_sale_list.get(pro_info.after_sale_service);//售后服务
-            }else{
-                return
-            }
-            
-            // 分类
-            var cate_obj = CATE.get_cate()
-            if(cate_obj){
-                // 正常获取分类
-                product_data_obj.category_leaf_id = cate_obj;
-            }else{
-                return
-            }
-
-            // 属性
-            var format_obj = await CATE.get_format();
-            if(format_obj){
-                product_data_obj.product_format_new = JSON.stringify(format_obj);
-            }else{
-                return
-            }
-
-            // 验证规格信息
- 
-
-            // 库存信息
-            // var sku_list_obj = await get_sku_list();
-            // if(sku_list_obj){
-
-            //     product_data_obj.spec_prices_v2 = sku_list_obj;
-            
-            // }else{
-            //     return
-            // }
-
-            // 描述详情
-            var description_obj = DES.get_img();
-            if(description_obj){
-                // 正常获取
-                product_data_obj.description = description_obj
-            }else{
-                return
-            }
-            
-
-            // 过滤 掉值为空的key
-            Object.keys(product_data_obj).forEach(key => {
-                if (product_data_obj[key] === undefined || product_data_obj[key] === '') {
-                    delete product_data_obj[key];
-                }
-            });
-
-            console.log(product_data_obj)
-
-            upload_product(product_data_obj)// 上传商品
-
-        }
-
         // 关闭新建商品按钮
         const closed = () =>{
-
-            props.data.AddDate = !props.data.AddDate;
-
+            window.close()
+        }
+        // 开启规则抽屉
+        const openuploadrule = ()=>{
+            Rulestate.value = !Rulestate.value
+            console.log(Rulestate.value)
+            console.log(PageproductRuleOcject)
         }
 
-        // 商品上传请求接口方法
-        const upload_product = async (product_data) =>{
 
-            // 按钮状态
-            PAGEDATA.upload_product_loading = true;
-
-            product_data.commit = 1; // 提交方式-立即发布
-            
-            // 发送数据到接口
-            var res = await tool.Http_.post(API.AppSrtoreAPI.dou_product.add, product_data)
-
-            console.log(res)
-
-            var code = res.data.code;
-            var sub_msg = res.data.sub_msg
-            if(code === 10000 ){ // 接口返回成功
-                
-                // 提示上传成功，刷新列表;
-
-                setTimeout(() => {
-
-                    tool.Fun_.message('success','商品添加成功！')
-
-                    PAGEDATA.upload_product_loading = false;
-
-                    closed() // 关闭新建商品
-
-                    ctx.emit('add_call_back')// 刷新列表
-
-                }, 1000);
-
-            }else{ // 接口返回失败
-
-                // 提示失败，返回失败原因;
-                tool.Fun_.message('error', sub_msg)
-
-                // 重置提交按钮状态
-                PAGEDATA.upload_product_loading = false;
-
-            }
-
-        }
-
-        // 表单选择框---》搜索方法；
-        const filterOption = (input, option) => {
-            return option.name.toLowerCase().indexOf(input.toLowerCase()) >= 0;
-        };
 
 
 
@@ -577,19 +426,19 @@ export default {
             PAGEDATA,
             props,
             activeKey,
-
+            Rulestate,
+            openuploadrule,
             // -------------分类属性
             CATE,
             simpleImage,
             // -------------描述详情
             editorRef,DES,
-            uploadproduct,
+            uploadproduct, // 发布到线上
             // 提交，关闭
-            handleOk,closed,
+            closed,
             selectfreight_callback,
             selectsizetemplate_callback,
             selectbrand_callback,
-            filterOption,
             Fulfill,
             PageproductRuleOcject,// 发布规则
         }
@@ -598,7 +447,7 @@ export default {
 
 </script>
 <style scoped>
-.content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: calc(90vh - 40px);}
+.content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: calc(90vh);}
 .img_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
 .img_3_4_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
 .Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}
@@ -614,4 +463,7 @@ export default {
 /*履约模式选项卡字体大小设置*/
 :deep(.ant-radio-button-wrapper) {font-size: 12px;}
 .custom-radio :deep(.ant-radio + span) {font-size: 12px;}
+
+/*footer*/
+.bottombutton{display: flex; justify-content: center; gap: 18px;border-top: 1px #f2f2f2 dotted;height: 50px;padding: 20px 0 0 0;}
 </style>

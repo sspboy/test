@@ -615,4 +615,11 @@ export default defineComponent({
 .Add_shui_img :hover{color: #2600ff;border:1px #2600ff dotted;border-radius: 4px;}
 .call_shui_img{height: 90px;width: 100%;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;padding: 4px 0 0 0;}
 .clear_shui_img{margin: 0 0 0 6px;}
+ /*表单提示字体大小设置*/
+:deep(.ant-form-item-explain) {
+  font-size: 12px;  /* 改成你需要的大小 */
+}
+:deep(.ant-form-item-explain-error) {
+  font-size: 12px;
+}
 </style>
