@@ -2355,21 +2355,11 @@ export const resetSPECSFull = () => {
     })
 }
 
-//系统推荐==表单数据格式
-export const sku_diy_formRef = ref()
-export const SPECS_DIY = reactive({
-
-    image_checked:true, // 规格图片
-
-    // 规格数据对象
-    Obj:[],
-
-})
 
 export class Spec {
 
-
     rule = productRule.info.value.product_spec_rule;// 规格-规则
+
     
     // 规格-加载
     load=()=>{
@@ -2403,21 +2393,37 @@ export class Spec {
         load:()=>{
 
             let max_spec_num_limit = this.rule.max_spec_num_limit;
+
             // 推荐sku对象加载到表单
             this.rule.required_spec_details.forEach((obj, index)=>{
 
                 let name = obj.sell_property_name
 
                 obj.property_name = name;
+
                 obj.values = [{
                     value_name:undefined,  // 值名称
                     url:undefined          // 规格图片
                 }]
-                obj.Recommendation = true // 是否推荐规格
-                obj.enabled_status = false// 启用还是禁用
-                
-                // SPECS.Obj.push(obj)
 
+                obj.Recommendation = true; // 是否推荐规格
+                obj.enabled_status = false;// 启用还是禁用
+
+                console.log(obj)
+
+                // 推荐规格的下拉选项=》请求一级推荐规格
+                this.add.Initialization_nav(obj)
+
+                obj.options=ref([
+                    {
+                        value: 'zhejiang',
+                        label: 'Zhejiang',
+                        isLeaf: false,
+                    },
+                ])
+
+                // SPECS.Obj.push(obj)
+                // 加载推荐规格不超过最大规格数量
                 if(!SPECS.Obj.some(r=>r.property_name === name)){
 
                     // 添加最大允许数量的规格 为显示状态
@@ -2429,11 +2435,59 @@ export class Spec {
                         
                         obj.enabled_status = false;
 
-                        SPECS.Obj.push(o)
-                    }
+                        SPECS.Obj.push(obj)
 
+                    }
                 }
+
             })
+
+        },
+
+        // 加载规格下拉导航色系，颜色、
+        loadData: (selectedOptions,navigation_properties_obj, op) => {
+
+            console.log('加载下拉',selectedOptions)
+
+            console.log('加载下拉',navigation_properties_obj)
+
+            const targetOption = selectedOptions[selectedOptions.length - 1];
+
+            targetOption.loading = true;
+
+            // load options lazily
+            setTimeout(() => {
+
+                targetOption.loading = false;
+
+                targetOption.children = [
+
+                    {
+                        label: `${targetOption.label} Dynamic 1`,
+                        value: 'dynamic1',
+                    },
+                    {
+                        label: `${targetOption.label} Dynamic 2`,
+                        value: 'dynamic2',
+                    },
+                ];
+
+                // op.value = [...op.value];
+
+            }, 1000);
+        },
+
+        // 初始化选择推荐规格下拉选项
+        Initialization_nav:(obj)=>{
+            
+            var navigation_properties = obj.navigation_properties;
+            if(navigation_properties.length > 0){
+                var property_id = navigation_properties[0].property_id;
+                var property_name = navigation_properties[0].property_name;
+            }
+            console.log('分类=>请求一级推荐规格',CATE.cate_value.value)
+
+            obj.options.value.push()
 
         },
 

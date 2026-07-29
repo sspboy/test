@@ -13,7 +13,7 @@
 
         <!--发布规则 查看 开始-->
        
-        <product_upload_rule_component :open="Rulestate" :data="PageproductRuleOcject"/>
+        <product_upload_rule_component :open="Ruledrawerstate" :data="PageproductRuleOcject"/>
 
         <!--发布规则 查看 结束-->
         <div style="width: 950px;height: 100%;margin: 0 auto;">
@@ -221,8 +221,10 @@ export default {
         const buttonload = ref(true)            // 新建按钮loading状态；
         const activeKey = ref('0');             // 默认选项卡
 
-
-        const Rulestate = ref(false);           // 商品发布规则抽屉状态
+        // 商品发布规则抽屉状态
+        const Ruledrawerstate = reactive({
+            "open":false
+        });           
 
         
         CATE.cate_status.value = true;          // 类目预测初始化 
@@ -412,9 +414,7 @@ export default {
         }
         // 开启规则抽屉
         const openuploadrule = ()=>{
-            Rulestate.value = !Rulestate.value
-            console.log(Rulestate.value)
-            console.log(PageproductRuleOcject)
+            Ruledrawerstate.open = !Ruledrawerstate.open
         }
 
 
@@ -426,7 +426,7 @@ export default {
             PAGEDATA,
             props,
             activeKey,
-            Rulestate,
+            Ruledrawerstate,
             openuploadrule,
             // -------------分类属性
             CATE,

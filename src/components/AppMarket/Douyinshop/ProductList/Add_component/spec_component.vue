@@ -130,10 +130,12 @@
                       class="font_size_12" 
                       v-if="item.is_required"
                       style="color: red;float:right;"
-                    >必填</span>
+                    >
+                    <a-tag color="red">必填</a-tag>
+                  </span>
                     
                     <span class="font_size_12" style="float:right;" v-else>
-                      非必填
+                      <a-tag>非必填</a-tag>
                     </span>
                     <!--规格是否必填项目===结束-->
 
@@ -166,9 +168,19 @@
                         <span v-if="item.value_display_style === 'cascader_multi_select'">
                         
                           <!--无需二次请求值 支持自定义输入规格值-->
-                          <a-auto-complete
+
+                          <a-cascader
+                            v-if="item.support_diy===true"
+                            v-model:value="v_item.value_name"
+                            :options="item.options"
+                            :load-data="(selectedOptions) => spec.add.loadData(selectedOptions, '自定义参数', item.options)"
+                            placeholder="选择规格"
+                            change-on-select
+                          />
+
+                          <!-- <a-auto-complete
                             :disabled="item.enabled_status"
-                            v-if="item.need_paging_query_value ===false && item.support_diy===true"
+                            v-if="item.support_diy===true"
                             v-model:value="v_item.value_name"
                             :options="item.property_values"
                             style="width: 154px;font-size: 12px;"
@@ -178,12 +190,12 @@
                               label: 'sell_property_value_name', 
                               value: 'sell_property_value_name', 
                             }"
-                          />
+                          /> -->
                             
                           <!--无需二次请求值 不支持自定义输入规格值-->
                           <a-select
                               :disabled="item.enabled_status"
-                              v-else-if="item.need_paging_query_value===false && item.support_diy===false"
+                              v-else-if="item.support_diy===false"
                               ref="select"
                               placeholder="选择规格值"
                               v-model:value="v_item.value_name"
@@ -337,7 +349,7 @@ import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted, 
 import { PlusCircleOutlined,PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutlined} from '@ant-design/icons-vue';
 
 import { 
-  Spec,SPECS,resetSPECSFull,sku_formRef,SPECS_DIY,sku_diy_formRef
+  Spec,SPECS,resetSPECSFull,sku_formRef,
 } from '@/assets/douyinshop/productmanagement/Add';
 export default defineComponent({
   
@@ -363,14 +375,15 @@ props: {
 
 
     const spec = new Spec() 
+
     // 重置表单 需要重置时调用
     resetSPECSFull()
     spec.load() // 初始化 规格规则
     
     // 监听器
-    watch(() => props.data, (newVal, oldVal) => {
-      console.log('data changed:', newVal)
-    }, { deep: true })
+    // watch(() => props.data, (newVal, oldVal) => {
+    //   console.log('data changed:', newVal)
+    // }, { deep: true })
     
     // 生命周期
     onMounted(() => {
@@ -387,9 +400,6 @@ props: {
       SPECS, // 自定义规格表单对象
       sku_formRef, // 自定义规格表单 验证对象
       spec, // 方法
-
-      SPECS_DIY, // 系统推荐表单对象
-      sku_diy_formRef,// 系统推荐 表单验证对象
 
     }
   }

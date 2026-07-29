@@ -1,10 +1,11 @@
 <template>
     <a-drawer
-        v-model:open="props.open"
+        v-model:open="props.open.open"
         title="发布规则"
         placement="right"
         width="80%"
-        :closable="false"
+        :closable="true"
+        :maskClosable="true"
         :footer-style="{ textAlign: 'left' }"
     >
 
@@ -12,9 +13,7 @@
     
     <div class="delivery-method">
 
-        <h3>当前商品发布规则</h3>
 
-        <div></div>
         <div>类目：撒范德萨分</div>
 
     </div>
@@ -66,9 +65,8 @@ export default defineComponent({
     //   required: true,
     },
     open: {
-        type: Boolean,
-        default: false
-    }
+        type: Object
+        }
   },
   
   emits: ['update', 'change'],
@@ -151,9 +149,9 @@ export default defineComponent({
     }
     
     // 监听器
-    watch(() => props.data, (newVal, oldVal) => {
-      console.log('data changed:', newVal)
-    }, { deep: true })
+    // watch(() => props.data, (newVal, oldVal) => {
+    //   console.log('data changed:', newVal)
+    // }, { deep: true })
     
     // 生命周期
     onMounted(() => {
@@ -183,6 +181,7 @@ export default defineComponent({
   padding: 16px;
   border: 1px solid #eee;
   border-radius: 6px;
+  margin-bottom: 10px;
 }
 .customStyle{background: #f7f7f7;border-radius: 4px;margin-bottom: 24px;border: 0;overflow: hidden}
 </style>

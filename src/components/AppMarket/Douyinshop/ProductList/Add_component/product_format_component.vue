@@ -32,8 +32,8 @@
                         <!--洗水标 吊牌-->
                         <a-col :span="6" style="margin-bottom: 20px;">
                             <p>洗水标/吊牌
-                                <span v-if="item.property_pic_rule.required == true" style="color: red;">-必填</span>
-                                <span v-else-if="item.property_pic_rule.required == false">-非必填</span>
+                                <span v-if="item.property_pic_rule.required == true" style="color: red;">--必填</span>
+                                <span v-else-if="item.property_pic_rule.required == false">--非必填</span>
                             </p>
 
                             <!-- 吊牌 开始-->
@@ -68,7 +68,7 @@
                         <a-col :span="24" style="margin-bottom: 10px;">
                         
                         <!-- 内层嵌套 row -->
-                        <p>面料材质 <span v-show="item.required ==1" style="color: red;">*必填</span></p>
+                        <p>面料材质 <span v-show="item.required ==1" style="color: red;">--必填</span></p>
 
                         <a-row :gutter="[16,6]">
                             
