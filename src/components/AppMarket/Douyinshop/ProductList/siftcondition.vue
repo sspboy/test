@@ -10,13 +10,12 @@
                 @finish="handleFinish"
                 style="float: left;margin: 5px 0 0 14px;width: 100%;"
             >
-            <a-form-item>
-                <!--导航收起按钮-->
+            <!-- <a-form-item>
                   <a-button type="primary" size="small" style="font-size: 12px;" @click="() => {store.commit('menu/change')}">
                     <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
-            </a-form-item>
+            </a-form-item> -->
                 <a-form-item>
                     <a-button type="primary" size="small" style="font-size: 12px;" @click="show_add">
                     新建商品

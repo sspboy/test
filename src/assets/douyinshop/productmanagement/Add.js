@@ -2364,17 +2364,11 @@ export class Spec {
     // 规格-加载
     load=()=>{
 
-        console.log('推荐规格', this.rule)
+        // console.log('推荐规格', this.rule)
 
         // 加载推荐sku
         this.add.load()
 
-        // 是否有必填
-        // 是否支持自定义
-
-        let support_property_diy = this.rule.support_property_diy; // 是否支持规格项自定义
-
-        let required_spec_details = this.rule.required_spec_details; // 必填规格项
 
     }
 
@@ -2409,18 +2403,8 @@ export class Spec {
                 obj.Recommendation = true; // 是否推荐规格
                 obj.enabled_status = false;// 启用还是禁用
 
-                console.log(obj)
-
                 // 推荐规格的下拉选项=》请求一级推荐规格
                 this.add.Initialization_nav(obj)
-
-                obj.options=ref([
-                    {
-                        value: 'zhejiang',
-                        label: 'Zhejiang',
-                        isLeaf: false,
-                    },
-                ])
 
                 // SPECS.Obj.push(obj)
                 // 加载推荐规格不超过最大规格数量
@@ -2444,50 +2428,97 @@ export class Spec {
 
         },
 
-        // 加载规格下拉导航色系，颜色、
+        // 加载【推荐规格】下拉导航=色系，颜色、尺码子选项
         loadData: (selectedOptions,navigation_properties_obj, op) => {
 
-            console.log('加载下拉',selectedOptions)
+            console.log('加载下拉',selectedOptions) // 选择的一级 菜单
 
             console.log('加载下拉',navigation_properties_obj)
 
             const targetOption = selectedOptions[selectedOptions.length - 1];
 
+            var property_id = selectedOptions[0].property_id; // 父级属性id
+
+            var property_value_id = selectedOptions[0].property_value_id; // 当前子级属性id
+
+            var property_value_name = selectedOptions[0].property_value_name; // 当前子级属性名称
+
+            console.log(property_id, property_value_id, property_value_name)
+
             targetOption.loading = true;
 
-            // load options lazily
-            setTimeout(() => {
+            axios.post(API.AppSrtoreAPI.specification.getformatcascade,{
+                
+                "category_id":CATE.cate_value.value, // 类目id
+                
+                "property_id":property_id, // 属性id
+
+                // 级联参数，传当前属性属性值
+                "cascade_info":[ 
+                    {
+                        "value_id": property_value_id, // 属性值id
+                        "value_name": property_value_name, // 属性值名称
+                        "cascade_id":0 // 级联id，第一次传0，后续查询使用上一次的查询结果中的cascade_id
+                    }
+                ]
+
+            }).then((res)=>{
+
+                console.log(res)
+                var properties_list = res.data.data.properties;
+                var property_values = properties_list[0].property_values
+                property_values.forEach(obj=>{
+                    obj.value = obj.property_value_id
+                    obj.label = obj.property_value_name
+                    obj.isLeaf = true // 是否有下一级
+                })
+
+                targetOption.children = property_values
 
                 targetOption.loading = false;
 
-                targetOption.children = [
+            })
 
-                    {
-                        label: `${targetOption.label} Dynamic 1`,
-                        value: 'dynamic1',
-                    },
-                    {
-                        label: `${targetOption.label} Dynamic 2`,
-                        value: 'dynamic2',
-                    },
-                ];
 
-                // op.value = [...op.value];
-
-            }, 1000);
         },
 
         // 初始化选择推荐规格下拉选项
         Initialization_nav:(obj)=>{
             
             var navigation_properties = obj.navigation_properties;
+
             if(navigation_properties.length > 0){
                 var property_id = navigation_properties[0].property_id;
                 var property_name = navigation_properties[0].property_name;
             }
-            console.log('分类=>请求一级推荐规格',CATE.cate_value.value)
 
-            obj.options.value.push()
+            // 请求推荐规格分类第一级
+            axios.post(API.AppSrtoreAPI.specification.getcategorypropertyvalue,{
+                "category_id":CATE.cate_value.value,   // 当前类名id
+                "property_id":property_id,         // 属性值id
+                "page_size":0,              // 页数
+                "page_num":2000             // 每页数量
+
+            }).then((res)=>{
+                
+
+                var property_values_list = res.data.data.property.property_values
+
+                property_values_list.forEach(item=>{
+                    item.value = item.property_value_id
+                    item.label = item.property_value_name
+                    item.isLeaf = false
+                    item.property_id = property_id
+                })
+
+                // console.log('推荐规格', property_values_list)
+                
+                obj.options = ref(property_values_list)
+
+
+            })
+
+
 
         },
 
@@ -2591,9 +2622,6 @@ export class Spec {
         // 获取自定已规格
         get_specs_obj: async()=>{
 
-            // 打印选择得规格模式
-            console.log('规格模式', this.type_formdata.support_property_diy)
-
             // 验证规格
             var res = await sku_formRef.value.validate().then(() => {
 
@@ -2630,15 +2658,22 @@ export class Spec {
                     }
                 }
 
-                var copy_list = structuredClone(spec_list)// 拷贝
+                // var copy_list = structuredClone(spec_list)// 拷贝
+                this.add.escape_spec_text(spec_list)
 
-                copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
+                console.log(spec_list)
 
-                var result = {"spec_pic": spec_pic, "spec_values":copy_list}// 规格文案对象获取
+                console.log()
 
-                return result
+                // copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
 
-            }).catch( error => {
+                // var result = {"spec_pic": spec_pic, "spec_values":copy_list}// 规格文案对象获取
+
+                return false
+
+            }).catch( error => { // 规格取值
+
+                console.log(error)
 
                 tool.Fun_.message('error', '规格信息不能为空！');// 规格错误提示
                 
@@ -2647,7 +2682,78 @@ export class Spec {
             })
 
             return res
+
         },
+        // 转义-》规格值
+        // "spec_info":{
+        //     "spec_name":"颜色分类-尺码大小",
+        //     "spec_values":[
+        //     {
+        //         "name":"颜色分类",
+        //         "values":[{
+        //             "name": "白色",
+        //             "remark":"偏深",
+        //             "value_id":35497,
+        //             "cpv_path": [ 
+        //                     //因为颜色分类是级联样式（value_display_style == cascader），需要传级联层级信息；如果不关心级联样式则可以不传
+        //                         {
+        //                             "cpid": 4471,
+        //                             "cpvid": 7054
+        //                         },
+        //                         {
+        //                             "cpid": 2752,
+        //                             "cpvid": 35497
+        //                         }
+        //                     ]
+
+        //         }],
+                
+                
+        //         "property_id":2752
+        //     },
+        //         {
+        //         "name":"尺码大小",
+        //         "values":[{
+        //             "name": "XS",
+        //             "value_id":21011,
+        //             "cpv_path": [
+        //                 {
+        //                     "cpid": 4705,
+        //                     "cpvid": 231118
+        //                 },
+        //                 {
+        //                     "cpid": 4704,
+        //                     "cpvid": 21011
+        //                 }
+        //             ],
+                
+        //         "property_id":21011
+        //     }
+        //     ]
+        // }
+        escape_spec_text:(data) =>{
+
+            var spec_values = []
+
+            data.forEach(item=>{
+                console.log(item)
+                var property_name = item.property_name;
+                var property_id = item.property_id;
+                var v_list = item.values
+
+                var v_text = ''
+                v_list.forEach(v_obj=>{
+                    var value_name = ''
+                    var value_id = ''
+                    var remark = ''
+                    v_text = v_text + v_obj.value_name.at(-1) + '^'
+                })
+                console.log(v_text)
+
+            })
+
+        },
+
         // 选择素材
         change_spec_img_fun:(index, spec_value_index)=>{
             this.type_formdata.selectimg_open = true;

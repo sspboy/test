@@ -96,6 +96,7 @@
                     </a-button>
                   </a-space >
                 </a-col>
+
                 <!--规格名称 结束-->
                 <a-col :span="6">
 
@@ -148,6 +149,7 @@
           <!--规格值 开始-->
           <a-row
             v-if="!item.disabled" 
+
             style="padding: 0 0 0 0;margin-bottom: 10px;" :gutter="[16,16]">
 
             <a-col :span="6" v-for="(v_item, spec_value_index) in item.values">
@@ -170,43 +172,32 @@
                           <!--无需二次请求值 支持自定义输入规格值-->
 
                           <a-cascader
-                            v-if="item.support_diy===true"
-                            v-model:value="v_item.value_name"
-                            :options="item.options"
-                            :load-data="(selectedOptions) => spec.add.loadData(selectedOptions, '自定义参数', item.options)"
-                            placeholder="选择规格"
-                            change-on-select
-                          />
-
-                          <!-- <a-auto-complete
                             :disabled="item.enabled_status"
                             v-if="item.support_diy===true"
                             v-model:value="v_item.value_name"
-                            :options="item.property_values"
+                            :options="item.options"
                             style="width: 154px;font-size: 12px;"
-                            placeholder="输入规格值"
-                            allow-clear
+                            :load-data="(selectedOptions) => spec.add.loadData(selectedOptions, '自定义参数', item)"
+                            placeholder="选择规格"
                             :fieldNames="{ 
-                              label: 'sell_property_value_name', 
-                              value: 'sell_property_value_name', 
+                              value: 'label', 
                             }"
-                          /> -->
+                          />
+                            
+
                             
                           <!--无需二次请求值 不支持自定义输入规格值-->
-                          <a-select
-                              :disabled="item.enabled_status"
-                              v-else-if="item.support_diy===false"
-                              ref="select"
-                              placeholder="选择规格值"
-                              v-model:value="v_item.value_name"
-                              :options="item.property_values"
-                              :fieldNames="{ 
-                                label: 'sell_property_value_name', 
-                                value: 'sell_property_value_name', 
-                              }"
-                            class="font_size_12"
-                            style="width: 154px;"
-                            allow-clear
+                          <a-cascader
+                            :disabled="item.enabled_status"
+                            v-else-if="item.support_diy===false"
+                            v-model:value="v_item.value_name"
+                            :options="item.options"
+                            style="width: 154px;font-size: 12px;"
+                            :load-data="(selectedOptions) => spec.add.loadData(selectedOptions, '自定义参数', item)"
+                            placeholder="选择规格"
+                            :fieldNames="{ 
+                              value: 'label', 
+                            }"
                           />
 
                           <!--需要 二次查询规格值-->
@@ -386,14 +377,10 @@ props: {
     // }, { deep: true })
     
     // 生命周期
-    onMounted(() => {
-      console.log('商品规格 组件已挂载')
-    })
-    
-    // 暴露给父组件的方法
-    // expose({
-    //   reset: () => { count.value = 0 }
+    // onMounted(() => {
+    //   console.log('商品规格 组件已挂载')
     // })
+    
     
     return {
       props,

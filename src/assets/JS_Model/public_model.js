@@ -198,7 +198,7 @@ export class A_Patch{
         // 规格
         specification:{
             "getcategorypropertyvalue":"api/douyin/product/getcategorypropertyvalue",// 规格推荐属性值查询
-            "getformatcascade":"api/douyin/product/getformatcascade"// 规格值联级推荐值查询
+            "getformatcascade":"api/douyin/product/getformatcascade"// 规格值联级属性推荐值查询
         },
         // 批量修改
         batch:{
