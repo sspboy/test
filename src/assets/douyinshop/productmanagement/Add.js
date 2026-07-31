@@ -2685,57 +2685,66 @@ export class Spec {
 
         },
         // 转义-》规格值
-        // "spec_info":{
-        //     "spec_name":"颜色分类-尺码大小",
-        //     "spec_values":[
-        //     {
-        //         "name":"颜色分类",
-        //         "values":[{
-        //             "name": "白色",
-        //             "remark":"偏深",
-        //             "value_id":35497,
-        //             "cpv_path": [ 
-        //                     //因为颜色分类是级联样式（value_display_style == cascader），需要传级联层级信息；如果不关心级联样式则可以不传
-        //                         {
-        //                             "cpid": 4471,
-        //                             "cpvid": 7054
-        //                         },
-        //                         {
-        //                             "cpid": 2752,
-        //                             "cpvid": 35497
-        //                         }
-        //                     ]
+        SPECINFO:()=>{
 
-        //         }],
-                
-                
-        //         "property_id":2752
-        //     },
-        //         {
-        //         "name":"尺码大小",
-        //         "values":[{
-        //             "name": "XS",
-        //             "value_id":21011,
-        //             "cpv_path": [
-        //                 {
-        //                     "cpid": 4705,
-        //                     "cpvid": 231118
-        //                 },
-        //                 {
-        //                     "cpid": 4704,
-        //                     "cpvid": 21011
-        //                 }
-        //             ],
-                
-        //         "property_id":21011
-        //     }
-        //     ]
-        // }
+            let data = {
+
+                "spec_info":{
+                    "spec_name":"颜色分类-尺码大小",
+                    "spec_values":[
+                        // 规格一
+                        {
+                            "name":"颜色分类",
+                            "property_id":2752,
+                            "values":[{
+                                "name": "白色",
+                                "remark":"偏深",
+                                "value_id":35497,
+                                "cpv_path": [ 
+                                        //因为颜色分类是级联样式（value_display_style == cascader），需要传级联层级信息；如果不关心级联样式则可以不传
+                                            {
+                                                "cpid": 4471,
+                                                "cpvid": 7054
+                                            },
+                                            {
+                                                "cpid": 2752,
+                                                "cpvid": 35497
+                                            }
+                                        ]
+                            }],
+                        },
+                        // 规格二
+                        {
+                            "name":"尺码大小",
+                            "property_id":21011,
+                            "values":[{
+                                "name": "XS",
+                                "value_id":21011,
+                                "cpv_path": [
+                                    {
+                                        "cpid": 4705,
+                                        "cpvid": 231118
+                                    },
+                                    {
+                                        "cpid": 4704,
+                                        "cpvid": 21011
+                                    }
+                                ],
+                            
+                            
+                        }
+                        ]
+                        }
+                    ]
+                }
+            }
+        },
         escape_spec_text:(data) =>{
 
             var spec_values = []
 
             data.forEach(item=>{
+
                 console.log(item)
                 var property_name = item.property_name;
                 var property_id = item.property_id;
