@@ -2663,7 +2663,6 @@ export class Spec {
 
                 console.log(spec_list)
 
-                console.log()
 
                 // copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
 
@@ -2690,29 +2689,37 @@ export class Spec {
             let data = {
 
                 "spec_info":{
+
+                    // 规格名称-分隔符
                     "spec_name":"颜色分类-尺码大小",
+
                     "spec_values":[
                         // 规格一
                         {
-                            "name":"颜色分类",
+                            "name":"颜色分类", // 规格名称
                             "property_id":2752,
+                            // 规格值
                             "values":[{
-                                "name": "白色",
-                                "remark":"偏深",
-                                "value_id":35497,
+                                "name": "白色", // 值名称
+                                "remark":"偏深", // 备注
+                                "value_id":35497, // 值id
+
+                                // 层级关系
                                 "cpv_path": [ 
-                                        //因为颜色分类是级联样式（value_display_style == cascader），需要传级联层级信息；如果不关心级联样式则可以不传
-                                            {
-                                                "cpid": 4471,
-                                                "cpvid": 7054
-                                            },
-                                            {
-                                                "cpid": 2752,
-                                                "cpvid": 35497
-                                            }
-                                        ]
+                                    //因为颜色分类是级联样式（value_display_style == cascader），需要传级联层级信息；如果不关心级联样式则可以不传
+                                        {
+                                            "cpid": 4471,
+                                            "cpvid": 7054
+                                        },
+                                        {
+                                            "cpid": 2752,
+                                            "cpvid": 35497
+                                        }
+                                    ]
                             }],
+
                         },
+
                         // 规格二
                         {
                             "name":"尺码大小",
@@ -2738,28 +2745,56 @@ export class Spec {
                     ]
                 }
             }
+
         },
+
+        // 转移=>规格数据结构
         escape_spec_text:(data) =>{
 
-            var spec_values = []
+            var s_obj = {} // 规格info对象
+            
+            console.log(data)
+            
+            var spec_name = '';// 规格名称
 
+            var spec_values = [] // 规格值列表
+            
+            // 迭代规格 值
             data.forEach(item=>{
 
-                console.log(item)
-                var property_name = item.property_name;
-                var property_id = item.property_id;
-                var v_list = item.values
+                var v_obj = {}
 
-                var v_text = ''
-                v_list.forEach(v_obj=>{
-                    var value_name = ''
-                    var value_id = ''
-                    var remark = ''
-                    v_text = v_text + v_obj.value_name.at(-1) + '^'
+                console.log(item)
+
+                var property_name = item.property_name;
+                spec_name = spec_name + property_name + '-'// 拼接名称
+
+                v_obj.name = property_name
+                v_obj.property_id = item.sell_property_id;
+                v_obj.values = []// 值列表
+
+
+                item.values.forEach(v_value_obj=>{
+                    console.log(v_value_obj)
+                    var v_spec_value = {}
+
+                    v_spec_value.name = v_value_obj.value_name[1];// 值名称
+                    v_spec_value.value_id = item.property_values.filter(u => u.sell_property_value_name === v_value_obj.value_name[1]).map(u => u.sell_property_value_id)[0];
+                    v_spec_value.cpv_path = [] // 层级关系
+
+                    if(v_value_obj.info !== undefined){
+                        v_spec_value.remark = v_value_obj.info // 备注
+                    }
+                    v_obj.values.push(v_spec_value)
                 })
-                console.log(v_text)
+
+                spec_values.push(v_obj)
+                console.log('值列表',spec_values)
 
             })
+
+            console.log('规格名称',spec_name.slice(0, -1))
+
 
         },
 
