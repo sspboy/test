@@ -34,7 +34,24 @@
             :header="RULEFUN.escape(key)" 
             class="customStyle">
 
-            <p>{{ item }}</p>
+            <template v-if="key === 'pick_up_method_rule'">
+                <span>虚拟商品提货方式规则:</span>
+                <span v-if="item.virtual_goods_rule.support_show_checkout_entry">提取方式为「使用电子凭证」或「充值直连」时，可以设置</span>
+                <span v-else>当前提取方式不可设置</span>
+                <P>备注说明-可支持的方式为：「使用电子凭证」或「充值直连」</P>
+            </template>
+
+            <template v-else-if="key === 'extra_rule'">
+                <span>上门安装服务规则</span>
+                <span v-if="item.c2b_customize_rule !== undefined">
+                    
+                    
+                    <p>c2b定制相关规则：<span v-if="item.c2b_customize_rule.enable===true">支持定制</span><span v-else>不支持定制</span></p>
+                </span>
+                {{ item }}
+            </template>
+
+            <p v-else>{{ item }}</p>
 
         </a-collapse-panel>
 

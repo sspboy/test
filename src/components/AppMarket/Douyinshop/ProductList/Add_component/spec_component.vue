@@ -20,9 +20,9 @@
   />
 
   <!--tab 按钮栏目 开始-->
-  <a-divider orientation="left" orientation-margin="0px">
+  <!-- <a-divider orientation="left" orientation-margin="0px">
     
-    <a-button 
+     <a-button 
       type="dashed" 
       size="small" 
       style="margin:0 20px 0 0;"
@@ -33,7 +33,8 @@
 
 
     <span class="font_size_12"> ---- 是否支持自定义：：{{ spec.rule.support_property_diy }}</span>
-  </a-divider>
+
+  </a-divider> -->
   <!--tab 按钮栏目 结束-->
 
 
@@ -121,7 +122,7 @@
                           un-checked-children="禁用"
                           v-model:checked="item.enabled_status" 
                           size="small" 
-                          @change="console.log(value)"
+                          @change="spec.add.SpecImagState_call_fun"
                           name="switch"
                       />
                     </span>

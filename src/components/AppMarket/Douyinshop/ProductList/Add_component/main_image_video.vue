@@ -113,7 +113,7 @@ export default defineComponent({
     const tool = new TOOL.TOOL()            // 工具方法
     const API = new utils.A_Patch()         // 请求接口地址合集
 
-    console.log('开启视频创建页面')
+    // console.log('开启视频创建页面')
 
     const CreateVideo = reactive({
       

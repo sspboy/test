@@ -1644,8 +1644,6 @@ export class Fulfillment {
 
         var data_obj = toRaw(productRule.info.value)
 
-        console.log('发货模式-读取规则',data_obj)
-
         var fulfillment_rule = data_obj.fulfillment_rule
 
         Object.keys(fulfillment_rule).forEach(key=>{
@@ -1654,7 +1652,7 @@ export class Fulfillment {
 
             let support = obj.support;// 是否支持
             
-            console.log('发货模式',key, support)
+            // console.log('发货模式',key, support)
 
             // 设置支持的发货模式
             presell_formdata.options.forEach(item=>{
@@ -1810,11 +1808,24 @@ export class StockFun {
             
             // 规格取值
             for(let i of datalist){
+                
                 var v_list = []
+
+                var enabled_status = i.enabled_status;// 规格是否启用
+
                 for(let y of i.values){
-                    v_list.push(y.value_name)
+
+                    // 规格没有警用的情况下
+                        // console.log('规格值',y)
+                        // 值是否数组
+                        if(Array.isArray(y.value_name)){
+                            v_list.push(y.value_name.at(-1))
+                        }else{
+                            v_list.push(y.value_name)
+                        }
+                    
                 }
-                res_list.push(v_list)
+                if(enabled_status !== true){res_list.push(v_list)}
             }
 
             // 笛卡尔积方法
@@ -1892,7 +1903,9 @@ export class StockFun {
             var name_list = []
             var datalist = this.sepec_info;
             for(let i of datalist){
-                name_list.push(i.property_name)
+                var enabled_status = i.enabled_status;// 规格是否启用
+                // 如果不为true ==> 为启用状态
+                if(enabled_status !==true){name_list.push(i.property_name)}
             }
             return name_list
         }
@@ -2061,10 +2074,7 @@ export class StockFun {
         }
 
         // 预售库存[切换]
-        change_presale=(skumodel)=>{
-
-            console.log('切换预售库存', skumodel)
-            console.log('规则',productRule.info.value.fulfillment_rule)        
+        change_presale=(skumodel)=>{   
 
             // 判断预售库存colums是否存在
             const index = skulist_formState.skucolumns.findIndex(item => item.title === '库存')
@@ -2431,10 +2441,6 @@ export class Spec {
         // 加载【推荐规格】下拉导航=色系，颜色、尺码子选项
         loadData: (selectedOptions,navigation_properties_obj, op) => {
 
-            console.log('加载下拉',selectedOptions) // 选择的一级 菜单
-
-            console.log('加载下拉',navigation_properties_obj)
-
             const targetOption = selectedOptions[selectedOptions.length - 1];
 
             var property_id = selectedOptions[0].property_id; // 父级属性id
@@ -2443,7 +2449,6 @@ export class Spec {
 
             var property_value_name = selectedOptions[0].property_value_name; // 当前子级属性名称
 
-            console.log(property_id, property_value_id, property_value_name)
 
             targetOption.loading = true;
 
@@ -2464,7 +2469,6 @@ export class Spec {
 
             }).then((res)=>{
 
-                console.log(res)
                 var properties_list = res.data.data.properties;
                 var property_values = properties_list[0].property_values
                 property_values.forEach(obj=>{
@@ -2607,7 +2611,7 @@ export class Spec {
 
         // 点击勾选
         SpecImagState_change_fun:()=>{SPECS.SpecImag = !!SPECS.SpecImag},
-
+        SpecImagState_call_fun:()=>{SPECS.SpecImag = !SPECS.SpecImag},
         // 选择规格图片
         add_img:(data)=>{
             var img_byte_url = data[0].byte_url
@@ -2622,6 +2626,9 @@ export class Spec {
         // 获取自定已规格
         get_specs_obj: async()=>{
 
+            // 输出对象
+            var result = {}
+            
             // 验证规格
             var res = await sku_formRef.value.validate().then(() => {
 
@@ -2643,12 +2650,16 @@ export class Spec {
 
                 var s_img_number = spec_img_list.length; // 主规格值图片数量;
 
+                console.log('图片是否禁用',SPECS.SpecImag)
+
                 // 如果需要上传图片
                 if(SPECS.SpecImag){
 
-                    if(spece_value_number == s_img_number){
+                    if(spece_value_number === s_img_number){
 
                         var spec_pic = spec_img_list.join(',');// 规格图片:图片数量需要好与主规格值数量一直
+
+                        result.spec_pic = spec_pic;
 
                     }else{
 
@@ -2658,17 +2669,14 @@ export class Spec {
                     }
                 }
 
-                // var copy_list = structuredClone(spec_list)// 拷贝
-                this.add.escape_spec_text(spec_list)
-
-                console.log(spec_list)
+                var copy_list = this.add.escape_spec_text(spec_list)
 
 
-                // copy_list[0].values.forEach((obj,index)=>{delete obj.url;})// 删除url键值
+                result.spec_values = copy_list// 规格文案对象获取
+                
+                console.log(result)
 
-                // var result = {"spec_pic": spec_pic, "spec_values":copy_list}// 规格文案对象获取
-
-                return false
+                return result
 
             }).catch( error => { // 规格取值
 
@@ -2752,49 +2760,67 @@ export class Spec {
         escape_spec_text:(data) =>{
 
             var s_obj = {} // 规格info对象
-            
-            console.log(data)
-            
+                        
             var spec_name = '';// 规格名称
 
             var spec_values = [] // 规格值列表
             
-            // 迭代规格 值
+            // 迭代==【推荐规格值】
             data.forEach(item=>{
-
-                var v_obj = {}
 
                 console.log(item)
 
+                var v_obj = {} // 规格对象
+
                 var property_name = item.property_name;
-                spec_name = spec_name + property_name + '-'// 拼接名称
+
+                // 判断是否禁用规格/ 添加规格名称
+                if(item.enabled_status !== true){
+                    spec_name = spec_name + property_name + '-'// 拼接名称
+                }
 
                 v_obj.name = property_name
-                v_obj.property_id = item.sell_property_id;
+
+                // 判断规格类型：级联、多选、单选、diy添加id
+                if(item.value_display_style === "cascader_multi_select"){
+                    v_obj.property_id = item.sell_property_id;
+                }
+
                 v_obj.values = []// 值列表
 
 
                 item.values.forEach(v_value_obj=>{
-                    console.log(v_value_obj)
+
                     var v_spec_value = {}
 
-                    v_spec_value.name = v_value_obj.value_name[1];// 值名称
-                    v_spec_value.value_id = item.property_values.filter(u => u.sell_property_value_name === v_value_obj.value_name[1]).map(u => u.sell_property_value_id)[0];
-                    v_spec_value.cpv_path = [] // 层级关系
+                    // 规格值id
+                    if(item.value_display_style === "cascader_multi_select"){
+                        v_spec_value.name = v_value_obj.value_name[1];// 值名称
+                        v_spec_value.value_id = item.property_values.filter(u => u.sell_property_value_name === v_value_obj.value_name[1]).map(u => u.sell_property_value_id)[0];
+                    }else if(item.value_display_style === "diy"){
+                        v_spec_value.name = v_value_obj.value_name;// 值名称
+                    }
 
                     if(v_value_obj.info !== undefined){
                         v_spec_value.remark = v_value_obj.info // 备注
                     }
+
                     v_obj.values.push(v_spec_value)
+
                 })
 
-                spec_values.push(v_obj)
-                console.log('值列表',spec_values)
+                // 非禁用的规格 添加到输出对象
+                if(item.enabled_status !== true){
+                    spec_values.push(v_obj)
+                }
 
             })
 
-            console.log('规格名称',spec_name.slice(0, -1))
+            s_obj.spec_name = spec_name.slice(0, -1)// 去掉最后一个'-'
+            s_obj.spec_values = spec_values
 
+            // console.log('规格',s_obj)
+            return s_obj
 
         },
 
@@ -2805,9 +2831,10 @@ export class Spec {
             SPECS.spec_image_index.spec_value_index = spec_value_index;
             // console.log(SPECS.Obj[index].values[spec_value_index])
         },
+
         // 选择素材=>回调方法
         select_spec_ima_call_back:(data)=>{
-            console.log(data)
+            // console.log(data)
             let material_type= data[0].material_type;
             let index = SPECS.spec_image_index.index;
             let spec_value_index = SPECS.spec_image_index.spec_value_index;
@@ -2817,7 +2844,7 @@ export class Spec {
                 tool.Fun_.message('info','请选择图片素材！')
             }
 
-            console.log(SPECS.Obj[index].values[spec_value_index])
+            // console.log(SPECS.Obj[index].values[spec_value_index])
 
         }
     }

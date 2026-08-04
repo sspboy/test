@@ -5,14 +5,14 @@
       <div class="logo_text cursor">
 
         <div style="float: left;">
-          <img src="../../assets/logo_36x36.png"/>
+          <img style="width: 30px;height: 30px;" src="../../assets/logo_36x36.png"/>
         </div>
 
-        <div style="margin: 8px 0 0 18px;float: left;">
+        <div style="margin: 4px 0 0 18px;float: left;">
           {{ store.state.member.message.user_data.brand_name }}
         </div>
 
-        <div style="float: left; margin: 14px 0 0 10px;" class="font_size_12">
+        <div style="float: left; margin: 8px 0 0 10px;" class="font_size_12">
           ~您的满意是我们最大的追求！
         </div>
       
