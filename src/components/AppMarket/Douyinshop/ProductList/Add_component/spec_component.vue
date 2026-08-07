@@ -20,7 +20,7 @@
   />
 
   <!--tab 按钮栏目 开始-->
-  <!-- <a-divider orientation="left" orientation-margin="0px">
+  <a-divider orientation="left" orientation-margin="0px">
     
      <a-button 
       type="dashed" 
@@ -34,7 +34,7 @@
 
     <span class="font_size_12"> ---- 是否支持自定义：：{{ spec.rule.support_property_diy }}</span>
 
-  </a-divider> -->
+  </a-divider>
   <!--tab 按钮栏目 结束-->
 
 

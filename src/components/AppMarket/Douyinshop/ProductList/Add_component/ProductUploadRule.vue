@@ -13,51 +13,71 @@
     
     <div class="delivery-method">
 
-
         <div>类目：撒范德萨分</div>
 
     </div>
 
-    <a-collapse
-            v-model:activeKey="activeKey"
-            :bordered="false"
-            style="background: rgb(255, 255, 255)"
-        >
+    <a-row :gutter="[16,16]" class="rule-key-row">
+        <a-col v-for="(item,key,index) in props.data" :span="6" :key="index">
+            <div
+                class="rule-key-item"
+                :class="{ active: activeIndex === index }"
+                @click="handleKeyClick(index)"
+            >{{RULEFUN.escape(key)}}</div>
+        </a-col>
+    </a-row>
 
-        <template #expandIcon="{ isActive }">
-            <CaretRightOutlined :rotate="isActive ? 90 : 0" />
+    <div class="rule-content" v-if="currentRule">
+
+
+        <div class="rule-content-header">
+            <span class="rule-content-title">{{ currentRule.title }}</span>
+            <span class="rule-content-key">{{ currentRule.key }}</span>
+        </div>
+
+        <!--其它规则-->
+        <template v-if="currentRule.key === 'extra_rule'">
+            <div v-if="currentRule.data.home_install_service_rule !== undefined">
+                <p style="color: #666;margin: 20px;">嘻嘻哈哈</p>
+            </div>
+            <div v-if="currentRule.data.c2b_customize_rule !== undefined">
+                <p v-if="currentRule.data.c2b_customize_rule.enable === true" style="color: #666;margin: 10px;">支持c2b定制</p>
+                <p v-else style="color: #666;margin: 20px;">不支持c2b定制</p>
+            </div>
         </template>
 
-        <a-collapse-panel
-            v-for="(item,key,index) in props.data"
-            :key="index" 
-            :header="RULEFUN.escape(key)" 
-            class="customStyle">
 
-            <template v-if="key === 'pick_up_method_rule'">
-                <span>虚拟商品提货方式规则:</span>
-                <span v-if="item.virtual_goods_rule.support_show_checkout_entry">提取方式为「使用电子凭证」或「充值直连」时，可以设置</span>
-                <span v-else>当前提取方式不可设置</span>
-                <P>备注说明-可支持的方式为：「使用电子凭证」或「充值直连」</P>
-            </template>
+        <!--主图3:4信息-->
+        <template v-else-if="currentRule.key === 'main_image_three_to_four_rule'">
+            {{ currentRule.data.main_image_three_to_four_rule }}
+            <p style="color: #666;margin: 20px;">
+                是否展示主图3:4信息:{{ currentRule.data.is_show ? '展示' : '不展示' }}
+            </p>
 
-            <template v-else-if="key === 'extra_rule'">
-                <span>上门安装服务规则</span>
-                <span v-if="item.c2b_customize_rule !== undefined">
-                    
-                    
-                    <p>c2b定制相关规则：<span v-if="item.c2b_customize_rule.enable===true">支持定制</span><span v-else>不支持定制</span></p>
-                </span>
-                {{ item }}
-            </template>
+            <p style="color: #666;margin: 20px;">
+                主图3:4信息是否必填:{{ currentRule.data.must_input ? '必填' : '非必填' }}
+            </p>
 
-            <p v-else>{{ item }}</p>
+        </template>
 
-        </a-collapse-panel>
+        <!--参考价格规则-->
+        <template v-else-if="currentRule.key === 'reference_price_rule'">
+
+
+            <p style="color: #666;margin: 20px;">
+                是否可填写参考价:{{ currentRule.data.is_support ? '支持' : '不支持' }}
+            </p>
+
+
+        </template>
 
 
 
-    </a-collapse>
+
+        <pre class="rule-json">{{ JSON.stringify(currentRule.data, null, 2) }}</pre>
+
+
+    </div>
 
 
 
@@ -66,15 +86,10 @@
 
 <script>
 import { defineComponent, ref, computed, watch, onMounted, reactive } from 'vue'
-import { CaretRightOutlined } from '@ant-design/icons-vue';
 
 
 export default defineComponent({
   name: '发布商品规则',
-  
-  components: {
-    CaretRightOutlined,
-  },
   
   props: {
     data: {
@@ -91,7 +106,25 @@ export default defineComponent({
   setup(props, { emit, attrs, slots, expose }) {
 
 
-    const activeKey = ref(['1']);
+    const activeIndex = ref(0);
+
+    const ruleList = computed(() => {
+        if (!props.data) return [];
+        return Object.keys(props.data).map((key, index) => ({
+            key,
+            index,
+            title: RULEFUN.escape(key),
+            data: props.data[key]
+        }));
+    });
+
+    const currentRule = computed(() => {
+        return ruleList.value[activeIndex.value] || null;
+    });
+
+    const handleKeyClick = (index) => {
+        activeIndex.value = index;
+    };
 
     const RULEFUN = reactive({
 
@@ -165,15 +198,7 @@ export default defineComponent({
       emit('update', { count: count.value, data: props.data })
     }
     
-    // 监听器
-    // watch(() => props.data, (newVal, oldVal) => {
-    //   console.log('data changed:', newVal)
-    // }, { deep: true })
-    
-    // 生命周期
-    // onMounted(() => {
-    //   console.log('模板名称 组件已挂载')
-    // })
+
     
     // 暴露给父组件的方法
     expose({
@@ -182,8 +207,10 @@ export default defineComponent({
     
     return {
         props,
-        activeKey,
+        activeIndex,
+        currentRule,
         RULEFUN,
+        handleKeyClick,
       count,
       title,
       displayTitle,
@@ -194,11 +221,81 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.rule-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
 .delivery-method {
   padding: 16px;
   border: 1px solid #eee;
   border-radius: 6px;
   margin-bottom: 10px;
+  flex-shrink: 0;
 }
-.customStyle{background: #f7f7f7;border-radius: 4px;margin-bottom: 24px;border: 0;overflow: hidden}
+.rule-key-row {
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+.rule-key-item {
+  height: 24px;
+  line-height: 24px;
+  padding: 0 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #666;
+  transition: all 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rule-key-item:hover {
+  color: #1890ff;
+  background: #e6f7ff;
+}
+.rule-key-item.active {
+  color: #1890ff;
+  background: #e6f7ff;
+  font-weight: 500;
+}
+.rule-content {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+  height: calc(100vh - 380px);
+  display: flex;
+  flex-direction: column;
+}
+.rule-content-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+.rule-content-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+}
+.rule-content-key {
+  font-size: 12px;
+  color: #999;
+}
+.rule-json {
+  margin: 0;
+  padding: 16px;
+  flex: 1;
+  overflow: auto;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #333;
+  background: #fff;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
 </style>

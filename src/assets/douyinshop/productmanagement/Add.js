@@ -2768,7 +2768,7 @@ export class Spec {
             // 迭代==【推荐规格值】
             data.forEach(item=>{
 
-                console.log(item)
+                // console.log(item)
 
                 var v_obj = {} // 规格对象
 
