@@ -17,9 +17,147 @@
 
     <a-row :gutter="[16,16]">
 
+        <!---商品标题推荐规则-->
+        <a-col :span="6">
+            <a-card title="商品标题推荐规则" style="height: 200px;">
+                <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
+                    <div class="rule-key-item rule-key-item—list">标题非法关键词规则</div>
+                    <div class="rule-key-item rule-key-item—list">品牌没有权限是否可以勾选</div>
+                    <div class="rule-key-item rule-key-item—list">前缀规则是否包含品牌</div>
+                    <div class="rule-key-item rule-key-item—list">标题长度规则</div>
+                    <div class="rule-key-item rule-key-item—list">类目id是否命中前缀推荐规则</div>
+                    <div class="rule-key-item rule-key-item—list">命中规则的属性id详情</div>
+                </a-card-grid>
+            </a-card>
+        </a-col>
+
+        <!--参考价相关规则-->
+        <a-col :span="6">
+            <a-card title="参考价相关规则" style="height: 200px;">
+                <a-card-grid style="width: 100%; text-align: center">
+                    <div class="rule-key-item rule-key-item—list font_size_12">
+                        参考价:{{ props.data.reference_price_rule.is_support ? '可填写参考价' : '不可填写参考价' }}
+                    </div>
+                    <div class="rule-key-item rule-key-item—list font_size_12">
+                        参考价:{{ props.data.reference_price_rule.is_required ? '是' : '否' }}必填
+                    </div>
+                    
+                    <div class="rule-key-item font_size_12" style="text-align: left;">
+                        参考价最高高于最低SKU价格的{{ props.data.reference_price_rule.lower_sku_price_times }}倍
+                    </div>
+
+                    <div class="rule-key-item font_size_12">
+                        凭证类型：<span v-for="(value,index) in props.data.reference_price_rule.certificate_types">{{value}}-</span>
+                    </div>
+                </a-card-grid>
+            </a-card>
+        </a-col>
+
+        <!--sku规则-->
+        <a-col :span="6" >
+            <a-card title="sku规则" style="height: 200px;">
+
+                <a-card-grid style="width: 100%; text-align: center" class="font_size_12">
+
+                    <div class="rule-key-item rule-key-item—list">
+                        区域库存:{{props.data.sku_rule.area_stock_require ? '必填' : '非必填'}}
+                    </div>
+
+                    <div class="rule-key-item rule-key-item—list">
+                        国补型号:{{ props.data.sku_rule.support_spec_model_code ? '支持' : '不支持' }}
+                    </div>
+
+                    <div class="rule-key-item rule-key-item—list">
+                        条形码:{{ props.data.sku_rule.support_barcode ? '支持' : '不支持' }}
+                    </div>
+
+                    <div class="rule-key-item rule-key-item-for-x">
+                        <span>
+                            <template v-if="props.data.sku_rule.sku_picture_rule.require_type === 1">
+                                必填且所有SKU必须填写
+                            </template>
+                            <template v-if="props.data.sku_rule.sku_picture_rule.require_type === 2">
+                                非必填 要么全部填写或为空 不允许部分填写
+                            </template>
+                        </span>                         
+                    </div>
+                </a-card-grid>
+            </a-card>
+        </a-col>
+        
+        <!--资质规则-->
+        <a-col :span="6">
+            <a-card title="资质规则" style="height: 200px;">
+                <a-card-grid style="width: 100%; text-align: center">
+                    <div class="rule-key-item rule-key-item—list font_size_12" v-for="(value,index) in props.data.qualification_rule" :key="index">
+                        {{ value.name }}
+                        <span style="margin-left: 4px;">{{ value.is_required ? '必填' : '非必填' }}</span>
+                    </div>
+                </a-card-grid>
+            </a-card>
+        </a-col>
+
+        <!--商品尺码模板配置规则-->
+        <a-col :span="6">
+            <a-card title="商品尺码模板配置规则" style="height: 200px;">
+                <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
+                    <div class="rule-key-item rule-key-item—list">是否展示尺码信息</div>
+                    <div class="rule-key-item rule-key-item—list">尺码信息是否必填</div>
+                    <div class="rule-key-item rule-key-item-for-x" style="text-align: left;">当前类目支持的尺码模版子类型</div>
+                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;">查看更多 >></div>
+                </a-card-grid>
+            </a-card>
+        </a-col>
+
+        <!--售后服务-->
+        <a-col :span="6">
+            <a-card title="售后服务" style="height: 200px;">
+
+                <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
+                    <div class="rule-key-item rule-key-item—list">三包服务承诺配置</div>
+                    <div class="rule-key-item rule-key-item—list">过敏包退规则</div>
+                    <div class="rule-key-item rule-key-item—list">大件商品规则</div>
+                    <div class="rule-key-item rule-key-item—list">无理由退货规则</div>
+                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;">查看更多 >></div>
+
+                </a-card-grid>
+            </a-card>
+        </a-col>
+
+        
+
+        <!--商品规格约束-->
+        <a-col :span="6">
+            <a-card title="商品规格约束" style="height: 200px;">
+                <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
+                    <div class="rule-key-item rule-key-item—list">是否支持规格项自定义</div>
+                    <div class="rule-key-item rule-key-item—list">是否支持顺序调整</div>
+                    <div class="rule-key-item rule-key-item—list">最大规格层级数量</div>
+                    <div class="rule-key-item rule-key-item—list">sku组合数量上限</div>
+                    <div class="rule-key-item rule-key-item—list">单规格值数量上限</div>
+                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;">查看更多 >></div>
+
+                </a-card-grid>
+            </a-card>
+        </a-col>
+
+
+        <!--履约规则-->
+        <a-col :span="6">
+            <a-card title="履约规则" style="height: 200px;">
+                <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
+                    <div class="rule-key-item rule-key-item—list">发货地规则</div>
+                    <div class="rule-key-item rule-key-item—list">发货地规则</div>
+                    <div class="rule-key-item rule-key-item—list">发货地规则</div>
+                    <div class="rule-key-item rule-key-item—list">发货地规则</div>
+                    <div class="rule-key-item rule-key-item—list">发货地规则</div>
+                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;">查看更多 >></div>
+                </a-card-grid>
+            </a-card>
+        </a-col>
 
         <!--SPU管控规则-->
-        <a-col :span="6">
+        <!-- <a-col :span="6">
 
             <a-card title="SPU管控规则" style="height: 200px;">
 
@@ -52,135 +190,50 @@
                 </a-card-grid>
 
             </a-card>
-        </a-col>
-
-        <!--sku规则-->
-        <a-col :span="6" >
-
-            <a-card title="sku规则" style="height: 200px;">
-
-                <a-card-grid style="width: 100%; text-align: center" class="font_size_12">
-
-                    <div class="rule-key-item rule-key-item—list">
-                        区域库存:{{props.data.sku_rule.area_stock_require ? '必填' : '非必填'}}
-                    </div>
-
-                    <div class="rule-key-item rule-key-item—list">
-                        国补型号:{{ props.data.sku_rule.support_spec_model_code ? '支持' : '不支持' }}
-                    </div>
-
-                    <div class="rule-key-item rule-key-item—list">
-                        条形码:{{ props.data.sku_rule.support_barcode ? '支持' : '不支持' }}
-                    </div>
-
-                    <div class="rule-key-item" style="width: 100%;clear: both;text-align: left;padding: 0 0 0 8px;color: #666;font-size: 12px;line-height: 20px;">
-                        <span>
-                            <template v-if="props.data.sku_rule.sku_picture_rule.require_type === 1">
-                                必填且所有SKU必须填写
-                            </template>
-                            <template v-if="props.data.sku_rule.sku_picture_rule.require_type === 2">
-                                非必填 要么全部填写或为空 不允许部分填写
-                            </template>
-                        </span>                         
-                    </div>
-                </a-card-grid>
-            </a-card>
-        </a-col>
+        </a-col> -->
 
         <!--商品主图3:4配置规则-->
         <a-col :span="6" >
-            <a-card title="商品主图3:4配置规则" style="height: 200px;">
-                <a-card-grid style="width: 100%; text-align: left;">
-                    <div class="rule-key-item font_size_12">
-                        是否展示主图3:4信息:{{ props.data.main_image_three_to_four_rule.is_show ? '展示' : '不展示' }}
-                    </div>
+            <a-card title="商品主图3:4配置规则">
+            <div class="rule-key-item font_size_12 rule-key-item—list">
+                {{ props.data.main_image_three_to_four_rule.is_show ? '展示' : '不展示' }}-主图3:4信息
+            </div>
 
-                    <div class="rule-key-item font_size_12">
-                        主图3:4信息是否必填:{{ props.data.main_image_three_to_four_rule.must_input ? '必填' : '非必填' }}
-                    </div>
-                </a-card-grid>
+            <div class="rule-key-item font_size_12 rule-key-item—list">
+                主图3:4信息-{{ props.data.main_image_three_to_four_rule.must_input ? '必填' : '非必填' }}
+            </div>
             </a-card>
         </a-col>
 
-
-        <!--提取方式-->
-        <a-col :span="6">
-            <a-card title="提取方式" style="height: 200px;">
-                <a-card-grid style="width: 100%; text-align: left;">
-                    <div class="rule-key-item font_size_12">
-                    是否可能设置订单页展示核销入口:{{ props.data.pick_up_method_rule.virtual_goods_rule.support_show_checkout_entry ? '使用电子凭证或充值直连' : '不支持' }}</div>
-                </a-card-grid>
-            </a-card>
-        </a-col>
-        
-        <!--资质规则-->
-        <a-col :span="6">
-            <a-card title="资质规则" style="height: 200px;">
-                <a-card-grid style="width: 100%; text-align: center">
-                    <div class="rule-key-item rule-key-item—list font_size_12" v-for="(value,index) in props.data.qualification_rule" :key="index">
-                        {{ value.name }}
-                        <span style="margin-left: 4px;">{{ value.is_required ? '必填' : '非必填' }}</span>
-                    </div>
-                </a-card-grid>
-            </a-card>
-        </a-col>
-
-        <!--其他规则-->
-        <a-col :span="6">
-            <a-card title="其他规则" style="height: 200px;">
-                <a-card-grid style="width: 100%; text-align: left;">
-                    <div class="rule-key-item font_size_12">
-                        {{ props.data.extra_rule.c2b_customize_rule.enable ? '支持c2b定制' : '不支持c2b定制' }}
-                    </div>
-                    <div class="rule-key-item font_size_12">
-                    </div>
-                    <div class="rule-key-item font_size_12">
-                    </div>
-                </a-card-grid>
-            </a-card>
-        </a-col>
 
         <!--交易相关的规则-->
         <a-col :span="6">
-            <a-card title="交易相关的规则" style="height: 200px;">
-                <a-card-grid style="width: 100%; text-align: left;">
-                    <div class="rule-key-item font_size_12">
-                        {{ props.data.trade_rule.support_auto_charge_rule.value ? '支持自动充值' : '不支持自动充值' }}
-                    </div>
-                    <div class="rule-key-item font_size_12">
-                    </div>
-                    <div class="rule-key-item font_size_12">
-                    </div>
-                </a-card-grid>
+            <a-card title="交易相关的规则">
+                <div class="rule-key-item font_size_12">
+                    {{ props.data.trade_rule.support_auto_charge_rule.value ? '支持自动充值' : '不支持自动充值' }}
+                </div>
             </a-card>
         </a-col>
 
-
-        <!--参考价相关规则-->
+        <!--提取方式-->
         <a-col :span="6">
-            <a-card title="参考价相关规则" style="height: 200px;">
-                <a-card-grid style="width: 100%; text-align: center">
-                    <div class="rule-key-item rule-key-item—list font_size_12">
-                        参考价:{{ props.data.reference_price_rule.is_support ? '可填写参考价' : '不可填写参考价' }}
-                    </div>
-                    <div class="rule-key-item rule-key-item—list font_size_12">
-                        参考价:{{ props.data.reference_price_rule.is_required ? '是' : '否' }}必填
-                    </div>
-                    
-                    <div class="rule-key-item font_size_12" style="text-align: left;">
-                        参考价最高高于最低SKU价格的{{ props.data.reference_price_rule.lower_sku_price_times }}倍
-                    </div>
-
-                    <div class="rule-key-item font_size_12">
-                        凭证类型：<span v-for="(value,index) in props.data.reference_price_rule.certificate_types">{{value}}-</span>
-                    </div>
-                </a-card-grid>
+            <a-card title="提取方式">
+                <div class="rule-key-item font_size_12">
+                    是否可能设置订单页展示核销入口:
+                    {{ props.data.pick_up_method_rule.virtual_goods_rule.support_show_checkout_entry ? '使用电子凭证或充值直连' : '不支持' }}
+                </div>
             </a-card>
         </a-col>
-
         
 
-        
+        <!--其他规则-->
+        <a-col :span="6">
+            <a-card title="其他规则">
+                <div class="rule-key-item font_size_12">
+                    {{ props.data.extra_rule.c2b_customize_rule.enable ? '支持c2b定制' : '不支持c2b定制' }}
+                </div>
+            </a-card>
+        </a-col>
         
         
     </a-row>
@@ -232,7 +285,6 @@
 
         <!--参考价格规则-->
         <template v-else-if="currentRule.key === 'reference_price_rule'">
-
             <p class="list_p">
                 是否可填写参考价:{{ currentRule.data.is_support ? '支持' : '不支持' }}
             </p>
@@ -499,6 +551,7 @@ export default defineComponent({
 <style scoped>
 .list_p{color: #666;margin: 20px;}
 .rule-key-item—list{width: 50%;float: left;text-align: left;}
+.rule-key-item-for-x{width: 100%;clear: both;text-align: left;padding: 0 0 0 8px;color: #666;font-size: 12px;line-height: 20px;}
 .rule-wrapper {
   display: flex;
   flex-direction: column;

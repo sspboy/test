@@ -764,9 +764,6 @@ export default {
 
           }).then((res) => {
 
-            // console.log(res)
-            // console.log(QualityTask)
-
             QualityTask.is_standard = res.data.data.is_standard;
             QualityTask.meet_standard_num = res.data.data.meet_standard_num;
             QualityTask.problem_num_to_improve = res.data.data.problem_num_to_improve;
