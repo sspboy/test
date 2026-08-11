@@ -19,7 +19,10 @@
 
         <!---商品标题推荐规则-->
         <a-col :span="6">
-            <a-card title="商品标题推荐规则" style="height: 200px;">
+            <a-card style="height: 200px;">
+                <template #title>
+                    <h5>商品标题推荐规则</h5>
+                </template>
                 <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
                     <div class="rule-key-item rule-key-item—list">标题非法关键词规则</div>
                     <div class="rule-key-item rule-key-item—list">品牌没有权限是否可以勾选</div>
@@ -33,7 +36,10 @@
 
         <!--参考价相关规则-->
         <a-col :span="6">
-            <a-card title="参考价相关规则" style="height: 200px;">
+            <a-card style="height: 200px;">
+                <template #title>
+                    <h5>参考价相关规则</h5>
+                </template>
                 <a-card-grid style="width: 100%; text-align: center">
                     <div class="rule-key-item rule-key-item—list font_size_12">
                         参考价:{{ props.data.reference_price_rule.is_support ? '可填写参考价' : '不可填写参考价' }}
@@ -55,8 +61,10 @@
 
         <!--sku规则-->
         <a-col :span="6" >
-            <a-card title="sku规则" style="height: 200px;">
-
+            <a-card style="height: 200px;">
+                <template #title>
+                    <h5>sku规则</h5>
+                </template>
                 <a-card-grid style="width: 100%; text-align: center" class="font_size_12">
 
                     <div class="rule-key-item rule-key-item—list">
@@ -87,7 +95,10 @@
         
         <!--资质规则-->
         <a-col :span="6">
-            <a-card title="资质规则" style="height: 200px;">
+            <a-card style="height: 200px;">
+                <template #title>
+                    <h5>资质规则</h5>
+                </template>
                 <a-card-grid style="width: 100%; text-align: center">
                     <div class="rule-key-item rule-key-item—list font_size_12" v-for="(value,index) in props.data.qualification_rule" :key="index">
                         {{ value.name }}
@@ -99,26 +110,51 @@
 
         <!--商品尺码模板配置规则-->
         <a-col :span="6">
-            <a-card title="商品尺码模板配置规则" style="height: 200px;">
+            <a-card style="height: 200px;">
+                <template #title>
+                    <h5>商品尺码模板配置规则</h5>
+                </template>
                 <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
-                    <div class="rule-key-item rule-key-item—list">是否展示尺码信息</div>
-                    <div class="rule-key-item rule-key-item—list">尺码信息是否必填</div>
-                    <div class="rule-key-item rule-key-item-for-x" style="text-align: left;">当前类目支持的尺码模版子类型</div>
-                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;">查看更多 >></div>
+                    <div class="rule-key-item rule-key-item—list">
+                        尺码信息
+                        <a-tag class="font_size_12" v-if="props.data.component_template_rule.is_show">展示</a-tag>
+                        <a-tag class="font_size_12" v-else="props.data.component_template_rule.is_show">不展示</a-tag>
+                    </div>
+                    <div class="rule-key-item rule-key-item—list">
+                        尺码信息
+                        <a-tag class="font_size_12" v-if="props.data.component_template_rule.must_input">必填</a-tag>
+                        <a-tag class="font_size_12" v-else="props.data.component_template_rule.must_input">非必填</a-tag>
+                    </div>
+                    <div class="rule-key-item rule-key-item-for-x" style="text-align: left;">
+                        当前类目支持的尺码模版子类型
+                        <a-tag >{{ Rule_cast_fun.transfer_name(props.data.component_template_rule.support_template_sub_type) }}</a-tag>
+                    
+                    </div>
+                    <div class="rule-key-item rule-key-item—list" 
+                    style="color: #1890ff;"
+                    @click="more_stats.component_template_stats = !more_stats.component_template_stats"
+
+                    >查看更多 >></div>
                 </a-card-grid>
             </a-card>
         </a-col>
 
         <!--售后服务-->
         <a-col :span="6">
-            <a-card title="售后服务" style="height: 200px;">
-
+            <a-card style="height: 200px;">
+                <template #title>
+                    <h5>售后服务</h5>
+                </template>
                 <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
                     <div class="rule-key-item rule-key-item—list">三包服务承诺配置</div>
                     <div class="rule-key-item rule-key-item—list">过敏包退规则</div>
                     <div class="rule-key-item rule-key-item—list">大件商品规则</div>
                     <div class="rule-key-item rule-key-item—list">无理由退货规则</div>
-                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;">查看更多 >></div>
+                    <div 
+                        class="rule-key-item rule-key-item—list" 
+                        style="color: #1890ff;"
+                        @click="more_stats.after_sale_stats = !more_stats.after_sale_stats"
+                        >查看更多 >></div>
 
                 </a-card-grid>
             </a-card>
@@ -128,14 +164,21 @@
 
         <!--商品规格约束-->
         <a-col :span="6">
-            <a-card title="商品规格约束" style="height: 200px;">
+            <a-card style="height: 200px;">
+                <template #title>
+                    <h5>商品规格约束</h5>
+                </template>
                 <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
                     <div class="rule-key-item rule-key-item—list">是否支持规格项自定义</div>
                     <div class="rule-key-item rule-key-item—list">是否支持顺序调整</div>
                     <div class="rule-key-item rule-key-item—list">最大规格层级数量</div>
                     <div class="rule-key-item rule-key-item—list">sku组合数量上限</div>
                     <div class="rule-key-item rule-key-item—list">单规格值数量上限</div>
-                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;">查看更多 >></div>
+                    <div 
+                        class="rule-key-item rule-key-item—list" 
+                        style="color: #1890ff;"
+                        @click="more_stats.product_spec_stats = !more_stats.product_spec_stats"
+                        >查看更多 >></div>
 
                 </a-card-grid>
             </a-card>
@@ -144,14 +187,17 @@
 
         <!--履约规则-->
         <a-col :span="6">
-            <a-card title="履约规则" style="height: 200px;">
+            <a-card style="height: 200px;">
+                <template #title>
+                    <h5>履约规则</h5>
+                </template>
                 <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
                     <div class="rule-key-item rule-key-item—list">发货地规则</div>
                     <div class="rule-key-item rule-key-item—list">发货地规则</div>
                     <div class="rule-key-item rule-key-item—list">发货地规则</div>
                     <div class="rule-key-item rule-key-item—list">发货地规则</div>
                     <div class="rule-key-item rule-key-item—list">发货地规则</div>
-                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;">查看更多 >></div>
+                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;" @click="more_stats.fulfillment_stats = !more_stats.fulfillment_stats">查看更多 >></div>
                 </a-card-grid>
             </a-card>
         </a-col>
@@ -194,7 +240,10 @@
 
         <!--商品主图3:4配置规则-->
         <a-col :span="6" >
-            <a-card title="商品主图3:4配置规则">
+            <a-card>
+            <template #title>
+                <h5>商品主图3:4配置规则</h5>
+            </template>
             <div class="rule-key-item font_size_12 rule-key-item—list">
                 {{ props.data.main_image_three_to_four_rule.is_show ? '展示' : '不展示' }}-主图3:4信息
             </div>
@@ -208,16 +257,23 @@
 
         <!--交易相关的规则-->
         <a-col :span="6">
-            <a-card title="交易相关的规则">
+            <a-card>
+                <template #title>
+                    <h5>交易相关的规则</h5>
+                </template>
                 <div class="rule-key-item font_size_12">
                     {{ props.data.trade_rule.support_auto_charge_rule.value ? '支持自动充值' : '不支持自动充值' }}
                 </div>
             </a-card>
         </a-col>
 
+
         <!--提取方式-->
         <a-col :span="6">
-            <a-card title="提取方式">
+            <a-card>
+                <template #title>
+                    <h5>提取方式</h5>
+                </template>
                 <div class="rule-key-item font_size_12">
                     是否可能设置订单页展示核销入口:
                     {{ props.data.pick_up_method_rule.virtual_goods_rule.support_show_checkout_entry ? '使用电子凭证或充值直连' : '不支持' }}
@@ -228,19 +284,166 @@
 
         <!--其他规则-->
         <a-col :span="6">
-            <a-card title="其他规则">
+            <a-card>
+                <template #title>
+                    <h5>其他规则</h5>
+                </template>
                 <div class="rule-key-item font_size_12">
                     {{ props.data.extra_rule.c2b_customize_rule.enable ? '支持c2b定制' : '不支持c2b定制' }}
                 </div>
             </a-card>
         </a-col>
-        
-        
     </a-row>
 
+    <!--更多商品尺码 信息 多层抽屉 -->
+    <a-drawer v-model:open="more_stats.component_template_stats" title="商品尺码模板配置规则" width="320" :closable="false">
+        <a-row :gutter="[16,16]">
+            <a-col :span="24">尺码信息是否必填 -
+                <a-tag v-if="props.data.component_template_rule.must_input">必填</a-tag>
+                <a-tag v-else="props.data.component_template_rule.must_input">非必填</a-tag>
+            </a-col>
+            <a-col :span="24">是否展示尺码信息-
+                <a-tag v-if="props.data.component_template_rule.is_show">展示</a-tag>
+                <a-tag v-else="props.data.component_template_rule.is_show">不展示</a-tag>
+            </a-col>
+            <a-col :span="24">区间符号-
+                <a-tag >{{ props.data.component_template_rule.interval_size_symbol }}</a-tag>
+            </a-col>
+
+            <a-col :span="24">
+                当前类目支持的尺码模版子类型-
+                <a-tag >{{ Rule_cast_fun.transfer_name(props.data.component_template_rule.support_template_sub_type) }}</a-tag>
+            </a-col>
+
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>尺码列规则</h5></a-divider>
+
+                <a-tag v-if="tool.Fun_.isEmpty(props.data.component_template_rule.size_dimension_rule)">暂无</a-tag>
+                
+            </a-col>
 
 
-    <a-row :gutter="[16,16]" class="rule-key-row">
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>偏码建议</h5></a-divider>
+                    是否支持偏码-
+                    <a-tag v-if="props.data.component_template_rule.correct_size_suggestion.available">支持</a-tag>
+                    <a-tag v-else="props.data.component_template_rule.correct_size_suggestion.available">不支持</a-tag>                
+            </a-col>
+
+            <a-col :span="24">
+
+                <a-divider orientation="left" orientation-margin="0px"><h5>尺码列配置</h5></a-divider>
+
+                <p style="margin: 20px 0 20px 0;">有用列:</p>
+
+                <a-space  wrap>
+                    <template v-for="us in props.data.component_template_rule.size_dimensions.useful_dimensions">
+                        <a-tag>{{us}}</a-tag>
+                    </template>
+                </a-space>
+
+                <p style="margin: 30px 0 20px 0;">其他可用列:</p>
+
+                <a-space wrap>
+                    <template v-for="os in props.data.component_template_rule.size_dimensions.other_dimensions">
+                        <a-tag>{{os}}</a-tag>
+                    </template>
+                </a-space>
+
+            </a-col>
+            <a-col :span="24">
+
+                <a-divider orientation="left" orientation-margin="0px"><h5>维度下尺码范围</h5></a-divider>
+                    <a-row :gutter="[8,18]" >
+                        <template v-for="(o_value, s_key) in props.data.component_template_rule.size_dimension_range">
+                        <a-col class="font_size_12" :span="8">{{s_key}}</a-col>
+                        <a-col class="font_size_12" :span="8">最小值:{{ o_value.min }}</a-col>
+                        <a-col class="font_size_12" :span="8">最大值:{{ o_value.max }}</a-col>
+                        </template>
+
+                    </a-row>
+            </a-col>
+
+
+        </a-row>
+        
+        <template #footer><a-button @click="more_stats.component_template_stats = false">关闭</a-button></template>
+    </a-drawer>
+
+
+
+    <!--更多售后服务 信息 多层抽屉 -->
+    <a-drawer v-model:open="more_stats.after_sale_stats" title="售后服务" width="320" :closable="false">
+
+        <a-row :gutter="[16,16]">
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>三包服务承诺配置规则</h5></a-divider>
+                <p>
+                    是否必填:
+                    <a-tag v-if="props.data.after_sale_rule.three_guarantees.must_select">必填</a-tag>
+                    <a-tag v-else="props.data.after_sale_rule.three_guarantees.must_select">非必填</a-tag>
+                </p>
+                <p>是否支持三包服务:
+                    <a-tag v-if="props.data.after_sale_rule.three_guarantees.enable">支持</a-tag>
+                    <a-tag v-else="props.data.after_sale_rule.three_guarantees.enable">不支持</a-tag>
+                </p>
+
+                <div v-for="sbao in props.data.after_sale_rule.three_guarantees.options">
+                    
+                    <p >
+                        
+                        三包服务类型: <a-tag v-if="sbao.value==='1'">寄修</a-tag> <a-tag v-else-if="sbao.value==='2'">延保</a-tag>
+                        
+                        {{ sbao.name }}
+                    </p>
+                    <p>可选项目：</p>
+                    <p>
+                        <a-tag v-for="sbao_s in sbao.options" style="margin-bottom: 8px;">{{ sbao_s.name }}</a-tag>
+                    </p>
+                </div>
+            </a-col>
+
+
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>过敏包退规则</h5></a-divider>
+            </a-col>
+            
+            
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>大件商品规则</h5></a-divider>
+            </a-col>
+            
+            
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>无理由退货规则</h5></a-divider>
+            </a-col>
+        
+        
+        </a-row>
+        <template #footer><a-button @click="more_stats.after_sale_stats = false">关闭</a-button></template>
+    </a-drawer>
+
+
+
+    <!--更多商品规格规则 信息 多层抽屉 -->
+    <a-drawer v-model:open="more_stats.product_spec_stats" title="商品规格规则" width="320" :closable="false">
+        <a-row :gutter="[16,16]">
+          <a-col :span="24">更多商品规格规则</a-col>
+        </a-row>
+        <template #footer><a-button @click="more_stats.product_spec_stats = false">关闭</a-button></template>
+
+    </a-drawer>
+
+    <!--更 履约规则 信息 多层抽屉 -->
+    <a-drawer v-model:open="more_stats.fulfillment_stats" title="履约规则" width="320" :closable="false">
+        <a-row :gutter="[16,16]">
+          <a-col :span="24">更多履约规则</a-col>
+        </a-row>
+        <template #footer><a-button @click="more_stats.fulfillment_stats = false">关闭</a-button></template>
+
+    </a-drawer>
+
+    <a-row :gutter="[16,16]" class="rule-key-row" style="margin-top: 30px;">
         <a-col v-for="(item,key,index) in props.data" :span="6" :key="index">
             <div
                 class="rule-key-item"
@@ -414,6 +617,7 @@
 <script>
 import { t } from '@wangeditor/editor';
 import { defineComponent, ref, computed, watch, onMounted, reactive } from 'vue'
+import * as TOOL from '@/assets/JS_Model/tool';
 
 
 export default defineComponent({
@@ -432,6 +636,44 @@ export default defineComponent({
   emits: ['update', 'change'],
   
   setup(props, { emit, attrs, slots, expose }) {
+
+    const tool = new TOOL.TOOL()            // 工具方法
+
+    // 二次抽屉开关控制
+    const more_stats = reactive({
+        "component_template_stats":false, // 商品尺码 更多信息抽屉状态
+        "after_sale_stats":false, // 售后服务 更多信息抽屉状态
+        "product_spec_stats":false, // 商品规格 更多信息抽屉状态
+        "fulfillment_stats":false, // 履约 更多信息抽屉状态
+    })
+
+
+    const Rule_cast_fun = reactive({
+            // 尺码模板名称转移
+        transfer_name:(data)=>{
+
+            if(data === 'clothing'){
+                return '服饰'
+            }else if(data === 'children'){
+                return '童装'
+            }else if(data === 'undies'){
+                return '内衣'
+
+            }else if(data === 'shoes'){
+                return '鞋靴'
+
+            }else if(data === 'shoes'){
+                return '鞋靴'
+            }else if(data === 'bracelet'){
+                return '手镯'
+            }else if(data === 'ring'){
+                return '戒指'
+            }
+
+        }
+
+
+    })
 
 
     const activeIndex = ref(0);
@@ -511,20 +753,10 @@ export default defineComponent({
     })
 
 
-    // 响应式数据
-    const count = ref(0)
-    const title = ref('发货方式设置')
+
     
-    // 计算属性
-    const displayTitle = computed(() => {
-      return `${title.value} - ${props.data2 || '默认'}`
-    })
+
     
-    // 方法
-    const handleClick = () => {
-      count.value++
-      emit('update', { count: count.value, data: props.data })
-    }
     
 
     
@@ -535,14 +767,13 @@ export default defineComponent({
     
     return {
         props,
+        tool,
         activeIndex,
         currentRule,
         RULEFUN,
         handleKeyClick,
-      count,
-      title,
-      displayTitle,
-      handleClick
+        more_stats,
+        Rule_cast_fun
     }
   }
 })

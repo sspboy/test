@@ -82,6 +82,14 @@
                         <!-- 卡片主体 -->
                         <div class="card-body">
 
+                            <!-- 质量分 -->
+                            <div class="info-col score-col">
+                                <div class="score-block">
+                                    <div class="score-value">{{ item.quality_score.score || 0 }}</div>
+                                    <div class="score-label">质量分</div>
+                                </div>
+                            </div>
+
                             <!-- 诊断问题 -->
                             <div class="info-col problem-col">
                                 <div class="col-title">诊断问题</div>
@@ -121,12 +129,8 @@
                                 </div>
                             </div>
 
-                            <!-- 右侧评分与操作 -->
+                            <!-- 右侧操作 -->
                             <div class="info-col action-col">
-                                <div class="score-block">
-                                    <div class="score-value">{{ item.quality_score.score || 0 }}</div>
-                                    <div class="score-label">质量分</div>
-                                </div>
                                 <div class="action-block">
                                     <a key="list-loadmore-edit" class="detail-link" @click="openDetail(item)">查看详情</a>
                                 </div>
@@ -534,21 +538,29 @@ export default {
     color: #595959;
 }
 
+/* 质量分列 */
+.score-col {
+    flex: 0 0 100px;
+    min-width: 90px;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.score-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
 /* 右侧操作列 */
 .action-col {
-    flex: 0 0 120px;
+    flex: 0 0 80px;
     border-left: 1px solid #f0f0f0;
     padding-left: 20px;
     align-items: flex-end;
     justify-content: center;
     text-align: right;
     gap: 8px;
-}
-
-.score-block {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
 }
 
 .score-value {
@@ -667,6 +679,13 @@ export default {
         gap: 16px;
     }
 
+    .score-col {
+        flex: 1 1 auto;
+        align-items: flex-start;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 12px;
+    }
+
     .action-col {
         border-left: none;
         border-top: 1px solid #f0f0f0;
@@ -677,10 +696,6 @@ export default {
         text-align: left;
         flex-direction: row;
         justify-content: space-between;
-    }
-
-    .score-block {
-        align-items: flex-start;
     }
 }
 </style>
