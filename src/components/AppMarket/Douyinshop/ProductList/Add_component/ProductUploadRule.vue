@@ -376,6 +376,27 @@
     <a-drawer v-model:open="more_stats.after_sale_stats" title="售后服务" width="320" :closable="false">
 
         <a-row :gutter="[16,16]">
+
+
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>无理由退货规则</h5></a-divider>
+                
+                <p>是否支持七天无理由:
+                    <a-tag v-if="props.data.after_sale_rule.supply_day_return_rule.enable">支持</a-tag>
+                    <a-tag v-else="props.data.after_sale_rule.supply_day_return_rule.enable">不支持</a-tag>
+                </p>
+
+                <div v-for="day_7 in props.data.after_sale_rule.supply_day_return_rule.options">
+                    <p >
+                        可选的无理由退货选项列表: {{ day_7.name }} {{  day_7.value  }}
+                    </p>
+
+                </div>
+                
+            </a-col>
+
+
+
             <a-col :span="24">
                 <a-divider orientation="left" orientation-margin="0px"><h5>三包服务承诺配置规则</h5></a-divider>
                 <p>
@@ -389,9 +410,7 @@
                 </p>
 
                 <div v-for="sbao in props.data.after_sale_rule.three_guarantees.options">
-                    
                     <p >
-                        
                         三包服务类型: <a-tag v-if="sbao.value==='1'">寄修</a-tag> <a-tag v-else-if="sbao.value==='2'">延保</a-tag>
                         
                         {{ sbao.name }}
@@ -406,19 +425,35 @@
 
             <a-col :span="24">
                 <a-divider orientation="left" orientation-margin="0px"><h5>过敏包退规则</h5></a-divider>
+                <p>
+                    是否可选过敏包退:
+                    <a-tag v-if="props.data.after_sale_rule.allergy_return_v2_rule.enable === 'true'">可选</a-tag>
+                    <a-tag v-else>不可选</a-tag>
+                </p>
+                <p>
+                    是否必选过敏包退:
+                    <a-tag v-if="props.data.after_sale_rule.allergy_return_v2_rule.must_select === 'true'">必选</a-tag>
+                    <a-tag v-else>非必选</a-tag>
+                </p>
+                
             </a-col>
             
             
             <a-col :span="24">
                 <a-divider orientation="left" orientation-margin="0px"><h5>大件商品规则</h5></a-divider>
+                
+                <p>
+                    是否可选大件商品:
+                    <a-tag v-if="props.data.after_sale_rule.large_product_rule.enable">可选</a-tag>
+                    <a-tag v-else>不可选</a-tag>
+                </p>
+                <p>
+                    是否必须大件商品:
+                    <a-tag v-if="props.data.after_sale_rule.large_product_rule.must_select">必须</a-tag>
+                    <a-tag v-else>不必须</a-tag>
+                </p>
+
             </a-col>
-            
-            
-            <a-col :span="24">
-                <a-divider orientation="left" orientation-margin="0px"><h5>无理由退货规则</h5></a-divider>
-            </a-col>
-        
-        
         </a-row>
         <template #footer><a-button @click="more_stats.after_sale_stats = false">关闭</a-button></template>
     </a-drawer>
@@ -426,18 +461,174 @@
 
 
     <!--更多商品规格规则 信息 多层抽屉 -->
-    <a-drawer v-model:open="more_stats.product_spec_stats" title="商品规格规则" width="320" :closable="false">
+    <a-drawer 
+        v-model:open="more_stats.product_spec_stats" 
+        title="商品规格规则" 
+        width="320" 
+        :closable="false">
         <a-row :gutter="[16,16]">
-          <a-col :span="24">更多商品规格规则</a-col>
+            
+            <a-col :span="24">
+                
+                <p>
+                    规格图填写规则：
+                    <a-tag v-if="props.data.product_spec_rule.all_spec_pic_required">规格图要么全不填，要么全填</a-tag>
+                    <a-tag v-else>不限制</a-tag>
+                </p>
+
+            </a-col>
+
+            <a-col :span="24">
+                <p>
+                    是否支持规格项顺序调整：
+                    <a-tag v-if="props.data.product_spec_rule.support_property_sequence_variable">支持</a-tag>
+                    <a-tag v-else>不支持</a-tag>
+                </p>
+            </a-col>
+
+            <a-col :span="24">
+                <p>
+                    最大可支持的规格层级数量: <a-tag>{{ props.data.product_spec_rule.max_spec_num_limit }} 级</a-tag>
+                </p>
+            </a-col>
+            <a-col :span="24">
+                <p>
+                sku组合数量上限： <a-tag>{{ props.data.product_spec_rule.spec_combination_limit }}</a-tag>
+                </p>
+            </a-col>
+            <a-col :span="24">
+                <p>
+                单个规格的规格值数量上限：<a-tag>{{ props.data.product_spec_rule.spec_single_limit }}</a-tag>
+                </p>
+            </a-col>
+            <a-col :span="24">
+                <p>
+                是否支持规格项自定义：
+                <a-tag v-if="props.data.product_spec_rule.support_property_diy">支持</a-tag>
+                <a-tag v-else>不支持</a-tag>
+                </p>
+            </a-col>
+            <a-col :span="24">
+                <p>系统推荐商品规格列表：</p>
+                <a-tag v-for="spec_obj in props.data.product_spec_rule.required_spec_details">
+                    {{ spec_obj.sell_property_name }} 
+                    <span v-if="spec_obj.is_required">-必填</span>
+                    <span v-else>-非必填</span>
+
+                </a-tag>
+            </a-col>
+
+
         </a-row>
         <template #footer><a-button @click="more_stats.product_spec_stats = false">关闭</a-button></template>
 
     </a-drawer>
 
     <!--更 履约规则 信息 多层抽屉 -->
-    <a-drawer v-model:open="more_stats.fulfillment_stats" title="履约规则" width="320" :closable="false">
+    <a-drawer 
+        v-model:open="more_stats.fulfillment_stats" 
+        title="履约规则" 
+        width="320" 
+        :closable="false">
         <a-row :gutter="[16,16]">
-          <a-col :span="24">更多履约规则</a-col>
+          <a-col :span="24">
+            <a-divider orientation="left" orientation-margin="0px"><h5>发货地规则</h5></a-divider>
+            <p>
+                是否必填:
+                <a-tag v-if="props.data.fulfillment_rule.shipping_origin_rule.must_select">必填</a-tag>
+                <a-tag v-else>非必填</a-tag>
+            </p>
+            <p>
+                是否支持:
+                <a-tag v-if="props.data.fulfillment_rule.shipping_origin_rule.enable">支持</a-tag>
+                <a-tag v-else>不支持</a-tag>
+            </p>
+
+            </a-col>
+          <a-col :span="24">
+            <a-divider orientation="left" orientation-margin="0px"><h5>特殊时间延迟发货规则</h5></a-divider>
+            <p>支持的配置类型:</p>
+            <p>规则开始时间</p>
+            <p>规则结束时间</p>
+
+          </a-col>
+          <a-col :span="24">
+            <a-divider orientation="left" orientation-margin="0px"><h5>现货发货模式规则</h5></a-divider>
+            
+            <p>
+                
+                是否支持:
+                <a-tag v-if="props.data.fulfillment_rule.normal_rule.support">支持</a-tag>
+                <a-tag v-else>不支持</a-tag>
+            </p>
+            <p>
+                发货时效:
+                <a-tag v-for=" fa_obj in props.data.fulfillment_rule.normal_rule.delay_options">
+                    <span v-if="fa_obj === 9999">当日发</span>
+                    <span v-else-if="fa_obj === 1">次日发</span>
+                    <span v-else-if="fa_obj === 2">48小时发</span>
+                </a-tag>
+            </p>
+            <p>是否是特殊的时间发货:
+                <a-tag v-if="props.data.fulfillment_rule.normal_rule.is_special_delay_option">支持</a-tag>
+                <a-tag v-else>不支持</a-tag>
+            </p>
+          </a-col>
+          <a-col :span="24">
+            <a-divider orientation="left" orientation-margin="0px"><h5>阶梯发货模式规则</h5></a-divider>
+            <P>
+                是否支持:
+                <a-tag v-if="props.data.fulfillment_rule.step_rule.support">支持</a-tag>
+                <a-tag v-else>不支持</a-tag>
+            </P>
+            <p>
+                现货部分延迟返货时间范围:
+                <a-tag v-for=" fa_obj in props.data.fulfillment_rule.step_rule.delay_options">
+                    <span v-if="fa_obj === 9999">当日发</span>
+                    <span v-else-if="fa_obj === 1">次日发</span>
+                    <span v-else-if="fa_obj === 2">48小时发</span>
+                </a-tag>
+            </p>
+            <p>
+                支持的时效列表:
+                <a-tag v-for=" step_obj in props.data.fulfillment_rule.step_rule.multi_times">
+                    {{ step_obj.time_desc }}
+                </a-tag>
+            </p>
+
+          </a-col>
+          <a-col :span="24">
+            <a-divider orientation="left" orientation-margin="0px"><h5>全款预售发货模式规则</h5></a-divider>
+            <P>
+                是否支持:
+                <a-tag v-if="props.data.fulfillment_rule.product_presell_rule.support">支持</a-tag>
+                <a-tag v-else>不支持</a-tag>
+            </P>
+          </a-col>
+          <a-col :span="24">
+            <a-divider orientation="left" orientation-margin="0px"><h5>SKU预售发货模式规则</h5></a-divider>
+            <P>
+                是否支持:
+                <a-tag v-if="props.data.fulfillment_rule.sku_presell_rule.support">支持</a-tag>
+                <a-tag v-else>不支持</a-tag>
+            </P>
+          </a-col>
+          <a-col :span="24">
+            <a-divider orientation="left" orientation-margin="0px"><h5>现货+预售发货规则（现货预售混合）</h5></a-divider>
+            <P>
+                是否支持:
+                <a-tag v-if="props.data.fulfillment_rule.time_sku_presell_with_normal_rule.support">支持</a-tag>
+                <a-tag v-else>不支持</a-tag>
+            </P>
+          </a-col>
+          <a-col :span="24">
+            <a-divider orientation="left" orientation-margin="0px"><h5>新预售发货模式规则（现货预售混合）</h5></a-divider>
+            <P>
+                是否支持:
+                <a-tag v-if="props.data.fulfillment_rule.time_sku_pure_presell_rule.support">支持</a-tag>
+                <a-tag v-else>不支持</a-tag>
+            </P>
+          </a-col>
         </a-row>
         <template #footer><a-button @click="more_stats.fulfillment_stats = false">关闭</a-button></template>
 
