@@ -64,42 +64,13 @@
                 </a-tab-pane>
 
                 <a-tab-pane key="4" tab="描述详情" >
+                    
+                    
+                    <!--详情描述 组件-->
 
-                    <div style="margin: 0 0 10px 0;">
+                    <des_component />
 
-                        <a-space>
 
-                            <a-button 
-                                type="dashed" 
-                                @click="PAGEDATA.change_material_type('des')"
-                                size="small"
-                                block
-                            >插入素材</a-button>
-
-                            <a-button type="dashed"
-                                size="small"
-                                @click="DES.clear_img" block>清空</a-button>
-                        </a-space>
-                    </div>
-
-                    <div style="border: 1px solid #ccc;height: 100%;">
-        
-                        <Toolbar
-                            style="border-bottom: 1px solid #ccc"
-                            :editor="editorRef"
-                            :defaultConfig="DES.toolbarConfig"
-                            :mode="DES.mode.value"
-                        />
-
-                        <Editor
-                            style="height: 600px; overflow-y: hidden;"
-                            v-model="DES.valueHtml.value"
-                            :defaultConfig="DES.editorConfig"
-                            :mode="DES.mode.value"
-                            @onCreated="DES.handleCreated"
-                        />
-
-                    </div>
                 </a-tab-pane>
 
                 <a-tab-pane key="5" tab="资质规则" >
@@ -156,7 +127,7 @@
 
 </template>
 <script>
-import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed,shallowRef,onBeforeUnmount,toRaw, watch } from 'vue';
+import { defineComponent,defineAsyncComponent,ref,reactive,} from 'vue';
 import { PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutlined} from '@ant-design/icons-vue';
 import axios from 'axios';
 import { Empty } from 'ant-design-vue';
@@ -164,8 +135,6 @@ import * as TOOL from '@/assets/JS_Model/tool';
 import * as TABLE from '@/assets/JS_Model/TableOperate';
 import * as utils from '@/assets/JS_Model/public_model';
 import { Fulfillment, Spec, CATE, UploadProduct, PageproductRuleOcject } from '@/assets/douyinshop/productmanagement/Add';
-import { Editor, Toolbar } from '@wangeditor/editor-for-vue' // 描述详情富媒体
-import '@wangeditor/editor/dist/css/style.css' // 引入富媒体编辑器样式 css
 
 // 商品管理->编辑操作方法
 // import {
@@ -182,8 +151,7 @@ export default {
         DeleteOutlined,
         MinusOutlined,
         MinusCircleOutlined,
-        Editor, // 详情编辑
-        Toolbar, // 编辑工具栏
+        des_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/des.vue')),// 描述详情
         product_upload_rule_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/ProductUploadRule.vue')),// 发布规则
         product_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/product_cate.vue')),// 类目预测
         pic_title_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/pic_title_cate.vue')),// 基础信息
@@ -269,96 +237,6 @@ export default {
 
 
 
-        // 描述详情
-        const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
-        const DES = {
-            // 初始化
-            valueHtml:ref(undefined),
-            mode:ref('simple'),// 或 'simple' 'default'
-            // 编辑器实例，必须用 shallowRef
-            editorRef:shallowRef(),
-            editorConfig:{placeholder: '请输入内容...' },// 默认值
-            // 编辑器工具栏配置
-            toolbarConfig:{
-                excludeKeys: [
-                    'bold',
-                    "underline",
-                    "italic",
-                    "through",
-                    "color",
-                    "clearStyle",
-                    "bgColor",
-                    "codeBlock",
-                    "blockquote",
-                    "bulletedList",
-                    "numberedList",
-                    "insertTable",
-                    "header1",
-                    "header2",
-                    "header3",
-                    'headerSelect',
-                    'italic',
-                    'group-more-style', // 排除菜单组，写菜单组 key 的值即可
-                    //"fullScreen",
-                    "insertLink",
-                    "editLink",
-                    "insertVideo",
-                    "uploadVideo",
-                    "todo",
-                    "redo",
-                    "undo",
-                    "group-image",
-                    "uploadImage",
-                    "insertImage",
-
-                ]
-            },
-            // 创建编辑器
-            handleCreated:(editor) => {
-                editorRef.value = editor // 记录 editor 实例，重要！
-                editor.clear() // 清空编辑器
-            },
-            // 加载图片到编辑器
-            add_img:(img_list)=>{
-                var image_text = '<p>'
-                for(let i of img_list){
-                    let url = i.byte_url;
-                    image_text = image_text + '<img class="ant-image-img" src=" ' + url + '">';
-                }
-                DES.valueHtml.value = DES.valueHtml.value + image_text + '</p>'
-            },
-            // 获取描述图片
-            get_img:()=>{
-                var img_list_res = []
-                // 描述为空
-                if(editorRef.value == undefined){
-                    tool.Fun_.message('error', '描述详情不能为空！');
-                    activeKey.value = '5';
-                    return false
-                }else {
-
-                    var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
-
-                    if(img_list.length == 0 || editorRef.value == undefined){
-                        tool.Fun_.message('error', '描述详情不能为空！');
-                        activeKey.value = '5';
-                        return false
-                    }else{
-                        // 描述不为空
-                        // console.log(img_list)
-                        img_list.forEach((obj,index)=>{
-                            img_list_res.push(obj.src)
-                        })
-
-                        return img_list_res.join('|')
-                    }
-                }
-            },
-            // 清空描述图
-            clear_img:()=>{
-                DES.valueHtml.value = '';
-            }
-        }
 
         // 转移售后服务0-8
         const after_sale_list = {
@@ -412,6 +290,7 @@ export default {
         const closed = () =>{
             window.close()
         }
+        
         // 开启规则抽屉
         const openuploadrule = ()=>{
             Ruledrawerstate.open = !Ruledrawerstate.open
@@ -431,8 +310,7 @@ export default {
             // -------------分类属性
             CATE,
             simpleImage,
-            // -------------描述详情
-            editorRef,DES,
+
             uploadproduct, // 发布到线上
             // 提交，关闭
             closed,

@@ -292,6 +292,14 @@ const routes = [
         }
     },
     {
+        path: '/duplicateproducts',
+        name: 'duplicateproducts',
+        component: () => import('../views/AppMarket/Refine/DuplicateProducts.vue'),    // 视图文件
+        meta:{
+            title:'重复商品检测',
+        }
+    },
+    {
         path: '/inefficient',
         name: 'inefficient',
         component: () => import('../views/AppMarket/DouyinShop/Inefficient.vue'),    // 视图文件

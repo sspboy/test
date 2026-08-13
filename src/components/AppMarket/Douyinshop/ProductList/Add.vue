@@ -60,6 +60,8 @@
                     </a-tab-pane>
 
                     <a-tab-pane key="4" tab="描述详情" >
+                                                
+
 
                         <div style="margin: 0 0 10px 0;">
 
@@ -96,6 +98,7 @@
                             />
 
                         </div>
+
                     </a-tab-pane>
 
                     <a-tab-pane key="5" tab="资质规则" >
@@ -172,6 +175,7 @@ export default defineComponent({
         MinusCircleOutlined,
         Editor, // 详情编辑
         Toolbar, // 编辑工具栏
+        des_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/des.vue')),// 描述详情
         product_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/product_cate.vue')),// 类目预测
         pic_title_cate_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/pic_title_cate.vue')),// 基础信息
         selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件

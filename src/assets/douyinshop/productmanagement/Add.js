@@ -1012,7 +1012,7 @@ export const Basedata = reactive({
     sizetemplate_open:false,        // 尺码模板-图片显示状态配置
     brand_list_open:false,          // 品牌列表-组件显示状态配置
     selectimg_open:false,           // 选择图片素材-组件显示状态配置
-    setimg_name:undefined,              // 指定添加图片的对象
+    setimg_name:undefined,          // 指定添加图片的对象
 
     // 变更添加素材类型
     change_material_type:(typeName)=>{
@@ -1767,7 +1767,7 @@ export class Fulfillment {
 
 
 
-// 库存===开始
+// 库存===============================开始
 export const skulistRef = ref(); // 验证库存表单
 export const skulist_formState = reactive({
     skucolumns:[],
@@ -2202,7 +2202,12 @@ export class StockFun {
 
 
 }
-// 库存===结束
+// 库存===============================结束
+
+// 描述详情 ===============================  开始
+export const Description = ref(undefined)
+// 描述详情 ===============================  结束
+
 
 // 资质方法===开始
 
@@ -2870,6 +2875,9 @@ export class UploadProduct {
             console.log('标题', toRaw(Pic_Fun.name))
 
             console.log('类目', toRaw(CATE.cate_value.value))
+
+            console.log('描述详情', toRaw(Description.value))
+
 
             // 白底图 必填验证
             if(!whiteimg_Fun.get()){

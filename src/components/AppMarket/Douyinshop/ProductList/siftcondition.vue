@@ -15,12 +15,12 @@
                     <menu-unfold-outlined v-if="store.state.menu.coll" class="trigger" />
                     <menu-fold-outlined v-else class="trigger" />
                   </a-button>
-            </a-form-item> -->
+                </a-form-item>
                 <a-form-item>
                     <a-button type="primary" size="small" style="font-size: 12px;" @click="show_add">
                     新建商品
                 </a-button>
-                </a-form-item>
+                </a-form-item> -->
                 <a-form-item>
                     <a-radio-group v-model:value="RadioValue" size="small" @change="handle_menu_change">
                         <a-radio-button value="All" style="font-size: 12px;">全部 {{ props.data.allNumber }}</a-radio-button>

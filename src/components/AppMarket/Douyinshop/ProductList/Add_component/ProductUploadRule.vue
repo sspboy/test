@@ -29,7 +29,11 @@
                     <div class="rule-key-item rule-key-item—list">前缀规则是否包含品牌</div>
                     <div class="rule-key-item rule-key-item—list">标题长度规则</div>
                     <div class="rule-key-item rule-key-item—list">类目id是否命中前缀推荐规则</div>
-                    <div class="rule-key-item rule-key-item—list">命中规则的属性id详情</div>
+                    <div 
+                        class="rule-key-item rule-key-item—list"
+                        style="color: #1890ff;"
+                        @click="more_stats.recommend_name_stats = !more_stats.recommend_name_stats"
+                    >查看详情 >></div>
                 </a-card-grid>
             </a-card>
         </a-col>
@@ -134,7 +138,7 @@
                     style="color: #1890ff;"
                     @click="more_stats.component_template_stats = !more_stats.component_template_stats"
 
-                    >查看更多 >></div>
+                    >查看详情 >></div>
                 </a-card-grid>
             </a-card>
         </a-col>
@@ -154,7 +158,7 @@
                         class="rule-key-item rule-key-item—list" 
                         style="color: #1890ff;"
                         @click="more_stats.after_sale_stats = !more_stats.after_sale_stats"
-                        >查看更多 >></div>
+                        >查看详情 >></div>
 
                 </a-card-grid>
             </a-card>
@@ -178,7 +182,7 @@
                         class="rule-key-item rule-key-item—list" 
                         style="color: #1890ff;"
                         @click="more_stats.product_spec_stats = !more_stats.product_spec_stats"
-                        >查看更多 >></div>
+                        >查看详情 >></div>
 
                 </a-card-grid>
             </a-card>
@@ -193,11 +197,11 @@
                 </template>
                 <a-card-grid style="width: 100%;text-align: center" class="font_size_12">
                     <div class="rule-key-item rule-key-item—list">发货地规则</div>
-                    <div class="rule-key-item rule-key-item—list">发货地规则</div>
-                    <div class="rule-key-item rule-key-item—list">发货地规则</div>
-                    <div class="rule-key-item rule-key-item—list">发货地规则</div>
-                    <div class="rule-key-item rule-key-item—list">发货地规则</div>
-                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;" @click="more_stats.fulfillment_stats = !more_stats.fulfillment_stats">查看更多 >></div>
+                    <div class="rule-key-item rule-key-item—list">现货发货规则</div>
+                    <div class="rule-key-item rule-key-item—list">阶梯发货规则</div>
+                    <div class="rule-key-item rule-key-item—list">全款预售规则</div>
+                    <div class="rule-key-item rule-key-item—list">SKU预售规则</div>
+                    <div class="rule-key-item rule-key-item—list" style="color: #1890ff;" @click="more_stats.fulfillment_stats = !more_stats.fulfillment_stats">查看详情 >></div>
                 </a-card-grid>
             </a-card>
         </a-col>
@@ -379,6 +383,7 @@
 
 
             <a-col :span="24">
+
                 <a-divider orientation="left" orientation-margin="0px"><h5>无理由退货规则</h5></a-divider>
                 
                 <p>是否支持七天无理由:
@@ -545,13 +550,13 @@
             </p>
 
             </a-col>
-          <a-col :span="24">
+          <!-- <a-col :span="24">
             <a-divider orientation="left" orientation-margin="0px"><h5>特殊时间延迟发货规则</h5></a-divider>
             <p>支持的配置类型:</p>
             <p>规则开始时间</p>
             <p>规则结束时间</p>
 
-          </a-col>
+          </a-col> -->
           <a-col :span="24">
             <a-divider orientation="left" orientation-margin="0px"><h5>现货发货模式规则</h5></a-divider>
             
@@ -575,232 +580,118 @@
             </p>
           </a-col>
           <a-col :span="24">
+
             <a-divider orientation="left" orientation-margin="0px"><h5>阶梯发货模式规则</h5></a-divider>
-            <P>
+            <p>
                 是否支持:
                 <a-tag v-if="props.data.fulfillment_rule.step_rule.support">支持</a-tag>
                 <a-tag v-else>不支持</a-tag>
-            </P>
-            <p>
-                现货部分延迟返货时间范围:
-                <a-tag v-for=" fa_obj in props.data.fulfillment_rule.step_rule.delay_options">
-                    <span v-if="fa_obj === 9999">当日发</span>
-                    <span v-else-if="fa_obj === 1">次日发</span>
-                    <span v-else-if="fa_obj === 2">48小时发</span>
-                </a-tag>
-            </p>
-            <p>
-                支持的时效列表:
-                <a-tag v-for=" step_obj in props.data.fulfillment_rule.step_rule.multi_times">
-                    {{ step_obj.time_desc }}
-                </a-tag>
             </p>
 
+            <p>现货部分延迟返货时间范围:</p>
+            <a-tag v-for=" fa_obj in props.data.fulfillment_rule.step_rule.delay_options">
+                <span v-if="fa_obj === 9999">当日发</span>
+                <span v-else-if="fa_obj === 1">次日发</span>
+                <span v-else-if="fa_obj === 2">48小时发</span>
+            </a-tag>
+            
+            <p style="margin-top: 20px;">支持的时效列表:</p>
+            <a-space wrap>
+            <a-tag v-for=" step_obj in props.data.fulfillment_rule.step_rule.multi_times">
+                {{ step_obj.time_desc }}
+            </a-tag></a-space>
+            
+
           </a-col>
+
           <a-col :span="24">
             <a-divider orientation="left" orientation-margin="0px"><h5>全款预售发货模式规则</h5></a-divider>
-            <P>
+            <p>
                 是否支持:
                 <a-tag v-if="props.data.fulfillment_rule.product_presell_rule.support">支持</a-tag>
                 <a-tag v-else>不支持</a-tag>
-            </P>
+            </p>
           </a-col>
+
           <a-col :span="24">
             <a-divider orientation="left" orientation-margin="0px"><h5>SKU预售发货模式规则</h5></a-divider>
-            <P>
+            <p>
                 是否支持:
                 <a-tag v-if="props.data.fulfillment_rule.sku_presell_rule.support">支持</a-tag>
                 <a-tag v-else>不支持</a-tag>
-            </P>
+            </p>
           </a-col>
           <a-col :span="24">
             <a-divider orientation="left" orientation-margin="0px"><h5>现货+预售发货规则（现货预售混合）</h5></a-divider>
-            <P>
+            <p>
                 是否支持:
                 <a-tag v-if="props.data.fulfillment_rule.time_sku_presell_with_normal_rule.support">支持</a-tag>
                 <a-tag v-else>不支持</a-tag>
-            </P>
+            </p>
           </a-col>
           <a-col :span="24">
             <a-divider orientation="left" orientation-margin="0px"><h5>新预售发货模式规则（现货预售混合）</h5></a-divider>
-            <P>
+            <p>
                 是否支持:
                 <a-tag v-if="props.data.fulfillment_rule.time_sku_pure_presell_rule.support">支持</a-tag>
                 <a-tag v-else>不支持</a-tag>
-            </P>
+            </p>
           </a-col>
         </a-row>
         <template #footer><a-button @click="more_stats.fulfillment_stats = false">关闭</a-button></template>
 
     </a-drawer>
 
-    <a-row :gutter="[16,16]" class="rule-key-row" style="margin-top: 30px;">
-        <a-col v-for="(item,key,index) in props.data" :span="6" :key="index">
-            <div
-                class="rule-key-item"
-                :class="{ active: activeIndex === index }"
-                @click="handleKeyClick(index)"
-            >{{RULEFUN.escape(key)}}</div>
-        </a-col>
-    </a-row>
 
-    <div class="rule-content" v-if="currentRule">
-
-
-        <div class="rule-content-header">
-            <span class="rule-content-title">{{ currentRule.title }}</span>
-            <span class="rule-content-key">{{ currentRule.key }}</span>
-        </div>
-
-        <!--其它规则-->
-        <template v-if="currentRule.key === 'extra_rule'">
-            <div v-if="currentRule.data.home_install_service_rule !== undefined">
-                <p class="list_p">嘻嘻哈哈</p>
-            </div>
-            <div v-if="currentRule.data.c2b_customize_rule !== undefined">
-                <p v-if="currentRule.data.c2b_customize_rule.enable === true" class="list_p">支持c2b定制</p>
-                <p v-else class="list_p">不支持c2b定制</p>
-            </div>
-        </template>
-
-
-        <!--主图3:4信息-->
-        <template v-else-if="currentRule.key === 'main_image_three_to_four_rule'">
-            {{ currentRule.data.main_image_three_to_four_rule }}
-            <p class="list_p">
-                是否展示主图3:4信息:{{ currentRule.data.is_show ? '展示' : '不展示' }}
-            </p>
-
-            <p class="list_p">
-                主图3:4信息是否必填:{{ currentRule.data.must_input ? '必填' : '非必填' }}
-            </p>
-
-        </template>
-
-        <!--参考价格规则-->
-        <template v-else-if="currentRule.key === 'reference_price_rule'">
-            <p class="list_p">
-                是否可填写参考价:{{ currentRule.data.is_support ? '支持' : '不支持' }}
-            </p>
-
-        </template>
-
-        <!--提取方式-->
-        <template v-else-if="currentRule.key === 'pick_up_method_rule'">
-
-            <p class="list_p">
-                是否可能设置订单页展示核销入口:{{ currentRule.data.virtual_goods_rule.support_show_checkout_entry ? '使用电子凭证或充值直连' : '不支持' }}
-            </p>
-        </template>
-
-        <!--资质规则-->
-        <template v-else-if="currentRule.key === 'qualification_rule'" >
-            <div class="rule-json">
-
-            <div v-for="q_item in currentRule.data" >
-
-                <h4 class="list_p">{{ q_item.name }}</h4>
-                <p class="list_p">
-                    是否千川收取资质:{{ q_item.is_qianchuan_need ? '需要' : '不需要' }} 
-                    <span style="margin-left: 20px;">是否必填:{{ q_item.is_required ? '必填' : '非必填' }}</span>
-                </p>
-
-                <p class="list_p font_size_12">
-                    {{ q_item.text_list }}
-                </p>
-
-            </div>
-            </div>
+    <!--更多商品标题规则 信息 多层抽屉 -->
+    <a-drawer 
+        v-model:open="more_stats.recommend_name_stats" 
+        title="商品标题规则" 
+        width="320" 
+        :closable="false">
+        <a-row :gutter="[16,16]">
             
-        
-        </template>
-
-        <!--SPU管控规则-->
-        <template v-else-if="currentRule.key === 'spu_control_rule'">
-
-            <p class="list_p">
-                是否支持SPU发品:{{ currentRule.data.support_spu_product ? '支持' : '不支持' }}
-            </p>
-
-            <p class="list_p">
-                是否支持SPU管控:
-                <span v-if="currentRule.data.control_type === 0">不管控</span>
-                <span v-if="currentRule.data.control_type === 1">弱管控</span>
-                <span v-if="currentRule.data.control_type === 2">强管控</span>
-            </p>
-
-            <p class="list_p">
-                是否支持新建SPU:{{ currentRule.data.support_create_spu ? '支持' : '不支持' }}
-            </p>
-
-            <p class="list_p">
-                是否支持SPU纠错:{{ currentRule.data.support_rectify_spu ? '支持' : '不支持' }}
-            </p>
-
-            <p class="list_p">
-                是否支持SPU举报:{{ currentRule.data.support_report_spu ? '支持' : '不支持' }}
-            </p>
-
-            <p class="list_p">
-                是否SPU免审:{{ currentRule.data.no_need_audit_spu ? '支持' : '不支持' }}
-            </p>
-
-        </template>
-        
-        
-        <!--SKU规则-->
-        <template v-else-if="currentRule.key === 'sku_rule'">
-
-            <p class="list_p">
-                区域库存必填:{{ currentRule.data.area_stock_require ? '必填' : '非必填' }}
-            </p>
-
-            <p class="list_p">
-                是否支持国补商品型号:{{ currentRule.data.support_spec_model_code ? '支持' : '不支持' }}
-            </p>
-
-            <p class="list_p">
-                是否支持填写条形码:{{ currentRule.data.support_barcode ? '支持' : '不支持' }}
-            </p>
-
-            <p class="list_p">
-
-                sku图必填类型：
-                    <span>
-    
-                        <template v-if="currentRule.data.sku_picture_rule.require_type === 1">
-                            必填且所有SKU必须填写
-                        </template>
-                        <template v-if="currentRule.data.sku_picture_rule.require_type === 2">
-                            非必填，要么全部填写，要么全部为空，不允许部分填写
-                        </template>
-                    </span>
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>商品标题非法关键词规则</h5></a-divider>
                 
+                <div v-for="(a_value,key) in props.data.recommend_name_rule.title_illegal_keyword_rule" style="line-height: 26px;">
+                    {{ a_value.tip }}
+                </div>
 
-                <!-- <p>是否支持设置SKU图:{{ currentRule.data.sku_picture_rule.support ? '支持' : '不支持' }}</p> -->
+            </a-col>
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>品牌没有权限是否可以勾选</h5></a-divider>
+                <a-tag v-if="props.data.recommend_name_rule.prefix_brand_unauth_can_sel">可以勾选</a-tag>
+                <a-tag v-else>不能勾选</a-tag>
+            </a-col>
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>前缀规则是否包含品牌</h5></a-divider>
                 
-            </p>
+                <a-tag v-if="props.data.recommend_name_rule.prefix_prop_has_brand">包含品牌</a-tag>
+                <a-tag v-else>不包含</a-tag>
+            </a-col>
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>标题长度规则</h5></a-divider>
+                标题最长：<a-tag>{{ props.data.recommend_name_rule.title_limit_rule.max_length }}</a-tag>字符
+                标题最短：<a-tag>{{ props.data.recommend_name_rule.title_limit_rule.min_length }}</a-tag>字符
+            </a-col>
+            <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>当前类目id是否命中前缀推荐规则</h5></a-divider>
+                <a-tag v-if="props.data.recommend_name_rule.satisfy_prefix">命中</a-tag>
+                <a-tag v-else>未命中</a-tag>
+            </a-col>
+            <!-- <a-col :span="24">
+                <a-divider orientation="left" orientation-margin="0px"><h5>命中规则的属性id详情</h5></a-divider>
+                {{ props.data.recommend_name_rule.property_ids }}
+            </a-col> -->
 
-        </template>
-
-        <!--交易相关的规则-->
-        <template v-else-if="currentRule.key === 'trade_rule'">
-
-            <p class="list_p">
-                自动充值相关的规则:
-                
-                {{ currentRule.data.support_auto_charge_rule.value ? '支持自动充值' : '不支持自动充值' }}
-            </p>
-
-        </template>
+        </a-row>
+    </a-drawer>
 
 
-        <pre class="rule-json">{{ JSON.stringify(currentRule.data, null, 2) }}</pre>
-
-
-    </div>
-
-
+    <template #footer>
+        <a-button @click="props.open.open = false">关闭</a-button>
+    </template>
 
   </a-drawer>
 </template>
@@ -832,6 +723,7 @@ export default defineComponent({
 
     // 二次抽屉开关控制
     const more_stats = reactive({
+        "recommend_name_stats":false,// 商品标题 规则
         "component_template_stats":false, // 商品尺码 更多信息抽屉状态
         "after_sale_stats":false, // 售后服务 更多信息抽屉状态
         "product_spec_stats":false, // 商品规格 更多信息抽屉状态

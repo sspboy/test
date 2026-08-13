@@ -233,7 +233,7 @@ export default {
             // 菜单选中配置
             menudata: {
                 'key': '117',
-                'openKeys': 'douyinshop'
+                'openKeys': 'Refine'
             },
             List_conditions: {
                 page: 1, // 当前页

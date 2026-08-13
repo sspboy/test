@@ -370,7 +370,7 @@ export default {
 
 
        return{
-            PAGEDATA,
+        PAGEDATA,
             conditionData,
           store,
           page_turning,
