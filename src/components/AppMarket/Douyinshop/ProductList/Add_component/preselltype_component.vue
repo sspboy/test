@@ -1,4 +1,4 @@
-<!-- 发货履约 + 库存 --- 页面组件 
+<!-- 库存 + 发货履约 --- 页面组件 
 
     1-现货发货模式规则
     2-阶梯发货模式规则
@@ -15,10 +15,11 @@
 
     <a-divider orientation="left" orientation-margin="0px">
         
-        <a-button @click="console.log(Stock.sepec_info)" size="small">打印规格</a-button>
-        <a-button @click="Fulfill.get_presell" size="small" style="margin:0 20px;"> 获取发货模式 </a-button>
+        <!-- <a-button @click="console.log(Stock.sepec_info)" size="small">打印规格</a-button>
+
+        <a-button @click="Fulfill.get_presell" size="small" style="margin:0 20px;"> 获取发货模式 </a-button> -->
         
-        <a-button @click="Stock.get_specs" size="small" style="margin:0 20px;"> 打印库存 </a-button>
+        <a-button @click="Stock.get_specs" size="small" > 打印库存 </a-button>
 
         <a-button @click="Stock.get_sku_list" size="small" style="margin:0 20px;">验证库存表单</a-button>
         
@@ -266,6 +267,7 @@
                     </a-form-item>
                 </template>
                 <template v-if="column && column.dataIndex === 'presale_stock_num' && presell_formdata.presell_type === 2">
+
                     <a-space>
                         <span class="font_size_12">总计</span>
                         <span class="font_size_12">{{ record.stock_num }}</span>
@@ -273,9 +275,12 @@
                     </a-space>
 
                     <!--预售发货时效 库存弹窗-->
-                    <a-modal v-model:open="record.open" width="300px" title="预售库存" @ok="console.log('保存库存')">
+                    <a-modal v-model:open="record.open" width="300px" title="预售库存">
+                        
                         <a-form :model="record.multi_time_stocks" style="margin-top: 20px;">
+
                             <template v-for="item in record.multi_time_stocks">
+
                                 <a-form-item :label="item.time_desc" name="index">
                                     <a-input-number  
                                         placeholder="输入预售库存数量"
@@ -283,9 +288,16 @@
                                         :max="999999999"
                                         v-model:value="item.stock_num" 
                                     ></a-input-number >
+
                                 </a-form-item>
+
                             </template>
                         </a-form>
+
+                        <template #footer>
+                            <a-button type="primary" @click="console.log(record.stock_num)">确认</a-button>
+                            <a-button @click="record.open=false">取消</a-button>
+                        </template>
                     </a-modal>
                 </template>
 
@@ -371,17 +383,15 @@ export default defineComponent({
 
         const Stock = new StockFun()
 
-
-
-
         // 监听规格列表变化【form表单绑定必须可变的响应式对象】
-        watch(() => Stock.sepec_info, (newVal) => {
-            if (newVal) {
-                skulist_formState.skudatelist = Stock.get_data();
-                skulist_formState.skucolumns = Stock.get_colums();
-                Stock.change_presale()
-            }
-        }, { immediate: true, deep: true })
+        // watch(() => Stock.sepec_info, (newVal) => {
+        //     if (newVal) {
+        //         console.log(newVal)
+        //         skulist_formState.skudatelist = Stock.get_data();
+        //         skulist_formState.skucolumns = Stock.get_colums();
+        //         Stock.change_presale()
+        //     }
+        // }, { immediate: true, deep: true })
 
 
         

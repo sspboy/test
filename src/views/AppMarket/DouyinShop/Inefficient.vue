@@ -149,6 +149,16 @@
                         <template v-if="column.key === 'suggestion_reason'">
                             <span class="font_size_12">{{ record.suggestion_reason }}</span>
                         </template>
+
+                        <!--重复商品列表-->
+                        <template v-if="column.key === 'strict_same_shop_prod_list'">
+                            <span class="font_size_12">
+                                <!-- {{ record.strict_same_shop_prod_list.length }} -->
+                                <a here="#">查看重复商品</a>
+
+                            </span>
+                        </template>
+                    
                     </template>
                 </a-table>
 
@@ -277,15 +287,19 @@ export default {
             fetchData: () => {
 
                 Selecttable.tableloading = true;
+
                 // 这里替换为实际的接口地址
-                tool.Http_.post(API.AppSrtoreAPI.dou_product.getProductSuggestionList, Selecttable.navdata).then(res => {
+                axios.post(API.AppSrtoreAPI.dou_product.getProductSuggestionList, Selecttable.navdata).then(res => {
                     // console.log('接口返回数据:', res);
                     // res.data.data.product_list ||
                     Selecttable.tableData = res.data.data.product_list || [];
                     PAGEDATA.total_number = res.data.data.total || 0; // 总页数
                     Selecttable.tableloading = false;
-                }).catch(() => {
-                    console.error('接口请求失败');  
+
+                }).catch((err) => {
+                    
+                    console.error('接口请求失败',err);
+
                     Selecttable.tableloading = false;
 
                 });
@@ -311,7 +325,7 @@ export default {
                 title: '商品图片',
                 dataIndex: 'image',
                 key: 'image',
-                width: 80,
+                width: 70,
                 align: 'center',
 
             },
@@ -326,13 +340,13 @@ export default {
                 dataIndex: 'suggestion',
                 align: 'center',
                 key: 'suggestion',
-                width: 120,
+                width: 80,
             },
             {
                 title: '下架的原因',
                 dataIndex: 'suggestion_reason',
                 key: 'suggestion_reason',
-                width: 120,
+                width: 80,
             },
             {
                 title: '首次上架时间',
@@ -343,10 +357,19 @@ export default {
                 ellipsis: true,
 
             },
+            {   
+                title: '重复商品',
+                dataIndex: 'strict_same_shop_prod_list',
+                key: 'strict_same_shop_prod_list',
+                width: 70,
+                align: 'center',
+                ellipsis: true,
+                
+            },
             {
                 title: '操作',
                 key: 'operation',
-                width: 150,
+                width: 120,
                 align: 'center',
             },
             ],
@@ -360,12 +383,17 @@ export default {
                 var product_id = record.product_id;
                 
                 console.log('要下架的商品ID:', product_id);
-                tool.Http_.post(API.AppSrtoreAPI.dou_product.setoffline, {
+                
+                axios.post(API.AppSrtoreAPI.dou_product.setoffline, {
+
                     "product_id":product_id
+                
                 }).then(res => {
 
                     var code = res.data.code;
+
                     console.log('接口返回数据:', code, res);
+
                     if(code === 10000){
                         tool.Fun_.message('success', '商品已下架');
                     }else{
@@ -376,9 +404,12 @@ export default {
                         Selecttable.fetchData(); // 刷新列表
                     }, 2000);
                 
-                }).catch(() => {
-                    console.error('接口请求失败');  
+                }).catch((err) => {
+                    
+                    console.error('接口请求失败',err);
+
                     tool.Fun_.message('error', '下架失败，请重试');
+
                 });
             },
             // 批量下架商品

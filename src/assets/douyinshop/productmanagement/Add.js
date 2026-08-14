@@ -2200,6 +2200,11 @@ export class StockFun {
             // 库存数据spec_prices_v2 数组
         }
 
+        // 设置预售发货
+        set_presale_number_list = (Total,number_list) =>{
+
+        }
+
 
 }
 // 库存===============================结束

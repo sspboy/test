@@ -28,7 +28,7 @@
             <a-button 
                 type="dashed"
                 size="small"
-                @click="DES.get_img" block>打印图片地址</a-button>
+                @click="DES.print_data" block>打印图片地址</a-button>
         </a-space>
 
     </div>
@@ -200,14 +200,27 @@ import * as TOOL from '@/assets/JS_Model/tool';
                             img_list_res.push(obj.src)
 
                         })
-                        console.log(img_list_res.join('|'))
+
+                        console.log('页面图片地址', img_list_res.join('|'))
+
+                        
+
+
                         return img_list_res.join('|')
                     }
                 }
             },
             // 清空描述图
             clear_img:()=>{
+
                 DES.valueHtml.value = '';
+
+            },
+            // 打印同步的结果
+            print_data:()=>{
+
+                console.log('结果地址', Description.value)
+
             }
         }
 
@@ -218,30 +231,33 @@ import * as TOOL from '@/assets/JS_Model/tool';
         
         // 计算属性
         const displayTitle = computed(() => {
-        return `${title.value} - ${props.data2 || '默认'}`
+            return `${title.value} - ${props.data2 || '默认'}`
         })
         
         // 方法
         const handleClick = () => {
-        count.value++
-        emit('update', { count: count.value, data: props.data })
+            count.value++
+            emit('update', { count: count.value, data: props.data })
         }
         
         // 监听器
         watch(() => DES.valueHtml.value, (newVal, oldVal) => {
+
             // 每次加载图片，将最新的图片
             Description.value = DES.get_img()
+
             console.log('data changed:', Description.value)
+
         }, { deep: true })
         
         // 生命周期
         onMounted(() => {
-            console.log('模板名称 组件已挂载')
+            console.log('描述详情 组件已挂载')
         })
         
         // 暴露给父组件的方法
         expose({
-        reset: () => { count.value = 0 }
+            reset: () => { count.value = 0 }
         })
      
      return {

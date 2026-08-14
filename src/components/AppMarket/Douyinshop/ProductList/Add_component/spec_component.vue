@@ -341,7 +341,7 @@ import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted, 
 import { PlusCircleOutlined,PlusOutlined,DeleteOutlined,MinusOutlined,MinusCircleOutlined,ReadOutlined} from '@ant-design/icons-vue';
 
 import { 
-  Spec,SPECS,resetSPECSFull,sku_formRef,
+  Spec,SPECS,resetSPECSFull,sku_formRef,StockFun,skulist_formState
 } from '@/assets/douyinshop/productmanagement/Add';
 export default defineComponent({
   
@@ -373,9 +373,17 @@ props: {
     spec.load() // 初始化 规格规则
     
     // 监听器
-    // watch(() => props.data, (newVal, oldVal) => {
-    //   console.log('data changed:', newVal)
-    // }, { deep: true })
+    const Stock = new StockFun()
+
+    // 监听规格列表变化【form表单绑定必须可变的响应式对象】
+    watch(() => Stock.sepec_info, (newVal) => {
+        if (newVal) {
+            console.log(newVal)
+            skulist_formState.skudatelist = Stock.get_data();
+            skulist_formState.skucolumns = Stock.get_colums();
+            Stock.change_presale()
+        }
+    }, { immediate: true, deep: true })
     
     // 生命周期
     // onMounted(() => {
