@@ -90,20 +90,22 @@
 
     <!--悬浮按钮-->
     <a-float-button-group 
-        v-if="CATE.cate_value.value != undefined"
-        shape="square" :style="{ right: '100px' }">
+        v-if="CATE.cate_value.value != undefined && PageproductRuleOcject !== undefined"
+        shape="square" 
+        :style="{ right: '100px' }">
+
         <a-float-button
             tooltip="商品发布规则"
             v-if="PageproductRuleOcject !== undefined"
             @click="openuploadrule" />
 
-        <a-float-button
+        <!-- <a-float-button
             tooltip="商品发布记录" 
         >
             <template #icon>
                 <ReadOutlined />
             </template>
-        </a-float-button>
+        </a-float-button> -->
     </a-float-button-group>
 
 

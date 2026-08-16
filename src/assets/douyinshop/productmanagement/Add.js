@@ -185,7 +185,7 @@ export const Pic_Fun = reactive({
             })
 
             // 测试用流程
-            productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
+            // productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
 
             // 加载属性
             CATE.loadFormat();// 加载对应商品属性
@@ -959,11 +959,17 @@ export class ProductUpdateRule {
         axios.post(API.AppSrtoreAPI.dou_product.addrule, {
 
             category_leaf_id: CATE.cate_value.value,
+            option:{
+                need_shipping_origin_id_list:true
+            }
 
         }).then((response) => {
 
             this.info.value = response.data.data; // js属性规则赋值
             PageproductRuleOcject.value = response.data.data // 页面规则传值
+
+
+            console.log(response.data.data)
 
         }).catch((error) => {
 
@@ -1130,7 +1136,7 @@ export const formState = reactive({
 })
 
 // 基础信息验证规则
-export const rules = {
+export const rules = ref({
 
     // 标题
     name: [
@@ -1183,7 +1189,7 @@ export const rules = {
             message: '运费模板不能为空!',
             trigger: 'change',
     }],
-}
+})
 
 // 3:4长图
 export const Longimg_Fun = {

@@ -278,96 +278,6 @@ export default defineComponent({
 
 
 
-        // 描述详情
-        const editorRef = shallowRef()  // 编辑器实例，必须用 shallowRef
-        const DES = {
-            // 初始化
-            valueHtml:ref(undefined),
-            mode:ref('simple'),// 或 'simple' 'default'
-            // 编辑器实例，必须用 shallowRef
-            editorRef:shallowRef(),
-            editorConfig:{placeholder: '请输入内容...' },// 默认值
-            // 编辑器工具栏配置
-            toolbarConfig:{
-                excludeKeys: [
-                    'bold',
-                    "underline",
-                    "italic",
-                    "through",
-                    "color",
-                    "clearStyle",
-                    "bgColor",
-                    "codeBlock",
-                    "blockquote",
-                    "bulletedList",
-                    "numberedList",
-                    "insertTable",
-                    "header1",
-                    "header2",
-                    "header3",
-                    'headerSelect',
-                    'italic',
-                    'group-more-style', // 排除菜单组，写菜单组 key 的值即可
-                    //"fullScreen",
-                    "insertLink",
-                    "editLink",
-                    "insertVideo",
-                    "uploadVideo",
-                    "todo",
-                    "redo",
-                    "undo",
-                    "group-image",
-                    "uploadImage",
-                    "insertImage",
-
-                ]
-            },
-            // 创建编辑器
-            handleCreated:(editor) => {
-                editorRef.value = editor // 记录 editor 实例，重要！
-                editor.clear() // 清空编辑器
-            },
-            // 加载图片到编辑器
-            add_img:(img_list)=>{
-                var image_text = '<p>'
-                for(let i of img_list){
-                    let url = i.byte_url;
-                    image_text = image_text + '<img class="ant-image-img" src=" ' + url + '">';
-                }
-                DES.valueHtml.value = DES.valueHtml.value + image_text + '</p>'
-            },
-            // 获取描述图片
-            get_img:()=>{
-                var img_list_res = []
-                // 描述为空
-                if(editorRef.value == undefined){
-                    tool.Fun_.message('error', '描述详情不能为空！');
-                    activeKey.value = '5';
-                    return false
-                }else {
-
-                    var img_list = editorRef.value.getElemsByType('image') // 获取图片地址
-
-                    if(img_list.length == 0 || editorRef.value == undefined){
-                        tool.Fun_.message('error', '描述详情不能为空！');
-                        activeKey.value = '5';
-                        return false
-                    }else{
-                        // 描述不为空
-                        // console.log(img_list)
-                        img_list.forEach((obj,index)=>{
-                            img_list_res.push(obj.src)
-                        })
-
-                        return img_list_res.join('|')
-                    }
-                }
-            },
-            // 清空描述图
-            clear_img:()=>{
-                DES.valueHtml.value = '';
-            }
-        }
 
         // 转移售后服务0-8
         const after_sale_list = {
@@ -417,116 +327,6 @@ export default defineComponent({
             console.log(data)
         }
 
-        // 确认按钮===>>>获取产品信息+验证
-        const handleOk = async() => {
-
-            var product_data_obj = {} // 商品上传JSON
-
-            // 主图
-            if(Pic_Fun.get()){// 不为空
-                product_data_obj.pic = Pic_Fun.get()
-            }else{
-                tool.Fun_.message('error','主图不能为空！')
-                activeKey.value = '1'
-                return
-            }
-
-            // 白底图
-            if(whiteimg_Fun.get()){
-                product_data_obj.white_back_ground_pic_url = whiteimg_Fun.get();// 白底图：url(仅素材中心url有效)，白底图比例要求1:1
-                console.log('白底图', whiteimg_Fun.get())
-            }
-
-            // 长图
-            if(Longimg_Fun.get()){
-                product_data_obj.long_pic_url = Longimg_Fun.get();// 长图
-                console.log('长图', Longimg_Fun.get())
-            }
-
-            // 视频信息
-            if(video_Fun.get()){
-                var video_obj = video_Fun.get()
-                var material_video_id = video_obj[0].video_info.vid;
-                product_data_obj.material_video_id = material_video_id;// 视频id
-                // console.log('视频素材id', material_video_id)
-            }
-
-            // 基础信息
-            var pro_info = await GetInfo();
-
-            if(pro_info){
-                // 正常获取
-                product_data_obj.name = pro_info.name;                  // 标题-必填
-                product_data_obj.product_type = pro_info.product_type;  // 商品类型-必填
-                product_data_obj.recommend_remark = pro_info.recommend_remark;// 推荐语
-                product_data_obj.remark = pro_info.remark;              // 商家备注
-                product_data_obj.pay_type = pro_info.pay_type;          // 支付方式
-                product_data_obj.mobile = pro_info.mobile;              // 电话
-                product_data_obj.freight_id = pro_info.freight_id.value;// 运费模板
-                product_data_obj.size_info_template_id = pro_info.size_info_template_id.value// 尺码模板
-                product_data_obj.standard_brand_id = pro_info.standard_brand_id.brand_id;// 品牌id
-                product_data_obj.minimum_per_order = pro_info.minimum_per_order; // 最少下单购买件数
-                product_data_obj.maximum_per_order = pro_info.maximum_per_order; // 最多下单购买件数
-                product_data_obj.limit_per_buyer = pro_info.limit_per_buyer; // 累计购买件数
-                product_data_obj.presell_type = pro_info.presell_type; // 发货模式
-                product_data_obj.short_product_name = pro_info.short_product_name;// 导购短标题
-                product_data_obj.after_sale_service = after_sale_list.get(pro_info.after_sale_service);//售后服务
-            }else{
-                return
-            }
-            
-            // 分类
-            var cate_obj = CATE.get_cate()
-            if(cate_obj){
-                // 正常获取分类
-                product_data_obj.category_leaf_id = cate_obj;
-            }else{
-                return
-            }
-
-            // 属性
-            var format_obj = await CATE.get_format();
-            if(format_obj){
-                product_data_obj.product_format_new = JSON.stringify(format_obj);
-            }else{
-                return
-            }
-
-            // 验证规格信息
- 
-
-            // 库存信息
-            // var sku_list_obj = await get_sku_list();
-            // if(sku_list_obj){
-
-            //     product_data_obj.spec_prices_v2 = sku_list_obj;
-            
-            // }else{
-            //     return
-            // }
-
-            // 描述详情
-            var description_obj = DES.get_img();
-            if(description_obj){
-                // 正常获取
-                product_data_obj.description = description_obj
-            }else{
-                return
-            }
-            
-
-            // 过滤 掉值为空的key
-            Object.keys(product_data_obj).forEach(key => {
-                if (product_data_obj[key] === undefined || product_data_obj[key] === '') {
-                    delete product_data_obj[key];
-                }
-            });
-
-            console.log(product_data_obj)
-
-            upload_product(product_data_obj)// 上传商品
-
-        }
 
         // 关闭新建商品按钮
         const closed = () =>{
@@ -535,48 +335,6 @@ export default defineComponent({
 
         }
 
-        // 商品上传请求接口方法
-        const upload_product = async (product_data) =>{
-
-            // 按钮状态
-            PAGEDATA.upload_product_loading = true;
-
-            product_data.commit = 1; // 提交方式-立即发布
-            
-            // 发送数据到接口
-            var res = await tool.Http_.post(API.AppSrtoreAPI.dou_product.add, product_data)
-
-            console.log(res)
-
-            var code = res.data.code;
-            var sub_msg = res.data.sub_msg
-            if(code === 10000 ){ // 接口返回成功
-                
-                // 提示上传成功，刷新列表;
-
-                setTimeout(() => {
-
-                    tool.Fun_.message('success','商品添加成功！')
-
-                    PAGEDATA.upload_product_loading = false;
-
-                    closed() // 关闭新建商品
-
-                    ctx.emit('add_call_back')// 刷新列表
-
-                }, 1000);
-
-            }else{ // 接口返回失败
-
-                // 提示失败，返回失败原因;
-                tool.Fun_.message('error', sub_msg)
-
-                // 重置提交按钮状态
-                PAGEDATA.upload_product_loading = false;
-
-            }
-
-        }
 
         // 表单选择框---》搜索方法；
         const filterOption = (input, option) => {
@@ -595,10 +353,9 @@ export default defineComponent({
             CATE,
             simpleImage,
             // -------------描述详情
-            editorRef,DES,
             uploadproduct,
             // 提交，关闭
-            handleOk,closed,
+            closed,
             selectfreight_callback,
             selectsizetemplate_callback,
             selectbrand_callback,

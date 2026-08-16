@@ -42,7 +42,7 @@
         />
 
         <Editor
-            style="height: 600px; overflow-y: hidden;"
+            style="height: 700px; overflow-y: hidden;"
             v-model="DES.valueHtml.value"
             :defaultConfig="DES.editorConfig"
             :mode="DES.mode.value"

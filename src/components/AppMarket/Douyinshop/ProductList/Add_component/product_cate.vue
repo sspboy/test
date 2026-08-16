@@ -172,9 +172,11 @@ import { DeleteOutlined} from '@ant-design/icons-vue';
 import { 
   Pic_Fun,CATE
 } from '@/assets/douyinshop/productmanagement/Add';
+
 export default defineComponent({
-  name: '类目预测',
   
+  name: '类目预测',
+
   components: {
     DeleteOutlined,
     selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
@@ -205,7 +207,11 @@ export default defineComponent({
     // 测试跳过分类选择用例
     
     Pic_Fun.name='女子连衣裙夏季最新款'
-    CATE.cate_value.value = 1000008386//  1000003346// undefined // 1000003346
+    CATE.cate_value.value = 1000009678 //土豆 
+    // 1000002072 // 哈密瓜
+    // 1000009678 //土豆 
+    // 1000008386//女装
+    //   1000003346 // undefined // 1000003346
     CATE.options.value=[
         {
             "value": 1000003346,

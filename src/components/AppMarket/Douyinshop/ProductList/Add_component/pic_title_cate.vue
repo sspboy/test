@@ -335,6 +335,21 @@
                 </a-form-item>
             </a-col>
 
+            <a-col :span="8">
+                <a-form-item
+                    label="发货地址："
+                    name="shipping_origin_info"
+                >
+                    <a-select v-model:value="formState.after_sale_service" placeholder="选择方式">
+                        <a-select-option value="1">支持7天无理由</a-select-option>
+                        <a-select-option value="0">不支持7天无理由</a-select-option>
+                    </a-select>
+                </a-form-item>
+                <a-button @click="shop_add_dizhi">查看地址</a-button>
+                <a-button @click="shop_add_dizhi">添加地址</a-button>
+
+            </a-col>
+
         </a-row>
     </a-form>
 
@@ -509,7 +524,7 @@
  <script>
  import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted, reactive } from 'vue'
  import { 
-  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata,CATE,Pic_Fun
+  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata,CATE,Pic_Fun,PageproductRuleOcject
 } from '@/assets/douyinshop/productmanagement/Add';
 import { DeleteOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
@@ -519,7 +534,7 @@ import * as utils from '@/assets/JS_Model/public_model';
    name: '基础信息',
    
    components: {
-     DeleteOutlined,
+    DeleteOutlined,
     white_image_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/white_image.vue')),// 白底图组件
     main_image_video_component:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/Add_component/main_image_video.vue')),// 主图视频组件
     selectimg:defineAsyncComponent(() => import('@/components/AppMarket/Douyinshop/ProductList/selectImg.vue')),//素材组件
@@ -617,6 +632,7 @@ import * as utils from '@/assets/JS_Model/public_model';
             }
         });
     };
+
     // 图片地址上传列表
     const uploadimglist=reactive({
         list:[{value:''}],
@@ -858,10 +874,44 @@ import * as utils from '@/assets/JS_Model/public_model';
 
 
      
-     // 生命周期
-    //  onMounted(() => {
-    //    console.log('基础信息 组件已挂载')
-    //  })
+    // 生命周期
+     onMounted(() => {
+        console.log('基础信息 组件已挂载')
+        discernment_component_template_rule(rules) // 判断 尺码模板是否必填
+
+        // 发货地址是否必填
+
+
+
+     })
+
+
+     // 判断尺码表是否必填
+     const discernment_component_template_rule = (data) =>{
+
+        let is_show = PageproductRuleOcject.value.component_template_rule.is_show // 尺码模板-是否展示
+        let must_input = PageproductRuleOcject.value.component_template_rule.must_input // 尺码模板-是否必填
+        // 如果尺码必填
+        if(must_input){
+            data.value.size_info_template_id = [{
+                message:'尺码模板必填',
+                required:must_input,
+                trigger:'change'
+            }]
+        }
+
+
+     }
+    
+     // 判断发货地址是否必填
+    const shop_add_dizhi = () =>{
+        console.log('发货地址',PageproductRuleOcject.value.fulfillment_rule)
+        console.log('尺码模板',PageproductRuleOcject.value.component_template_rule)
+        console.log('表单规则',rules)
+
+     }
+
+
 
      return {
 
@@ -890,7 +940,10 @@ import * as utils from '@/assets/JS_Model/public_model';
        whiteimg_Fun,
        Longimg_Fun,
        video_Fun,
-       formState,Basedata,rules
+       formState,Basedata,rules,
+
+       // 发货地址
+       shop_add_dizhi
      }
    }
  })
