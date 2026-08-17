@@ -207,10 +207,11 @@ export default defineComponent({
     // 测试跳过分类选择用例
     
     Pic_Fun.name='女子连衣裙夏季最新款'
-    CATE.cate_value.value = 1000009678 //土豆
+    CATE.cate_value.value = 1000009690 // 红薯
     // 1000002072 // 哈密瓜
     // 1000009678 //土豆 
-    // 1000008386//女装
+    // 1000009690 // 红薯
+    // 1000008386// 女装
     //   1000003346 // undefined // 1000003346
     CATE.options.value=[
         {

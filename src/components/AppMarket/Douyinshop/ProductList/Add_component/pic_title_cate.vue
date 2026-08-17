@@ -343,13 +343,57 @@
                 >
                     <a-input-group compact>
                         <a-input v-model:value="formState.shipping_origin_info.address" placeholder="请选择发货地址" disabled style="width: calc(74%);padding: 5.5px;" />
-                        <a-button @click="discernment_shop_add_dizhi">选择</a-button>
+                        <a-button @click="ShopAddress.selectFunction">选择</a-button>
                     </a-input-group>
                 </a-form-item>
             </a-col>
 
         </a-row>
     </a-form>
+
+    <!--发货地址选择 抽屉-->
+    <template>
+        <a-drawer
+            v-model:open="ShopAddress.open"
+            class="custom-class"
+            root-class-name="root-class-name"
+            :root-style="{ color: 'blue' }"
+            title="选择发货地址"
+            placement="right"
+        >
+
+        <a-radio-group v-model:value="ShopAddress.address_type" name="radioGroup" button-style="solid">
+            <template v-for="item_address in ShopAddress.address_rule.options">
+                <a-radio-button :value="item_address.value">{{ item_address.name }}</a-radio-button>
+            </template>
+        </a-radio-group>
+
+        <a-button style="margin-left: 10px;">+ 添加地址</a-button>
+
+        <!--单一发货地址-->
+        <div v-if="ShopAddress.address_type == 1" style="padding: 20px 0;">
+            
+            单一发货地址
+
+        </div>
+        
+        
+        <!--多发货地址-->
+        <div v-else-if="ShopAddress.address_type == 2" style="padding: 20px 0;">
+
+            多发货地址
+        
+        </div>
+
+        <template #footer>
+            <a-flex justify="flex-start" gap="8">
+                <a-button type="primary">确定</a-button>
+                <a-button @click="ShopAddress.closedFunction">关闭</a-button>
+            </a-flex>
+        </template>
+        </a-drawer>
+
+    </template>
 
 
     <!--白底图 选择主图 抽屉-->
@@ -515,6 +559,8 @@
     <main_image_video_component 
         v-on:create_pic_video_callback="pic_video_call_back" 
         :data="pic_video_data"/>
+
+
 
      
  </template>
@@ -924,13 +970,20 @@ import * as utils from '@/assets/JS_Model/public_model';
         // 选择地址-抽屉状态
         open:false,
 
+        // 发货地址规则
+        address_rule:undefined,
+
+        // 发货地址类型 1-单地址，2-多地址
+        address_type:'1',
+
         // 判断发货地址是否支持、是否必填
         discernment_shop_add_dizhi:(data) =>{
 
-            console.log('发货地址',PageproductRuleOcject.value.fulfillment_rule)
+            console.log('发货地址', PageproductRuleOcject.value.fulfillment_rule)
 
             let enable = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule.enable; // 发货地址-是否支持
             let must_select = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule.must_select; // 发货地址-是否必填
+
             console.log('发货地址-是否支持',enable)
             console.log('发货地址-是否必填',must_select)
 
@@ -941,19 +994,26 @@ import * as utils from '@/assets/JS_Model/public_model';
             // 如果必填
             if(must_select){
                 data.value.shipping_origin_info = {
-                address:[{
-                    message:'发货地址必填',
-                    required:must_select,
-                    trigger:'change'
-                }]
+                    address:[{
+                        message:'发货地址必填',
+                        required:must_select,
+                        trigger:'change'
+                    }]
+                }
             }
-            }
+
+            ShopAddress.address_rule = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule
 
         },
 
-        // 选择地址方法
+        // 开启 选择地址方法
         selectFunction:()=>{
             ShopAddress.open = true;
+        },
+
+        // 关闭 选择地址
+        closedFunction:()=>{
+            ShopAddress.open = false;
         }
 
 
@@ -1037,4 +1097,5 @@ import * as utils from '@/assets/JS_Model/public_model';
 :deep(.ant-form-item-explain-error) {
   font-size: 12px;
 }
+.a-radio-group-y{display: flex;height:30px;line-height:30px;}
  </style>
