@@ -370,6 +370,7 @@ props: {
 
     // 重置表单 需要重置时调用
     resetSPECSFull()
+    
     spec.load() // 初始化 规格规则
     
     // 监听器

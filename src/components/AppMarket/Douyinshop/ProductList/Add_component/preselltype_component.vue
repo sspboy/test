@@ -382,18 +382,6 @@ export default defineComponent({
         Fulfill.load()// 加载支持的发货方式
 
         const Stock = new StockFun()
-
-        // 监听规格列表变化【form表单绑定必须可变的响应式对象】
-        // watch(() => Stock.sepec_info, (newVal) => {
-        //     if (newVal) {
-        //         console.log(newVal)
-        //         skulist_formState.skudatelist = Stock.get_data();
-        //         skulist_formState.skucolumns = Stock.get_colums();
-        //         Stock.change_presale()
-        //     }
-        // }, { immediate: true, deep: true })
-
-
         
 
         return{

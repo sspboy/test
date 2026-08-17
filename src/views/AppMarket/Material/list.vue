@@ -255,7 +255,7 @@
 
                     <a-row>
 
-                        <a-col :span="12" style="text-align: left;">
+                        <a-col :span="8" style="text-align: left;">
                             
                             <p class="font_size_12" style="padding: 6px 0 0 0;">
 
@@ -292,7 +292,7 @@
                             </p>
                         </a-col>
 
-                        <a-col :span="12">
+                        <a-col :span="16">
                             <nav_pagination :fandata="PAGEDATA" v-on:complete="MaterialListMethod.page_turning"/>
                         </a-col>
 

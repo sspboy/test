@@ -248,7 +248,7 @@
             <a-col :span="8">
                 <a-form-item
                     label="尺码模板"
-                    name="size_info_template_id"
+                    :name="['size_info_template_id','name']"
                 >
                     <a-input-group compact>
                         <a-input v-model:value="formState.size_info_template_id.name" placeholder="请选择尺码模板" disabled style="width: calc(74%);padding: 5.5px;" />
@@ -335,19 +335,17 @@
                 </a-form-item>
             </a-col>
 
-            <a-col :span="8">
+            <a-col :span="8" v-if="ShopAddress.stats">
+
                 <a-form-item
                     label="发货地址："
-                    name="shipping_origin_info"
+                    :name="['shipping_origin_info','address']"
                 >
-                    <a-select v-model:value="formState.after_sale_service" placeholder="选择方式">
-                        <a-select-option value="1">支持7天无理由</a-select-option>
-                        <a-select-option value="0">不支持7天无理由</a-select-option>
-                    </a-select>
+                    <a-input-group compact>
+                        <a-input v-model:value="formState.shipping_origin_info.address" placeholder="请选择发货地址" disabled style="width: calc(74%);padding: 5.5px;" />
+                        <a-button @click="discernment_shop_add_dizhi">选择</a-button>
+                    </a-input-group>
                 </a-form-item>
-                <a-button @click="shop_add_dizhi">查看地址</a-button>
-                <a-button @click="shop_add_dizhi">添加地址</a-button>
-
             </a-col>
 
         </a-row>
@@ -524,7 +522,7 @@
  <script>
  import { defineAsyncComponent,defineComponent, ref, computed, watch, onMounted, reactive } from 'vue'
  import { 
-  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata,CATE,Pic_Fun,PageproductRuleOcject
+  Base_formRef,formState,rules,Longimg_Fun,whiteimg_Fun,video_Fun,Basedata,CATE,Pic_Fun,PageproductRuleOcject,ProductUpdateRule
 } from '@/assets/douyinshop/productmanagement/Add';
 import { DeleteOutlined} from '@ant-design/icons-vue';
 import * as TOOL from '@/assets/JS_Model/tool';
@@ -874,13 +872,19 @@ import * as utils from '@/assets/JS_Model/public_model';
 
 
      
-    // 生命周期
-     onMounted(() => {
+    // 生命周期--异步请求 规则加载到页面
+     onMounted(async() => {
+
+        const productRule = new ProductUpdateRule() // 初始化 规格调用方法
+
+        await productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
+
         console.log('基础信息 组件已挂载')
+
         discernment_component_template_rule(rules) // 判断 尺码模板是否必填
 
         // 发货地址是否必填
-
+        ShopAddress.discernment_shop_add_dizhi(rules)
 
 
      })
@@ -889,25 +893,82 @@ import * as utils from '@/assets/JS_Model/public_model';
      // 判断尺码表是否必填
      const discernment_component_template_rule = (data) =>{
 
+        console.log(PageproductRuleOcject.value)
+
         let is_show = PageproductRuleOcject.value.component_template_rule.is_show // 尺码模板-是否展示
         let must_input = PageproductRuleOcject.value.component_template_rule.must_input // 尺码模板-是否必填
+
         // 如果尺码必填
         if(must_input){
-            data.value.size_info_template_id = [{
-                message:'尺码模板必填',
-                required:must_input,
-                trigger:'change'
-            }]
+            data.value.size_info_template_id = {
+                name:[{
+                    message:'尺码模板必填',
+                    required:must_input,
+                    trigger:'change'
+                }]
+            }
         }
 
 
      }
     
-     // 判断发货地址是否必填
-    const shop_add_dizhi = () =>{
+    // 判断发货地址是否必填
+    const ShopAddress = reactive({
+
+        // 发货地址是否支持
+        stats:false,
+
+        // 发货地址是否必填
+        required:false,
+
+        // 选择地址-抽屉状态
+        open:false,
+
+        // 判断发货地址是否支持、是否必填
+        discernment_shop_add_dizhi:(data) =>{
+
+            console.log('发货地址',PageproductRuleOcject.value.fulfillment_rule)
+
+            let enable = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule.enable; // 发货地址-是否支持
+            let must_select = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule.must_select; // 发货地址-是否必填
+            console.log('发货地址-是否支持',enable)
+            console.log('发货地址-是否必填',must_select)
+
+            if(enable){// 如果支持
+                ShopAddress.stats = enable
+            }
+
+            // 如果必填
+            if(must_select){
+                data.value.shipping_origin_info = {
+                address:[{
+                    message:'发货地址必填',
+                    required:must_select,
+                    trigger:'change'
+                }]
+            }
+            }
+
+        },
+
+        // 选择地址方法
+        selectFunction:()=>{
+            ShopAddress.open = true;
+        }
+
+
+    })
+
+    const discernment_shop_add_dizhi = () =>{
+
         console.log('发货地址',PageproductRuleOcject.value.fulfillment_rule)
-        console.log('尺码模板',PageproductRuleOcject.value.component_template_rule)
-        console.log('表单规则',rules)
+        // console.log('尺码模板',PageproductRuleOcject.value.component_template_rule)
+        // console.log('表单规则',rules)
+
+        let enable = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule.enable; // 发货地址-是否支持
+        let must_select = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule.must_select; // 发货地址-是否必填
+        console.log('发货地址-是否支持',enable)
+        console.log('发货地址-是否必填',must_select)
 
      }
 
@@ -943,7 +1004,8 @@ import * as utils from '@/assets/JS_Model/public_model';
        formState,Basedata,rules,
 
        // 发货地址
-       shop_add_dizhi
+       ShopAddress,
+       discernment_shop_add_dizhi
      }
    }
  })

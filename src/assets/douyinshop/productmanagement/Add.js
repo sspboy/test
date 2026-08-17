@@ -8,7 +8,73 @@ const tool = new TOOL.TOOL()            // 工具方法
 const API = new utils.A_Patch()         // 请求接口地址合集
 
 
+// 获取商品发布规则方法==开始
+// 通过执行Rule.get() 获取数据
+export const PageproductRuleOcject = ref(undefined) // ADD页面规则展示对象
+export class ProductUpdateRule {
 
+    senses=ref(undefined) // 闪购定制参数，普通发品忽略
+    standard_brand_id=ref(undefined) // 品牌id
+    spu_id=ref(undefined) // spu_id
+    info=ref(undefined) // 发布规则信息对象
+
+    // 获取发布规则
+    get=async()=>{
+
+        // 判断类是否选择
+        if (!CATE.cate_value.value) {
+            tool.Fun_.message('info', '请先选择商品类目后，才能查看对应发布规则.')
+            return
+        }
+
+        // console.log('当前类目', CATE.cate_value.value)
+
+        await axios.post(API.AppSrtoreAPI.dou_product.addrule, {
+
+            category_leaf_id: CATE.cate_value.value,
+            option:{
+                need_shipping_origin_id_list:true
+            }
+
+        }).then((response) => {
+
+            this.info.value = response.data.data; // js属性规则赋值
+            PageproductRuleOcject.value = response.data.data // 页面规则传值
+
+
+            console.log('加载规则到Add-js',response.data.data)
+
+        }).catch((error) => {
+
+            console.log(error);
+
+        });
+    }
+
+    // 商品标题推荐规则recommend_name_rule
+    // 参考价相关规则reference_price_rule
+    // 商品主图3:4配置规则main_image_three_to_four_rule
+
+    // 售后服务规则after_sale_rule
+
+    // 商品规格约束product_spec_rule
+
+    // 商品尺码模板配置规则component_template_rule
+
+    // sku规则sku_rule
+
+    // 资质规则，类目属性影响资质必填和资质属性必填qualification_rule
+
+    // spu管控规则spu_control_rule
+    // 交易相关的规则trade_rule
+    // 提取方式规则pick_up_method_rule
+    // 金价信息gold_price_rule
+    // 其他规则extra_rule
+    // 商品【履约发货】
+
+}
+const productRule = new ProductUpdateRule() // 初始化 规格调用方法
+// 获取商品发布规则方法===结束、
 
 // 类目预测==开始
 // 主图对象
@@ -107,7 +173,7 @@ export const Pic_Fun = reactive({
 
     },
     // 填写商品信息按钮
-    fill_in_product_info:()=>{
+    fill_in_product_info:async()=>{
 
         // 填写商品信息按钮加载状态
         Pic_Fun.fill_in_product_info_button_stats = true;
@@ -127,7 +193,7 @@ export const Pic_Fun = reactive({
             }
             
             // 验证标题&分类信息
-            axios.post(API.AppSrtoreAPI.dou_product.publishPreCheck, verification_data).then((res)=>{
+            await axios.post(API.AppSrtoreAPI.dou_product.publishPreCheck, verification_data).then((res)=>{
 
                 // console.log('标题、分类验证结果', verification_data, res)
 
@@ -174,6 +240,7 @@ export const Pic_Fun = reactive({
                     CATE.cate_status.value = false; // 显示填写【基础信息】信息
 
                 }else{// 分类未通过
+
                     Pic_Fun.verification_cate_stats = true;// 是否显示
                     Pic_Fun.verification_cate_type = 'error'
                     Pic_Fun.verification_cate_msg = cate_res.check_result_msg // 文案提示
@@ -182,14 +249,12 @@ export const Pic_Fun = reactive({
                     return
                 }
 
+                
+
             })
 
-            // 测试用流程
-            // productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
 
-            // 加载属性
-            CATE.loadFormat();// 加载对应商品属性
-
+            
 
         }else{ // 未填写分类
 
@@ -198,6 +263,9 @@ export const Pic_Fun = reactive({
             Pic_Fun.fill_in_product_info_button_stats = false;
 
         }
+
+        // 加载属性
+        await CATE.loadFormat();// 加载对应商品属性
 
 
 
@@ -411,8 +479,6 @@ export const CATE = {
     loadFormat:async()=>{
 
         var cate_id = CATE.cate_value.value
-
-        productRule.get()// 请求发布规则【 需要在 获取分类ID后执行】
 
         // 请求类目对应的属性值
         var res = await axios.post(API.AppSrtoreAPI.dou_product.format, {
@@ -933,75 +999,7 @@ export const CATE = {
     },
 }
 
-// 预测类目==开始
 
-
-// 通过执行Rule.get() 获取数据
-export const PageproductRuleOcject = ref(undefined) // ADD页面规则展示对象
-export class ProductUpdateRule {
-
-    senses=ref(undefined) // 闪购定制参数，普通发品忽略
-    standard_brand_id=ref(undefined) // 品牌id
-    spu_id=ref(undefined) // spu_id
-    info=ref(undefined) // 发布规则信息对象
-
-    // 获取发布规则
-    get=()=>{
-
-        // 判断类是否选择
-        if (!CATE.cate_value.value) {
-            tool.Fun_.message('info', '请先选择商品类目后，才能查看对应发布规则.')
-            return
-        }
-
-        // console.log('当前类目', CATE.cate_value.value)
-
-        axios.post(API.AppSrtoreAPI.dou_product.addrule, {
-
-            category_leaf_id: CATE.cate_value.value,
-            option:{
-                need_shipping_origin_id_list:true
-            }
-
-        }).then((response) => {
-
-            this.info.value = response.data.data; // js属性规则赋值
-            PageproductRuleOcject.value = response.data.data // 页面规则传值
-
-
-            console.log(response.data.data)
-
-        }).catch((error) => {
-
-            console.log(error);
-
-        });
-    }
-
-    // 商品标题推荐规则recommend_name_rule
-    // 参考价相关规则reference_price_rule
-    // 商品主图3:4配置规则main_image_three_to_four_rule
-
-    // 售后服务规则after_sale_rule
-
-    // 商品规格约束product_spec_rule
-
-    // 商品尺码模板配置规则component_template_rule
-
-    // sku规则sku_rule
-
-    // 资质规则，类目属性影响资质必填和资质属性必填qualification_rule
-
-    // spu管控规则spu_control_rule
-    // 交易相关的规则trade_rule
-    // 提取方式规则pick_up_method_rule
-    // 金价信息gold_price_rule
-    // 其他规则extra_rule
-    // 商品【履约发货】
-
-}
-const productRule = new ProductUpdateRule() // 初始化 规格调用方法
-// 获取商品发布规则方法===结束、
 
 
 
@@ -1132,6 +1130,12 @@ export const formState = reactive({
 
     // 售后保障-7天无理由 "after_sale_service":"{\"supply_day_return_selector\":\"7-0\"}" 
     after_sale_service:"1",
+    // 发货地址
+    shipping_origin_info:{
+        "shipping_origin_type":undefined, // 发货地类型 1单地址 2多地址
+        "shipping_origin_id":undefined, // 发货地id
+        "address":undefined// 地址描述
+    }
     
 })
 
@@ -1642,15 +1646,13 @@ export const step_formdata_rule = {
 
 }
 
-// 履约方法
+// ===============================履约方法
 export class Fulfillment {
 
     // 加载履约方式：：渲染支持的发货方式
     load(){
 
-        var data_obj = toRaw(productRule.info.value)
-
-        var fulfillment_rule = data_obj.fulfillment_rule
+        var fulfillment_rule = PageproductRuleOcject.value.fulfillment_rule
 
         Object.keys(fulfillment_rule).forEach(key=>{
 
@@ -2117,8 +2119,6 @@ export class StockFun {
         // 勾选预售发货时效=设置时效库存数量弹出窗口
         set_presale_stock = (item) =>{
 
-            // console.log(item.open)
-
             // 预售库存初始化
             console.log('预售发货时效', step_formdata.presell_delay)
 
@@ -2220,11 +2220,15 @@ export const Description = ref(undefined)
 // 描述详情 ===============================  结束
 
 
+
+
+
 // 资质方法===开始
 
 export class Quality  {
     
-    rule = productRule.info.value;
+    rule = PageproductRuleOcject.value;
+
     list = ref([]); // 列表数据源头
 
     // 素材组件参数
@@ -2338,6 +2342,11 @@ export class Quality  {
 
 // 资质方法===结束
 
+
+
+
+
+
 // 自定义规格===开始
 export const sku_formRef = ref()
 export const SPECS = reactive({
@@ -2384,7 +2393,7 @@ export const resetSPECSFull = () => {
 
 export class Spec {
 
-    rule = productRule.info.value.product_spec_rule;// 规格-规则
+    rule = PageproductRuleOcject.value.product_spec_rule;// 规格-规则
 
     
     // 规格-加载
@@ -2899,10 +2908,10 @@ export class UploadProduct {
 
 
             // 主图视频 必填验证
-            if(!video_Fun.get()){
-                tool.Fun_.message('error','主图视频必填-不能为空')
-                return
-            }
+            // if(!video_Fun.get()){
+            //     tool.Fun_.message('error','主图视频必填-不能为空')
+            //     return
+            // }
             console.log('主图视频', toRaw(video_Fun.PicList.value))
 
 
