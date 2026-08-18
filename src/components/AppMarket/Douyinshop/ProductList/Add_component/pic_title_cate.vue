@@ -368,26 +368,45 @@
             </template>
         </a-radio-group>
 
-        <a-button style="margin-left: 10px;">+ 添加地址</a-button>
+        <!-- <a-button style="margin-left: 10px;">+ 添加地址</a-button> -->
 
         <!--单一发货地址-->
-        <div v-if="ShopAddress.address_type == 1" style="padding: 20px 0;">
-            
-            单一发货地址
+        <div v-if="ShopAddress.address_type == 1" style="padding: 20px 0;color: #000;">
+            <!--地址 为空-->
+            <template v-if="ShopAddress.single_obj.options.length === 0">
+                <a-empty />
+            </template>
+            <!--地址 不为空-->
+            <template v-else>
+                <a-radio-group v-model:value="ShopAddress.single_value">
+                    <a-radio v-for="item_single in ShopAddress.single_obj.options" class="a-radio-group-y" :value="item_single.value">{{ item_single.name }}</a-radio>
+                </a-radio-group>
+            </template>
+            <p>
+            </p>
 
         </div>
         
         
         <!--多发货地址-->
-        <div v-else-if="ShopAddress.address_type == 2" style="padding: 20px 0;">
-
-            多发货地址
-        
+        <div v-else-if="ShopAddress.address_type == 2" style="padding: 20px 0;color: #000;">
+            <!--地址 为空-->
+            <template v-if="ShopAddress.multiple_obj.options.length === 0">
+                <a-empty />
+            </template>
+            <!--地址 不为空-->
+            <template v-else>
+                <a-radio-group v-model:value="ShopAddress.multiple_value">
+                    <a-radio v-for="item_multiple in ShopAddress.multiple_obj.options" class="a-radio-group-y" :value="item_multiple.value">{{ item_multiple.name }}</a-radio>
+                </a-radio-group>
+            </template>
+            <p>
+            </p>
         </div>
 
         <template #footer>
             <a-flex justify="flex-start" gap="8">
-                <a-button type="primary">确定</a-button>
+                <a-button type="primary" @click="ShopAddress.confirm">确定</a-button>
                 <a-button @click="ShopAddress.closedFunction">关闭</a-button>
             </a-flex>
         </template>
@@ -976,6 +995,15 @@ import * as utils from '@/assets/JS_Model/public_model';
         // 发货地址类型 1-单地址，2-多地址
         address_type:'1',
 
+        // 单地址对象
+        single_obj:undefined,
+        // 单地址选中值
+        single_value:undefined,
+        // 多地址对象
+        multiple_obj:undefined,
+        // 多地址选中值
+        multiple_value:undefined,
+
         // 判断发货地址是否支持、是否必填
         discernment_shop_add_dizhi:(data) =>{
 
@@ -1001,8 +1029,38 @@ import * as utils from '@/assets/JS_Model/public_model';
                     }]
                 }
             }
+            // 地址对象赋值
+            // ShopAddress.address_rule = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule
 
-            ShopAddress.address_rule = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule
+            // 模拟数据
+
+            ShopAddress.address_rule =  {
+                    "enable": true,
+                    "must_select": true,
+                    "options": [
+                        {
+                            "value": "1",
+                            "name": "单一发货地",
+                            "options": [
+                                {"value":"123", "name":"浙江省杭州市余杭区XX大厦"},
+                                {"value":"124", "name":"浙江省杭州市x西湖区YY中心"}
+                            ]
+                        },
+                        {
+                            "value": "2",
+                            "name": "多发货地组合",
+                            "options":[
+                                {"value":"321", "name":"浙江省杭州市多仓"}
+                            ]
+                        }
+                    ]
+            }
+            
+
+            // 单地址对象赋值
+            ShopAddress.single_obj = ShopAddress.address_rule.options.find(item => item.value === '1');
+            // 多地址对象赋值
+            ShopAddress.multiple_obj = ShopAddress.address_rule.options.find(item => item.value === '2');
 
         },
 
@@ -1014,6 +1072,66 @@ import * as utils from '@/assets/JS_Model/public_model';
         // 关闭 选择地址
         closedFunction:()=>{
             ShopAddress.open = false;
+        },
+
+        // 确认-验证是否选择值-获取值-将值同步到页面-同步到数据对象
+        confirm:()=>{
+
+            // 获取发货类型1=单个发货地址 2=多个发货地址
+
+            // 验证是否选中
+            if(ShopAddress.address_type === '1'){ // 单个发货地址
+                
+                if(ShopAddress.single_value){
+                    
+                    let v = ShopAddress.single_value
+                    
+                    let res = ShopAddress.single_obj.options.find(item => item.value === v);
+
+                    console.log(ShopAddress.single_value,res) // 选中值
+
+                    // 赋值到表单
+                    formState.shipping_origin_info.address = res.name;
+                    formState.shipping_origin_info.shipping_origin_type = ShopAddress.address_type;
+                    formState.shipping_origin_info.shipping_origin_id = res.value;
+
+                    ShopAddress.open = false;// 关闭抽屉
+
+                }else{
+
+                    tool.Fun_.message('info','请选择发货地址')
+                
+                }
+
+            }else if(ShopAddress.address_type==='2'){ // 多个发货地址
+
+                if(ShopAddress.multiple_value){
+
+                    let v = ShopAddress.multiple_value;
+
+                    let res = ShopAddress.multiple_obj.options.find(item => item.value === v);
+
+                    console.log(ShopAddress.multiple_value, res) // 选中值
+
+                    // 赋值到表单
+                    formState.shipping_origin_info.address = res.name;
+                    formState.shipping_origin_info.shipping_origin_type = ShopAddress.address_type;
+                    formState.shipping_origin_info.shipping_origin_id = res.value;
+
+                    ShopAddress.open = false; // 关闭抽屉
+
+                }else{
+
+                    tool.Fun_.message('info','请选择发货地址')
+                
+                }
+
+            }
+
+            // 获取发货地址
+
+            // 同步到页面
+
         }
 
 
