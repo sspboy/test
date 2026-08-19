@@ -252,14 +252,6 @@ const routes = [
         }
     },
     {
-        path: '/moreShopManagement',
-        name: 'moreShopManagement',
-        component: () => import('../views/AppMarket/FunctionSettings/MoreShopManagement.vue'),    // 视图文件
-        meta:{
-            title:'多店管理',
-        }
-    },
-    {
         path: '/materiallist',
         name: 'materiallist',
         component: () => import('../views/AppMarket/Material/list.vue'),    // 视图文件

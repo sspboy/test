@@ -248,6 +248,20 @@
                         </span>
 
                         <!-- 度量衡-->
+                        <span v-else-if="item.value_display_style === 'measure'">
+                          <template v-for="item_measure in item.measure_templates[0].value_modules">
+                            {{ item_measure.units }}
+                              
+                            <a-input>
+                                <template #addonAfter>
+                                  <a-select style="width: 90px">
+                                    <a-select-option v-for="nu in item_measure.units" :value="nu.unit_id">{{ nu.unit_name }}</a-select-option>
+                                  </a-select>
+                                </template>
+                              </a-input>
+                              
+                          </template>
+                        </span>
 
 
                         <!--规格图片-->

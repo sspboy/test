@@ -364,7 +364,7 @@
 
         <a-radio-group v-model:value="ShopAddress.address_type" name="radioGroup" button-style="solid">
             <template v-for="item_address in ShopAddress.address_rule.options">
-                <a-radio-button :value="item_address.value">{{ item_address.name }}</a-radio-button>
+                <a-radio-button :value="item_address.value" >{{ item_address.name }}</a-radio-button>
             </template>
         </a-radio-group>
 
@@ -379,7 +379,7 @@
             <!--地址 不为空-->
             <template v-else>
                 <a-radio-group v-model:value="ShopAddress.single_value">
-                    <a-radio v-for="item_single in ShopAddress.single_obj.options" class="a-radio-group-y" :value="item_single.value">{{ item_single.name }}</a-radio>
+                    <a-radio v-for="item_single in ShopAddress.single_obj.options" class="a-radio-group-y font_size_12" :value="item_single.value">{{ item_single.name }}</a-radio>
                 </a-radio-group>
             </template>
             <p>
@@ -397,7 +397,7 @@
             <!--地址 不为空-->
             <template v-else>
                 <a-radio-group v-model:value="ShopAddress.multiple_value">
-                    <a-radio v-for="item_multiple in ShopAddress.multiple_obj.options" class="a-radio-group-y" :value="item_multiple.value">{{ item_multiple.name }}</a-radio>
+                    <a-radio v-for="item_multiple in ShopAddress.multiple_obj.options" class="a-radio-group-y font_size_12" :value="item_multiple.value">{{ item_multiple.name }}</a-radio>
                 </a-radio-group>
             </template>
             <p>
@@ -1029,6 +1029,7 @@ import * as utils from '@/assets/JS_Model/public_model';
                     }]
                 }
             }
+
             // 地址对象赋值
             // ShopAddress.address_rule = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule
 
@@ -1056,7 +1057,6 @@ import * as utils from '@/assets/JS_Model/public_model';
                     ]
             }
             
-
             // 单地址对象赋值
             ShopAddress.single_obj = ShopAddress.address_rule.options.find(item => item.value === '1');
             // 多地址对象赋值
@@ -1127,10 +1127,6 @@ import * as utils from '@/assets/JS_Model/public_model';
                 }
 
             }
-
-            // 获取发货地址
-
-            // 同步到页面
 
         }
 
@@ -1215,5 +1211,5 @@ import * as utils from '@/assets/JS_Model/public_model';
 :deep(.ant-form-item-explain-error) {
   font-size: 12px;
 }
-.a-radio-group-y{display: flex;height:30px;line-height:30px;}
+.a-radio-group-y{display: flex;height:30px;margin: 10px 0;line-height:30px;}
  </style>

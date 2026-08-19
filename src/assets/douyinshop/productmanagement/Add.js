@@ -2439,7 +2439,10 @@ export class Spec {
                 obj.enabled_status = false;// 启用还是禁用
 
                 // 推荐规格的下拉选项=》请求一级推荐规格
-                this.add.Initialization_nav(obj)
+                if(obj.value_display_style === 'cascader_multi_select'){
+                    this.add.Initialization_nav(obj) // 加载推荐规格值
+                }
+                
 
                 // SPECS.Obj.push(obj)
                 // 加载推荐规格不超过最大规格数量
@@ -2513,9 +2516,12 @@ export class Spec {
 
         // 初始化选择推荐规格下拉选项
         Initialization_nav:(obj)=>{
-            
+
             var navigation_properties = obj.navigation_properties;
 
+            console.log('初始化对象', obj)
+
+            // 推荐
             if(navigation_properties.length > 0){
                 var property_id = navigation_properties[0].property_id;
                 var property_name = navigation_properties[0].property_name;
@@ -2529,7 +2535,8 @@ export class Spec {
                 "page_num":2000             // 每页数量
 
             }).then((res)=>{
-                
+
+                console.log('请求推荐规格',res)
 
                 var property_values_list = res.data.data.property.property_values
 

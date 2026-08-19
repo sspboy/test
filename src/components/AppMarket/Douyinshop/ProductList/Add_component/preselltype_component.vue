@@ -370,8 +370,11 @@ export default defineComponent({
         
     },
     props: {
+        
         data:{type:Object},
+
         specs_info:{type:Object},// 获取规格spec
+        
         // 发货规则
 
     },
