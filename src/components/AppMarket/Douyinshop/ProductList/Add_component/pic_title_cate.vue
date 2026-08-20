@@ -958,7 +958,7 @@ import * as utils from '@/assets/JS_Model/public_model';
      // 判断尺码表是否必填
      const discernment_component_template_rule = (data) =>{
 
-        console.log(PageproductRuleOcject.value)
+        // console.log(PageproductRuleOcject.value)
 
         let is_show = PageproductRuleOcject.value.component_template_rule.is_show // 尺码模板-是否展示
         let must_input = PageproductRuleOcject.value.component_template_rule.must_input // 尺码模板-是否必填
@@ -1007,13 +1007,8 @@ import * as utils from '@/assets/JS_Model/public_model';
         // 判断发货地址是否支持、是否必填
         discernment_shop_add_dizhi:(data) =>{
 
-            console.log('发货地址', PageproductRuleOcject.value.fulfillment_rule)
-
             let enable = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule.enable; // 发货地址-是否支持
             let must_select = PageproductRuleOcject.value.fulfillment_rule.shipping_origin_rule.must_select; // 发货地址-是否必填
-
-            console.log('发货地址-是否支持',enable)
-            console.log('发货地址-是否必填',must_select)
 
             if(enable){// 如果支持
                 ShopAddress.stats = enable

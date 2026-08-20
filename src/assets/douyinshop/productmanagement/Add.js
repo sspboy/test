@@ -2426,27 +2426,65 @@ export class Spec {
             // 推荐sku对象加载到表单
             this.rule.required_spec_details.forEach((obj, index)=>{
 
-                let name = obj.sell_property_name
-
-                obj.property_name = name;
-
-                obj.values = [{
-                    value_name:undefined,  // 值名称
-                    url:undefined          // 规格图片
-                }]
-
+                obj.property_name = obj.sell_property_name; // 规格名称
                 obj.Recommendation = true; // 是否推荐规格
                 obj.enabled_status = false;// 启用还是禁用
-
+                
                 // 推荐规格的下拉选项=》请求一级推荐规格
                 if(obj.value_display_style === 'cascader_multi_select'){
+                    // 值
+                    obj.values = [{
+                        value_name:undefined,  // 值名称
+                        url:undefined          // 规格图片
+                    }]
+
                     this.add.Initialization_nav(obj) // 加载推荐规格值
+
+                }else if(obj.value_display_style === 'measure'){ // 类型：度量衡规格值 measure-单值，多值
+
+                    console.log('度量衡', obj.measure_templates)
+
+                    var o_value_list = []
+
+                    // 值迭代
+                    obj.measure_templates.forEach(item=>{
+
+                        console.log('度量衡',item)
+
+                        var op = {
+                            unit_value:undefined,// 值
+                            unit_id:item.value_modules[0].units[0].unit_id,//单位id
+                            unit_name:item.value_modules[0].units[0].unit_name,// 单位名称
+                        }
+
+                        o_value_list.push(op)
+
+                    })
+
+                    obj.values = [{
+                        value_name:undefined,  // 值名称
+                        url:undefined,         // 规格图片
+                        value_list: o_value_list          // 值-数组
+                    }]
+
+
+                }else if(obj.value_display_style === 'text'){
+                    obj.values = [{
+                        value_name:undefined,  // 值名称
+                        url:undefined          // 规格图片
+                    }]
+                }else if(obj.value_display_style === 'diy'){
+                    // 验证规则
+                    obj.values = [{
+                        value_name:undefined,  // 值名称
+                        url:undefined          // 规格图片
+                    }]
                 }
                 
 
                 // SPECS.Obj.push(obj)
                 // 加载推荐规格不超过最大规格数量
-                if(!SPECS.Obj.some(r=>r.property_name === name)){
+                if(!SPECS.Obj.some(r=>r.property_name === obj.property_name)){
 
                     // 添加最大允许数量的规格 为显示状态
                     if(SPECS.Obj.length < max_spec_num_limit){
@@ -2617,19 +2655,32 @@ export class Spec {
         },
 
         // 添加规格值
-        pushvalue:(data)=>{
+        pushvalue:(index, data)=>{
+            
 
-            var value_number = SPECS.Obj[data].values.length;
+            var value_number = SPECS.Obj[index].values.length;
 
-            if(value_number >= 20){
+            if(value_number >= 20){ // 超过20组
+                
                 tool.Fun_.message('error', '规格值最多不能超过20组！')
-                return false
-            }else{
-                SPECS.Obj[data].values.push({
-                    value_name:undefined,// 值名称
-                    url:undefined//
-                });
 
+                return false
+
+            }else{ // 正常添加
+
+                let value_display_style = data.value_display_style;// 类型
+
+                // 度量衡
+                if(value_display_style === 'measure'){
+
+                    console.log(index, data)
+
+                }else{
+                    SPECS.Obj[index].values.push({
+                        value_name:undefined,// 值名称
+                        url:undefined//
+                    });
+                }
             }
         },
 

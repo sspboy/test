@@ -32,6 +32,7 @@
                         <div style="margin: 0 40px 0 10px;font-size:18px;font-weight:bold;">新建商品</div>
                     </template>
 
+
                     <a-tab-pane key="0" tab="基础信息">
 
                         <!--基础信息 组件-->

@@ -36,6 +36,11 @@
                     <div style="margin: 0 40px 0 10px;font-size:18px;font-weight:bold;">新建商品</div>
                 </template>
 
+                <template #rightExtra>
+                    <a-button size="small" @click="closed">关闭</a-button>
+                </template>
+
+
                 <a-tab-pane key="0" tab="基础信息">
 
                     <!--基础信息 组件-->
@@ -122,7 +127,6 @@
             @click="uploadproduct.get()" 
             :loading="PAGEDATA.upload_product_loading">发布到线上</a-button>
         <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
-        <a-button @click="closed">关闭</a-button>
 
     </div>
     <!--底部按钮 结束-->

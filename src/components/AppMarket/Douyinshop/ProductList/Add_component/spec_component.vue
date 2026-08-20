@@ -80,7 +80,7 @@
                       class="add_btn_class" 
                       block
                       :disabled="item.enabled_status"
-                      @click="spec.add.pushvalue(index)">
+                      @click="spec.add.pushvalue(index, item)">
                         <PlusOutlined />
                     </a-button>
 
@@ -160,148 +160,177 @@
                   style="margin:2px 4px 0 0;" 
                   align="baseline"
               >
-                  <!--带图片规格-->
-                  <a-form-item 
-                    :name="[index, 'values', spec_value_index,'value_name']" 
-                    :rules="{required: true, trigger: 'change', message:'值不能为空'}"
-                  >
-                      <a-space>
+                  <!-- 不是 度量衡得 规格值 -->
+                  <template v-if="item.value_display_style !== 'measure'">
+                    <a-form-item 
+                      :name="[index, 'values', spec_value_index, 'value_name']" 
+                      :rules="{required: true, trigger: 'change', message:'值不能为空'}"
+                    >
+                        <a-space>
 
-                        <!--规格值 cascader 模式-->
-                        <span v-if="item.value_display_style === 'cascader_multi_select'">
-                        
-                          <!--无需二次请求值 支持自定义输入规格值-->
+                          <!--规格值 cascader 模式-->
+                          <span v-if="item.value_display_style === 'cascader_multi_select'">
+                          
+                            <!--无需二次请求值 支持自定义输入规格值-->
 
-                          <a-cascader
-                            :disabled="item.enabled_status"
-                            v-if="item.support_diy===true"
-                            v-model:value="v_item.value_name"
-                            :options="item.options"
-                            style="width: 154px;font-size: 12px;"
-                            :load-data="(selectedOptions) => spec.add.loadData(selectedOptions, '自定义参数', item)"
-                            placeholder="选择规格"
-                            :fieldNames="{ 
-                              value: 'label', 
-                            }"
-                          />
-                            
-
-                            
-                          <!--无需二次请求值 不支持自定义输入规格值-->
-                          <a-cascader
-                            :disabled="item.enabled_status"
-                            v-else-if="item.support_diy===false"
-                            v-model:value="v_item.value_name"
-                            :options="item.options"
-                            style="width: 154px;font-size: 12px;"
-                            :load-data="(selectedOptions) => spec.add.loadData(selectedOptions, '自定义参数', item)"
-                            placeholder="选择规格"
-                            :fieldNames="{ 
-                              value: 'label', 
-                            }"
-                          />
-
-                          <!--需要 二次查询规格值-->
-                          <a-cascader 
-                            :disabled="item.enabled_status"
-                            v-else-if="item.need_paging_query_value"
-                            v-model:value="v_item.value_name"
-                            multiple
-                            :options="item.property_values"
-                            placeholder="选择规格值"
-                            suffix-icon="Shopping Around"
-                            :fieldNames="{ 
-                              label: 'sell_property_value_name', 
-                              value: 'sell_property_value_id', 
-                              children: 'children' 
+                            <a-cascader
+                              :disabled="item.enabled_status"
+                              v-if="item.support_diy===true"
+                              v-model:value="v_item.value_name"
+                              :options="item.options"
+                              style="width: 154px;font-size: 12px;"
+                              :load-data="(selectedOptions) => spec.add.loadData(selectedOptions, '自定义参数', item)"
+                              placeholder="选择规格"
+                              :fieldNames="{ 
+                                value: 'label', 
                               }"
-                              style="width: 80%;"
-                            allow-clear
-                          >
-                            <template #tagRender="data">
-                              <a-tag :key="data.value" color="blue">{{ data.label }}</a-tag>
-                            </template>
-                          </a-cascader>
-
-                        </span>
-                        
-                        <!-- 文本值-->
-                        <span v-else-if="item.value_display_style === 'text'">
-                          <a-input
-                            :disabled="item.enabled_status"
-                            v-model:value="v_item.value_name"
-                            placeholder="规格值"
-                            autocomplete="off"
-                            class="font_size_12"
-                            allow-clear></a-input>
-                        </span>
-
-                        <!-- 自定义 -->
-                        <span v-else-if="item.value_display_style === 'diy'">
-                          <a-input
-                            v-model:value="v_item.value_name"
-                            placeholder="规格值"
-                            autocomplete="off"
-                            class="font_size_12"
-                            style="width: 100%;"
-                            allow-clear></a-input>
-                        </span>
-
-                        <!-- 度量衡-->
-                        <span v-else-if="item.value_display_style === 'measure'">
-                          <template v-for="item_measure in item.measure_templates[0].value_modules">
-                            {{ item_measure.units }}
+                            />
                               
-                            <a-input>
-                                <template #addonAfter>
-                                  <a-select style="width: 90px">
-                                    <a-select-option v-for="nu in item_measure.units" :value="nu.unit_id">{{ nu.unit_name }}</a-select-option>
-                                  </a-select>
-                                </template>
-                              </a-input>
+
                               
-                          </template>
-                        </span>
+                            <!--无需二次请求值 不支持自定义输入规格值-->
+                            <a-cascader
+                              :disabled="item.enabled_status"
+                              v-else-if="item.support_diy===false"
+                              v-model:value="v_item.value_name"
+                              :options="item.options"
+                              style="width: 154px;font-size: 12px;"
+                              :load-data="(selectedOptions) => spec.add.loadData(selectedOptions, '自定义参数', item)"
+                              placeholder="选择规格"
+                              :fieldNames="{ 
+                                value: 'label', 
+                              }"
+                            />
+
+                            <!--需要 二次查询规格值-->
+                            <a-cascader 
+                              :disabled="item.enabled_status"
+                              v-else-if="item.need_paging_query_value"
+                              v-model:value="v_item.value_name"
+                              multiple
+                              :options="item.property_values"
+                              placeholder="选择规格值"
+                              suffix-icon="Shopping Around"
+                              :fieldNames="{ 
+                                label: 'sell_property_value_name', 
+                                value: 'sell_property_value_id', 
+                                children: 'children' 
+                                }"
+                                style="width: 80%;"
+                              allow-clear
+                            >
+                              <template #tagRender="data">
+                                <a-tag :key="data.value" color="blue">{{ data.label }}</a-tag>
+                              </template>
+                            </a-cascader>
+
+                          </span>
+                          
+                          <!-- 文本值-->
+                          <span v-else-if="item.value_display_style === 'text'">
+                            <a-input
+                              :disabled="item.enabled_status"
+                              v-model:value="v_item.value_name"
+                              placeholder="规格值"
+                              autocomplete="off"
+                              class="font_size_12"
+                              allow-clear></a-input>
+                          </span>
+
+                          <!-- 自定义 -->
+                          <span v-else-if="item.value_display_style === 'diy'">
+                            <a-input
+                              v-model:value="v_item.value_name"
+                              placeholder="规格值"
+                              autocomplete="off"
+                              class="font_size_12"
+                              style="width: 100%;"
+                              allow-clear></a-input>
+                          </span>
+
+                          
 
 
-                        <!--规格图片-->
+                          <!--规格图片-->
 
-                        <!--无图片地址-->
-                        <span v-if="SPECS.SpecImag === true && index === 0 && v_item.url=== undefined || v_item.url == ''" style="float: left;" >
-                          <img
-                            :disabled="item.enabled_status"
-                            style="width: 28px;height: 28px;"
-                            src="/image_defule.png"
-                            class="cursor"
-                            @click="spec.add.change_spec_img_fun(index, spec_value_index)"
-                          ></img>
-                        </span>
-
-                        <!--有图片地址-->
-                        <span v-else-if="SPECS.SpecImag === true && index === 0 && v_item.url != undefined" style="float: left;">
-                          <a-popconfirm
-                            :disabled="item.enabled_status"
-                            ok-text="查看图片"
-                            cancel-text="清空图片"
-                            @confirm="spec.add.change_spec_img_fun(index, spec_value_index)"
-                            @cancel="spec.add.remove_img(v_item)"
-                          >
-                          <template #icon></template>
-
-                          <a>
+                          <!--无图片地址-->
+                          <span v-if="SPECS.SpecImag === true && index === 0 && v_item.url=== undefined || v_item.url == ''" style="float: left;" >
                             <img
                               :disabled="item.enabled_status"
-                              style="border-radius:4px;width: 28px;height: 28px;"
-                              :src="v_item.url"
+                              style="width: 28px;height: 28px;"
+                              src="/image_defule.png"
                               class="cursor"
-                              ></img>
-                            </a>
-                          </a-popconfirm>
+                              @click="spec.add.change_spec_img_fun(index, spec_value_index)"
+                            ></img>
+                          </span>
 
-                        </span>
-                      </a-space>
-                    
-                  </a-form-item>
+                          <!--有图片地址-->
+                          <span v-else-if="SPECS.SpecImag === true && index === 0 && v_item.url != undefined" style="float: left;">
+                            <a-popconfirm
+                              :disabled="item.enabled_status"
+                              ok-text="查看图片"
+                              cancel-text="清空图片"
+                              @confirm="spec.add.change_spec_img_fun(index, spec_value_index)"
+                              @cancel="spec.add.remove_img(v_item)"
+                            >
+                            <template #icon></template>
+
+                            <a>
+                              <img
+                                :disabled="item.enabled_status"
+                                style="border-radius:4px;width: 28px;height: 28px;"
+                                :src="v_item.url"
+                                class="cursor"
+                                ></img>
+                              </a>
+                            </a-popconfirm>
+
+                          </span>
+                        </a-space>
+                      
+                    </a-form-item>
+                  </template>
+
+
+                  <!--度量衡 规格值-->
+                  <template v-else>
+
+                    <!--区间值 迭代输入 规格值-->
+                    <template 
+                      v-for="(item_measure, v_index) in item.measure_templates[0].value_modules"
+                    >
+                    <a-form-item 
+                        :name="[index, 'values', spec_value_index, 'value_list', v_index, 'unit_value']"
+                        :rules="{required: true, trigger: 'change', message:'值不能为空1'}"
+                      >
+                        
+                        <a-input 
+                          v-model:value="v_item.value_list[v_index].unit_value"
+                          placeholder="规格值"
+                          autocomplete="off"
+                          class="font_size_12"
+                          >
+
+                            <template v-if="item_measure.units.length > 0" #addonAfter>
+                              <a-select  
+                                style="width: 90px" 
+                                v-model:value="v_item.value_list[v_index].unit_name">
+                                <a-select-option v-for="nu in item_measure.units" :value="nu.unit_id">
+                                  {{ nu.unit_name }}</a-select-option>
+                              </a-select>
+                            </template>
+                          
+                          
+                        </a-input>
+
+                        <!--中间分隔符-->
+                        <template v-if="item_measure.suffix !== ''">{{ item_measure.suffix }}</template>
+
+                        </a-form-item>
+
+                    </template>
+
+                  </template>
 
                   <!--删除规格值-->
                   <a-button 
