@@ -4,7 +4,18 @@
 
 -->
  <template>
+    <a-affix :style="{ position: 'absolute', top: '0px', right: '-220px'}">
+        <div style="width: 200px;height:500px;">
 
+            <a-card style="width: 100%">
+                <h4>信息完善度提示</h4>
+                <p>白底图</p>
+                <p>主图视频</p>
+                <p>3:4长图</p>
+            </a-card>
+
+        </div>
+    </a-affix>
     <!-- 动态渲染异步组件--选择素材 -->
     <selectimg 
         v-if="Basedata.selectimg_open" 

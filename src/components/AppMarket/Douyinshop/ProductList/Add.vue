@@ -135,6 +135,8 @@
 
         <!--底部按钮-->
         <template #footer>
+            
+
             <div 
                 v-if="CATE.cate_status.value === false" 
                 style="display: flex; justify-content: center; gap: 18px;border-top: 1px #f2f2f2 dotted;height: 50px;padding: 20px 0 0 0;">
@@ -145,6 +147,9 @@
             </div>
         </template>
     </a-modal>
+
+
+
 </template>
 <script>
 import { defineComponent,defineAsyncComponent,ref,reactive,onMounted,computed,shallowRef,onBeforeUnmount,toRaw, watch } from 'vue';

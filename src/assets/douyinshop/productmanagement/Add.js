@@ -2370,6 +2370,8 @@ export const SPECS = reactive({
         ]),
 
 })
+
+
 // 或者更彻底的重置（完全替换整个对象）
 export const resetSPECSFull = () => {
     Object.assign(SPECS, {
@@ -2442,31 +2444,7 @@ export class Spec {
 
                 }else if(obj.value_display_style === 'measure'){ // 类型：度量衡规格值 measure-单值，多值
 
-                    console.log('度量衡', obj.measure_templates)
-
-                    var o_value_list = []
-
-                    // 值迭代
-                    obj.measure_templates.forEach(item=>{
-
-                        console.log('度量衡',item)
-
-                        var op = {
-                            unit_value:undefined,// 值
-                            unit_id:item.value_modules[0].units[0].unit_id,//单位id
-                            unit_name:item.value_modules[0].units[0].unit_name,// 单位名称
-                        }
-
-                        o_value_list.push(op)
-
-                    })
-
-                    obj.values = [{
-                        value_name:undefined,  // 值名称
-                        url:undefined,         // 规格图片
-                        value_list: o_value_list          // 值-数组
-                    }]
-
+                    obj.values = this.add.load_weights_and_measures(obj.measure_templates)
 
                 }else if(obj.value_display_style === 'text'){
                     obj.values = [{
@@ -2474,6 +2452,12 @@ export class Spec {
                         url:undefined          // 规格图片
                     }]
                 }else if(obj.value_display_style === 'diy'){
+                    // 验证规则
+                    obj.values = [{
+                        value_name:undefined,  // 值名称
+                        url:undefined          // 规格图片
+                    }]
+                }else if(obj.value_display_style === 'select'){
                     // 验证规则
                     obj.values = [{
                         value_name:undefined,  // 值名称
@@ -2501,6 +2485,53 @@ export class Spec {
                 }
 
             })
+
+        },
+        // 渲染度量衡 规格值对象
+        load_weights_and_measures:(measure_templates)=>{
+
+            console.log('度量衡', measure_templates)
+
+            var o_value_list = []
+
+            // 值迭代
+            measure_templates.forEach(item=>{
+
+
+                item.value_modules.forEach(v_item=>{
+
+                    if(v_item.units.length>0){ // 区间值
+
+                        var op = {
+                            unit_value:'',// 值
+                            unit_id:v_item.units[0].unit_id,//单位id
+                            unit_name:v_item.units[0].unit_name,// 单位名称
+                        }
+
+                    }else{// 当个值
+
+                        var op = {
+                            unit_value:'',// 值
+                            // unit_id:'g',//单位id
+                            // unit_name:'克',// 单位名称
+                        }
+                    }
+
+                    o_value_list.push(op)
+
+                })
+
+            })
+
+            var obj_values_list = [{
+                value_name:undefined,  // 值名称
+                url:undefined,         // 规格图片
+                value_list: o_value_list          // 值-数组
+            }]
+
+            // console.log('对象', obj_values_list)
+
+            return obj_values_list
 
         },
 
@@ -2673,7 +2704,10 @@ export class Spec {
                 // 度量衡
                 if(value_display_style === 'measure'){
 
-                    console.log(index, data)
+                    console.log(index, data.measure_templates)
+
+                    let res = this.add.load_weights_and_measures(data.measure_templates)
+                    SPECS.Obj[index].values.push(res[0]);
 
                 }else{
                     SPECS.Obj[index].values.push({

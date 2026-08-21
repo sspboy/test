@@ -284,6 +284,30 @@ const routes = [
         }
     },
     {
+        path: '/removewatermark',
+        name: 'removewatermark',
+        component: () => import('../views/AppMarket/ImageEdit/removewatermark.vue'),    // 视图文件
+        meta:{
+            title:'图片去水印',
+        }
+    },
+    {
+        path: '/mainimage',
+        name: 'mainimage',
+        component: () => import('../views/AppMarket/ImageEdit/mainimage.vue'),    // 视图文件
+        meta:{
+            title:'图片去水印',
+        }
+    },
+    {
+        path: '/materialupload',
+        name: 'materialupload',
+        component: () => import('../views/AppMarket/Material/materialupload.vue'),    // 视图文件
+        meta:{
+            title:'图片去水印',
+        }
+    },
+    {
         path: '/duplicateproducts',
         name: 'duplicateproducts',
         component: () => import('../views/AppMarket/Refine/DuplicateProducts.vue'),    // 视图文件

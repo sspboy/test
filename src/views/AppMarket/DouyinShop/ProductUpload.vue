@@ -1,13 +1,17 @@
 <!-- 抖店铺==新建商品组件 -->
 <template>
 
+
+    
+
+
     <!-- 动态渲染异步组件--选择素材 -->
     <selectimg 
         v-if="PAGEDATA.selectimg_open" 
         v-on:add_img_callback="PAGEDATA.Add_Callback" 
         :data="PAGEDATA"
     />
-
+        
 
     <a-layout-content class="content">
 
@@ -27,14 +31,15 @@
                 style="height: 100%;" 
                 class="font_size_12">
                 <product_cate_component />
+
             </a-flex>
 
             <!--新建商品 类目id不为空显示-->
             <a-tabs v-if="CATE.cate_status.value === false" v-model:activeKey="activeKey">
 
-                <template #leftExtra >
+                <!-- <template #leftExtra >
                     <div style="margin: 0 40px 0 10px;font-size:18px;font-weight:bold;">新建商品</div>
-                </template>
+                </template> -->
 
                 <template #rightExtra>
                     <a-button size="small" @click="closed">关闭</a-button>
@@ -42,17 +47,16 @@
 
 
                 <a-tab-pane key="0" tab="基础信息">
-
                     <!--基础信息 组件-->
                     <pic_title_cate_component />
                 
                 </a-tab-pane>
 
                 <a-tab-pane key="1" tab="商品属性">
-                    
+
                     <!--商品属性 组件-->
                     <product_format_component />
-
+                    
                 </a-tab-pane>
 
                 <a-tab-pane key="2" tab="商品规格">
@@ -89,6 +93,9 @@
 
         </div>
 
+        
+
+
     </a-layout-content>
 
 
@@ -121,12 +128,24 @@
         v-if="CATE.cate_status.value === false"
         class="bottombutton"
     >
+        <div style="width: 400px;">
+            <a-space>
 
-        <a-button 
-            type="primary" 
-            @click="uploadproduct.get()" 
-            :loading="PAGEDATA.upload_product_loading">发布到线上</a-button>
-        <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
+            <a-button>上一步</a-button>
+            <a-button>下一步</a-button>
+            </a-space>
+
+        </div>
+        <div style="width: 400px;">
+            <a-space>
+            <a-button 
+                type="primary" 
+                @click="uploadproduct.get()" 
+                :loading="PAGEDATA.upload_product_loading">发布到线上
+            </a-button>
+            <a-button @click="console.log('放入草稿')">放入草稿箱</a-button>
+            </a-space>
+        </div>
 
     </div>
     <!--底部按钮 结束-->
@@ -331,7 +350,8 @@ export default {
 
 </script>
 <style scoped>
-.content{padding: 0;margin: 20px 0 0 0;background: '#fff';overflow-y: auto;overflow-x: hidden;height: calc(90vh);}
+.content{padding: 0;margin:0;background: #fff;overflow-y: auto;overflow-x: hidden;height: calc(92vh);}
+
 .img_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
 .img_3_4_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
 .Add_img{height: 100px;width: 100px;background-color: #fff;border: 1px silver dotted; border-radius: 4px;margin: 0 10px 0 0;float: left;text-align: center;}

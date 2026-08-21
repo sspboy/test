@@ -353,6 +353,19 @@
             </a-card>
           </div>
           </a-col>
+
+          <a-col :span="3">
+            <div class="gutter-box">
+            <a-card hoverable>
+              <template #cover>
+                <img style="width: 50px; height: 50px;margin: 30px auto;" alt="example" src="/video.png" />
+              </template>
+              <a-card-meta class="font_size_12" style="text-align: center;">
+                <template #description>主图视频</template>
+              </a-card-meta>
+            </a-card>
+          </div>
+          </a-col>
         </a-row>
 
       </a-layout-content>
@@ -461,18 +474,7 @@
 
         </a-card>
 
-        <div class="RightMiniBox">
-          <h4><QuestionCircleFilled style="color:dimgray;"/> 帮助中心</h4>
-          <div class="font_size_12" style="padding: 8px 0 0 0;">
-            <a-row :gutter="[12, 12]">
-              <a-col :span="24">商品查询查询教程</a-col>
-            </a-row>
-          </div>
-        </div>
-
-
-
-        <div class="RightMiniBox">
+        <!-- <div class="RightMiniBox">
           <h4> <InfoCircleFilled style="color:dimgray;"/> 联系我们 </h4>
           <div class="font_size_12" style="padding: 8px 0 0 0;">
             <a-row :gutter="[12, 12]">
@@ -482,7 +484,7 @@
               <a-col :span="24">电子邮箱: 123@qq.com</a-col>
             </a-row>
           </div>
-        </div>
+        </div> -->
 
       </a-layout-sider>
       <!--内容右侧 结束-->

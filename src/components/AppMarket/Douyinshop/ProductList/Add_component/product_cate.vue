@@ -207,12 +207,12 @@ export default defineComponent({
     // 测试跳过分类选择用例
     
     Pic_Fun.name='女子连衣裙夏季最新款'
-    CATE.cate_value.value = 1000009690 // 红薯
+    CATE.cate_value.value = 1000008386 // 红薯
     // 1000002072 // 哈密瓜
     // 1000009678 //土豆 
     // 1000009690 // 红薯
     // 1000008386// 女装
-    //   1000003346 // undefined // 1000003346
+    // 1000003346 // undefined // 1000003346
     CATE.options.value=[
         {
             "value": 1000003346,
@@ -264,6 +264,7 @@ export default defineComponent({
   padding: 26px 16px 50px 16px;
   border: 1px solid #eee;
   border-radius: 6px;
+  width: 100%;
 }
 .img_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;}
 .img_3_4_pic{height: 100px;width: 100px;border: 1px silver solid; border-radius: 4px;margin: 0 10px 0 0;float: left;padding: 10px;text-align: center;}
